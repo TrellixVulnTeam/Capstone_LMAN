@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>SOFA_API</RootNamespace>
+    <UserSecretsId>5704b951-bdc3-4bec-b320-fc6c8ace18f1</UserSecretsId>
   </PropertyGroup>
 
 
