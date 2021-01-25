@@ -46,8 +46,7 @@ namespace TestJWT
                 });
             services.AddCors(option =>
             {
-                option.AddDefaultPolicy(builder => builder.AllowAnyOrigin());
-                //option.AddPolicy("AllowSpecificOrigin", builder => builder.WithOrigins("http://localhost:4200"));
+                option.AddPolicy("AllowOrigin", builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
             });
             services.AddControllers();
         }
@@ -61,7 +60,7 @@ namespace TestJWT
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors();
+            app.UseCors("AllowOrigin");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
