@@ -25,6 +25,10 @@ namespace TestJWT.ViewModel
         { get; set; }
         public DateTime DOB
         { get; set; }
+        public byte[] Avatar
+        { get; set; }
+        public string AvatarUri
+        { get; set; }
         public AccountViewModel() { }
         public AccountViewModel(DataRow row)
         {
@@ -36,6 +40,8 @@ namespace TestJWT.ViewModel
             LastName = row["lastname"].ToString();
             Gender = row["gender"].ToString();
             DOB = DateTime.Parse(row["dob"].ToString());
+            Avatar = null;
+            //AvatarUri = row["avatar"].ToString();
         }
     }
 }

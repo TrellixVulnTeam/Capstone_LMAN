@@ -13,7 +13,8 @@ export default class Home extends Component {
         super(props);
         this.state = {
             account: {},
-            avatarUri: ''
+            avatarUri: '',
+            token: ''
         }
     }
     getData = async (key) => {
@@ -48,12 +49,13 @@ export default class Home extends Component {
                         "Accept": 'application/json',
                         "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2),
                     };
-                    Request.Get('http://139.180.214.58/TestJWT/api/account', header)
+                    let url = Const.domain + 'api/account';
+                    Request.Get(url, header)
                         .then(response => {
                             if (response && response.code && response.code == 'SUCCESSFULY') {
                                 this.setState({ account: response.account });
                                 this.setState({ avatarUri: 'http://139.180.214.58/assets/Image/' + response.account.userName + '/avatar.png' });
-                                console.log(response.account.userName);
+                                this.setState({ token: result.toString().substr(1, result.length - 2) });
                             } else {
                                 this.props.navigation.navigate('Login')
                             }
@@ -75,6 +77,7 @@ export default class Home extends Component {
     }
 
     chooseFile = (callback) => {
+        const {account, token } = this.state;
         let options = {
             title: 'Select Image',
             storageOptions: {
@@ -95,14 +98,31 @@ export default class Home extends Component {
                 );
                 alert(response.customButton);
             } else {
-                console.log(response);
                 let source = response;
-                // You can also display the image using data:
-                // let source = {
-                //   uri: 'data:image/jpeg;base64,' + response.data
-                // };
-                callback(source);
                 this.setState({ avatarUri: source.uri });
+                if (source.base64) {
+                    var header = {
+                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                        "Accept": 'application/json',
+                        "Authorization": 'Bearer ' + token,
+                    };
+                    console.log(header);
+                    let data = new FormData();
+                    data.append('Avatar', source.base64);
+                    data.append('username', account.userName);
+                    let url = Const.domain + 'api/account';
+                    Request.Post(url, header, data)
+                        .then(response => {
+                            if (response && response.code && response.code == 'SUCCESSFULY') {
+                                console.log(response.data);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                        });
+                }
+                callback(source);
+
             }
         });
     }
@@ -139,7 +159,7 @@ export default class Home extends Component {
                 <View style={Style.common.header}>
                     <Text style={Style.common.labelTitle}>Home Screen</Text>
                 </View>
-                <View onStartShouldSetResponder={() => this.chooseFile(source => { console.log('callback ' + source) })}>
+                <View onStartShouldSetResponder={() => this.chooseFile(source => { console.log('callback') })}>
                     <Image style={
                         {
                             height: Utils.scale(100, Const.Vertical),

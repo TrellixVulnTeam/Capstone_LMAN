@@ -53,7 +53,8 @@ export default class Register extends Component {
     data.append('dob', dob);
     data.append('role', role)
     console.log('Register: ' + username + ' - ' + password + ' - ' + firstname + ' - ' + lastname + ' - ' + gender + ' - ' + dob + ' - ' + role);
-    Request.Post('http://139.180.214.58/TestJWT/api/auth/register', header, data)
+    let url = Const.domain + 'api/auth/register';
+    Request.Post(url, header, data)
       .then(response => {
         if (response && response.code && response.code == 'SUCCESSFULY') {
           console.log('Register done');
@@ -67,7 +68,8 @@ export default class Register extends Component {
                   data.append('username', username);
                   data.append('password', password);
                   console.log('Login: ' + username + ' - ' + password);
-                  Request.Post('http://139.180.214.58/TestJWT/api/auth/token', header, data)
+                  let url = Const.domain + 'api/auth/token';
+                  Request.Post(url, header, data)
                     .then(response => {
                       if (response && response.code && response.code == 'LOGIN_SUCCESSFULY') {
                         this.storeData('token', this.state.token)

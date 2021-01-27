@@ -32,7 +32,7 @@ namespace TestJWT.DAO
 
         public DataProvider() { }
 
-        private string connectionSTR = "Data Source=localhost;Initial Catalog=TestJWT;User ID=sa;Password=@Codera3k48";
+        private string connectionSTR = "Data Source=139.180.214.58,1433;Initial Catalog=TestJWT;User ID=sa;Password=@Codera3k48";
 
         public DataTable ExecuteQuery(string query, object[] parameter = null)
         {

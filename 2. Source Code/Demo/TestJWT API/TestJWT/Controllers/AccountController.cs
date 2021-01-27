@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TestJWT.DAO;
@@ -31,6 +32,24 @@ namespace TestJWT.Controllers
             }
 
             response.Add("code", "FAILED");
+            return Ok(response);
+        }
+        [HttpPost]
+        public ActionResult UploadAvatar([FromForm] AccountViewModel data)
+        {
+            Dictionary<string, object> response = new Dictionary<string, object>();
+
+
+            var bytes = data.Avatar;
+            using (var imageFile = new FileStream(@"C:\inetpub\wwwroot\assets\Image\"+data.UserName+@"\avatar.png", FileMode.Create))
+            {
+                imageFile.Write(bytes, 0, bytes.Length);
+                imageFile.Flush();
+            }
+            response.Add("code", "SUCCESSFULY");
+            response.Add("data", data.Avatar);
+
+
             return Ok(response);
         }
     }
