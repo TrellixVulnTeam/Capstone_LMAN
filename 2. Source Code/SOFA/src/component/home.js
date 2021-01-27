@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight } from 'react-native';
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
-import { useIsFocused } from '@react-navigation/native';
+import { AVATAR } from '../../image/index'
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 export default class Home extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             account: {},
+            avatarUri: ''
         }
     }
     getData = async (key) => {
@@ -50,6 +52,7 @@ export default class Home extends Component {
                         .then(response => {
                             if (response && response.code && response.code == 'SUCCESSFULY') {
                                 this.setState({ account: response.account });
+                                this.setState({ avatarUri: 'http://139.180.214.58/assets/Image/' + response.account.userName + '/avatar.png' });
                                 console.log(response.account.userName);
                             } else {
                                 this.props.navigation.navigate('Login')
@@ -57,6 +60,8 @@ export default class Home extends Component {
                         })
                         .catch(reason => {
                             console.log(reason);
+                            this.props.navigation.navigate('Login')
+
                         });
                 } else {
                     this.props.navigation.navigate('Login')
@@ -64,8 +69,42 @@ export default class Home extends Component {
             })
             .catch(reason => {
                 console.log('failed');
+                this.props.navigation.navigate('Login')
             })
 
+    }
+
+    chooseFile = (callback) => {
+        let options = {
+            title: 'Select Image',
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+            includeBase64: true
+        };
+        launchImageLibrary(options, (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log(
+                    'User tapped custom button: ',
+                    response.customButton
+                );
+                alert(response.customButton);
+            } else {
+                console.log(response);
+                let source = response;
+                // You can also display the image using data:
+                // let source = {
+                //   uri: 'data:image/jpeg;base64,' + response.data
+                // };
+                callback(source);
+                this.setState({ avatarUri: source.uri });
+            }
+        });
     }
 
     onPressLogout() {
@@ -85,7 +124,7 @@ export default class Home extends Component {
     }
 
     componentDidMount() {
-        //this.checkLoginToken();
+        this.checkLoginToken();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
             this.setState({ account: {} });
             this.checkLoginToken();
@@ -93,14 +132,14 @@ export default class Home extends Component {
     }
 
     render() {
-        const { account } = this.state;
+        const { account, avatarUri } = this.state;
         return (
             <View style={[Style.common.container]}>
                 <StatusBar hidden={false} backgroundColor='orange' />
                 <View style={Style.common.header}>
                     <Text style={Style.common.labelTitle}>Home Screen</Text>
                 </View>
-                <View>
+                <View onStartShouldSetResponder={() => this.chooseFile(source => { console.log('callback ' + source) })}>
                     <Image style={
                         {
                             height: Utils.scale(100, Const.Vertical),
@@ -109,7 +148,8 @@ export default class Home extends Component {
                             alignSelf: 'center'
                         }
                     }
-                        source={{ uri: 'http://139.180.214.58/assets/Image/' + account.userName + '/avatar.png' }} />
+                        source={avatarUri ? { uri: avatarUri } : AVATAR}
+                    />
                 </View>
                 <View style={[Style.common.flexRow, {
                     paddingLeft: 20,

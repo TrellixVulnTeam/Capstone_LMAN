@@ -1,0 +1,1 @@
+export const AVATAR = require('./man.png')
