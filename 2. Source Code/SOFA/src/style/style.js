@@ -1,9 +1,9 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
 
 export const common = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#f0f0f5'},
+  container: { flex: 1, backgroundColor: '#f0f0f5' },
   header: {
     alignContent: 'center',
     alignItems: 'center',
@@ -24,3 +24,6 @@ export const common = StyleSheet.create({
     flexDirection: 'column',
   },
 });
+export const login = StyleSheet.create({
+  container: { flex: 1 },
+})

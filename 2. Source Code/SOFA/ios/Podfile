@@ -8,6 +8,8 @@ target 'SOFA' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
   target 'SOFATests' do
     inherit! :complete
     # Pods for testing
