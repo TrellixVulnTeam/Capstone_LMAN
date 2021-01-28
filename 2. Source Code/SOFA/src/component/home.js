@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert } from 'react-native';
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
@@ -54,7 +54,8 @@ export default class Home extends Component {
                         .then(response => {
                             if (response && response.code && response.code == 'SUCCESSFULY') {
                                 this.setState({ account: response.account });
-                                this.setState({ avatarUri: 'http://139.180.214.58/assets/Image/' + response.account.userName + '/avatar.png' });
+                                this.setState({ avatarUri: 'http://139.180.214.58/assets/Image/' + response.account.userName + '/avatar.png?time=' + new Date() });
+                                console.log('http://139.180.214.58/assets/Image/' + response.account.userName + '/avatar.png' + '?time=' + new Date().toString().replace('\s\g', ''));
                                 this.setState({ token: result.toString().substr(1, result.length - 2) });
                             } else {
                                 this.props.navigation.navigate('Login')
@@ -77,7 +78,7 @@ export default class Home extends Component {
     }
 
     chooseFile = (callback) => {
-        const {account, token } = this.state;
+        const { account, token } = this.state;
         let options = {
             title: 'Select Image',
             storageOptions: {
@@ -114,7 +115,8 @@ export default class Home extends Component {
                     Request.Post(url, header, data)
                         .then(response => {
                             if (response && response.code && response.code == 'SUCCESSFULY') {
-                                console.log(response.data);
+                                Alert.alert('Avatar', 'Đổi ảnh đại diện thành công!!!');
+
                             }
                         })
                         .catch(reason => {
@@ -146,7 +148,7 @@ export default class Home extends Component {
     componentDidMount() {
         this.checkLoginToken();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
-            this.setState({ account: {} });
+            this.setState({ account: {}, avatarUri: null });
             this.checkLoginToken();
         })
     }
