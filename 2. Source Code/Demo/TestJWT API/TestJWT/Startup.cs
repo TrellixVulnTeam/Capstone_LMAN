@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using TestJWT.Hubs;
 
 namespace TestJWT
 {
@@ -49,6 +50,8 @@ namespace TestJWT
                 option.AddPolicy("AllowOrigin", builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
             });
             services.AddControllers();
+
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -65,6 +68,7 @@ namespace TestJWT
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<MessageHub>("/message");
                 endpoints.MapControllers();
             });
         }
