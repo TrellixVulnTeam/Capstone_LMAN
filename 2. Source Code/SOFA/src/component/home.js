@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import LinearGradient from 'react-native-linear-gradient';
+
+import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
-import { AVATAR } from '../../image/index'
+import { AVATAR } from '../../image/index';
+import { TextInput } from 'react-native-gesture-handler';
+import { acc } from 'react-native-reanimated';
 export default class Home extends Component {
 
     constructor(props) {
@@ -16,7 +21,9 @@ export default class Home extends Component {
         this.state = {
             account: {},
             avatarUri: '',
-            token: ''
+            token: '',
+            messages: [],
+            messageText: '',
         }
     }
     getData = async (key) => {
@@ -188,7 +195,6 @@ export default class Home extends Component {
                                 .then(response => {
                                     if (response && response.code && response.code == 'SUCCESSFULY') {
                                         Alert.alert('Avatar', 'Đổi ảnh đại diện thành công!!!');
-
                                     }
                                 })
                                 .catch(reason => {
@@ -200,8 +206,9 @@ export default class Home extends Component {
                     }
                 });
             });
-
     }
+
+
 
     onPressLogout() {
         AsyncStorage.removeItem('token')
@@ -213,22 +220,73 @@ export default class Home extends Component {
 
     }
 
-
+    onPressSend() {
+        const { messageText, account } = this.state;
+        let data = messageText;
+        let uri = 'https://a1ff5fdf0d39.ngrok.io/testjwt/api/message';
+        let headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        };
+        let body = JSON.stringify({ user: account.userName, message: data });
+        Request.Post(uri, headers, body)
+            .then(response => console.log(response))
+            .catch(reason => console.log(reason));
+        this.setState({messageText:''});
+    }
 
     componentWillUnmount() {
         this._unsubcribe();
     }
 
     componentDidMount() {
+        const { account } = this.state;
         this.checkLoginToken();
+
+        let connection = new signalR.HubConnectionBuilder()
+            .withUrl('https://a1ff5fdf0d39.ngrok.io/testjwt/message', {
+                skipNegotiation: true,
+                transport: signalR.HttpTransportType.WebSockets
+            })
+            .build();
+        connection.start().then(function () {
+            console.log('Connected!');
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        connection.on("sendToReact", data => {
+            console.log(data);
+            let user = data.user;
+            data = data.message;
+            console.log(user, account.userName);
+            let temp = this.state.messages;
+            let last = temp.pop();
+            if (last) {
+                temp.push(last);
+            }
+            let item = {
+                id: (last ? last.id + 1 : 1),
+                text: data,
+                sender: user
+            }
+            console.log(item);
+            temp.push(item);
+            this.setState({ messages: temp });
+        });
+
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
-            this.setState({ account: {}, avatarUri: null });
+            this.setState({ account: {}, avatarUri: null, messages: [] });
             this.checkLoginToken();
-        })
+        });
+
     }
 
+
+
     render() {
-        const { account, avatarUri } = this.state;
+        const { account, avatarUri, messages, messageText } = this.state;
+
         return (
             <View style={[Style.common.container]}>
                 <StatusBar hidden={false} backgroundColor='orange' />
@@ -321,7 +379,58 @@ export default class Home extends Component {
                     <Text style={{ marginLeft: 10 }}>{account.role}</Text>
                 </View>
                 <Button title='Logout' onPress={() => this.onPressLogout()} />
-            </View>
+                <View style={{ paddingLeft: 10 }}>
+                    <FlatList
+                        style={{ height: Utils.scale(200, Const.Vertical) }}
+                        data={messages}
+                        keyExtractor={({ id }) => id + ''}
+                        renderItem={({ item }) => (
+                            <View style={[Style.common.flexRow, {
+                                paddingLeft: 20,
+                                alignItems: 'center',
+                                alignContent: 'center',
+                                backgroundColor: 'white',
+                                borderRadius: 40,
+                                height: Utils.scale(40, Const.Vertical),
+                                width: Utils.scale(300, Const.Horizontal),
+                                marginLeft: (item.sender!=account.userName ? 0 : 'auto'),
+                                marginRight: (item.isReceive!=account.userName ? 'auto' : 0),
+                                marginTop: 10,
+                            }]}>
+                                <Text style={{fontWeight:'bold'}}>{item.sender}</Text>
+                                <Text style={{ marginLeft: 10 }}>{item.text}</Text>
+                            </View>
+                        )}
+                    />
+                    <View style={[Style.common.flexRow, { marginTop: Utils.scale(10, Const.Vertical) }]}>
+                        <TextInput
+                            value={messageText}
+                            onChangeText={text => this.setState({ messageText: text })}
+                            style={
+                                {
+                                    backgroundColor: 'white',
+                                    height: Utils.scale(40, Const.Vertical),
+                                    width: Utils.scale(300, Const.Horizontal),
+                                    borderColor: 'gray',
+                                    borderWidth: 1,
+                                    borderRadius: 20,
+                                    paddingLeft: Utils.scale(10, Const.Horizontal),
+                                }} />
+                        <LinearGradient colors={['#FFEFEF', '#9CFFFF']}
+                            style={{
+                                width: Utils.scale(70, Const.Horizontal),
+                                height: Utils.scale(40, Const.Vertical),
+                                alignSelf: 'center',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginLeft: Utils.scale(10, Const.Horizontal),
+                                borderRadius: 10
+                            }}>
+                            <Text onPress={() => this.onPressSend()} style={{ color: '#707070', fontSize: 20 }}>Gửi</Text>
+                        </LinearGradient>
+                    </View>
+                </View>
+            </View >
         )
     }
 }
