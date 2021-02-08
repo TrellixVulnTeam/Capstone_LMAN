@@ -223,7 +223,7 @@ export default class Home extends Component {
     onPressSend() {
         const { messageText, account } = this.state;
         let data = messageText;
-        let uri = 'https://a1ff5fdf0d39.ngrok.io/testjwt/api/message';
+        let uri = 'https://60f6000790f0.ngrok.io/' + 'testjwt/api/message';
         let headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -232,7 +232,7 @@ export default class Home extends Component {
         Request.Post(uri, headers, body)
             .then(response => console.log(response))
             .catch(reason => console.log(reason));
-        this.setState({messageText:''});
+        this.setState({ messageText: '' });
     }
 
     componentWillUnmount() {
@@ -244,7 +244,7 @@ export default class Home extends Component {
         this.checkLoginToken();
 
         let connection = new signalR.HubConnectionBuilder()
-            .withUrl('https://a1ff5fdf0d39.ngrok.io/testjwt/message', {
+            .withUrl('http://feb10f20bf66.ngrok.io/' + 'testjwt/message', {
                 skipNegotiation: true,
                 transport: signalR.HttpTransportType.WebSockets
             })
@@ -393,11 +393,11 @@ export default class Home extends Component {
                                 borderRadius: 40,
                                 height: Utils.scale(40, Const.Vertical),
                                 width: Utils.scale(300, Const.Horizontal),
-                                marginLeft: (item.sender!=account.userName ? 0 : 'auto'),
-                                marginRight: (item.isReceive!=account.userName ? 'auto' : 0),
+                                marginLeft: (item.sender != account.userName ? 0 : 'auto'),
+                                marginRight: (item.isReceive != account.userName ? 'auto' : 0),
                                 marginTop: 10,
                             }]}>
-                                <Text style={{fontWeight:'bold'}}>{item.sender}</Text>
+                                <Text style={{ fontWeight: 'bold' }}>{item.sender}</Text>
                                 <Text style={{ marginLeft: 10 }}>{item.text}</Text>
                             </View>
                         )}
