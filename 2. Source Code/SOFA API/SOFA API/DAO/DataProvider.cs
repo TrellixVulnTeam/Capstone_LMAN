@@ -30,11 +30,7 @@ namespace SOFA_API.DAO
 
         public DataProvider() { }
 
-<<<<<<< Updated upstream
         private string connectionSTR = "Data Source=localhost;Initial Catalog=CapstonesNoRelation;Persist Security Info=True;User ID=sa;Password=123";
-=======
-        private string connectionSTR = "Data Source=localhost;Initial Catalog=CapstonesFull;Persist Security Info=True;User ID=sa;Password=123";
->>>>>>> Stashed changes
 
         public DataTable ExecuteQuery(string query, object[] parameter = null)
         {

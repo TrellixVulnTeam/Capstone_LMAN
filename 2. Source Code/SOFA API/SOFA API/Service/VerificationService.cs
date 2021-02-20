@@ -22,17 +22,16 @@ namespace SOFA_API.Service
             }
             private set
             {
-                instance = value;
+                instance = value;s
             }
         }
-
         public VerificationService() { }
         /// <summary>
         /// Verify code that client send to server
         /// </summary>
         /// <param name="verificationModelIn">Data that client send to server</param>
         /// <returns>The response of request</returns>
-        internal VerificationModelOut VerifyCode(VerificationModelIn verificationModelIn)
+        public VerificationModelOut VerifyCode(VerificationModelIn verificationModelIn)
         {
             VerificationModelOut verificationModelOut = new VerificationModelOut();
 
@@ -57,6 +56,36 @@ namespace SOFA_API.Service
             return verificationModelOut;
 
         }
+        /// <summary>
+        /// Compare OTP of an transaction
+        /// </summary>
+        /// <param name="transactionID">ID of transaction. The ID will sent to client when request get otp</param>
+        /// <param name="code">OTP code that client send to server</param>
+        /// <returns>True if the code match with code of transaction in database. False if not match</returns>
+        public bool VerifyCode(int transactionID, int code)
+        {
+            bool response = false;
+            OTP otp = OTPDAO.Instance.GetOTPByID(transactionID);
+            if (otp != null)
+            {
+                
+                if (code == otp.Code)
+                {
+                    response = true;
+                    OTPDAO.Instance.DeleteOTP(transactionID);
+                }
+                else
+                {
+                    response = false;
+                }
+            }
+            else
+            {
+                response = false;
+            }
+            return response;
+        }
+
 
         /// <summary>
         /// Create new OTP code
