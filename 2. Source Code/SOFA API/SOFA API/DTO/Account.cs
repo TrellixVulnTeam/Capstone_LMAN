@@ -10,6 +10,7 @@ namespace SOFA_API.DTO
         public int ID { get; set; }
         public string UserName { get; set; }
         public string PassWord { get; set; }
+        public string djtcuVan { get; set; }
         public Account() { }
         public Account(int iD, string userName, string passWord)
         {
