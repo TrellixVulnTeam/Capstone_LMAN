@@ -1,0 +1,13 @@
+CREATE PROCEDURE dbo.getBalanceByAccountID
+@AccountID int
+AS
+BEGIN
+SELECT TOP(1) accLogs.AfterBalance
+From Transactions tr, AccountLogs accLogs
+Where accLogs.TransactionId = tr.Id and accLogs.Accontid= 1
+Order by tr.Date DESC
+END;
+
+DROP PROCEDURE dbo.getBalanceByAccountID 
+EXEC dbo.getBalanceByAccountID @AccountID=1;
+---------------------------------------
