@@ -1,12 +1,13 @@
-﻿using System;
+﻿using SOFA_API.DTO;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SOFA_API.DTO
+namespace SOFA_API.ViewModel
 {
-    public class Profile
+    public class ProfileViewModel
     {
         public int ID { get; set; }
         public int AccountID { get; set; }
@@ -18,11 +19,16 @@ namespace SOFA_API.DTO
         public string Phone { get; set; }
         public string Address { get; set; }
         public string AvatarUri { get; set; }
-        public Profile()
+        public byte[] Avatar { get; set; }
+        public int FollowerNumber { get; set; }
+        public List<Post> ListPost { get; set; }
+        public string UserName { get; set; }
+        public string Role { get; set; }
+        public ProfileViewModel()
         {
 
         }
-        public Profile(int iD, int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri)
+        public ProfileViewModel(int iD, int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, byte[] avatar, int followerNumber, List<Post> listPost, string username, string role)
         {
             this.ID = iD;
             this.AccountID = accountID;
@@ -34,9 +40,14 @@ namespace SOFA_API.DTO
             this.Phone = phone;
             this.Address = address;
             this.AvatarUri = avatarUri;
+            this.Avatar = avatar;
+            this.FollowerNumber = followerNumber;
+            this.ListPost = listPost;
+            this.UserName = username;
+            this.Role = role;
         }
 
-        public Profile(DataRow row)
+        public ProfileViewModel(DataRow row)
         {
             this.ID = (int)row["Id"];
             this.AccountID = (int)row["AccountId"];
@@ -47,6 +58,11 @@ namespace SOFA_API.DTO
             this.Email = row["Email"].ToString();
             this.Phone = row["Phone"].ToString();
             this.AvatarUri = row["Avatar"].ToString();
+            this.Avatar = null;
+            this.FollowerNumber = 0;
+            this.ListPost = null;
+            this.UserName = row["UserName"].ToString();
+            this.Role = null;
         }
     }
 }
