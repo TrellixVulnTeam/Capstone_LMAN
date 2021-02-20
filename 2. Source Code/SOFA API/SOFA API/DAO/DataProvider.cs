@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SOFA_API.Common;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -29,7 +30,7 @@ namespace SOFA_API.DAO
 
         public DataProvider() { }
 
-        private string connectionSTR = "Data Source=localhost;Initial Catalog=TestJWT;Persist Security Info=True;User ID=sa;Password=123";
+        private string connectionSTR = "Data Source=localhost;Initial Catalog=CapstonesNoRelation;Persist Security Info=True;User ID=sa;Password=123";
 
         public DataTable ExecuteQuery(string query, object[] parameter = null)
         {
@@ -88,9 +89,14 @@ namespace SOFA_API.DAO
                         }
                     }
                 }
-
-                data = command.ExecuteNonQuery();
-
+                try
+                {
+                    data = command.ExecuteNonQuery();
+                }
+                catch(Exception e)
+                {
+                    Utils.Instance.SaveLog(e.ToString());
+                }
                 connection.Close();
             }
 
