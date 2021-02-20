@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SOFA_API.Controllers
+namespace SOFA_API.Common
 {
     public class Const
     {
