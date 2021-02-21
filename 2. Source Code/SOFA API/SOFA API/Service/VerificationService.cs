@@ -5,6 +5,7 @@ using SOFA_API.ViewModel.Verificatiton;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
@@ -27,11 +28,18 @@ namespace SOFA_API.Service
             }
         }
         public VerificationService() { }
-        private void SendMail()
+        private void SendMail(int otp)
         {
-            MailMessage mailMessage = new MailMessage("vanlthe130820@fpt.edu.vn", "Vank48dhv@gmail.com", "TEST MAIL", "<b>Xin Chào</b>");
+            MailMessage mailMessage = new MailMessage("SOFATeam2021@gmail.com", "Vank48dhv@gmail.com", "TEST MAIL", "<b>Xin Chào</b>");
             mailMessage.IsBodyHtml = true;
-            SmtpClient smtpClient = new SmtpClient();
+            SmtpClient smtpClient = new SmtpClient(Const.SMTP_GMAIL);
+            smtpClient.Host = Const.SMTP_GMAIL;
+            smtpClient.UseDefaultCredentials = false;
+            smtpClient.Port = 587;
+            smtpClient.Credentials = new NetworkCredential(Const.GMAIL_ACCOUNT, Const.GMAIL_APPLICATION_PASSWORD);
+            smtpClient.EnableSsl = true;
+            smtpClient.Send(mailMessage);
+
         }
         /// <summary>
         /// Verify code that client send to server
@@ -75,7 +83,7 @@ namespace SOFA_API.Service
             OTP otp = OTPDAO.Instance.GetOTPByID(transactionID);
             if (otp != null)
             {
-                
+
                 if (code == otp.Code)
                 {
                     response = true;
@@ -125,6 +133,7 @@ namespace SOFA_API.Service
             }
             if (ID > 0)
             {
+                SendMail(otp);
                 //Delete OTP after the time that set in Const (Unit is second)
                 Task.Delay((Const.VERIFICATION_TIME_WAIT + 30) * 1000).ContinueWith((task) =>
                     {
