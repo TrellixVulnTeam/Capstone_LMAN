@@ -1,5 +1,6 @@
 ﻿using SOFA_API.DTO;
 using SOFA_API.ViewModel;
+using SOFA_API.ViewModel.Profile;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,16 +32,16 @@ namespace SOFA_API.DAO
          * @param : accouuntId
          * return : Profile by its Account ID
          */
-        public ProfileViewModel getProfileByAccountID(int accountId)
+        public ProfileViewModelOut getProfileByAccountID(int accountId)
         {
-            ProfileViewModel profile = null;
+            ProfileViewModelOut profile = null;
 
             string sql = "EXEC getProfileByAccountID @accountId";
 
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId });
             if(data.Rows.Count > 0)
             {
-                profile = new ProfileViewModel(data.Rows[0]);
+                profile = new ProfileViewModelOut(data.Rows[0]);
             }
             return profile;
         }
@@ -50,7 +51,7 @@ namespace SOFA_API.DAO
          * @param : accouuntId
          * return : number of changed record 
          */
-        public int updateProfileByAccountID(int accountId, ProfileViewModel newProfile)
+        public int updateProfileByAccountID(int accountId, ProfileViewModelOut newProfile)
         {
             int data = 0;
 
