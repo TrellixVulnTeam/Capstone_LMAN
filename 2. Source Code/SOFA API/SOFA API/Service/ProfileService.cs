@@ -59,19 +59,33 @@ namespace SOFA_API.Service
         {
             if (String.IsNullOrEmpty(newProfile.FirstName))
             {
-
+                newProfile.Code = Const.REQUEST_CODE_FAILED;
+                newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_FIRST_NAME;
             }
-            int result = ProfileDAO.Instance.updateProfileByAccountID(accountId, newProfile);
-            if (result == 1)
+            else if (String.IsNullOrEmpty(newProfile.LastName))
             {
-                res.Add("code", Const.REQUEST_CODE_SUCCESSFULLY);
-                res.Add("newProfile", newProfile);
+                newProfile.Code = Const.REQUEST_CODE_FAILED;
+                newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_LAST_NAME;
+            }
+            else if (String.IsNullOrEmpty(newProfile.Phone))
+            {
+                newProfile.Code = Const.REQUEST_CODE_FAILED;
+                newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_PHONE_NUMBER;
             }
             else
             {
-                res.Add("code", Const.REQUEST_CODE_FAILED);
-            }
-            return res;
+                int result = ProfileDAO.Instance.updateProfileByAccountID(accountId, newProfile);
+                if (result == 1)
+                {
+                    newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY);                   
+                }
+                else
+                {
+                    newProfile.Code = Const.REQUEST_CODE_FAILED;
+                    newProfile.ErrorMessage = MessageUtils.ERROR_UPDATE_FAILED;
+                }
+            }                     
+            return newProfile;
         }
     }
 }

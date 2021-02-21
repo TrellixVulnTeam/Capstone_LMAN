@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SOFA_API.Service;
 using SOFA_API.ViewModel;
+using SOFA_API.ViewModel.Profile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,27 +21,27 @@ namespace SOFA_API.Controllers
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             int id = Int32.Parse(idClaim.Value.Trim());
-            Dictionary<string, object> response = ProfileService.Instance.getProfileByAccountID(id);
-            return Ok(response);
+            ProfileViewModelOut profile = ProfileService.Instance.getProfileByAccountID(id);
+            return Ok(profile);
         }
 
         [HttpGet("otherprofile")]
         public ActionResult GetOtherProfile(int id)
         {
-            Dictionary<string, object> response = ProfileService.Instance.getProfileByAccountID(id);
-            return Ok(response);
+            ProfileViewModelOut profile = ProfileService.Instance.getProfileByAccountID(id);
+            return Ok(profile);
         }
 
         [HttpPost("updateprofile")]
-        public ActionResult UpdateProfile([FromForm] ProfileViewModel newProfile)
+        public ActionResult UpdateProfile([FromForm] ProfileViewModelOut newProfile)
         {
             //get account ID
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             //int id = Int32.Parse(idClaim.Value.Trim());
             int id = 1;
 
-            Dictionary<string, object> response = ProfileService.Instance.updateProfileByAccountID(id, newProfile);
-            return Ok(response);
+            ProfileViewModelOut profile = ProfileService.Instance.updateProfileByAccountID(id, newProfile);
+            return Ok(profile);
         }
     }
 }

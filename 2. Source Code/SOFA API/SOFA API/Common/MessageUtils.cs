@@ -11,6 +11,10 @@ namespace SOFA_API.Common
     public class MessageUtils
     {
         public static string ERROR_VERFICATION_DONT_HAVE_EMAIL_AND_PHONE = "Can't miss both phone number and email";
+        public static string ERROR_MISSING_FIRST_NAME = "Missing first name";
+        public static string ERROR_MISSING_LAST_NAME = "Missing last name";
+        public static string ERROR_MISSING_PHONE_NUMBER = "Missing phone number";
+        public static string ERROR_UPDATE_FAILED = "Update failed!";
     }
 
 
