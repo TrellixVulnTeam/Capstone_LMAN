@@ -77,7 +77,7 @@ namespace SOFA_API.Service
                 int result = ProfileDAO.Instance.updateProfileByAccountID(accountId, newProfile);
                 if (result == 1)
                 {
-                    newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY);                   
+                    newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY;                   
                 }
                 else
                 {

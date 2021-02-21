@@ -23,7 +23,7 @@ namespace SOFA_API.Service
             }
             private set
             {
-                instance = value;s
+                instance = value;
             }
         }
         public VerificationService() { }
@@ -31,7 +31,7 @@ namespace SOFA_API.Service
         {
             MailMessage mailMessage = new MailMessage("vanlthe130820@fpt.edu.vn", "Vank48dhv@gmail.com", "TEST MAIL", "<b>Xin Chào</b>");
             mailMessage.IsBodyHtml = true;
-            SmtpClient smtpClient = new SmtpClient()
+            SmtpClient smtpClient = new SmtpClient();
         }
         /// <summary>
         /// Verify code that client send to server
