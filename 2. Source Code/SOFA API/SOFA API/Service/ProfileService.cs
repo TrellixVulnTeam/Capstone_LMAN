@@ -2,6 +2,7 @@
 using SOFA_API.DAO;
 using SOFA_API.DTO;
 using SOFA_API.ViewModel;
+using SOFA_API.ViewModel.Profile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,13 +36,18 @@ namespace SOFA_API.Service
          * @Param : accountId
          * return Dictionary
          */
-        public Dictionary<string, object> getProfileByAccountID(int accountId)
+        public ProfileViewModelOut getProfileByAccountID(int accountId)
         {
-            ProfileViewModel profile = ProfileDAO.Instance.getProfileByAccountID(accountId);
-            Dictionary<string, object> res = new Dictionary<string, object>();
-            res.Add("code", Const.REQUEST_CODE_SUCCESSFULLY);
-            res.Add("profile", profile);
-            return res;
+            ProfileViewModelOut profile = ProfileDAO.Instance.getProfileByAccountID(accountId);
+            if(profile != null)
+            {
+                profile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                profile.Code = Const.REQUEST_CODE_FAILED;
+            }            
+            return profile;
         }
 
         /**
@@ -49,10 +55,13 @@ namespace SOFA_API.Service
          * @Param: accountId
          * return Dictionary
          */
-        public Dictionary<string, object> updateProfileByAccountID(int accountId, ProfileViewModel newProfile)
+        public ProfileViewModelOut updateProfileByAccountID(int accountId, ProfileViewModelOut newProfile)
         {
+            if (String.IsNullOrEmpty(newProfile.FirstName))
+            {
+
+            }
             int result = ProfileDAO.Instance.updateProfileByAccountID(accountId, newProfile);
-            Dictionary<string, object> res = new Dictionary<string, object>();
             if (result == 1)
             {
                 res.Add("code", Const.REQUEST_CODE_SUCCESSFULLY);

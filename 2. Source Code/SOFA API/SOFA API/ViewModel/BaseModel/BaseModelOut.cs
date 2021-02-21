@@ -9,7 +9,7 @@ namespace SOFA_API.ViewModel.BaseModel
     {
         public string Code { get; set; }
         public long ResponseTime { get; set; }
-        public string error { get; set; }
+        public string ErrorMessage { get; set; }
 
         public BaseModelOut()
         {
