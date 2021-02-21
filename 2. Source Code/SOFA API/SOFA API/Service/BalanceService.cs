@@ -1,4 +1,5 @@
-﻿using SOFA_API.DAO;
+﻿using SOFA_API.Common;
+using SOFA_API.DAO;
 using SOFA_API.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace SOFA_API.Service
         {
             decimal Balance = BalanceDAO.Instance.GetBalanceByAccountID(id);
             Dictionary<string, object> res = new Dictionary<string, object>();
-            res.Add("code", "SUCCESSFULLY");
+            res.Add("code", Const.REQUEST_CODE_SUCCESSFULLY);
             res.Add("Balance", Balance);
             return res;
         }
@@ -52,7 +53,7 @@ namespace SOFA_API.Service
                 transactions.Add(transaction);
             }
             Dictionary<string, object> res = new Dictionary<string, object>();
-            res.Add("code", "SUCCESSFULLY");
+            res.Add("code", Const.REQUEST_CODE_SUCCESSFULLY);
             res.Add("transactionHistories", transactions);
             return res;
 
