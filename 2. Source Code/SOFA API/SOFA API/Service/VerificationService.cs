@@ -5,6 +5,7 @@ using SOFA_API.ViewModel.Verificatiton;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace SOFA_API.Service
@@ -26,6 +27,12 @@ namespace SOFA_API.Service
             }
         }
         public VerificationService() { }
+        private void SendMail()
+        {
+            MailMessage mailMessage = new MailMessage("vanlthe130820@fpt.edu.vn", "Vank48dhv@gmail.com", "TEST MAIL", "<b>Xin Chào</b>");
+            mailMessage.IsBodyHtml = true;
+            SmtpClient smtpClient = new SmtpClient()
+        }
         /// <summary>
         /// Verify code that client send to server
         /// </summary>
