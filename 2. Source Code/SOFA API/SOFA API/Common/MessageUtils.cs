@@ -15,6 +15,7 @@ namespace SOFA_API.Common
         public static string ERROR_MISSING_LAST_NAME = "Missing last name";
         public static string ERROR_MISSING_PHONE_NUMBER = "Missing phone number";
         public static string ERROR_UPDATE_FAILED = "Update failed!";
+        public static string ERROR_TOPUP_FAILED = "Top Up failed!";
     }
 
 

@@ -59,8 +59,13 @@ namespace SOFA_API.DAO
             int data = 0;
             TopUpAccountModelOut topUpAccountModelOut = new TopUpAccountModelOut();
             string sql = "EXEC dbo.topUpForAccount @AccountID, @Amount, @AdminID, @Description";
+            try
+            {
                 data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { topUp.AccountId, topUp.Amount, topUp.AdminId, topUp.Description });
-
+            }catch(Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
             return data; ;
 
         }

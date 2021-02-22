@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SOFA_API.DAO;
 using SOFA_API.Service;
 using SOFA_API.ViewModel.Balance;
 using System;
@@ -24,6 +25,13 @@ namespace SOFA_API.Controllers
         {
             List<TransactionHistoryViewModelOut> transactionHistoryViewModelOuts = BalanceService.Instance.GetTransactionHistory(accountID);
             return Ok(transactionHistoryViewModelOuts);
+        }
+        [HttpPost("topUpAccount")]
+        public ActionResult TopUpAccount(int accountId,decimal amount, int adminId, string description)
+        {
+            TopUpAccountModelIn topUp = new TopUpAccountModelIn(accountId, adminId, amount, description);
+            TopUpAccountModelOut topUpAccountModelOut = BalanceService.Instance.topUpAccount(topUp);
+            return Ok(topUpAccountModelOut);
         }
     }
 }
