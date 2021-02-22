@@ -62,5 +62,19 @@ namespace SOFA_API.DAO
                                                                             newProfile.Address, newProfile.AvatarUri});
             return data;
         }
+
+        public Profile GetProfileByEmail(string email)
+        {
+            Profile profile = null;
+            string sql = "EXEC dbo.GetProfileByEmail @email";
+
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { email });
+
+            if (data.Rows.Count > 0)
+            {
+                profile = new Profile(data.Rows[0]);
+            }
+            return profile;
+        }
     }
 }
