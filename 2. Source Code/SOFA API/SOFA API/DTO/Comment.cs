@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace SOFA_API.DTO
 {
@@ -17,17 +15,17 @@ namespace SOFA_API.DTO
 
         public Comment(int accountID, int postID, string content)
         {
-            AccountID = accountID;
-            PostID = postID;
-            Content = content;
+            this.AccountID = accountID;
+            this.PostID = postID;
+            this.Content = content;
         }
 
         public Comment(DataRow row)
         {
-            ID = (int)row["Id"];
-            AccountID = (int)row["AccountId"];
-            PostID = (int)row["PostId"];
-            Content = row["content"].ToString();
+            this.ID = (int)row["Id"];
+            this.AccountID = (int)row["AccountId"];
+            this.PostID = (int)row["PostId"];
+            this.Content = row["content"].ToString();
         }
     }
 }

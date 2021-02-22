@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SOFA_API.DTO
 {
@@ -17,17 +14,17 @@ namespace SOFA_API.DTO
 
         public Rate(int postID, int accountRate, int ratePoint)
         {
-            PostID = postID;
-            AccountRate = accountRate;
-            RatePoint = ratePoint;
+            this.PostID = postID;
+            this.AccountRate = accountRate;
+            this.RatePoint = ratePoint;
         }
 
         public Rate(DataRow row)
         {
-            ID = (int)row["Id"];
-            PostID = (int)row["PostId"];
-            AccountRate = (int)row["AccountRate"];
-            RatePoint = (int)row["RatePoint"];
+            this.ID = (int)row["Id"];
+            this.PostID = (int)row["PostId"];
+            this.AccountRate = (int)row["AccountRate"];
+            this.RatePoint = (int)row["RatePoint"];
         }
     }
 }

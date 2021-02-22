@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace SOFA_API.DTO
 {
@@ -18,20 +16,20 @@ namespace SOFA_API.DTO
 
         public Post(int id, string content, int privacyID, DateTime time, int accountPost)
         {
-            ID = id;
-            Content = content;
-            PrivacyID = privacyID;
-            Time = time;
-            AccountPost = accountPost;
+            this.ID = id;
+            this.Content = content;
+            this.PrivacyID = privacyID;
+            this.Time = time;
+            this.AccountPost = accountPost;
         }
 
         public Post(DataRow row)
         {
-            ID = (int)row["Id"];
-            Content = row["Content"].ToString();
-            PrivacyID = (int)row["PrivacyID"];
-            Time = (DateTime)row["Time"];
-            AccountPost = (int)row["AccountPost"];
+            this.ID = (int)row["Id"];
+            this.Content = row["Content"].ToString();
+            this.PrivacyID = (int)row["PrivacyID"];
+            this.Time = (DateTime)row["Time"];
+            this.AccountPost = (int)row["AccountPost"];
         }
     }
 }
