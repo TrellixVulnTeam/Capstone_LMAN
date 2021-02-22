@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SOFA_API.Service;
+using SOFA_API.ViewModel.Balance;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,8 @@ namespace SOFA_API.Controllers
         [HttpGet("history")]
         public ActionResult GetTransactionHistory(int accountID)
         {
-            Dictionary<string, object> response = BalanceService.Instance.GetTransactionHistory(accountID);
-            return Ok(response);
+            List<TransactionHistoryViewModelOut> transactionHistoryViewModelOuts = BalanceService.Instance.GetTransactionHistory(accountID);
+            return Ok(transactionHistoryViewModelOuts);
         }
     }
 }

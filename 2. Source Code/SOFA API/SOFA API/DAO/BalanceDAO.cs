@@ -1,4 +1,6 @@
-﻿using SOFA_API.ViewModel;
+﻿using SOFA_API.Common;
+using SOFA_API.ViewModel;
+using SOFA_API.ViewModel.Balance;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SOFA_API.DAO
 {
-    public class BalanceDAO
+    public class BalanceDAO 
     {
         private static BalanceDAO instance;
 
@@ -30,27 +32,37 @@ namespace SOFA_API.DAO
         {
             decimal Balance = 0;
             string sql = "EXEC dbo.getBalanceByAccountID @AccountID";
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] {id });
-            if(data.Rows.Count > 0)
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { id });
+            if (data.Rows.Count > 0)
             {
-                Balance= (decimal)data.Rows[0]["AfterBalance"];
+                Balance = (decimal)data.Rows[0]["AfterBalance"];
             }
             return Balance;
         }
 
-        public List<TransactionHistoryViewModel> GetAllHistoryTransaction(int accountId)
+        public List<TransactionHistoryViewModelOut> GetAllHistoryTransaction(int accountId)
         {
-            List<TransactionHistoryViewModel> transactionHistories = new List<TransactionHistoryViewModel>();
+            List<TransactionHistoryViewModelOut> transactionHistories = new List<TransactionHistoryViewModelOut>();
             string sql = "EXEC  dbo.getTransactionHistoryByAccountID @AccountID";
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId });
             if (data.Rows.Count > 0)
             {
                 foreach (DataRow row in data.Rows)
                 {
-                    transactionHistories.Add(new TransactionHistoryViewModel(row));
+                    transactionHistories.Add(new TransactionHistoryViewModelOut(row));
                 }
             }
             return transactionHistories;
+        }
+        public int TopUpAccount(TopUpAccountModelIn topUp) 
+        {
+            int data = 0;
+            TopUpAccountModelOut topUpAccountModelOut = new TopUpAccountModelOut();
+            string sql = "EXEC dbo.topUpForAccount @AccountID, @Amount, @AdminID, @Description";
+                data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { topUp.AccountId, topUp.Amount, topUp.AdminId, topUp.Description });
+
+            return data; ;
+
         }
     }
 }
