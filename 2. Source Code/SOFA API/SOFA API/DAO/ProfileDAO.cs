@@ -106,13 +106,53 @@ namespace SOFA_API.DAO
             }            
             return data;
         }
-
+        /// <summary>
+        /// Get Profile of user by email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>Profile include account, profile and role</returns>
         public Profile GetProfileByEmail(string email)
         {
             Profile profile = null;
             string sql = "EXEC dbo.GetProfileByEmail @email";
 
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { email });
+
+            if (data.Rows.Count > 0)
+            {
+                profile = new Profile(data.Rows[0]);
+            }
+            return profile;
+        }
+        /// <summary>
+        /// Get Profile of user by phone number
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns>Profile include account, profile and role</returns>
+        public Profile GetProfileByPhone(string phone)
+        {
+            Profile profile = null;
+            string sql = "EXEC dbo.GetProfileByPhone @phone";
+
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { phone });
+
+            if (data.Rows.Count > 0)
+            {
+                profile = new Profile(data.Rows[0]);
+            }
+            return profile;
+        }
+        /// <summary>
+        /// Get Profile of user by phone number
+        /// </summary>
+        /// <param name="phone"></param>
+        /// <returns>Profile include account, profile and role</returns>
+        public Profile GetProfileByUsername(string username)
+        {
+            Profile profile = null;
+            string sql = "EXEC dbo.GetProfileByPhone @username";
+
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { username });
 
             if (data.Rows.Count > 0)
             {
