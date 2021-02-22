@@ -57,6 +57,7 @@ namespace SOFA_API.Service
          */
         public ProfileViewModelOut updateProfileByAccountID(int accountId, ProfileViewModelOut newProfile)
         {
+            ProfileViewModelOut a = newProfile;
             if (String.IsNullOrEmpty(newProfile.FirstName))
             {
                 newProfile.Code = Const.REQUEST_CODE_FAILED;
@@ -86,6 +87,24 @@ namespace SOFA_API.Service
                 }
             }                     
             return newProfile;
+        }
+
+
+        public ProfileViewModelOut updateAvatar(string avatarBase64)
+        {
+            ProfileViewModelOut profile = new ProfileViewModelOut();
+            int data = ProfileDAO.Instance.updateAvatar(avatarBase64);
+            if (data == 1)
+            {
+                profile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                profile.Code = Const.REQUEST_CODE_FAILED;
+                profile.ErrorMessage = MessageUtils.ERROR_UPDATE_FAILED;
+            }
+
+            return profile;
         }
     }
 }

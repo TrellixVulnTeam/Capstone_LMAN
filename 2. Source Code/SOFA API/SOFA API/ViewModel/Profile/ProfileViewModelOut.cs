@@ -20,7 +20,7 @@ namespace SOFA_API.ViewModel.Profile
         public string Phone { get; set; }
         public string Address { get; set; }
         public string AvatarUri { get; set; }
-        public byte[] Avatar { get; set; }
+        public string Avatar { get; set; }
         public int FollowerNumber { get; set; }
         public List<Post> ListPost { get; set; }
         public string UserName { get; set; }
@@ -29,7 +29,7 @@ namespace SOFA_API.ViewModel.Profile
         {
 
         }
-        public ProfileViewModelOut(int iD, int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, byte[] avatar, int followerNumber, List<Post> listPost, string username, string role)
+        public ProfileViewModelOut(int iD, int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, string avatar, int followerNumber, List<Post> listPost, string username, string role)
         {
             this.ID = iD;
             this.AccountID = accountID;
@@ -59,7 +59,7 @@ namespace SOFA_API.ViewModel.Profile
             this.Email = row["Email"].ToString();
             this.Phone = row["Phone"].ToString();
             this.AvatarUri = row["Avatar"].ToString();
-            this.Avatar = null;
+            this.Avatar = "";
             this.FollowerNumber = 0;
             this.ListPost = null;
             this.UserName = row["UserName"].ToString();

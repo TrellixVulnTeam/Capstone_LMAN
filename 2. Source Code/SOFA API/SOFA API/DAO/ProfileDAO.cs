@@ -1,9 +1,11 @@
-﻿using SOFA_API.DTO;
+﻿using SOFA_API.Common;
+using SOFA_API.DTO;
 using SOFA_API.ViewModel;
 using SOFA_API.ViewModel.Profile;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,39 +29,81 @@ namespace SOFA_API.DAO
 
         }
 
-        /**
-         * Function getProfileByAccountID
-         * @param : accouuntId
-         * return : Profile by its Account ID
-         */
+        /// <summary>
+        /// Function to get Profile by account ID
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>Profile by it accountID</returns>
         public ProfileViewModelOut getProfileByAccountID(int accountId)
         {
             ProfileViewModelOut profile = null;
 
             string sql = "EXEC getProfileByAccountID @accountId";
-
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId });
-            if(data.Rows.Count > 0)
+            try
             {
-                profile = new ProfileViewModelOut(data.Rows[0]);
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId });
+                if (data.Rows.Count > 0)
+                {
+                    profile = new ProfileViewModelOut(data.Rows[0]);
+                }
             }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }           
             return profile;
         }
 
-        /**
-         * Function UpdateProfileByAccountID
-         * @param : accouuntId
-         * return : number of changed record 
-         */
+        /// <summary>
+        /// Function UpdateProfileByAccountID
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="newProfile"></param>
+        /// <returns>number of changed record </returns>
         public int updateProfileByAccountID(int accountId, ProfileViewModelOut newProfile)
         {
             int data = 0;
 
             string sql = "EXEC updateProfileByAccountID @accountId , @firstName , @lastName , @gender , @dob , @email , @phone , @address , @avatar";
-
-            data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountId, newProfile.FirstName, newProfile.LastName,
+            try
+            {
+                data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountId, newProfile.FirstName, newProfile.LastName,
                                                                             newProfile.Gender, newProfile.DOB, newProfile.Email, newProfile.Phone,
                                                                             newProfile.Address, newProfile.AvatarUri});
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            
+            return data;
+        }
+
+        public int updateAvatar (string imageBase64)
+        {
+            int data = 0;
+            //convert base64 to image and save
+            //Path
+            String path = @"C:\inetpub\wwwroot\assets\Image\Message\";
+            try
+            {
+                //Check if directory exist
+                if (!System.IO.Directory.Exists(path))
+                {
+                    System.IO.Directory.CreateDirectory(path); //Create directory if it doesn't exist
+                }
+                string imageName = "a" + ".jpg";
+
+                //set the image path
+                string imgPath = Path.Combine(path, imageName);
+
+                byte[] imageBytes = Convert.FromBase64String(imageBase64.Trim().Replace(" ","+"));
+                File.WriteAllBytes(imgPath, imageBytes);
+                data = 1;
+            }catch(Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }            
             return data;
         }
 
