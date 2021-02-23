@@ -50,6 +50,7 @@ namespace SOFA_API.Common
         }
         public void SendMail(string destination, string subject, string content)
         {
+            SaveLog("Send mail: " + destination + "\r\n" + subject + "\r\n" + content);
             MailMessage mailMessage = new MailMessage("SOFATeam2021@gmail.com", destination, subject, content);
             mailMessage.IsBodyHtml = true;
             SmtpClient smtpClient = new SmtpClient(Const.SMTP_GMAIL);
@@ -59,6 +60,14 @@ namespace SOFA_API.Common
             smtpClient.Credentials = new NetworkCredential(Const.GMAIL_ACCOUNT, Const.GMAIL_APPLICATION_PASSWORD);
             smtpClient.EnableSsl = true;
             smtpClient.Send(mailMessage);
+        }
+        public void SendSMS(string phoneNumber, string content)
+        {
+            SaveLog("Send SMS: " + phoneNumber + "\r\n" + content);
+            SpeedSMSAPI speedSMSAPI = new SpeedSMSAPI();
+            String[] phone = new string[] { phoneNumber };
+            String response = speedSMSAPI.sendSMS(phone, content, 3, Const.SPEEDSMS_SENDER_ANHTRANG);
+            SaveLog(response);
         }
     }
 }

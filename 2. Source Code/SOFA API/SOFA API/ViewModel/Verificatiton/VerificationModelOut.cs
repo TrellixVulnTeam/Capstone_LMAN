@@ -11,7 +11,6 @@ namespace SOFA_API.ViewModel.Verificatiton
 
         public int TransactionID { get; set; }
         public int VerificationStatus { get; set; }
-
         public VerificationModelOut():base()
         {
 

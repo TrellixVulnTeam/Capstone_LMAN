@@ -18,6 +18,7 @@ namespace SOFA_API.Common
         public const string ERROR_TOPUP_FAILED = "Top Up failed!";
 
         public const string ERROR_VERIFICATION_DONT_HAVE_EMAIL_AND_PHONE = "Can't miss both phone number and email";
+        public const string ERROR_VERIFICATION_DONT_HAVE_EMAIL = "Email not found";
         public const string ERROR_VERIFICATION_ACCOUNT_NOT_FOUND = "Account not found";
     }
 

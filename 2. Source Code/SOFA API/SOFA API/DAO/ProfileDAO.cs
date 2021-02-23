@@ -170,7 +170,7 @@ namespace SOFA_API.DAO
         public Profile GetProfileByUsername(string username)
         {
             Profile profile = null;
-            string sql = "EXEC dbo.GetProfileByPhone @username";
+            string sql = "EXEC dbo.GetProfileByUsername @username";
 
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { username });
 
