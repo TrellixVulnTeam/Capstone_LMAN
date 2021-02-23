@@ -35,7 +35,7 @@ namespace SOFA_API.DAO
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { id });
             if (data.Rows.Count > 0)
             {
-                Balance = (decimal)data.Rows[0]["AfterBalance"];
+                Balance = (decimal)data.Rows[0]["Balance"];
             }
             return Balance;
         }
@@ -58,7 +58,7 @@ namespace SOFA_API.DAO
         {
             int data = 0;
             TopUpAccountModelOut topUpAccountModelOut = new TopUpAccountModelOut();
-            string sql = "EXEC dbo.topUpForAccount @AccountID, @Amount, @AdminID, @Description";
+            string sql = "EXEC dbo.topUpForAccount @AccountID , @Amount , @AdminID , @Description";
             try
             {
                 data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { topUp.AccountId, topUp.Amount, topUp.AdminId, topUp.Description });

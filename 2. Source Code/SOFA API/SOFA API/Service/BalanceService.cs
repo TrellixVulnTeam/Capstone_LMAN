@@ -35,7 +35,7 @@ namespace SOFA_API.Service
             res.Add("Balance", Balance);
             return res;
         }
-        public List<TransactionHistoryViewModelOut>  GetTransactionHistory(int accountID)
+        public List<TransactionHistoryViewModelOut> GetTransactionHistory(int accountID)
         {
             List<TransactionHistoryViewModelOut> transactionHistoryViewModelOuts = BalanceDAO.Instance.GetAllHistoryTransaction(accountID);
             return transactionHistoryViewModelOuts;
@@ -45,7 +45,7 @@ namespace SOFA_API.Service
             TopUpAccountModelOut topUpAccountModelOut = new TopUpAccountModelOut();
             int result = 0;
             result = BalanceDAO.Instance.TopUpAccount(topUpAccountModelIn);
-            if (result == 1)
+            if (result > 0)
             {
                 topUpAccountModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 topUpAccountModelOut.AccountId = topUpAccountModelIn.AccountId;
