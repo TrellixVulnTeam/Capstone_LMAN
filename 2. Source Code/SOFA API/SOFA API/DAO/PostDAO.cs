@@ -136,5 +136,13 @@ namespace SOFA_API.DAO
             result = (int)DataProvider.Instance.ExecuteScalar(sql);
             return result;
         }
+
+        public int ratePost(int postID, int accountLike, int ratePoint)
+        {
+            int result = 0;
+            string sql = "INSERT INTO dbo.[Rate] (PostId,AcountRate,RatePoint) VALUES ( " +postID+ " , " +accountLike+" , "+ratePoint+" )";
+            result = (int)DataProvider.Instance.ExecuteScalar(sql);
+            return result;
+        }
     }
 }

@@ -26,5 +26,14 @@ namespace SOFA_API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("ratePost")]
+        public ActionResult likePost(int postID, int ratePoint)
+        {
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int id = Int32.Parse(idClaim.Value.Trim());
+            PostViewModelOut result = PostService.Instance.ratePost(postID, id, ratePoint);
+            return Ok(result);
+        }
+
     }
 }

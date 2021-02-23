@@ -64,5 +64,21 @@ namespace SOFA_API.Service
             }
             return result;
         }
+
+        public PostViewModelOut ratePost(int postID, int accountLike, int ratePoint)
+        {
+            int ID = 0;
+            ID = PostDAO.Instance.ratePost(postID, accountLike,ratePoint);
+            PostViewModelOut result = new PostViewModelOut();
+            if (ID != 0)
+            {
+                result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                result.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return result;
+        }
     }
 }
