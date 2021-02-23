@@ -48,5 +48,21 @@ namespace SOFA_API.Service
             }
             return listAllPost;
         }
+
+        public PostViewModelOut likePost(int postID, int accountLike)
+        {
+            int ID = 0;
+            ID = PostDAO.Instance.likePost(postID, accountLike);
+            PostViewModelOut result = new PostViewModelOut();
+            if (ID != 0)
+            {
+                result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                result.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return result;
+        }
     }
 }

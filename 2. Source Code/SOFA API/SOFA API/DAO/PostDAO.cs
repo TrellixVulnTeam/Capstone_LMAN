@@ -127,5 +127,14 @@ namespace SOFA_API.DAO
             }
             return listImages;
         }
+
+
+        public int likePost(int postID, int accountLike)
+        {
+            int result = 0;
+            string sql = "INSERT INTO dbo.[Like] (PostId,AcountLike) VALUES ( " +postID+" , "+ accountLike+" )";
+            result = (int)DataProvider.Instance.ExecuteScalar(sql);
+            return result;
+        }
     }
 }
