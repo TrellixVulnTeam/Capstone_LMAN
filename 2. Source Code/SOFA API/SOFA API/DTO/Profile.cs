@@ -21,7 +21,6 @@ namespace SOFA_API.DTO
         }
         public Profile(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri)
         {
-
             this.AccountID = accountID;
             this.FirstName = firstName;
             this.LastName = lastName;
@@ -35,7 +34,6 @@ namespace SOFA_API.DTO
 
         public Profile(DataRow row)
         {
-
             this.AccountID = (int)row["AccountId"];
             this.FirstName = row["FirstName"].ToString();
             this.LastName = row["LastName"].ToString();
