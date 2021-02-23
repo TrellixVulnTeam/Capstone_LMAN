@@ -16,13 +16,11 @@ namespace SOFA_API.Common
         public const int VERIFICATION_TIME_WAIT = 60;
         public const int VERIFICATION_STATUS_MATCH = 1;
         public const int VERIFICATION_STATUS_NOT_MATCH = 0;
-        public const int VERIFICATION_EMAIL_NOT_FOUND = 2;
-        public const int VERIFICATION_PHONE_NOT_FOUND = 3;
-        public const int VERIFICATION_ACCOUNT_NOT_FOUND = 4;
 
         public const int VERIFICATION_METHOD_USERNAME = 1;
         public const int VERIFICATION_METHOD_EMAIL = 2;
         public const int VERIFICATION_METHOD_PHONE = 3;
+        public const int VERIFICATION_METHOD_ACCOUNT_ID = 4;
 
         public const string REQUEST_CODE_SUCCESSFULLY = "SUCCESSFULLY";
         public const string REQUEST_CODE_FAILED = "FAILED";

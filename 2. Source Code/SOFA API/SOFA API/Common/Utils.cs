@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace SOFA_API.Common
@@ -25,7 +27,7 @@ namespace SOFA_API.Common
                 instance = value;
             }
         }
-        
+
         public void SaveLog(string text)
         {
             string path = @"E:\Log.txt";
@@ -45,6 +47,18 @@ namespace SOFA_API.Common
                     sw.WriteLine(dateTime + ": " + text);
                 }
             }
+        }
+        public void SendMail(string destination, string subject, string content)
+        {
+            MailMessage mailMessage = new MailMessage("SOFATeam2021@gmail.com", destination, subject, content);
+            mailMessage.IsBodyHtml = true;
+            SmtpClient smtpClient = new SmtpClient(Const.SMTP_GMAIL);
+            smtpClient.Host = Const.SMTP_GMAIL;
+            smtpClient.UseDefaultCredentials = false;
+            smtpClient.Port = 587;
+            smtpClient.Credentials = new NetworkCredential(Const.GMAIL_ACCOUNT, Const.GMAIL_APPLICATION_PASSWORD);
+            smtpClient.EnableSsl = true;
+            smtpClient.Send(mailMessage);
         }
     }
 }
