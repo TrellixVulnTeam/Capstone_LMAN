@@ -106,6 +106,26 @@ namespace SOFA_API.DAO
             }            
             return data;
         }
+
+
+        /// <summary>
+        /// Get Profile of user by account id
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>Profile include account, profile and role</returns>
+        public Profile GetProfileByAccountID(int id)
+        {
+            Profile profile = null;
+            string sql = "EXEC dbo.GetProfileByAccountID @id";
+
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { id });
+
+            if (data.Rows.Count > 0)
+            {
+                profile = new Profile(data.Rows[0]);
+            }
+            return profile;
+        }
         /// <summary>
         /// Get Profile of user by email
         /// </summary>
