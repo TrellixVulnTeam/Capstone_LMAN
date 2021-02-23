@@ -12,7 +12,6 @@ namespace SOFA_API.ViewModel.Profile
     {
         public class ProfileViewModelOut
         {
-            public int ID { get; set; }
             public int AccountID { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
@@ -31,9 +30,8 @@ namespace SOFA_API.ViewModel.Profile
             {
 
             }
-            public ProfileViewModelOut(int iD, int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, byte[] avatar, int followerNumber, List<Post> listPost, string username, string role)
+            public ProfileViewModelOut(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, byte[] avatar, int followerNumber, List<Post> listPost, string username, string role)
             {
-                this.ID = iD;
                 this.AccountID = accountID;
                 this.FirstName = firstName;
                 this.LastName = lastName;
@@ -52,7 +50,6 @@ namespace SOFA_API.ViewModel.Profile
 
             public ProfileViewModelOut(DataRow row) : base()
             {
-                this.ID = (int)row["Id"];
                 this.AccountID = (int)row["AccountId"];
                 this.FirstName = row["FirstName"].ToString();
                 this.LastName = row["LastName"].ToString();
