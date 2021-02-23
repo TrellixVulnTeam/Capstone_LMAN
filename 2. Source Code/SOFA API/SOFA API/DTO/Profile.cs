@@ -6,7 +6,6 @@ namespace SOFA_API.DTO
 {
     public class Profile
     {
-        public int ID { get; set; }
         public int AccountID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -20,9 +19,9 @@ namespace SOFA_API.DTO
         {
 
         }
-        public Profile(int iD, int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri)
+        public Profile(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri)
         {
-            this.ID = iD;
+
             this.AccountID = accountID;
             this.FirstName = firstName;
             this.LastName = lastName;
@@ -36,7 +35,7 @@ namespace SOFA_API.DTO
 
         public Profile(DataRow row)
         {
-            this.ID = (int)row["Id"];
+
             this.AccountID = (int)row["AccountId"];
             this.FirstName = row["FirstName"].ToString();
             this.LastName = row["LastName"].ToString();
