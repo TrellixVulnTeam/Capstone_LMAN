@@ -144,5 +144,13 @@ namespace SOFA_API.DAO
             result = (int)DataProvider.Instance.ExecuteScalar(sql);
             return result;
         }
+
+        public int commentPost(int accountID, int postID, string content)
+        {
+            int result = 0;
+            string sql = "INSERT INTO dbo.[Comment] (AccountId,PostId,[Content]) VALUES ( " + accountID + " , " + postID + " , " + content + " )";
+            result = (int)DataProvider.Instance.ExecuteScalar(sql);
+            return result;
+        }
     }
 }

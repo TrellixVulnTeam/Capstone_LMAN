@@ -80,5 +80,21 @@ namespace SOFA_API.Service
             }
             return result;
         }
+
+        public PostViewModelOut commentPost(int accountID, int postID, string content)
+        {
+            int ID = 0;
+            ID = PostDAO.Instance.commentPost(accountID, postID, content);
+            PostViewModelOut result = new PostViewModelOut();
+            if (ID != 0)
+            {
+                result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                result.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return result;
+        }
     }
 }
