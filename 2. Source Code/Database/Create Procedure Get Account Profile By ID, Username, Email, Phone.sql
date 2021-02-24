@@ -57,6 +57,3 @@ BEGIN
 END
 
 
-EXEC dbo.getProfileByAccountID @id = 1-- int
-
-
