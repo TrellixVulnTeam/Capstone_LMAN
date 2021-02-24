@@ -5,6 +5,7 @@ using SOFA_API.ViewModel;
 using SOFA_API.ViewModel.Profile;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,14 +32,14 @@ namespace SOFA_API.Service
         {
         }
 
-        /**
-         * Function getProfileByAccountID
-         * @Param : accountId
-         * return Dictionary
-         */
-        public ProfileViewModelOut getProfileByAccountID(int accountId)
+        /// <summary>
+        /// Function to get Profile by account ID
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>Profile by it accountID</returns>
+        public ProfileViewModelOut GetProfileModelByAccountID(int accountId)
         {
-            ProfileViewModelOut profile = ProfileDAO.Instance.getProfileByAccountID(accountId);
+            ProfileViewModelOut profile = ProfileDAO.Instance.GetProfileModelByAccountID(accountId);
             if(profile != null)
             {
                 profile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -50,12 +51,13 @@ namespace SOFA_API.Service
             return profile;
         }
 
-        /**
-         * function updateProfileByAccountID
-         * @Param: accountId
-         * return Dictionary
-         */
-        public ProfileViewModelOut updateProfileByAccountID(int accountId, ProfileViewModelOut newProfile)
+        /// <summary>
+        /// Function UpdateProfileByAccountID
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="newProfile"></param>
+        /// <returns>number of changed record </returns>
+        public ProfileViewModelOut UpdateProfileByAccountID(int accountId, ProfileViewModelOut newProfile)
         {
             ProfileViewModelOut a = newProfile;
             if (String.IsNullOrEmpty(newProfile.FirstName))
@@ -75,7 +77,39 @@ namespace SOFA_API.Service
             }
             else
             {
-                int result = ProfileDAO.Instance.updateProfileByAccountID(accountId, newProfile);
+                //get current data
+                ProfileViewModelOut currentProfile = ProfileService.Instance.GetProfileModelByAccountID(accountId);
+
+                //update avatar
+                String path = @"C:\inetpub\wwwroot\assets\Image\" + currentProfile.UserName + @"\";
+
+                //Check if directory exist
+                if (!System.IO.Directory.Exists(path))
+                {
+                    //Create directory if it doesn't exist
+                    Directory.CreateDirectory(path);
+                }
+
+                //get current file name
+                string imageName = Path.GetFileNameWithoutExtension(currentProfile.AvatarUri);
+
+                //make new file name
+
+                int newImageName = 1;
+                bool checkConvert = Int32.TryParse(imageName, out newImageName);
+                if (checkConvert)
+                {
+                    newImageName++;
+                }
+
+                //set the image path
+                string imgPath = Path.Combine(path, (newImageName.ToString() + ".jpg"));
+
+                byte[] imageBytes = Convert.FromBase64String(newProfile.Avatar.Trim().Replace(" ", "+"));
+                System.IO.File.WriteAllBytes(imgPath, imageBytes);
+                newProfile.AvatarUri = imgPath;
+
+                int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, newProfile);
                 if (result == 1)
                 {
                     newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY;                   
@@ -87,24 +121,6 @@ namespace SOFA_API.Service
                 }
             }                     
             return newProfile;
-        }
-
-
-        public ProfileViewModelOut updateAvatar(string avatarBase64)
-        {
-            ProfileViewModelOut profile = new ProfileViewModelOut();
-            int data = ProfileDAO.Instance.updateAvatar(avatarBase64);
-            if (data == 1)
-            {
-                profile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
-            }
-            else
-            {
-                profile.Code = Const.REQUEST_CODE_FAILED;
-                profile.ErrorMessage = MessageUtils.ERROR_UPDATE_FAILED;
-            }
-
-            return profile;
         }
     }
 }

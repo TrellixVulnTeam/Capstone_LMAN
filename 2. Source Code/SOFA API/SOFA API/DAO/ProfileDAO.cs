@@ -34,7 +34,7 @@ namespace SOFA_API.DAO
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Profile by it accountID</returns>
-        public ProfileViewModelOut getProfileByAccountID(int accountId)
+        public ProfileViewModelOut GetProfileModelByAccountID(int accountId)
         {
             ProfileViewModelOut profile = null;
 
@@ -60,7 +60,7 @@ namespace SOFA_API.DAO
         /// <param name="accountId"></param>
         /// <param name="newProfile"></param>
         /// <returns>number of changed record </returns>
-        public int updateProfileByAccountID(int accountId, ProfileViewModelOut newProfile)
+        public int UpdateProfileByAccountID(int accountId, ProfileViewModelOut newProfile)
         {
             int data = 0;
 
@@ -78,35 +78,6 @@ namespace SOFA_API.DAO
             
             return data;
         }
-
-        public int updateAvatar (string imageBase64)
-        {
-            int data = 0;
-            //convert base64 to image and save
-            //Path
-            String path = @"C:\inetpub\wwwroot\assets\Image\Message\";
-            try
-            {
-                //Check if directory exist
-                if (!System.IO.Directory.Exists(path))
-                {
-                    System.IO.Directory.CreateDirectory(path); //Create directory if it doesn't exist
-                }
-                string imageName = "a" + ".jpg";
-
-                //set the image path
-                string imgPath = Path.Combine(path, imageName);
-
-                byte[] imageBytes = Convert.FromBase64String(imageBase64.Trim().Replace(" ","+"));
-                File.WriteAllBytes(imgPath, imageBytes);
-                data = 1;
-            }catch(Exception e)
-            {
-                Utils.Instance.SaveLog(e.ToString());
-            }            
-            return data;
-        }
-
 
         /// <summary>
         /// Get Profile of user by account id
