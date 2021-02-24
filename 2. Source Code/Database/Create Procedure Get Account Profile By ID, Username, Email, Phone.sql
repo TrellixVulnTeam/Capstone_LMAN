@@ -55,12 +55,6 @@ BEGIN
     INNER JOIN dbo.Role ON Role.Id = AccountRole.RoleId
 	WHERE Account.Id = @id
 END
-=======
-    	INNER JOIN dbo.Profile ON Profile.AccountId = Account.Id
-    	INNER JOIN dbo.AccountRole ON AccountRole.AccountId = Account.Id
-    	INNER JOIN dbo.Role ON Role.Id = AccountRole.RoleId
-    	WHERE Account.Id = @id
-END
 
 
 EXEC dbo.getProfileByAccountID @id = 1-- int
