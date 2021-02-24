@@ -24,6 +24,13 @@ namespace SOFA_API.Controllers
 
         private AuthService authService;
 
+        /// <summary>
+        /// This controller process register new user that using SOFA application
+        /// </summary>
+        /// <param name="accountViewModelIn">
+        /// This param require fields: username, password, email, phone, isApplicationAccess, transactionId and code
+        /// </param>
+        /// <returns></returns>
         [HttpPost("register")]
         public ActionResult Register([FromForm] AccountViewModelIn data)
         {
@@ -31,6 +38,13 @@ namespace SOFA_API.Controllers
             return Ok(loginViewModelOut);
         }
 
+        /// <summary>
+        /// This controller process login into system - admin, user
+        /// </summary>
+        /// <param name="data">
+        /// This param require fields: username, password
+        /// </param>
+        /// <returns></returns>
         [HttpPost("login")]
         public ActionResult Login([FromForm] AccountViewModelIn data)
         {
@@ -38,6 +52,14 @@ namespace SOFA_API.Controllers
             return Ok(loginViewModelOut);
         }
 
+        /// <summary>
+        /// This controller process reset password for user, include reset password and change password
+        /// </summary>
+        /// <param name="data">
+        /// This param require fields: if the resquest is resert password: email, newPassword, transactionID and code
+        /// if the request is change password: email, password, newPassword
+        /// </param>
+        /// <returns></returns>
         [HttpPost("reset-password")]
         public ActionResult ResetPassword([FromForm] AccountViewModelIn data)
         {
