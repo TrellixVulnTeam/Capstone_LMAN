@@ -28,7 +28,7 @@ namespace SOFA_API.ViewModel.Balance
         public TopUpAccountModelIn(DataRow row)
         {
             AccountId = (int)row["AccountId"];
-            AdminId = (row["AdminId"] == null) ? 0 : (int)row["AdminId"];
+            AdminId = (row["AdminId"] == null) ? -1 : (int)row["AdminId"];
             Amount = (decimal)row["AccountId"];
             Description = row["Description"].ToString();
         }

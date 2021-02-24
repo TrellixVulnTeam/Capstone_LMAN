@@ -27,9 +27,8 @@ namespace SOFA_API.Controllers
             return Ok(transactionHistoryViewModelOuts);
         }
         [HttpPost("topUpAccount")]
-        public ActionResult TopUpAccount(int accountId,decimal amount, int adminId, string description)
+        public ActionResult TopUpAccount(TopUpAccountModelIn topUp)
         {
-            TopUpAccountModelIn topUp = new TopUpAccountModelIn(accountId, adminId, amount, description);
             TopUpAccountModelOut topUpAccountModelOut = BalanceService.Instance.topUpAccount(topUp);
             return Ok(topUpAccountModelOut);
         }

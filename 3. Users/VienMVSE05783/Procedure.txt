@@ -83,4 +83,47 @@ END;
 
 EXEC dbo.getTransactionHistoryByAccountID @AccountID=2;
 
+/* Add Voucher */
+DROP PROCEDURE IF EXISTS dbo.AddVoucher
+CREATE PROCEDURE dbo.AddVoucher
+@Title nvarchar(max), @code nvarchar(50) ,@content nvarchar(max), @Image nvarchar(50), @FromDate date, @ToDate date, @IsExpress bit , @Quantity int 
+as
+Begin
+SET NOCOUNT OFF;
+  DECLARE @trancount int;
+  SET @trancount = @@trancount;
+	begin try
+	 IF @trancount = 0
+      BEGIN TRANSACTION
+      ELSE
+        SAVE TRANSACTION saveMyPoint;
+INSERT INTO Voucher ([Title], [Code], [Content], [Image], [FromDate], [ToDate], [IsExpires], [Quantity])
+values(@Title,@code,@content,@Image,@FromDate,@ToDate , @IsExpress, @Quantity)
+IF @trancount = 0
+      COMMIT;
+
+	end try
+	BEGIN CATCH
+	 DECLARE @error int,
+            @message varchar(4000),
+            @xstate int;
+
+    SELECT
+      @error = ERROR_NUMBER(),
+      @message = ERROR_MESSAGE(),
+      @xstate = XACT_STATE();
+
+    IF @xstate = -1
+      ROLLBACK;
+    IF @xstate = 1 AND @trancount = 0
+      ROLLBACK
+    IF @xstate = 1 AND @trancount > 0
+		 ROLLBACK TRANSACTION saveMyPoint ;
+		     RAISERROR ('addVoucher: %d: %s', 16, 1, @error, @message);
+	End Catch
+END
+
+EXEC  dbo.addVoucher 'voucher 1','ABCDE','dfcsfcwerirew',null,'02/21/2021','02/24/2021',0,1000;
+
+
 

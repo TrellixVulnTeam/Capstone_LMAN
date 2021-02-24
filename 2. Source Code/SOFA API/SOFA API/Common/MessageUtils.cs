@@ -16,7 +16,7 @@ namespace SOFA_API.Common
         public const string ERROR_MISSING_PHONE_NUMBER = "Missing phone number";
         public const string ERROR_UPDATE_FAILED = "Update failed!";
         public const string ERROR_TOPUP_FAILED = "Top Up failed!";
-
+        public const string ERROR_ADD_VOUCHER_FAILED = "Add voucher failed!";
         public const string ERROR_VERIFICATION_DONT_HAVE_EMAIL_AND_PHONE = "Can't miss both phone number and email";
         public const string ERROR_VERIFICATION_DONT_HAVE_EMAIL = "Email not found";
         public const string ERROR_VERIFICATION_ACCOUNT_NOT_FOUND = "Account not found";
