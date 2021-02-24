@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SOFA_API.DAO
 {
-    public class BalanceDAO 
+    public class BalanceDAO
     {
         private static BalanceDAO instance;
 
@@ -27,34 +27,69 @@ namespace SOFA_API.DAO
         {
 
         }
-
-        public decimal GetBalanceByAccountID(int id)
+        /// <summary>
+        /// Get Balance By Account ID
+        /// </summary>
+        /// <param name="modelIn">
+        /// This param require fields: AccountID
+        /// </param>
+        /// <returns></returns>
+        public GetBalanceViewModelOut GetBalanceByAccountID(GetBalanceViewModelIn modelIn)
         {
-            decimal Balance = 0;
+            GetBalanceViewModelOut modelOut = null;
             string sql = "EXEC dbo.getBalanceByAccountID @AccountID";
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { id });
-            if (data.Rows.Count > 0)
+            try
             {
-                Balance = (decimal)data.Rows[0]["Balance"];
-            }
-            return Balance;
-        }
-
-        public List<TransactionHistoryViewModelOut> GetAllHistoryTransaction(int accountId)
-        {
-            List<TransactionHistoryViewModelOut> transactionHistories = new List<TransactionHistoryViewModelOut>();
-            string sql = "EXEC  dbo.getTransactionHistoryByAccountID @AccountID";
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId });
-            if (data.Rows.Count > 0)
-            {
-                foreach (DataRow row in data.Rows)
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { modelIn.AccountId });
+                if (data.Rows.Count > 0)
                 {
-                    transactionHistories.Add(new TransactionHistoryViewModelOut(row));
+                    modelOut = new GetBalanceViewModelOut((decimal)data.Rows[0]["Balance"]);
                 }
             }
-            return transactionHistories;
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            return modelOut;
         }
-        public int TopUpAccount(TopUpAccountModelIn topUp) 
+        /// <summary>
+        /// Get TransactionHistory By Account ID
+        /// </summary>
+        /// <param name="modelIn">
+        /// This param require fields: AccountID
+        /// </param>
+        /// <returns></returns>
+        public ListTransactionViewModelOut GetAllHistoryTransaction(GetBalanceViewModelIn modelIn)
+        {
+            ListTransactionViewModelOut viewModelOut = null;
+            List<TransactionViewModelOut> listTransaction = new List<TransactionViewModelOut>();
+            string sql = "EXEC  dbo.getTransactionHistoryByAccountID @AccountID";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { modelIn.AccountId });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        listTransaction.Add(new TransactionViewModelOut(row));
+                    }
+                    viewModelOut = new ListTransactionViewModelOut(listTransaction);
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            return viewModelOut;
+        }
+        /// <summary>
+        /// TopUp Account by admin
+        /// </summary>
+        /// <param name="topUp">
+        /// This param require fields: AccountId , AdminId , Amount , Description
+        /// </param>
+        /// <returns></returns>
+        public int TopUpAccount(TopUpAccountModelIn topUp)
         {
             int data = 0;
             TopUpAccountModelOut topUpAccountModelOut = new TopUpAccountModelOut();
@@ -62,7 +97,8 @@ namespace SOFA_API.DAO
             try
             {
                 data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { topUp.AccountId, topUp.Amount, topUp.AdminId, topUp.Description });
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Utils.Instance.SaveLog(e.ToString());
             }

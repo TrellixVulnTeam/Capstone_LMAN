@@ -13,22 +13,47 @@ namespace SOFA_API.Controllers
     [ApiController]
     public class VoucherController : ControllerBase
     {
+        /// <summary>
+        /// Add Voucher by admin
+        /// </summary>
+        /// <param name="viewModelIn">
+        /// This param require fields: Title, Image, code, Description, Content, Fromdate, ToDate, Quantity
+        /// if Quantity unlimited , Quantity =-1
+        ///   eg: { "Title": "title 1", "Image": "aqbcd","code" :"ABCD", "Description":"Description","Content": "Content","Fromdate":"2019-07-26T00:00:00", "ToDate": "2019-07-26T00:00:00", "Quantity": -1}
+        /// </param>
+        /// <returns></returns>
         [HttpPost("addVoucher")]
-        public ActionResult addVoucher(AddVoucherViewModelIn viewModelIn)
+        public ActionResult AddVoucher(AddVoucherViewModelIn viewModelIn)
         {
-            AddVoucherViewModelOut modelOut = VoucherService.Instance.addVoucher(viewModelIn);
+            AddVoucherViewModelOut modelOut = VoucherService.Instance.AddVoucher(viewModelIn);
             return Ok(modelOut);
         }
+        /// <summary>
+        /// Get List Voucher of once account by IsExpiress, IsUsed
+        /// </summary>
+        /// <param name="viewModelIn">
+        /// This param require fields: AccountId , IsExpiress , IsUsed
+        /// eg: { "AccountID": 9,  "IsExpiress": true, "IsUsed": false}
+        /// </param>
+        /// <returns></returns>
         [HttpGet("getVoucherByAccount")]
-        public ActionResult getVoucherByAccount(VoucherViewModelIn viewModelIn)
+        public ActionResult GetVoucherByAccount(VoucherViewModelIn viewModelIn)
         {
-            ListVoucherViewModelOut listVoucher = VoucherService.Instance.getListVoucherByAccountID(viewModelIn);
+            ListVoucherViewModelOut listVoucher = VoucherService.Instance.GetListVoucherByAccountID(viewModelIn);
             return Ok(listVoucher);
         }
+        /// <summary>
+        ///Get Detail Voucher for User
+        /// </summary>
+        /// <param name="viewModelIn">
+        /// This param require fields: ID, AccountId
+        ///eg: { "ID":11,  "AccountId":9 }
+        /// </param>
+        /// <returns></returns>
         [HttpGet("getVoucherDetailByAccount")]
-        public ActionResult getVoucherDetailByAccount(VoucherDetaiForUserViewModelIn viewModelIn)
+        public ActionResult GetVoucherDetailByAccount(VoucherDetaiForUserViewModelIn viewModelIn)
         {
-            VoucherDetaiForUserViewModelOut viewModelOut = VoucherService.Instance.getVoucherDetailByAccountId(viewModelIn);
+            VoucherDetaiForUserViewModelOut viewModelOut = VoucherService.Instance.GetVoucherDetailByAccountId(viewModelIn);
             return Ok(viewModelOut);
         }
     }

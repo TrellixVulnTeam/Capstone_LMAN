@@ -14,18 +14,39 @@ namespace SOFA_API.Controllers
     [ApiController]
     public class BalanceController : ControllerBase
     {
+        /// <summary>
+        /// Get Balance By Account ID
+        /// </summary>
+        /// <param name="modelIn">
+        /// This param require fields: AccountID
+        /// </param>
+        /// <returns></returns>
         [HttpGet]
-        public ActionResult GetBalance(int accountId)
+        public ActionResult GetBalance(GetBalanceViewModelIn modelIn)
         {
-            Dictionary<string, object> response = BalanceService.Instance.GetBalanceByAccountID(accountId);
-            return Ok(response);
+            GetBalanceViewModelOut modelOut = BalanceService.Instance.GetBalanceByAccountID(modelIn);
+            return Ok(modelOut);
         }
+        /// <summary>
+        /// Get TransactionHistory By Account ID
+        /// </summary>
+        /// <param name="modelIn">
+        /// This param require fields: AccountID
+        /// </param>
+        /// <returns></returns>
         [HttpGet("history")]
-        public ActionResult<TransactionHistoryViewModelOut> GetTransactionHistory(int accountID)
+        public ActionResult GetTransactionHistory(GetBalanceViewModelIn modelIn)
         {
-            List<TransactionHistoryViewModelOut> transactionHistoryViewModelOuts = BalanceService.Instance.GetTransactionHistory(accountID);
-            return Ok(transactionHistoryViewModelOuts);
+            ListTransactionViewModelOut viewModelOut = BalanceService.Instance.GetTransactionHistory(modelIn);
+            return Ok(viewModelOut);
         }
+        /// <summary>
+        /// TopUp Account by admin
+        /// </summary>
+        /// <param name="topUp">
+        /// This param require fields: AccountId , AdminId , Amount , Description
+        /// </param>
+        /// <returns></returns>
         [HttpPost("topUpAccount")]
         public ActionResult TopUpAccount(TopUpAccountModelIn topUp)
         {

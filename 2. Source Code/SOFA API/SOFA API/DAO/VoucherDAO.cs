@@ -24,7 +24,16 @@ namespace SOFA_API.DAO
         public VoucherDAO()
         {
         }
-        public int addVoucher(AddVoucherViewModelIn addVoucher)
+        /// <summary>
+        /// Add Voucher by admin
+        /// </summary>
+        /// <param name="viewModelIn">
+        /// This param require fields: Title, Image, code, Description, Content, Fromdate, ToDate, Quantity
+        /// if Quantity unlimited , Quantity =-1
+        ///   eg: { "Title": "title 1", "Image": "aqbcd","code" :"ABCD", "Description":"Description","Content": "Content","Fromdate":"2019-07-26T00:00:00", "ToDate": "2019-07-26T00:00:00", "Quantity": -1}
+        /// </param>
+        /// <returns></returns>
+        public int AddVoucher(AddVoucherViewModelIn addVoucher)
         {
             int data = 0;
             string sql = "EXEC dbo.addVoucher @Title , @Code , @Content , @Description , @Image , @FromDate , @ToDate , @IsExpress , @Quantity";
@@ -39,8 +48,15 @@ namespace SOFA_API.DAO
             }
             return data; ;
         }
-
-        public ListVoucherViewModelOut getListVoucherByAccountID(VoucherViewModelIn viewModelIn)
+        /// <summary>
+        /// Get List Voucher of once account by IsExpiress, IsUsed
+        /// </summary>
+        /// <param name="viewModelIn">
+        /// This param require fields: AccountId , IsExpiress , IsUsed
+        /// eg: { "AccountID": 9,  "IsExpiress": true, "IsUsed": false}
+        /// </param>
+        /// <returns></returns>
+        public ListVoucherViewModelOut GetListVoucherByAccountID(VoucherViewModelIn viewModelIn)
         {
             ListVoucherViewModelOut listVoucherOuts = null;
             List<VoucherViewModelOut> listVoucher = new List<VoucherViewModelOut>();
@@ -64,7 +80,7 @@ namespace SOFA_API.DAO
             }
             return listVoucherOuts;
         }
-        public VoucherDetaiForUserViewModelOut getVoucherDetailByAccountId(VoucherDetaiForUserViewModelIn viewModelIn)
+        public VoucherDetaiForUserViewModelOut GetVoucherDetailByAccountId(VoucherDetaiForUserViewModelIn viewModelIn)
         {
             VoucherDetaiForUserViewModelOut viewModelOut = null;
             string sql = "EXEC dbo.getVoucherDetailByAccountId @AccountID , @Id";

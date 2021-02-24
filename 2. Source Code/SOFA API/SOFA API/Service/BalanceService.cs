@@ -27,19 +27,53 @@ namespace SOFA_API.Service
         public BalanceService()
         {
         }
-        public Dictionary<string, object> GetBalanceByAccountID(int id)
+        /// <summary>
+        /// Get Balance By Account ID
+        /// </summary>
+        /// <param name="modelIn">
+        /// This param require fields: AccountID
+        /// </param>
+        /// <returns></returns>
+        public GetBalanceViewModelOut GetBalanceByAccountID(GetBalanceViewModelIn modelIn)
         {
-            decimal Balance = BalanceDAO.Instance.GetBalanceByAccountID(id);
-            Dictionary<string, object> res = new Dictionary<string, object>();
-            res.Add("code", Const.REQUEST_CODE_SUCCESSFULLY);
-            res.Add("Balance", Balance);
-            return res;
+            GetBalanceViewModelOut balance = BalanceDAO.Instance.GetBalanceByAccountID(modelIn);
+            if (balance != null)
+            {
+                balance.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                balance.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return balance;
         }
-        public List<TransactionHistoryViewModelOut> GetTransactionHistory(int accountID)
+        /// <summary>
+        /// Get TransactionHistory By Account ID
+        /// </summary>
+        /// <param name="modelIn">
+        /// This param require fields: AccountID
+        /// </param>
+        /// <returns></returns>
+        public ListTransactionViewModelOut GetTransactionHistory(GetBalanceViewModelIn modelIn)
         {
-            List<TransactionHistoryViewModelOut> transactionHistoryViewModelOuts = BalanceDAO.Instance.GetAllHistoryTransaction(accountID);
-            return transactionHistoryViewModelOuts;
+            ListTransactionViewModelOut viewModelOut = BalanceDAO.Instance.GetAllHistoryTransaction(modelIn);
+            if (viewModelOut != null)
+            {
+                viewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                viewModelOut.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return viewModelOut;
         }
+        /// <summary>
+        /// TopUp Account by admin
+        /// </summary>
+        /// <param name="topUpAccountModelIn">
+        /// This param require fields: AccountId , AdminId , Amount , Description
+        /// </param>
+        /// <returns></returns>
         public TopUpAccountModelOut topUpAccount(TopUpAccountModelIn topUpAccountModelIn)
         {
             TopUpAccountModelOut topUpAccountModelOut = new TopUpAccountModelOut();
