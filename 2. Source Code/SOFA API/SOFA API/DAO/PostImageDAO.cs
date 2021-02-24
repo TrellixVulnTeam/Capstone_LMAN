@@ -17,7 +17,7 @@ namespace SOFA_API.DAO
                 if (instance == null) instance = new PostImageDAO();
                 return instance;
             }
-            private set { instance = value}
+            private set { instance = value; }
         }
 
         public Image GetImageByID(int id)
