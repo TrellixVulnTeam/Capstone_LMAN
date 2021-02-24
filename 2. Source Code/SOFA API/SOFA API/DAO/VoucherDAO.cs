@@ -2,6 +2,7 @@
 using SOFA_API.ViewModel.Voucher;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,17 +27,60 @@ namespace SOFA_API.DAO
         public int addVoucher(AddVoucherViewModelIn addVoucher)
         {
             int data = 0;
-            string sql = "EXEC dbo.addVoucher @Title , @Code , @Content , @Image , @FromDate , @ToDate , @IsExpress , @Quantity";
+            string sql = "EXEC dbo.addVoucher @Title , @Code , @Content , @Description , @Image , @FromDate , @ToDate , @IsExpress , @Quantity";
             try
             {
                 int isExpress = (DateTime.Compare(DateTime.Now, addVoucher.ToDate) < 0) ? 0 : 1;
-                data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { addVoucher.Title, addVoucher.Code, addVoucher.Content, addVoucher.Image, addVoucher.FromDate, addVoucher.ToDate , isExpress, addVoucher.Quantity });
+                data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { addVoucher.Title, addVoucher.Code, addVoucher.Content, addVoucher.Description, addVoucher.Image, addVoucher.FromDate, addVoucher.ToDate, isExpress, addVoucher.Quantity });
             }
             catch (Exception e)
             {
                 Utils.Instance.SaveLog(e.ToString());
             }
             return data; ;
+        }
+
+        public ListVoucherViewModelOut getListVoucherByAccountID(VoucherViewModelIn viewModelIn)
+        {
+            ListVoucherViewModelOut listVoucherOuts = null;
+            List<VoucherViewModelOut> listVoucher = new List<VoucherViewModelOut>();
+            string sql = "EXEC dbo.getVoucherByAccountID @AccountID , @IsExpires , @IsUsed";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { viewModelIn.AccountID, viewModelIn.IsExpiress, viewModelIn.IsUsed });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        VoucherViewModelOut voucher = new VoucherViewModelOut(row);
+                        listVoucher.Add(voucher);
+                    }
+                    listVoucherOuts = new ListVoucherViewModelOut(listVoucher);
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            return listVoucherOuts;
+        }
+        public VoucherDetaiForUserViewModelOut getVoucherDetailByAccountId(VoucherDetaiForUserViewModelIn viewModelIn)
+        {
+            VoucherDetaiForUserViewModelOut viewModelOut = null;
+            string sql = "EXEC dbo.getVoucherDetailByAccountId @AccountID , @Id";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { viewModelIn.AccountId, viewModelIn.ID });
+                if (data.Rows.Count > 0)
+                {
+                    viewModelOut = new VoucherDetaiForUserViewModelOut(data.Rows[0]);
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            return viewModelOut;
         }
 
     }

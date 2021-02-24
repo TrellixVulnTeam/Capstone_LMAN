@@ -11,6 +11,7 @@ namespace SOFA_API.DTO
         public int Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
+        public string Description { get; set; }
         public string Code { get; set; }
         public int Quantity { get; set; }
         public string Image { get; set; }
@@ -22,11 +23,12 @@ namespace SOFA_API.DTO
         {
         }
 
-        public Voucher(int id, string title, string content, string code, int quantity, string image, DateTime fromDate, DateTime toDate, bool isExprires )
+        public Voucher(int id, string title, string content, string description, string code, int quantity, string image, DateTime fromDate, DateTime toDate, bool isExprires)
         {
             Id = id;
             Title = title;
             Content = content;
+            Description = description;
             Code = code;
             Quantity = quantity;
             Image = image;
@@ -41,8 +43,9 @@ namespace SOFA_API.DTO
             Title = row["Title"].ToString();
             Code = row["Code"].ToString();
             Content = row["Content"].ToString();
+            Description = row["Description"].ToString();
             Code = row["Code"].ToString();
-            Quantity = (row["Quantity"] == null) ? 0 : (int)row["Quantity"];
+            Quantity = (row["Quantity"] == null) ? -1 : (int)row["Quantity"];
             Image = row["Image"].ToString(); ;
             FromDate = (DateTime)row["FromDate"];
             ToDate = (DateTime)row["ToDate"]; ;

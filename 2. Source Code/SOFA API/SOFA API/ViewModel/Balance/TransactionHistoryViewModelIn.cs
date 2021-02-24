@@ -43,7 +43,7 @@ namespace SOFA_API.ViewModel.Balance
             TypeID = (int)row["TypeID"];
             TransactionTime = (DateTime)row["TransactionTime"];
             AccountId = (int)row["AccountId"];
-            AdminId = (row["AdminId"] == null) ? 0 : (int)row["AdminId"];
+            AdminId = (row["AdminId"] == null) ? -1 : (int)row["AdminId"];
         }
     }
 }

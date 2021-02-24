@@ -29,8 +29,7 @@ namespace SOFA_API.Service
         public AddVoucherViewModelOut addVoucher(AddVoucherViewModelIn modelIn)
         {
             AddVoucherViewModelOut modelOut = new AddVoucherViewModelOut();
-            int result = 0;
-            result = VoucherDAO.Instance.addVoucher(modelIn);
+            int result = VoucherDAO.Instance.addVoucher(modelIn);
             if (result > 0)
             {
                 modelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -40,7 +39,35 @@ namespace SOFA_API.Service
                 modelOut.Code = Const.REQUEST_CODE_FAILED;
                 modelOut.ErrorMessage = MessageUtils.ERROR_ADD_VOUCHER_FAILED;
             }
-                return modelOut;
+            return modelOut;
+        }
+
+
+        public ListVoucherViewModelOut getListVoucherByAccountID(VoucherViewModelIn viewModelIn)
+        {
+            ListVoucherViewModelOut listVouchers = VoucherDAO.Instance.getListVoucherByAccountID(viewModelIn);
+            if (listVouchers != null)
+            {
+                listVouchers.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                listVouchers.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return listVouchers;
+        }
+        public VoucherDetaiForUserViewModelOut getVoucherDetailByAccountId(VoucherDetaiForUserViewModelIn viewModelIn)
+        {
+            VoucherDetaiForUserViewModelOut viewModelOut = VoucherDAO.Instance.getVoucherDetailByAccountId(viewModelIn);
+            if (viewModelOut != null)
+            {
+                viewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                viewModelOut.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return viewModelOut;
         }
     }
 }

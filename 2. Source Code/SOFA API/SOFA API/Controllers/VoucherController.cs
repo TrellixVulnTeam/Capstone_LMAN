@@ -19,5 +19,17 @@ namespace SOFA_API.Controllers
             AddVoucherViewModelOut modelOut = VoucherService.Instance.addVoucher(viewModelIn);
             return Ok(modelOut);
         }
+        [HttpGet("getVoucherByAccount")]
+        public ActionResult getVoucherByAccount(VoucherViewModelIn viewModelIn)
+        {
+            ListVoucherViewModelOut listVoucher = VoucherService.Instance.getListVoucherByAccountID(viewModelIn);
+            return Ok(listVoucher);
+        }
+        [HttpGet("getVoucherDetailByAccount")]
+        public ActionResult getVoucherDetailByAccount(VoucherDetaiForUserViewModelIn viewModelIn)
+        {
+            VoucherDetaiForUserViewModelOut viewModelOut = VoucherService.Instance.getVoucherDetailByAccountId(viewModelIn);
+            return Ok(viewModelOut);
+        }
     }
 }

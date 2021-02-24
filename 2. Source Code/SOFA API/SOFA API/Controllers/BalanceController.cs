@@ -21,7 +21,7 @@ namespace SOFA_API.Controllers
             return Ok(response);
         }
         [HttpGet("history")]
-        public ActionResult GetTransactionHistory(int accountID)
+        public ActionResult<TransactionHistoryViewModelOut> GetTransactionHistory(int accountID)
         {
             List<TransactionHistoryViewModelOut> transactionHistoryViewModelOuts = BalanceService.Instance.GetTransactionHistory(accountID);
             return Ok(transactionHistoryViewModelOuts);
