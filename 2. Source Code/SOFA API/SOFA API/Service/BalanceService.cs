@@ -43,6 +43,7 @@ namespace SOFA_API.Service
             }
             else
             {
+                balance = new GetBalanceViewModelOut();
                 balance.Code = Const.REQUEST_CODE_FAILED;
             }
             return balance;
@@ -63,6 +64,7 @@ namespace SOFA_API.Service
             }
             else
             {
+                viewModelOut = new ListTransactionViewModelOut();
                 viewModelOut.Code = Const.REQUEST_CODE_FAILED;
             }
             return viewModelOut;

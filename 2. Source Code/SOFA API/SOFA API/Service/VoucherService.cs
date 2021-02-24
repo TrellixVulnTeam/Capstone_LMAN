@@ -68,6 +68,7 @@ namespace SOFA_API.Service
             }
             else
             {
+                listVouchers = new ListVoucherViewModelOut();
                 listVouchers.Code = Const.REQUEST_CODE_FAILED;
             }
             return listVouchers;
@@ -89,6 +90,7 @@ namespace SOFA_API.Service
             }
             else
             {
+                viewModelOut = new VoucherDetaiForUserViewModelOut();
                 viewModelOut.Code = Const.REQUEST_CODE_FAILED;
             }
             return viewModelOut;
