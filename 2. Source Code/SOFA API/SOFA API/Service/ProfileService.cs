@@ -55,22 +55,22 @@ namespace SOFA_API.Service
         /// Function UpdateProfileByAccountID
         /// </summary>
         /// <param name="accountId"></param>
-        /// <param name="newProfile"></param>
+        /// <param name="profileIn"></param>
         /// <returns>number of changed record </returns>
-        public ProfileViewModelOut UpdateProfileByAccountID(int accountId, ProfileViewModelOut newProfile)
+        public ProfileViewModelOut UpdateProfileByAccountID(int accountId, ProfileViewModelIn profileIn)
         {
-            ProfileViewModelOut a = newProfile;
-            if (String.IsNullOrEmpty(newProfile.FirstName))
+            ProfileViewModelOut newProfile  = new ProfileViewModelOut();
+            if (String.IsNullOrEmpty(profileIn.FirstName))
             {
                 newProfile.Code = Const.REQUEST_CODE_FAILED;
                 newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_FIRST_NAME;
             }
-            else if (String.IsNullOrEmpty(newProfile.LastName))
+            else if (String.IsNullOrEmpty(profileIn.LastName))
             {
                 newProfile.Code = Const.REQUEST_CODE_FAILED;
                 newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_LAST_NAME;
             }
-            else if (String.IsNullOrEmpty(newProfile.Phone))
+            else if (String.IsNullOrEmpty(profileIn.Phone))
             {
                 newProfile.Code = Const.REQUEST_CODE_FAILED;
                 newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_PHONE_NUMBER;
@@ -105,11 +105,11 @@ namespace SOFA_API.Service
                 //set the image path
                 string imgPath = Path.Combine(path, (newImageName.ToString() + ".jpg"));
 
-                byte[] imageBytes = Convert.FromBase64String(newProfile.Avatar.Trim().Replace(" ", "+"));
+                byte[] imageBytes = Convert.FromBase64String(profileIn.Avatar.Trim().Replace(" ", "+"));
                 System.IO.File.WriteAllBytes(imgPath, imageBytes);
-                newProfile.AvatarUri = imgPath;
+                profileIn.AvatarUri = imgPath;
 
-                int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, newProfile);
+                int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, profileIn);
                 if (result == 1)
                 {
                     newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY;                   

@@ -60,7 +60,7 @@ namespace SOFA_API.DAO
         /// <param name="accountId"></param>
         /// <param name="newProfile"></param>
         /// <returns>number of changed record </returns>
-        public int UpdateProfileByAccountID(int accountId, ProfileViewModelOut newProfile)
+        public int UpdateProfileByAccountID(int accountId, ProfileViewModelIn newProfile)
         {
             int data = 0;
 

@@ -35,12 +35,13 @@ namespace SOFA_API.Controllers
         }
 
         [HttpPost("updateprofile")]
-        public ActionResult UpdateProfile([FromForm] ProfileViewModelOut newProfile)
+        public ActionResult UpdateProfile([FromForm] ProfileViewModelIn newProfile)
         {
             //get account ID
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             //int id = Int32.Parse(idClaim.Value.Trim());
             int id = 1;
+
 
             ProfileViewModelOut profile = ProfileService.Instance.UpdateProfileByAccountID(id, newProfile);
             return Ok(profile);
