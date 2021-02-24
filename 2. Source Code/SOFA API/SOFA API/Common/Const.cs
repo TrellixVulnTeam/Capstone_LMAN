@@ -32,8 +32,7 @@ namespace SOFA_API.Common
         public const string REQUEST_CODE_SUCCESSFULLY = "SUCCESSFULLY";
         public const string REQUEST_CODE_FAILED = "FAILED";
 
-        
-
-
+        public static int ADMIN_ROLE_ID = 1;
+        public static int USER_ROLE_ID = 2;
     }
 }
