@@ -77,11 +77,11 @@ BEGIN
 	INSERT INTO dbo.[Like]
 	(
 	    PostId,
-	    AcountLike
+	    AccountLike
 	)
 	VALUES
 	(   @postID, -- PostId - int
-	    @accountLike  -- AcountLike - int
+	    @accountLike  -- AccountLike - int
 	    )
 END
 GO
@@ -91,7 +91,7 @@ CREATE PROC UnlikePost
 @postID INT, @accountLike INT
 AS
 BEGIN
-	DELETE FROM dbo.[Like] WHERE PostId = @postID AND AcountLike = @accountLike
+	DELETE FROM dbo.[Like] WHERE PostId = @postID AND AccountLike = @accountLike
 END
 GO
 
@@ -180,7 +180,7 @@ GO
 
 DROP PROC IF EXISTS CreateRate
 GO
-CREATE PROC CrateRate
+CREATE PROC CreateRate
 @postID INT, @accountRate INT, @ratePoint INT
 AS
 BEGIN
@@ -192,7 +192,7 @@ BEGIN
 	)
 	VALUES
 	(   @postID, -- PostId - int
-	    @accountRate, -- AcountRate - int
+	    @accountRate, -- AccountRate - int
 	    @ratePoint  -- RatePoint - int
 	    )
 END
