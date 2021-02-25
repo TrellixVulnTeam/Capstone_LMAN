@@ -14,6 +14,7 @@ namespace SOFA_API.ViewModel.Newsfeed
         public string Content { get; set; }
         public int PrivacyID { get; set; }
         public DateTime Time { get; set; }
+        public List<ImageModelIn> ListImage { get; set; }
         public int AccountPost { get; set; }
         public int RatePoint { get; set; }
         public string Comment { get; set; }
