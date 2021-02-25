@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SOFA_API.Service;
-using SOFA_API.ViewModel.View_newsfeed;
+using SOFA_API.ViewModel.Newsfeed;
 using System;
 using System.Linq;
 
@@ -19,35 +19,45 @@ namespace SOFA_API.Controllers
         }
 
 
-        [HttpPost("likePost")]
+        [HttpPost("LikePost")]
         [Authorize]
-        public ActionResult likePost(int postID)
+        public ActionResult LikePost(int postID)
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             int id = Int32.Parse(idClaim.Value.Trim());
-            PostViewModelOut result = PostService.Instance.likePost(postID, id);
+            PostViewModelOut result = PostService.Instance.LikePost(postID, id);
             return Ok(result);
         }
 
-        [HttpPost("ratePost")]
+        [HttpPost("RatePost")]
         [Authorize]
-        public ActionResult ratePost(int postID, int ratePoint)
+        public ActionResult RatePost(int postID, int ratePoint)
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             int id = Int32.Parse(idClaim.Value.Trim());
-            PostViewModelOut result = PostService.Instance.ratePost(postID, id, ratePoint);
+            PostViewModelOut result = PostService.Instance.RatePost(postID, id, ratePoint);
             return Ok(result);
         }
 
-        [HttpPost("commentPost")]
+        [HttpPost("CommentPost")]
         [Authorize]
-        public ActionResult commentPost(int postID, string content)
+        public ActionResult CommentPost(int postID, string content)
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             int id = Int32.Parse(idClaim.Value.Trim());
-            PostViewModelOut result = PostService.Instance.commentPost(id, postID, content);
+            PostViewModelOut result = PostService.Instance.CommentPost(id, postID, content);
             return Ok(result);
         }
 
+        [HttpPost("CreatePost")]
+        [Authorize]
+        public ActionResult CreatePost([FromForm] PostViewModelIn postViewModelIn)
+        {
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int id = Int32.Parse(idClaim.Value.Trim());
+            postViewModelIn.AccountPost = id;
+            PostViewModelOut postViewModelOut = PostService.Instance.CreateNewPost(postViewModelIn);
+            return Ok(postViewModelOut);
+        }
     }
 }

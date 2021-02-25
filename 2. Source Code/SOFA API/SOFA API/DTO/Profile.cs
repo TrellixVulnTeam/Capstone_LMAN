@@ -37,7 +37,7 @@ namespace SOFA_API.DTO
             this.AccountID = (int)row["AccountId"];
             this.FirstName = row["FirstName"].ToString();
             this.LastName = row["LastName"].ToString();
-            this.Gender = (bool)row["Gender"];
+            this.Gender = (row["Gender"] == null) ? true : (bool)row["Gender"];
             this.DOB = (DateTime)row["DOB"];
             this.Email = row["Email"].ToString();
             this.Phone = row["Phone"].ToString();

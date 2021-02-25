@@ -1,6 +1,6 @@
 ﻿using SOFA_API.Common;
 using SOFA_API.DTO;
-using SOFA_API.ViewModel.View_newsfeed;
+using SOFA_API.ViewModel.Newsfeed;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -24,10 +24,10 @@ namespace SOFA_API.DAO
 
         public PostDAO() { }
 
-        public PostViewModelOut getAllPost()
+        public List<Post> GetAllPost()
         {
-            PostViewModelOut listAllPost = null;
-            List<PostViewModelIn> listTemp = null;
+            List<Post> listAllPost = new List<Post>();
+
             String sql = "SELECT * FROM POST";
             try
             {
@@ -36,29 +36,24 @@ namespace SOFA_API.DAO
                 {
                     foreach (DataRow row in data.Rows)
                     {
-                        PostViewModelIn post = new PostViewModelIn(row);
-                        listTemp.Add(post);
+                        listAllPost.Add(new Post(row));
                     }
-                    listAllPost = new PostViewModelOut(listTemp);
                 }
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Utils.Instance.SaveLog(ex.ToString());
             }
             return listAllPost;
         }
 
-        public int getPostLike(int postID)
+        public int CountLikeOfPost(int postID)
         {
             int numberOfLike = 0;
-            String sql = "SELECT COUNT(*) AS NumberOfLike FROM dbo.[Like] WHERE PostId = " + postID;
+            String sql = "EXEC dbo.CountLikeOfPost @postID";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql);
-                if (data.Rows.Count > 0)
-                {
-                    numberOfLike = (int)(data.Rows[0]["NumberOfLike"]);
-                }
+                numberOfLike = (int)DataProvider.Instance.ExecuteScalar(sql, new object[] { postID });
             }
             catch (Exception ex)
             {
@@ -67,17 +62,13 @@ namespace SOFA_API.DAO
             return numberOfLike;
         }
 
-        public int getPostComment(int postID)
+        public int CountCommentOfPost(int postID)
         {
             int numberOfComment = 0;
-            String sql = "SELECT COUNT(*) AS NumberOfComment FROM dbo.[Comment] WHERE PostId = " + postID;
+            String sql = "EXEC dbo.CountCommentOfPost @postID";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql);
-                if (data.Rows.Count > 0)
-                {
-                    numberOfComment = (int)(data.Rows[0]["NumberOfComment"]);
-                }
+                numberOfComment = (int)DataProvider.Instance.ExecuteScalar(sql, new object[] { postID });
             }
             catch (Exception ex)
             {
@@ -86,17 +77,14 @@ namespace SOFA_API.DAO
             return numberOfComment;
         }
 
-        public int getPostRate(int postID)
+        public int GetPostRateAverage(int postID)
         {
             int avgRatePoint = 0;
-            String sql = "SELECT AVG(RatePoint) AS AvgRate FROM dbo.[Rate] WHERE PostId = " + postID;
+            String sql = "EXEC dbo.GetPostRateAverage @postID";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql);
-                if (data.Rows.Count > 0)
-                {
-                    avgRatePoint = (int)(data.Rows[0]["AvgRate"]);
-                }
+                avgRatePoint = (int)DataProvider.Instance.ExecuteScalar(sql, new object[] { postID });
+
             }
             catch (Exception ex)
             {
@@ -105,13 +93,13 @@ namespace SOFA_API.DAO
             return avgRatePoint;
         }
 
-        public List<Image> getPostImages(int postID)
+        public List<Image> GetPostImages(int postID)
         {
             List<Image> listImages = null;
-            String sql = "SELECT * FROM dbo.[Image] WHERE PostId = " + postID;
+            String sql = "EXEC dbo.GetImagesOfPostByPostID @id";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql);
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID });
                 if (data.Rows.Count > 0)
                 {
                     foreach (DataRow row in data.Rows)
@@ -129,28 +117,43 @@ namespace SOFA_API.DAO
         }
 
 
-        public int likePost(int postID, int accountLike)
+        public int LikePost(int postID, int accountLike)
         {
             int result = 0;
-            string sql = "INSERT INTO dbo.[Like] (PostId,AcountLike) VALUES ( " +postID+" , "+ accountLike+" )";
-            result = (int)DataProvider.Instance.ExecuteScalar(sql);
+            string sql = "EXEC dbo.LikePost @postID , @accountLike";
+            result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { postID, accountLike });
             return result;
         }
 
-        public int ratePost(int postID, int accountLike, int ratePoint)
+        public int RatePost(int postID, int accountLike, int ratePoint)
         {
             int result = 0;
-            string sql = "INSERT INTO dbo.[Rate] (PostId,AcountRate,RatePoint) VALUES ( " +postID+ " , " +accountLike+" , "+ratePoint+" )";
-            result = (int)DataProvider.Instance.ExecuteScalar(sql);
+            string sql = "EXEC dbo.CreateRate @postID , @accountRate , @ratePoint";
+            result = (int)DataProvider.Instance.ExecuteNonQuery(sql, new object[] { postID, accountLike, ratePoint });
             return result;
         }
 
-        public int commentPost(int accountID, int postID, string content)
+        public int CommentPost(int accountID, int postID, string content)
         {
             int result = 0;
-            string sql = "INSERT INTO dbo.[Comment] (AccountId,PostId,[Content]) VALUES ( " + accountID + " , " + postID + " , " + content + " )";
-            result = (int)DataProvider.Instance.ExecuteScalar(sql);
+            string sql = "EXEC dbo.CreateComment @accountID , @postID , @content";
+            result = (int)DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountID, postID, content });
             return result;
+        }
+
+        public Post CreatePost(Post post)
+        {
+            Post res = null;
+
+            string sql = "EXEC dbo.AddNewPost @content , @privacyID , @time , @accountPost";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { post.Content, post.PrivacyID, post.Time, post.PrivacyID });
+
+            if (data.Rows.Count > 0)
+            {
+                post = new Post(data.Rows[0]);
+            }
+
+            return res;
         }
     }
 }

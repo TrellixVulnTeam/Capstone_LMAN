@@ -1,6 +1,7 @@
 ﻿using SOFA_API.Common;
 using SOFA_API.DAO;
-using SOFA_API.ViewModel.View_newsfeed;
+using SOFA_API.DTO;
+using SOFA_API.ViewModel.Newsfeed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,30 +30,36 @@ namespace SOFA_API.Service
 
         public PostViewModelOut getAllPost()
         {
-            PostViewModelOut listAllPost = PostDAO.Instance.getAllPost();
-            foreach (PostViewModelIn item in listAllPost.ListPost)
-            {
-                item.NumberOfLike = PostDAO.Instance.getPostLike(item.ID);
-                item.NumberOfRate = PostDAO.Instance.getPostRate(item.ID);
-                item.NumberOfComment = PostDAO.Instance.getPostComment(item.ID);
-                item.ListImage = PostDAO.Instance.getPostImages(item.ID);
-            }
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
 
-            if (listAllPost != null)
+            try
             {
-                listAllPost.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                List<Post> listAllPost = PostDAO.Instance.GetAllPost();
+
+                foreach (Post item in listAllPost)
+                {
+                    PostModelOut postModelOut = new PostModelOut();
+                    postModelOut.SetPostDetail(item);
+                    postModelOut.NumberOfLike = PostDAO.Instance.CountLikeOfPost(item.ID);
+                    postModelOut.RateAverage = PostDAO.Instance.GetPostRateAverage(item.ID);
+                    postModelOut.NumberOfComment = PostDAO.Instance.CountCommentOfPost(item.ID);
+                    postModelOut.ListImage = PostDAO.Instance.GetPostImages(item.ID);
+                    postViewModelOut.ListPost.Add(postModelOut);
+                }
+                postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
-            else
+            catch (Exception e)
             {
-                listAllPost.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
             }
-            return listAllPost;
+            return postViewModelOut;
         }
 
-        public PostViewModelOut likePost(int postID, int accountLike)
+        public PostViewModelOut LikePost(int postID, int accountLike)
         {
             int ID = 0;
-            ID = PostDAO.Instance.likePost(postID, accountLike);
+            ID = PostDAO.Instance.LikePost(postID, accountLike);
             PostViewModelOut result = new PostViewModelOut();
             if (ID != 0)
             {
@@ -65,10 +72,10 @@ namespace SOFA_API.Service
             return result;
         }
 
-        public PostViewModelOut ratePost(int postID, int accountLike, int ratePoint)
+        public PostViewModelOut RatePost(int postID, int accountLike, int ratePoint)
         {
             int ID = 0;
-            ID = PostDAO.Instance.ratePost(postID, accountLike,ratePoint);
+            ID = PostDAO.Instance.RatePost(postID, accountLike, ratePoint);
             PostViewModelOut result = new PostViewModelOut();
             if (ID != 0)
             {
@@ -81,10 +88,10 @@ namespace SOFA_API.Service
             return result;
         }
 
-        public PostViewModelOut commentPost(int accountID, int postID, string content)
+        public PostViewModelOut CommentPost(int accountID, int postID, string content)
         {
             int ID = 0;
-            ID = PostDAO.Instance.commentPost(accountID, postID, content);
+            ID = PostDAO.Instance.CommentPost(accountID, postID, content);
             PostViewModelOut result = new PostViewModelOut();
             if (ID != 0)
             {
@@ -95,6 +102,13 @@ namespace SOFA_API.Service
                 result.Code = Const.REQUEST_CODE_FAILED;
             }
             return result;
+        }
+        public PostViewModelOut CreateNewPost(PostViewModelIn postViewModelIn)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
+            Post post = new Post(0, postViewModelIn.Content, postViewModelIn.PrivacyID, postViewModelIn.Time, postViewModelIn.AccountPost);
+            return postViewModelOut;
+
         }
     }
 }
