@@ -11,7 +11,7 @@ namespace SOFA_API.Controllers
     [ApiController]
     public class PostController : ControllerBase
     {
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetAllPost()
         {
             PostViewModelOut listAllPost = PostService.Instance.getAllPost();
@@ -21,31 +21,31 @@ namespace SOFA_API.Controllers
 
         [HttpPost("LikePost")]
         [Authorize]
-        public ActionResult LikePost(int postID)
+        public ActionResult LikePost([FromForm] PostViewModelIn postViewModelIn)
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             int id = Int32.Parse(idClaim.Value.Trim());
-            PostViewModelOut result = PostService.Instance.LikePost(postID, id);
+            PostViewModelOut result = PostService.Instance.LikePost(postViewModelIn.PostID, id);
             return Ok(result);
         }
 
         [HttpPost("RatePost")]
         [Authorize]
-        public ActionResult RatePost(int postID, int ratePoint)
+        public ActionResult RatePost([FromForm] PostViewModelIn postViewModelIn)
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             int id = Int32.Parse(idClaim.Value.Trim());
-            PostViewModelOut result = PostService.Instance.RatePost(postID, id, ratePoint);
+            PostViewModelOut result = PostService.Instance.RatePost(postViewModelIn.PostID, id, postViewModelIn.RatePoint);
             return Ok(result);
         }
 
         [HttpPost("CommentPost")]
         [Authorize]
-        public ActionResult CommentPost(int postID, string content)
+        public ActionResult CommentPost([FromForm] PostViewModelIn postViewModelIn)
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             int id = Int32.Parse(idClaim.Value.Trim());
-            PostViewModelOut result = PostService.Instance.CommentPost(id, postID, content);
+            PostViewModelOut result = PostService.Instance.CommentPost(id, postViewModelIn.PostID, postViewModelIn.Comment);
             return Ok(result);
         }
 

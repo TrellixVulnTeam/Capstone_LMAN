@@ -40,9 +40,9 @@ namespace SOFA_API.Service
                 {
                     PostModelOut postModelOut = new PostModelOut();
                     postModelOut.SetPostDetail(item);
-                    postModelOut.NumberOfLike = PostDAO.Instance.CountLikeOfPost(item.ID);
-                    postModelOut.RateAverage = PostDAO.Instance.GetPostRateAverage(item.ID);
-                    postModelOut.NumberOfComment = PostDAO.Instance.CountCommentOfPost(item.ID);
+                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
+                    postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
+                    postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
                     postModelOut.ListImage = PostDAO.Instance.GetPostImages(item.ID);
                     postViewModelOut.ListPost.Add(postModelOut);
                 }
@@ -59,7 +59,7 @@ namespace SOFA_API.Service
         public PostViewModelOut LikePost(int postID, int accountLike)
         {
             int ID = 0;
-            ID = PostDAO.Instance.LikePost(postID, accountLike);
+            ID = LikeDAO.Instance.LikePost(postID, accountLike);
             PostViewModelOut result = new PostViewModelOut();
             if (ID != 0)
             {
@@ -75,7 +75,7 @@ namespace SOFA_API.Service
         public PostViewModelOut RatePost(int postID, int accountLike, int ratePoint)
         {
             int ID = 0;
-            ID = PostDAO.Instance.RatePost(postID, accountLike, ratePoint);
+            ID = RateDAO.Instance.RatePost(postID, accountLike, ratePoint);
             PostViewModelOut result = new PostViewModelOut();
             if (ID != 0)
             {
@@ -91,7 +91,7 @@ namespace SOFA_API.Service
         public PostViewModelOut CommentPost(int accountID, int postID, string content)
         {
             int ID = 0;
-            ID = PostDAO.Instance.CommentPost(accountID, postID, content);
+            ID = CommentDAO.Instance.CommentPost(accountID, postID, content);
             PostViewModelOut result = new PostViewModelOut();
             if (ID != 0)
             {
