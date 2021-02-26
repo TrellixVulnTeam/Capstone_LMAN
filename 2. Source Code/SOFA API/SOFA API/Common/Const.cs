@@ -32,7 +32,13 @@ namespace SOFA_API.Common
         public const string REQUEST_CODE_SUCCESSFULLY = "SUCCESSFULLY";
         public const string REQUEST_CODE_FAILED = "FAILED";
 
-        public static int ADMIN_ROLE_ID = 1;
-        public static int USER_ROLE_ID = 2;
+        public const int ADMIN_ROLE_ID = 1;
+        public const int USER_ROLE_ID = 2;
+
+
+        public const string ASSETS_PATH = @"C:\inetpub\wwwroot\assets\";
+        public const string ASSETS_PATH_AVATAR = @"@username\avatar\";
+        public const string ASSETS_PATH_POST_IMAGE = @"@username\post_image\";
+        public const string ASSETS_PATH_MESSAGE_IMAGE = @"@username\message_image\";
     }
 }

@@ -9,8 +9,8 @@ namespace SOFA_API.DAO
 {
     public class PostImageDAO
     {
-        private PostImageDAO instance;
-        public PostImageDAO Instance
+        private static PostImageDAO instance;
+        public static PostImageDAO Instance
         {
             get
             {
@@ -44,7 +44,7 @@ namespace SOFA_API.DAO
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID });
             if (data.Rows.Count > 0)
             {
-                for(int i = 0; i < data.Rows.Count; i++)
+                for (int i = 0; i < data.Rows.Count; i++)
                 {
                     images.Add(new Image(data.Rows[i]));
                 }
@@ -64,10 +64,17 @@ namespace SOFA_API.DAO
             }
             return res;
         }
+        public int UpdateImage(int imageID, string url)
+        {
+            int res = 0;
+            string sql = "EXEC dbo.UpdateImage @imageID , @url";
+            res = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { imageID, url });
+            return res;
+        }
         public List<Image> AddListImagePost(List<Image> images)
         {
             List<Image> listImage = new List<Image>();
-            foreach(Image image in images)
+            foreach (Image image in images)
             {
                 listImage.Add(AddImagePost(image));
             }

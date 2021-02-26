@@ -13,6 +13,7 @@ namespace SOFA_API.DTO
 
         public Image(int postID, string url)
         {
+            ID = 0;
             PostID = postID;
             Url = url;
         }

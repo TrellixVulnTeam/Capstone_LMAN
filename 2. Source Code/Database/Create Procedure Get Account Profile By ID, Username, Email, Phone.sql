@@ -1,6 +1,27 @@
 USE CapstonesNoRelation
 GO
 
+DROP PROC IF EXISTS UpdateProfileByAccountID
+GO
+CREATE PROC UpdateProfileByAccountID
+(@accountID int, @firstName nvarchar(50), @lastName nvarchar(50), @gender bit, @dob date, @email nvarchar(50), @phone nvarchar(50), @address nvarchar(max), @avatar nvarchar(max) )
+AS
+BEGIN
+   UPDATE [dbo].[Profile]
+   SET [FirstName] = @firstName
+      ,[LastName] = @lastName
+      ,[Gender] = @gender
+      ,[DOB] = @dob
+      ,[Email] = @email
+      ,[Phone] = @phone
+      ,[Address] = @address
+      ,[Avatar] = @avatar
+ WHERE AccountId = @accountID
+END
+GO
+
+EXEC updateProfileByAccountID 1, 'a', 'bcd', false, '2020-02-02', 'havietdung@gmail.com', '123', null, 'assets/Image/admin/avatar.png'
+
 DROP PROC IF EXISTS GetProfileByUsername
 GO
 CREATE PROC GetProfileByUsername

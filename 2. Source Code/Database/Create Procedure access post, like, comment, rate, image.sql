@@ -1,10 +1,24 @@
 USE CapstonesNoRelation
 GO
 
+DROP PROC IF EXISTS GetPostByID
+GO
+CREATE PROC GetPostByID
+@postID INT
+AS
+BEGIN
+	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar 
+	FROM dbo.Post
+	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
+	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
+	WHERE Post.Id = @postID;
+END
+GO
+
 DROP PROC IF EXISTS AddNewPost
 GO
 CREATE PROC AddNewPost
-@content NVARCHAR(MAX), @privacyID INT, @time DATETIME, @accountPost INT
+@content NVARCHAR(MAX), @privacyID INT, @accountPost INT
 AS
 BEGIN
 	INSERT INTO dbo.Post
@@ -47,6 +61,7 @@ BEGIN
 	DELETE FROM dbo.[Like] WHERE PostId = @postID
 	DELETE FROM dbo.Rate WHERE PostId = @postID
 	DELETE FROM dbo.MarkUpPost WHERE PostId = @postID
+	DELETE FROM dbo.Post WHERE Id = @postID
 END
 GO
 
@@ -66,6 +81,15 @@ BEGIN
 	(   @postID,  -- PostId - int
 	    @url -- Url - nvarchar(max)
 	)
+END
+GO
+DROP PROC IF EXISTS UpdateImage
+GO
+CREATE PROC UpdateImage
+@imageID INT, @url NVARCHAR(MAX)
+AS
+BEGIN
+	UPDATE [Image] SET [Url] = url WHERE ID = @imageID
 END
 GO
 
@@ -221,3 +245,9 @@ BEGIN
 	WHERE PostId = @postID
 END
 GO
+
+SELECT * FROM dbo.Post
+
+EXEC dbo.DeletePost @postID = 2 -- int
+
+EXEC dbo.GetPostByID @postID = 3 -- int

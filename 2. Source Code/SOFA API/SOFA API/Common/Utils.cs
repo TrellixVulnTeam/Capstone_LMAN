@@ -27,7 +27,10 @@ namespace SOFA_API.Common
                 instance = value;
             }
         }
-
+        /// <summary>
+        /// Save log to file E:\Log.txt
+        /// </summary>
+        /// <param name="text">Message that you want to save</param>
         public void SaveLog(string text)
         {
             string path = @"E:\Log.txt";
@@ -48,6 +51,36 @@ namespace SOFA_API.Common
                 }
             }
         }
+        /// <summary>
+        /// Save Image to server storage
+        /// </summary>
+        /// <param name="content">Image in base64 string format</param>
+        /// <param name="path">Path save image in server (@username/avatar/sample.png)</param>
+        /// <param name="fileName">Name of file save in storage</param>
+        public void SaveImageFromBase64String(string content, string path, string fileName)
+        {
+            var bytes = Convert.FromBase64String(content);
+            path = Path.Combine(Const.ASSETS_PATH, path);
+            //Check if directory exist
+            if (!System.IO.Directory.Exists(path))
+            {
+                //Create directory if it doesn't exist
+                Directory.CreateDirectory(path);
+            }
+            //set the image path
+            string imgPath = Path.Combine(path, fileName);
+            using (var imageFile = new FileStream(imgPath, FileMode.Create))
+            {
+                imageFile.Write(bytes, 0, bytes.Length);
+                imageFile.Flush();
+            }
+        }
+        /// <summary>
+        /// Send mail to user
+        /// </summary>
+        /// <param name="destination">Email of receiver</param>
+        /// <param name="subject">Subject of mail</param>
+        /// <param name="content">Content of mail</param>
         public void SendMail(string destination, string subject, string content)
         {
             SaveLog("Send mail: " + destination + "\r\n" + subject + "\r\n" + content);
@@ -61,6 +94,12 @@ namespace SOFA_API.Common
             smtpClient.EnableSsl = true;
             smtpClient.Send(mailMessage);
         }
+
+        /// <summary>
+        /// Send sms message to user
+        /// </summary>
+        /// <param name="phoneNumber">Phone number of receiver</param>
+        /// <param name="content">Content of message</param>
         public void SendSMS(string phoneNumber, string content)
         {
             SaveLog("Send SMS: " + phoneNumber + "\r\n" + content);
@@ -68,6 +107,17 @@ namespace SOFA_API.Common
             String[] phone = new string[] { phoneNumber };
             String response = speedSMSAPI.sendSMS(phone, content, 3, Const.SPEEDSMS_SENDER_ANHTRANG);
             SaveLog(response);
+        }
+        /// <summary>
+        /// Get ID of user in User claim
+        /// </summary>
+        /// <param name="claim">User.Claims</param>
+        /// <returns>Id of user (int)</returns>
+        public int GetUserID(IEnumerable<System.Security.Claims.Claim> claims)
+        {
+            var idClaim = claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int id = Int32.Parse(idClaim.Value.Trim());
+            return id;
         }
     }
 }

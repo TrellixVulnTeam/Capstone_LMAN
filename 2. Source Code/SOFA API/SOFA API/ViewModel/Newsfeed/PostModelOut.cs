@@ -13,6 +13,10 @@ namespace SOFA_API.ViewModel.Newsfeed
         public int PrivacyID { get; set; }
         public DateTime Time { get; set; }
         public int AccountPost { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Avatar { get; set; }
+        public bool Gender { get; set; }
         public List<Image> ListImage { get; set; }
         public List<Like> ListLike { get; set; }
         public List<Comment> ListComment { get; set; }
@@ -22,15 +26,26 @@ namespace SOFA_API.ViewModel.Newsfeed
         public int RateAverage { get; set; }
         public PostModelOut()
         {
+            ListImage = new List<Image>();
+            ListLike = new List<Like>();
+            ListComment = new List<Comment>();
+            ListRate = new List<Rate>();
+            NumberOfLike = 0;
+            NumberOfComment = 0;
+            RateAverage = 0;
         }
 
-        public PostModelOut(int iD, string content, int privacyID, DateTime time, int accountPost, List<Image> listImage, List<Like> listLike, List<Comment> listComment, List<Rate> listRate, int numberOfLike, int numberOfComment, int rateAverage)
+        public PostModelOut(int iD, string content, int privacyID, DateTime time, int accountPost, string firstName, string lastName, string avatar, bool gender, List<Image> listImage, List<Like> listLike, List<Comment> listComment, List<Rate> listRate, int numberOfLike, int numberOfComment, int rateAverage)
         {
             ID = iD;
             Content = content;
             PrivacyID = privacyID;
             Time = time;
             AccountPost = accountPost;
+            FirstName = firstName;
+            LastName = lastName;
+            Avatar = avatar;
+            Gender = gender;
             ListImage = listImage;
             ListLike = listLike;
             ListComment = listComment;
@@ -47,6 +62,13 @@ namespace SOFA_API.ViewModel.Newsfeed
             PrivacyID = post.PrivacyID;
             Time = post.Time;
             AccountPost = post.AccountPost;
+        }
+        public void SetAccountPost(DTO.Profile profile)
+        {
+            FirstName = profile.FirstName;
+            LastName = profile.LastName;
+            Gender = profile.Gender;
+            Avatar = profile.AvatarUri;
         }
     }
 }
