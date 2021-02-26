@@ -34,7 +34,7 @@ namespace SOFA_API.DAO
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Profile by it accountID</returns>
-        public ProfileViewModelOut GetProfileModelByAccountID(int accountId)
+        public ProfileViewModelOut GetProfileModelByAccountID (int accountId)
         {
             ProfileViewModelOut profile = null;
 
@@ -50,6 +50,7 @@ namespace SOFA_API.DAO
             catch (Exception e)
             {
                 Utils.Instance.SaveLog(e.ToString());
+                throw e;
             }           
             return profile;
         }
@@ -74,6 +75,7 @@ namespace SOFA_API.DAO
             catch (Exception e)
             {
                 Utils.Instance.SaveLog(e.ToString());
+                throw e;
             }
             
             return data;

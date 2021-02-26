@@ -39,15 +39,26 @@ namespace SOFA_API.Service
         /// <returns>Profile by it accountID</returns>
         public ProfileViewModelOut GetProfileModelByAccountID(int accountId)
         {
-            ProfileViewModelOut profile = ProfileDAO.Instance.GetProfileModelByAccountID(accountId);
-            if(profile != null)
+            ProfileViewModelOut profile = null;
+            try
             {
-                profile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                profile = ProfileDAO.Instance.GetProfileModelByAccountID(accountId);
+                if (profile != null)
+                {
+                    profile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                {
+                    profile = new ProfileViewModelOut();
+                    profile.Code = Const.REQUEST_CODE_FAILED;
+                    throw new Exception("Can't get profile");
+                }
             }
-            else
+            catch(Exception e)
             {
+                profile.ErrorMessage = e.Message;
                 profile.Code = Const.REQUEST_CODE_FAILED;
-            }            
+            }                 
             return profile;
         }
 
@@ -60,66 +71,83 @@ namespace SOFA_API.Service
         public ProfileViewModelOut UpdateProfileByAccountID(int accountId, ProfileViewModelIn profileIn)
         {
             ProfileViewModelOut newProfile  = new ProfileViewModelOut();
-            if (String.IsNullOrEmpty(profileIn.FirstName))
+            try
             {
-                newProfile.Code = Const.REQUEST_CODE_FAILED;
-                newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_FIRST_NAME;
-            }
-            else if (String.IsNullOrEmpty(profileIn.LastName))
-            {
-                newProfile.Code = Const.REQUEST_CODE_FAILED;
-                newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_LAST_NAME;
-            }
-            else if (String.IsNullOrEmpty(profileIn.Phone))
-            {
-                newProfile.Code = Const.REQUEST_CODE_FAILED;
-                newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_PHONE_NUMBER;
-            }
-            else
-            {
-                //get current data
-                ProfileViewModelOut currentProfile = ProfileService.Instance.GetProfileModelByAccountID(accountId);
-
-                //update avatar
-                String path = @"C:\inetpub\wwwroot\assets\Image\" + currentProfile.UserName + @"\";
-
-                //Check if directory exist
-                if (!System.IO.Directory.Exists(path))
+                if (String.IsNullOrEmpty(profileIn.FirstName))
                 {
-                    //Create directory if it doesn't exist
-                    Directory.CreateDirectory(path);
+                    newProfile.Code = Const.REQUEST_CODE_FAILED;
+                    newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_FIRST_NAME;
+                    throw new Exception(MessageUtils.ERROR_MISSING_FIRST_NAME);
                 }
-
-                //get current file name
-                string imageName = Path.GetFileNameWithoutExtension(currentProfile.AvatarUri);
-
-                //make new file name
-
-                int newImageName = 1;
-                bool checkConvert = Int32.TryParse(imageName, out newImageName);
-                if (checkConvert)
+                else if (String.IsNullOrEmpty(profileIn.LastName))
                 {
-                    newImageName++;
+                    newProfile.Code = Const.REQUEST_CODE_FAILED;
+                    newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_LAST_NAME;
+                    throw new Exception(MessageUtils.ERROR_MISSING_LAST_NAME);
                 }
-
-                //set the image path
-                string imgPath = Path.Combine(path, (newImageName.ToString() + ".jpg"));
-
-                byte[] imageBytes = Convert.FromBase64String(profileIn.Avatar.Trim().Replace(" ", "+"));
-                System.IO.File.WriteAllBytes(imgPath, imageBytes);
-                profileIn.AvatarUri = imgPath;
-
-                int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, profileIn);
-                if (result == 1)
+                else if (String.IsNullOrEmpty(profileIn.Phone))
                 {
-                    newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY;                   
+                    newProfile.Code = Const.REQUEST_CODE_FAILED;
+                    newProfile.ErrorMessage = MessageUtils.ERROR_MISSING_PHONE_NUMBER;
+                    throw new Exception(MessageUtils.ERROR_MISSING_PHONE_NUMBER);
                 }
                 else
                 {
-                    newProfile.Code = Const.REQUEST_CODE_FAILED;
-                    newProfile.ErrorMessage = MessageUtils.ERROR_UPDATE_FAILED;
+                    //get current data
+                    ProfileViewModelOut currentProfile = ProfileService.Instance.GetProfileModelByAccountID(accountId);
+
+                    //update avatar
+                    String path = @"C:\inetpub\wwwroot\assets\Image\" + currentProfile.UserName + @"\";
+
+                    //Check if directory exist
+                    if (!System.IO.Directory.Exists(path))
+                    {
+                        //Create directory if it doesn't exist
+                        Directory.CreateDirectory(path);
+                    }
+
+                    //get current file name
+                    string imageName = Path.GetFileNameWithoutExtension(currentProfile.AvatarUri);
+
+                    //make new file name
+
+                    int newImageName = 1;
+                    bool checkConvert = Int32.TryParse(imageName, out newImageName);
+                    if (checkConvert)
+                    {
+                        newImageName++;
+                    }
+                    else
+                    {
+                        newProfile.Code = Const.REQUEST_CODE_FAILED;
+                        throw new Exception("Image name is wrong format");
+                    }
+
+                    //set the image path
+                    string imgPath = Path.Combine(path, (newImageName.ToString() + ".jpg"));
+
+                    byte[] imageBytes = Convert.FromBase64String(profileIn.Avatar.Trim().Replace(" ", "+"));
+                    System.IO.File.WriteAllBytes(imgPath, imageBytes);
+                    profileIn.AvatarUri = imgPath;
+
+                    int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, profileIn);
+                    if (result == 1)
+                    {
+                        newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    }
+                    else
+                    {
+                        newProfile.Code = Const.REQUEST_CODE_FAILED;
+                        newProfile.ErrorMessage = MessageUtils.ERROR_UPDATE_FAILED;
+                        throw new Exception(MessageUtils.ERROR_UPDATE_FAILED);
+                    }
                 }
-            }                     
+            }
+            catch(Exception e)
+            {
+                newProfile.ErrorMessage = e.Message;
+                newProfile.Code = Const.REQUEST_CODE_FAILED;
+            }                             
             return newProfile;
         }
     }
