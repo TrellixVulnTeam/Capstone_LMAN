@@ -61,6 +61,7 @@ BEGIN
 	    PostId,
 	    Url
 	)
+	OUTPUT Inserted.*
 	VALUES
 	(   @postID,  -- PostId - int
 	    @url -- Url - nvarchar(max)
@@ -81,7 +82,7 @@ BEGIN
 	)
 	VALUES
 	(   @postID, -- PostId - int
-	    @accountLike  -- AccountLike - int
+	    @accountLike  -- AcountLike - int
 	    )
 END
 GO
@@ -192,7 +193,7 @@ BEGIN
 	)
 	VALUES
 	(   @postID, -- PostId - int
-	    @accountRate, -- AccountRate - int
+	    @accountRate, -- AcountRate - int
 	    @ratePoint  -- RatePoint - int
 	    )
 END
