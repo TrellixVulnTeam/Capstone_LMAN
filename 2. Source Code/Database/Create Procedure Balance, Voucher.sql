@@ -1,3 +1,5 @@
+USE CapstonesNoRelation
+GO
 /****** Object:  StoredProcedure [dbo].[AddVoucher]    Script Date: 2/24/2021 4:12:46 PM ******/
 SET ANSI_NULLS ON
 GO

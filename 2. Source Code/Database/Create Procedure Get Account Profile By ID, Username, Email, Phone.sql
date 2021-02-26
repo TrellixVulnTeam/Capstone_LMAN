@@ -20,8 +20,6 @@ BEGIN
 END
 GO
 
-EXEC updateProfileByAccountID 1, 'a', 'bcd', false, '2020-02-02', 'havietdung@gmail.com', '123', null, 'assets/Image/admin/avatar.png'
-
 DROP PROC IF EXISTS GetProfileByUsername
 GO
 CREATE PROC GetProfileByUsername

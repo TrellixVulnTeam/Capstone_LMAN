@@ -1,3 +1,5 @@
+USE CapstonesNoRelation
+GO
 DROP PROC IF EXISTS AddNewAccount
 GO
 CREATE PROCEDURE AddNewAccount @Username nvarchar(50), @Password nvarchar(MAX), @Email nvarchar(MAX), @Phone nvarchar(50), @RoleId int

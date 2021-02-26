@@ -89,7 +89,7 @@ CREATE PROC UpdateImage
 @imageID INT, @url NVARCHAR(MAX)
 AS
 BEGIN
-	UPDATE [Image] SET [Url] = url WHERE ID = @imageID
+	UPDATE [Image] SET [Url] = @url WHERE ID = @imageID
 END
 GO
 
@@ -245,9 +245,3 @@ BEGIN
 	WHERE PostId = @postID
 END
 GO
-
-SELECT * FROM dbo.Post
-
-EXEC dbo.DeletePost @postID = 2 -- int
-
-EXEC dbo.GetPostByID @postID = 3 -- int
