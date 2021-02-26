@@ -1,4 +1,5 @@
-﻿using SOFA_API.DTO;
+﻿using SOFA_API.Common;
+using SOFA_API.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,7 +20,38 @@ namespace SOFA_API.DAO
             }
             private set { instance = value; }
         }
-
+        /// <summary>
+        /// Get List image of post
+        /// </summary>
+        /// <param name="postID">ID of the post</param>
+        /// <returns>An image list</returns>
+        public List<Image> GetPostImages(int postID)
+        {
+            List<Image> listImages = new List<Image>();
+            String sql = "EXEC dbo.GetImagesOfPostByPostID @id";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        Image image = new Image(row);
+                        listImages.Add(image);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+            }
+            return listImages;
+        }
+        /// <summary>
+        /// Get image by image by id
+        /// </summary>
+        /// <param name="id">ID of image</param>
+        /// <returns>An image</returns>
         public Image GetImageByID(int id)
         {
             Image image = null;
@@ -34,24 +66,11 @@ namespace SOFA_API.DAO
 
             return image;
         }
-
-        public List<Image> GetImagesOfPost(int postID)
-        {
-            List<Image> images = new List<Image>();
-
-            string sql = "EXEC dbo.GetImagesOfPostByPostID @id";
-
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID });
-            if (data.Rows.Count > 0)
-            {
-                for (int i = 0; i < data.Rows.Count; i++)
-                {
-                    images.Add(new Image(data.Rows[i]));
-                }
-            }
-
-            return images;
-        }
+        /// <summary>
+        /// Add a new image of post into database
+        /// </summary>
+        /// <param name="image">Data of the image</param>
+        /// <returns>Image that just inserted into database</returns>
         public Image AddImagePost(Image image)
         {
             Image res = null;
@@ -64,6 +83,12 @@ namespace SOFA_API.DAO
             }
             return res;
         }
+        /// <summary>
+        /// Update data of an image
+        /// </summary>
+        /// <param name="imageID">ID of the image</param>
+        /// <param name="url">Url of the image that you want to update</param>
+        /// <returns>1 if successfully 0 if failed</returns>
         public int UpdateImage(int imageID, string url)
         {
             int res = 0;

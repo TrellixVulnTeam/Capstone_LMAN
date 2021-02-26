@@ -15,7 +15,7 @@ namespace SOFA_API.Controllers
         [HttpGet]
         public ActionResult GetAllPost()
         {
-            PostViewModelOut listAllPost = PostService.Instance.getAllPost();
+            PostViewModelOut listAllPost = PostService.Instance.GetAllPost();
             return Ok(listAllPost);
         }
 

@@ -49,33 +49,7 @@ namespace SOFA_API.DAO
             }
             return listAllPost;
         }
-        /// <summary>
-        /// Get List image of post
-        /// </summary>
-        /// <param name="postID">ID of the post</param>
-        /// <returns>An image list</returns>
-        public List<Image> GetPostImages(int postID)
-        {
-            List<Image> listImages = null;
-            String sql = "EXEC dbo.GetImagesOfPostByPostID @id";
-            try
-            {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID });
-                if (data.Rows.Count > 0)
-                {
-                    foreach (DataRow row in data.Rows)
-                    {
-                        Image image = new Image(row);
-                        listImages.Add(image);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Utils.Instance.SaveLog(ex.ToString());
-            }
-            return listImages;
-        }
+        
         /// <summary>
         /// Create post in database
         /// </summary>

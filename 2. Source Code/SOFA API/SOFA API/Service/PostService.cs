@@ -30,7 +30,7 @@ namespace SOFA_API.Service
 
         public PostService() { }
 
-        public PostViewModelOut getAllPost()
+        public PostViewModelOut GetAllPost()
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
 
@@ -40,12 +40,14 @@ namespace SOFA_API.Service
 
                 foreach (Post item in listAllPost)
                 {
+                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
                     PostModelOut postModelOut = new PostModelOut();
                     postModelOut.SetPostDetail(item);
+                    postModelOut.SetAccountPost(profile);
                     postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
                     postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
                     postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
-                    postModelOut.ListImage = PostDAO.Instance.GetPostImages(item.ID);
+                    postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
                     postViewModelOut.ListPost.Add(postModelOut);
                 }
                 postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -107,7 +109,7 @@ namespace SOFA_API.Service
                 postModelOut.ListLike = LikeDAO.Instance.GetAllLikeOfPost(postViewModelIn.PostID);
                 postModelOut.ListComment = CommentDAO.Instance.GetAllCommentOfPost(postViewModelIn.PostID);
                 postModelOut.ListRate = RateDAO.Instance.GetListOfRate(postViewModelIn.PostID);
-                postModelOut.ListImage = PostImageDAO.Instance.GetImagesOfPost(postViewModelIn.PostID);
+                postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(postViewModelIn.PostID);
                 postModelOut.NumberOfComment = postModelOut.ListComment.Count;
                 postModelOut.NumberOfLike = postModelOut.ListLike.Count;
                 postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(postViewModelIn.PostID);
