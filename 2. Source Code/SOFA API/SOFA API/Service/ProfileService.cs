@@ -99,13 +99,6 @@ namespace SOFA_API.Service
                     //update avatar
                     String path = @"C:\inetpub\wwwroot\assets\Image\" + currentProfile.UserName + @"\";
 
-                    //Check if directory exist
-                    if (!System.IO.Directory.Exists(path))
-                    {
-                        //Create directory if it doesn't exist
-                        Directory.CreateDirectory(path);
-                    }
-
                     //get current file name
                     string imageName = Path.GetFileNameWithoutExtension(currentProfile.AvatarUri);
 
@@ -126,8 +119,9 @@ namespace SOFA_API.Service
                     //set the image path
                     string imgPath = Path.Combine(path, (newImageName.ToString() + ".jpg"));
 
-                    byte[] imageBytes = Convert.FromBase64String(profileIn.Avatar.Trim().Replace(" ", "+"));
-                    System.IO.File.WriteAllBytes(imgPath, imageBytes);
+                    //save image
+                    Utils.Instance.SaveImageFromBase64String(profileIn.Avatar.Trim(), path, (newImageName.ToString() + ".png"));
+
                     profileIn.AvatarUri = imgPath;
 
                     int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, profileIn);
