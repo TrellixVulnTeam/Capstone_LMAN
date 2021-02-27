@@ -1,0 +1,10 @@
+export const ERROR_VERFICATION_DONT_HAVE_EMAIL_AND_PHONE = "Can't miss both phone number and email";
+export const ERROR_MISSING_FIRST_NAME = "Missing first name";
+export const ERROR_MISSING_LAST_NAME = "Missing last name";
+export const ERROR_MISSING_PHONE_NUMBER = "Missing phone number";
+export const ERROR_UPDATE_FAILED = "Update failed!";
+export const ERROR_TOPUP_FAILED = "Top Up failed!";
+export const ERROR_ADD_VOUCHER_FAILED = "Add voucher failed!";
+export const ERROR_VERIFICATION_DONT_HAVE_EMAIL_AND_PHONE = "Can't miss both phone number and email";
+export const ERROR_VERIFICATION_DONT_HAVE_EMAIL = "Email not found";
+export const ERROR_VERIFICATION_ACCOUNT_NOT_FOUND = "Account not found";
