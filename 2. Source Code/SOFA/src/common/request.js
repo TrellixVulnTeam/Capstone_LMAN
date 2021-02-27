@@ -1,11 +1,15 @@
-const Get = (uri, header) => {
+const Get = (uri, header, data) => {
     return new Promise((resolve, reject) => {
         fetch(uri, {
             method: 'GET',
-            headers: header
+            headers: header,
+            body: data
         })
-            .then((response) => response.json())
+            .then((response) => {
+                return response.json();
+            })
             .then((json) => {
+                console.log(json);
                 if (json && json.code && json.code === 'TIME_OUT') {
                     reject(json);
                 } else {
@@ -25,8 +29,9 @@ const Post = (uri, header, data) => {
             headers: header,
             body: data
         })
-            .then((response) => response.json())
+            .then((response) => { console.log(response); return response.json(); })
             .then((json) => {
+                console.log(json);
                 if (json && json.code) {
                     resolve(json);
                 }

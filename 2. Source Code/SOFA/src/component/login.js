@@ -13,8 +13,8 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: 'admin',
-      password: '123',
+      username: 'user',
+      password: '123456',
       loginStatus: false,
       isLoading: false
     }
@@ -43,24 +43,28 @@ export default class Login extends Component {
   onPressLogin() {
     this.setState({ isLoading: true });
     const { username, password, account, token } = this.state;
-    let header = { 'Content-Type': 'multipart/form-data' };
+    let header = {
+      "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+      "Content-Type": "multipart/form-data",
+      "Host":"chientranhvietnam.org"
+    };
     let data = new FormData();
     data.append('username', username);
     data.append('password', password);
     console.log('Login: ' + username + ' - ' + password);
-    let url = Const.domain + 'api/auth/token';
+    let url = Const.domain + 'api/auth/login';
     Request.Post(url, header, data)
       .then(response => {
-        if (response && response.code && response.code == 'LOGIN_SUCCESSFULY') {
+        if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
           this.setState({ loginStatus: true })
           console.log(response.token);
           this.storeData('token', response.token)
             .then(res => {
               this.setState({ isLoading: false });
-              this.props.navigation.navigate('Home');
+              this.props.navigation.navigate('BottomNav');
             });
         } else {
-          if (response.code == 'LOGIN_FAILED') {
+          if (response.code == Const.REQUEST_CODE_FAILED) {
             this.setState({ isLoading: false });
             Alert.alert('Login status', 'Thông tin tài khoản hoặc mật khẩu không chính xác');
           }

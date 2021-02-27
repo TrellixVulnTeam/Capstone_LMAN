@@ -2,7 +2,8 @@ export const dimWidth = 400;
 export const dimHeigth = 711;
 export const Horizontal = 'Horizontal';
 export const Vertical = 'Vertical';
-export const domain = 'http://139.180.214.58/TestJWT/';
+export const domain = 'https://chientranhvietnam.org/sofaapi/'
+export const assets_domain = 'https://chientranhvietnam.org/assets/'
 
 export const TIME_WAIT_VERIFICATION = 60;
 export const VERIFICATION_TIME_WAIT = 60;

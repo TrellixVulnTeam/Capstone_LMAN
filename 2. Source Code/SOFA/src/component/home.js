@@ -58,13 +58,12 @@ export default class Home extends Component {
                         "Accept": 'application/json',
                         "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2),
                     };
-                    let url = Const.domain + 'api/account';
+                    let url = Const.domain + 'api/profile';
                     Request.Get(url, header)
                         .then(response => {
-                            if (response && response.code && response.code == 'SUCCESSFULY') {
-                                this.setState({ account: response.account });
-                                this.setState({ avatarUri: 'http://139.180.214.58/assets/Image/' + response.account.userName + '/avatar.png?time=' + new Date() });
-                                console.log('http://139.180.214.58/assets/Image/' + response.account.userName + '/avatar.png' + '?time=' + new Date().toString().replace('\s\g', ''));
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.setState({ account: response });
+                                this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
                                 this.setState({ token: result.toString().substr(1, result.length - 2) });
                             } else {
                                 this.props.navigation.navigate('Login')
