@@ -55,6 +55,7 @@ namespace SOFA_API.ViewModel.Profile
             this.DOB = (row["DOB"] == null) ? new DateTime(1999, 01, 01) : (DateTime)row["DOB"];
             this.Email = row["Email"].ToString();
             this.Phone = row["Phone"].ToString();
+            this.Address = row["Address"].ToString();
             this.AvatarUri = row["Avatar"].ToString();
             this.Avatar = "";
             this.FollowerNumber = 0;
