@@ -21,14 +21,14 @@ namespace SOFA_API.ViewModel.Profile
         public string AvatarUri { get; set; }
         public string Avatar { get; set; }
         public int FollowerNumber { get; set; }
-        public List<Post> ListPost { get; set; }
+        public int PostNumber { get; set; }
         public string UserName { get; set; }
         public string Role { get; set; }
         public ProfileViewModelOut():base()
         {
 
         }
-        public ProfileViewModelOut(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, string avatar, int followerNumber, List<Post> listPost, string username, string role)
+        public ProfileViewModelOut(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, string avatar, int followerNumber, int postNumber, string username, string role)
         {
             this.AccountID = accountID;
             this.FirstName = firstName;
@@ -41,7 +41,7 @@ namespace SOFA_API.ViewModel.Profile
             this.AvatarUri = avatarUri;
             this.Avatar = avatar;
             this.FollowerNumber = followerNumber;
-            this.ListPost = listPost;
+            this.PostNumber = postNumber;
             this.UserName = username;
             this.Role = role;
         }
@@ -59,7 +59,7 @@ namespace SOFA_API.ViewModel.Profile
             this.AvatarUri = row["Avatar"].ToString();
             this.Avatar = "";
             this.FollowerNumber = 0;
-            this.ListPost = null;
+            this.PostNumber = 0;
             this.UserName = row["UserName"].ToString();
             this.Role = null;
         }

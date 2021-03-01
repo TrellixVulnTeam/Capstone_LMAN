@@ -39,13 +39,23 @@ namespace SOFA_API.DAO
             ProfileViewModelOut profile = null;
 
             string sql = "EXEC getProfileByAccountID @accountId";
+            string sqlGetPostNum = "Select COUNT(*) from Post where AccountPost = " + accountId;
+            string sqlGetFollowNum = "Select COUNT(*) from AccountRelation where AccountId2 = " + accountId + " and RelationType = 1";
             try
             {
+                //Get data of profile
                 DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId });
                 if (data.Rows.Count > 0)
                 {
                     profile = new ProfileViewModelOut(data.Rows[0]);
                 }
+                //Get number of post
+                int postNum = (int)DataProvider.Instance.ExecuteScalar(sqlGetPostNum);
+                profile.PostNumber = postNum;
+
+                //Get follow of post
+                int followNum = (int)DataProvider.Instance.ExecuteScalar(sqlGetFollowNum);
+                profile.FollowerNumber = followNum;
             }
             catch (Exception e)
             {
