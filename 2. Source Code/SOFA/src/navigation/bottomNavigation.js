@@ -65,7 +65,7 @@ export default function Navigation() {
         />
         <Tab.Screen
           name="Profile"
-          component={NotificationStack}
+          component={ProfileStack}
           options={{
             title: 'Tài khoản',
             tabBarIcon: ({color, size}) => (
