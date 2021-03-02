@@ -1,21 +1,14 @@
 import { StyleSheet } from 'react-native';
+import { scale } from '../common/utils';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
+import { Vertical, Horizontal } from '../common/const';
 
 export const common = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f0f5' },
-  header: {
-    alignContent: 'center',
-    alignItems: 'center',
-    paddingTop: Utils.scale(20, Const.Vertical),
-    backgroundColor: 'orange',
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-  },
-  labelTitle: {
-    fontSize: Utils.scale(40, Const.Horizontal),
-    color: 'white',
-    fontFamily: 'OpenSansCondensed-Light',
+  container: {
+    paddingLeft: scale(10, Horizontal),
+    flex: 1,
+    backgroundColor: '#FFF5F1'
   },
   flexRow: {
     flexDirection: 'row',
@@ -24,6 +17,7 @@ export const common = StyleSheet.create({
     flexDirection: 'column',
   },
 });
+
 export const login = StyleSheet.create({
   container: { flex: 1 },
 })
@@ -71,8 +65,8 @@ export const profile = StyleSheet.create({
     textAlign: "center",
     alignSelf: 'center',
     color: 'white',
-    fontSize: Utils.scale(20, Const.Horizontal),   
-  }, 
+    fontSize: Utils.scale(20, Const.Horizontal),
+  },
 
   button: {
     paddingTop: Utils.scale(10, Const.Vertical),
@@ -103,10 +97,83 @@ export const profile = StyleSheet.create({
   },
 
   info_text: {
-    fontSize: Utils.scale(17.5, Const.Horizontal), 
+    fontSize: Utils.scale(17.5, Const.Horizontal),
     marginLeft: Utils.scale(10, Const.Horizontal),
     color: "#ff5050"
   }
 
 
 })
+
+
+export const newsfeed = StyleSheet.create({
+  Header: {
+    marginTop: scale(10, Vertical),
+    flexDirection: 'row'
+  },
+  searchIcon: {
+    marginRight: scale(5, Horizontal)
+  },
+  AddIcon: {
+    marginRight: scale(5, Horizontal)
+  },
+  MenuIcon: {
+    marginRight: scale(5, Horizontal)
+  },
+  FeedTitle: {
+    fontWeight: 'bold',
+    fontSize: 30,
+    marginBottom: scale(10, Vertical),
+    color: '#4E4E4E'
+  },
+  Article: {
+    backgroundColor: 'white',
+    marginTop: scale(10, Vertical),
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    paddingVertical: scale(10, Vertical),
+    paddingLeft: scale(5, Horizontal)
+  },
+  ArticleAvatar: {
+    height: scale(45, Vertical),
+    width: scale(45, Vertical),
+    borderRadius: 50,
+  },
+  ArticleHeader: {
+    marginLeft: scale(25, Horizontal)
+  },
+  ArticleAuthor: {
+    fontWeight: 'bold'
+  },
+  ArticleMenu: {
+    marginLeft: 'auto',
+    marginRight: scale(10, Horizontal),
+    marginTop: scale(5, Vertical)
+  },
+  ArticleImageList: {
+    width: scale(310, Horizontal),
+    marginLeft: 'auto',
+    marginRight: 0,
+  },
+  ArticleImageStyle: {
+    height: scale(310, Vertical),
+    width: scale(310, Horizontal),
+  },
+  ArticleImage: {
+    flex: 1,
+    height: null,
+    width: null,
+    resizeMode: 'stretch',
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  ArtileMore: {
+    paddingLeft: scale(75, Horizontal),
+    paddingTop: scale(10, Vertical)
+  },
+  ArticleAction: {
+    flexDirection: 'row',
+    marginTop: scale(5, Vertical),
+  }
+
+});
