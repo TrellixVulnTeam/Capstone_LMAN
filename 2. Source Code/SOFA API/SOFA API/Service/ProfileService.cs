@@ -122,7 +122,7 @@ namespace SOFA_API.Service
                     //save image
                     Utils.Instance.SaveImageFromBase64String(profileIn.Avatar.Trim(), path, (newImageName.ToString() + ".png"));
 
-                    profileIn.AvatarUri = imgPath;
+                    profileIn.AvatarUri = currentProfile.UserName.Trim() + "/avatar/"+ (newImageName.ToString() + ".png");
 
                     int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, profileIn);
                     if (result == 1)
