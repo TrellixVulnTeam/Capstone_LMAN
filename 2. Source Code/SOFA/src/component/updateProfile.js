@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableOpacity } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -169,7 +169,46 @@ export default class UpdateProfile extends Component{
     }
 
 
+    updateInfomation(){
+        const {account} = this.state;
+        let header = {
+            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+            "Content-Type": "multipart/form-data",
+            "Host":"chientranhvietnam.org"
+          };
+          let data = new FormData();
+          data.append('AccountID', account.accountID);
+          data.append('FirstName', account.firstName);
+          data.append('LastName', account.lastName);
+          data.append('Gender', account.gender);
+          data.append('DOB', account.dob);
+          data.append('Email', account.email);
+          data.append('Phone', account.phone);
+          data.append('Address', account.address);
+          data.append('Avatar', account.avatar);
+          console.log("Update profile!");
 
+          console.log(account);
+          let url = Const.domain + 'api/profile/updateprofile';
+
+          Request.Post(url, header, data)
+            .then(response => {
+                console.log(response);
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    Alert.alert('Update Successfully', 'Update thành công!');
+                    console.log(response);
+                    //this.props.navigation.goBack();               
+                } else {
+                if (response.code == Const.REQUEST_CODE_FAILED) {
+                    Alert.alert('Update Failed', 'Update không thành công! Vui lòng kiểm tra lại');
+                    console.log(response);
+                }
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+            });
+    }
 
 
     componentWillUnmount() {
@@ -213,8 +252,16 @@ export default class UpdateProfile extends Component{
                                     <Text style={Style.updateProfile.updateAvaText}>Update Avatar</Text>
                                 </MenuTrigger>
                                 <MenuOptions>
-                                    <MenuOption onSelect={() => this.takePicture(source => console.log('Take picture callback'))} text='Máy ảnh' />
-                                    <MenuOption onSelect={() => this.chooseFile(source => console.log('Choose file callback'))} text='Thư viện' />
+                                    <MenuOption onSelect={() => this.takePicture(source => {
+                                        console.log('Take picture callback');
+                                        account.avatar = source.base64;
+                                        this.setState({ account: account });
+                                    })} text='Máy ảnh' />
+                                    <MenuOption onSelect={() => this.chooseFile(source => {
+                                        console.log('Choose file callback');
+                                        account.avatar = source.base64;
+                                        this.setState({ account: account });
+                                    })} text='Thư viện' />
                                 </MenuOptions>
                             </Menu>
                         </MenuProvider>
@@ -226,7 +273,8 @@ export default class UpdateProfile extends Component{
                         <Text style={Style.updateProfile.updateLabel}>First Name</Text>
                         <TextInput defaultValue={account.firstName}
                                     onChangeText={text => { 
-                                        account.firstName = text
+                                        account.firstName = text;
+                                        this.setState({ account: account });
                                     }}
                                     style={Style.updateProfile.updateInput}
                         />                      
@@ -235,29 +283,61 @@ export default class UpdateProfile extends Component{
                         <Text style={Style.updateProfile.updateLabel}>Last Name</Text>
                         <TextInput defaultValue={account.lastName}
                                     onChangeText={text => { 
-                                        account.lastName = text
+                                        account.lastName = text;
+                                        this.setState({ account: account });
                                     }}
                                     style={Style.updateProfile.updateInput}
                         />                      
                     </View>   
                     <View style={Style.updateProfile.updateItemSecond}>
                         <Text style={Style.updateProfile.updateLabel}>Gender</Text> 
-
+                        <View></View>           
                         <RadioForm
                             radio_props={data}
-                            initial={account.gender==true?1:0}
+                            initial={account.gender==true?0:1}
                             formHorizontal={true}
                             labelHorizontal={true}
-                            buttonColor={'pink'}
+                            buttonColor={'#F0054D'}
                             selectedButtonColor={'red'}
                             animation={true}
                             onPress={(value) => {
-                                account.gender=(value==1?true:false)
+                                account.gender=(value==1?true:false);
+                                this.setState({ account: account });
                             }}
                             labelStyle={{fontSize: Utils.scale(15, Const.Horizontal),  }}
                         />
           
-                    </View>   
+                    </View> 
+                    <View style={Style.updateProfile.updateItemSecond}>
+                        <Text style={Style.updateProfile.updateLabel}>Address</Text>
+                        <TextInput defaultValue={account.address}
+                                    onChangeText={text => { 
+                                        account.address = text;
+                                        this.setState({ account: account });
+                                    }}
+                                    style={Style.updateProfile.updateInput}
+                        />                      
+                    </View>    
+                    <View style={Style.updateProfile.updateItemSecond}>
+                        <Text style={Style.updateProfile.updateLabel}>Phone Number</Text>
+                        <TextInput defaultValue={account.phone}
+                                    onChangeText={text => { 
+                                        account.phone = text;
+                                        this.setState({ account: account });
+                                    }}
+                                    style={Style.updateProfile.updateInput}
+                        />                      
+                    </View>  
+                    <View style={Style.updateProfile.buttonAll}>
+                        <TouchableOpacity onPress={()=>this.props.navigation.goBack()} style={Style.updateProfile.appButtonContainer}>
+                            <Text style={Style.updateProfile.appButtonText}>Cancel</Text>
+                        </TouchableOpacity>
+                        <View style={Style.updateProfile.buttonEmpty}></View>
+                        <TouchableOpacity onPress={()=>this.updateInfomation()} style={Style.updateProfile.appButtonContainer}>
+                            <Text style={Style.updateProfile.appButtonText}>Update</Text>
+                        </TouchableOpacity>
+                    </View>
+                    
                 </View>  
                       
             </View >

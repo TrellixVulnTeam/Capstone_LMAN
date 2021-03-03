@@ -7,7 +7,7 @@ import { Vertical, Horizontal } from '../common/const';
 export const common = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FBB897'
+    backgroundColor: '#F6CFDB'
   },
   flexRow: {
     flexDirection: 'row',
@@ -192,7 +192,7 @@ export const updateProfile = StyleSheet.create({
     textAlign: 'center',
     fontSize: Utils.scale(18, Const.Horizontal),
     textDecorationLine: 'underline',
-    color: "#0066ff"
+    color: "#E83AC5"
   },
 
 
@@ -224,5 +224,35 @@ export const updateProfile = StyleSheet.create({
     borderRadius: 20,
     paddingLeft: 10,
     fontSize: Utils.scale(20, Const.Horizontal),
+  },
+
+  appButtonContainer:{
+    marginTop: Utils.scale(25, Const.Vertical),
+    elevation: 8,
+    backgroundColor: "#E34242",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    width: scale(130, Horizontal),
+    alignSelf: "center",
+    flex: 0.3,
+  },
+
+  appButtonText:{
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
+  },
+
+  buttonAll:{
+    flexDirection: 'row',
+    alignSelf: "center",
+  },
+
+  buttonEmpty:{
+    marginLeft: Utils.scale(10, Const.Horizontal),
+    marginRight: Utils.scale(10, Const.Horizontal),
   }
 })
