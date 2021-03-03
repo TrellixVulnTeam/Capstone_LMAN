@@ -34,7 +34,11 @@ namespace SOFA_API.DAO
             String sql = "EXEC dbo.GetPostRateAverage @postID";
             try
             {
-                avgRatePoint = (int)DataProvider.Instance.ExecuteScalar(sql, new object[] { postID });
+                Utils.Instance.SaveLog("" + postID);
+                object data = DataProvider.Instance.ExecuteScalar(sql, new object[] { postID });
+                Utils.Instance.SaveLog("" + data.ToString());
+
+                avgRatePoint = Convert.IsDBNull(data) ? 0 : (int)data;
             }
             catch (Exception ex)
             {
@@ -68,7 +72,7 @@ namespace SOFA_API.DAO
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID });
             if (data.Rows.Count > 0)
             {
-                foreach(DataRow row in data.Rows)
+                foreach (DataRow row in data.Rows)
                 {
                     rates.Add(new Rate(row));
                 }
