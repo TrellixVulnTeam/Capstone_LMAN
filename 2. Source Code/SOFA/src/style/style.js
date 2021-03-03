@@ -6,9 +6,8 @@ import { Vertical, Horizontal } from '../common/const';
 
 export const common = StyleSheet.create({
   container: {
-    paddingLeft: scale(10, Horizontal),
     flex: 1,
-    backgroundColor: '#FFF5F1'
+    backgroundColor: '#FBB897'
   },
   flexRow: {
     flexDirection: 'row',
@@ -103,9 +102,9 @@ export const profile = StyleSheet.create({
   },
 
   line: {
-    marginTop : Utils.scale(15, Const.Vertical),
-    marginLeft : Utils.scale(30, Const.Horizontal),
-    marginRight : Utils.scale(30, Const.Horizontal),
+    marginTop: Utils.scale(15, Const.Vertical),
+    marginLeft: Utils.scale(30, Const.Horizontal),
+    marginRight: Utils.scale(30, Const.Horizontal),
     borderBottomColor: '#ff5050',
     borderBottomWidth: 1,
   }
@@ -116,6 +115,8 @@ export const profile = StyleSheet.create({
 
 export const newsfeed = StyleSheet.create({
   Header: {
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     marginTop: scale(10, Vertical),
     flexDirection: 'row'
   },
@@ -128,67 +129,64 @@ export const newsfeed = StyleSheet.create({
   MenuIcon: {
     marginRight: scale(5, Horizontal)
   },
-  FeedTitle: {
-    fontWeight: 'bold',
-    fontSize: 30,
-    marginBottom: scale(10, Vertical),
-    color: '#4E4E4E'
-  },
   Article: {
-    backgroundColor: 'white',
-    marginTop: scale(10, Vertical),
+    backgroundColor: '#FBB897',
     borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
-    paddingVertical: scale(10, Vertical),
-    paddingLeft: scale(5, Horizontal)
+    borderBottomLeftRadius: 10
   },
   ArticleAvatar: {
     height: scale(45, Vertical),
     width: scale(45, Vertical),
     borderRadius: 50,
+    top: scale(10, Vertical),
+    left: scale(10, Horizontal)
   },
   ArticleHeader: {
-    marginLeft: scale(25, Horizontal)
+    borderRadius: 10,
+    backgroundColor: 'white',
+    position: 'absolute',
+    top: scale(10, Vertical),
+    left: scale(70, Horizontal),
+    paddingVertical: scale(5, Vertical),
+    paddingHorizontal: scale(5, Horizontal)
   },
   ArticleAuthor: {
     fontWeight: 'bold'
   },
   ArticleMenu: {
-    marginLeft: 'auto',
-    marginRight: scale(10, Horizontal),
-    marginTop: scale(5, Vertical)
+    top: scale(10, Vertical),
+    left: scale(365, Horizontal),
+    position: 'absolute'
   },
   ArticleImageList: {
-    width: scale(310, Horizontal),
-    marginLeft: 'auto',
-    marginRight: 0,
+    // width: scale(400, Horizontal)
   },
   ArticleImageStyle: {
-    height: scale(310, Vertical),
-    width: scale(310, Horizontal),
+    height: scale(625, Vertical),
+    width: scale(400, Horizontal),
   },
   ArticleImage: {
     flex: 1,
     height: null,
     width: null,
-    resizeMode: 'stretch',
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
+    resizeMode: 'stretch'
   },
   ArtileMore: {
-    paddingLeft: scale(75, Horizontal),
-    paddingTop: scale(10, Vertical)
+    paddingLeft: scale(10, Horizontal),
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    top: scale(540, Vertical),
+
   },
   ArticleAction: {
     flexDirection: 'row',
-    marginTop: scale(5, Vertical),
   }
-  
+
 });
 
 
 export const updateProfile = StyleSheet.create({
-  updateAvaText:{
+  updateAvaText: {
     alignSelf: 'center',
     textAlignVertical: "center",
     textAlign: 'center',
@@ -199,21 +197,21 @@ export const updateProfile = StyleSheet.create({
 
 
   updateInfo: {
-    marginTop : Utils.scale(13, Const.Vertical),
+    marginTop: Utils.scale(13, Const.Vertical),
   },
 
-  updateItemFirst: {    
-    marginLeft : Utils.scale(15, Const.Horizontal),
+  updateItemFirst: {
+    marginLeft: Utils.scale(15, Const.Horizontal),
   },
-  updateItemSecond: {   
-    marginTop : Utils.scale(5, Const.Vertical),
-    marginLeft : Utils.scale(15, Const.Horizontal),
+  updateItemSecond: {
+    marginTop: Utils.scale(5, Const.Vertical),
+    marginLeft: Utils.scale(15, Const.Horizontal),
   },
 
   updateLabel: {
-    marginLeft : Utils.scale(15, Const.Horizontal),
-    fontSize: Utils.scale(15, Const.Horizontal),       
-    color: '#D81B54'  
+    marginLeft: Utils.scale(15, Const.Horizontal),
+    fontSize: Utils.scale(15, Const.Horizontal),
+    color: '#D81B54'
   },
 
   updateInput: {
@@ -225,8 +223,6 @@ export const updateProfile = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 20,
     paddingLeft: 10,
-    fontSize: Utils.scale(20, Const.Horizontal),                          
+    fontSize: Utils.scale(20, Const.Horizontal),
   }
 })
-
-});

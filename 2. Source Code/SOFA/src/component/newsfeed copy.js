@@ -86,8 +86,24 @@ export default class Newsfeed extends Component {
     Article = ({ data }) => {
         let post = new PostViewModel(data);
         return (
-            <View style={Style.newsfeed.Article}>
+            <View
+                style={Style.newsfeed.Article}
+            >
+                <View style={{ flexDirection: 'row' }}>
 
+                    <Image
+                        source={post.getAvatar() && post.getAvatar().length > 0 ?
+                            { uri: Const.assets_domain + post.getAvatar() } : AVATAR}
+                        style={Style.newsfeed.ArticleAvatar} />
+                    <View style={Style.newsfeed.ArticleHeader}>
+                        <Text style={Style.newsfeed.ArticleAuthor}>{post.getFirstName() + ' ' + post.getLastName()}</Text>
+                        <Text>{post.getTime()}</Text>
+                    </View>
+                    <MaterialCommunityIcons
+                        style={Style.newsfeed.ArticleMenu}
+                        name='dots-horizontal' size={30} color={'#8B8B8B'} />
+
+                </View>
                 <View style={Style.newsfeed.ArticleImageList}>
                     <FlatList
                         contentContainerStyle={{ alignSelf: 'flex-start' }}
@@ -108,21 +124,6 @@ export default class Newsfeed extends Component {
                         }}
                     />
                 </View>
-                <View style={{ position: 'absolute', flexDirection: 'row' }}>
-                    <Image
-                        source={post.getAvatar() && post.getAvatar().length > 0 ?
-                            { uri: Const.assets_domain + post.getAvatar() } : AVATAR}
-                        style={Style.newsfeed.ArticleAvatar} />
-                    <View style={Style.newsfeed.ArticleHeader}>
-                        <Text style={Style.newsfeed.ArticleAuthor}>{post.getFirstName() + ' ' + post.getLastName()}</Text>
-                        <Text>{post.getTime()}</Text>
-                    </View>
-                    <MaterialCommunityIcons
-                        style={Style.newsfeed.ArticleMenu}
-                        name='dots-horizontal' size={30} color={'#8B8B8B'} />
-
-                </View>
-
                 <View style={Style.newsfeed.ArtileMore}>
                     <Text style={{ fontSize: 14 }}>{post.getContent()}</Text>
                     <View style={Style.newsfeed.ArticleAction}>
@@ -132,17 +133,28 @@ export default class Newsfeed extends Component {
                         <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.getNumberOfComment()}</Text>
                         <Rating
                             style={{ marginLeft: scale(10, Horizontal) }}
-                            ratingBackgroundColor={'transparent'}
-                            tintColor={'transparent'}
-                            ratingColor='#FBB897'
-                            backgroundColor='#FBB897'
                             ratingCount={5}
                             imageSize={30}
                             type='custom'
+                            ratingColor='#FBB897'
                             onFinishRating={this.ratingCompleted}
                             startingValue={0}
                         />
                         <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.getRateAverage()}</Text>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            marginTop: scale(5, Vertical)
+                        }}
+                    >
+                        <TextInput
+                            placeholder={'Bình luận'}
+                            style={{
+                                width: scale(300, Horizontal),
+                                backgroundColor: '#EEEEEE',
+                                borderRadius: 10,
+                            }} />
                     </View>
                 </View>
             </View>
@@ -153,7 +165,7 @@ export default class Newsfeed extends Component {
         const { account, listPost } = this.state;
         return (
             <View style={Style.common.container}>
-                <StatusBar hidden={false} backgroundColor={'#FBB897'} />
+                <StatusBar hidden={false} backgroundColor={'#FFF5F1'} />
                 <View style={[Style.newsfeed.Header]}>
                     <Ionicons
                         style={{
@@ -161,9 +173,23 @@ export default class Newsfeed extends Component {
                             marginRight: scale(5, Horizontal)
                         }}
                         name={'ios-search-circle'} color={'#707070'} size={30} />
+                    <FontAwesome5
+                        style={{
+                            marginLeft: 0,
+                            marginRight: scale(5, Horizontal)
+                        }}
+                        name={'plus'} color={'#707070'} size={30} />
+                    <Entypo
+                        style={{
+                            marginLeft: 0,
+                            marginRight: scale(10, Horizontal)
+                        }}
+                        name={'dots-three-horizontal'} color={'#707070'} size={30} />
                 </View>
-
-                <View style={{ height: scale(625, Vertical) }}>
+                <View>
+                    <Text style={Style.newsfeed.FeedTitle}>Feed</Text>
+                </View>
+                <View style={{ height: scale(577, Vertical) }}>
                     <FlatList
                         data={listPost}
                         keyExtractor={(item, index) => item.id + ''}

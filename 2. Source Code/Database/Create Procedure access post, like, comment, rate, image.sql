@@ -1,6 +1,31 @@
 USE CapstonesNoRelation
 GO
 
+DROP PROC IF EXISTS GetAllPostOfUser
+GO
+CREATE PROC GetAllPostOfUser
+@accountPost INT
+AS
+BEGIN
+	SELECT * FROM dbo.Post
+	WHERE AccountPost = @accountPost
+	ORDER BY [Time] DESC
+END
+GO
+
+DROP PROC IF EXISTS GetAllPublicPostOfUser
+GO
+CREATE PROC GetAllPublicPostOfUser
+@accountPost INT
+AS
+BEGIN
+	SELECT * FROM dbo.Post
+	WHERE AccountPost = @accountPost 
+	AND PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public')
+	ORDER BY [Time] DESC
+END
+GO
+
 DROP PROC IF EXISTS GetPostByID
 GO
 CREATE PROC GetPostByID
@@ -245,3 +270,6 @@ BEGIN
 	WHERE PostId = @postID
 END
 GO
+
+SELECT * FROM POST ORDER BY TIME DESC
+
