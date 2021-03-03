@@ -85,5 +85,47 @@ namespace SOFA_API.DAO
             }
             return res;
         }
+        /// <summary>
+        /// Get all public post of an user
+        /// </summary>
+        /// <param name="accountID">ID of that user</param>
+        /// <returns>List of post</returns>
+        public List<Post> GetAllPublicPostOfUser(int accountID)
+        {
+            List<Post> posts = new List<Post>();
+            string sql = "EXEC dbo.GetAllPublicPostOfUser @accountPost";
+
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID });
+            if (data.Rows.Count > 0)
+            {
+                foreach(DataRow row in data.Rows)
+                {
+                    posts.Add(new Post(row));
+                }
+            }
+
+            return posts;
+        }
+        /// <summary>
+        /// Get all post of an user
+        /// </summary>
+        /// <param name="accountID">ID of that user</param>
+        /// <returns>List of post</returns>
+        public List<Post> GetAllPostOfUser(int accountID)
+        {
+            List<Post> posts = new List<Post>();
+            string sql = "EXEC dbo.GetAllPostOfUser @accountPost";
+
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID });
+            if (data.Rows.Count > 0)
+            {
+                foreach (DataRow row in data.Rows)
+                {
+                    posts.Add(new Post(row));
+                }
+            }
+
+            return posts;
+        }
     }
 }

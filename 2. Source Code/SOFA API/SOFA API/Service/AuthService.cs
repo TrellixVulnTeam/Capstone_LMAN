@@ -232,7 +232,7 @@ namespace SOFA_API.Service
                         var token = new JwtSecurityToken(
                             issuer: Configuration["JWT:Issuser"],
                             audience: Configuration["JWT:Audience"],
-                            expires: DateTime.Now.AddHours(1),
+                            expires: DateTime.Now.AddDays(30),
                             signingCredentials: signingCredentials,
                             claims: claims
                         );

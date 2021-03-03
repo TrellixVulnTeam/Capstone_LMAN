@@ -29,7 +29,10 @@ namespace SOFA_API.Service
         }
 
         public PostService() { }
-
+        /// <summary>
+        /// Service of Get all post controller
+        /// </summary>
+        /// <returns></returns>
         public PostViewModelOut GetAllPost()
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
@@ -59,7 +62,82 @@ namespace SOFA_API.Service
             }
             return postViewModelOut;
         }
+        /// <summary>
+        /// Service of get public post controller
+        /// </summary>
+        /// <param name="postViewModelIn"></param>
+        /// <returns></returns>
+        public PostViewModelOut GetAllPublicPostOfUser(PostViewModelIn postViewModelIn)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
 
+            try
+            {
+                List<Post> listAllPost = PostDAO.Instance.GetAllPublicPostOfUser(postViewModelIn.AccountPost);
+
+                foreach (Post item in listAllPost)
+                {
+                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
+                    PostModelOut postModelOut = new PostModelOut();
+                    postModelOut.SetPostDetail(item);
+                    postModelOut.SetAccountPost(profile);
+                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
+                    postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
+                    postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
+                    postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                    postViewModelOut.ListPost.Add(postModelOut);
+                }
+                postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
+            }
+            return postViewModelOut;
+        }
+
+        /// <summary>
+        /// Service of get post of user controller
+        /// </summary>
+        /// <param name="postViewModelIn"></param>
+        /// <returns></returns>
+        public PostViewModelOut GetAllPostOfUser(PostViewModelIn postViewModelIn)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
+
+            try
+            {
+                List<Post> listAllPost = PostDAO.Instance.GetAllPostOfUser(postViewModelIn.AccountPost);
+
+                foreach (Post item in listAllPost)
+                {
+                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
+                    PostModelOut postModelOut = new PostModelOut();
+                    postModelOut.SetPostDetail(item);
+                    postModelOut.SetAccountPost(profile);
+                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
+                    postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
+                    postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
+                    postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                    postViewModelOut.ListPost.Add(postModelOut);
+                }
+                postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
+            }
+            return postViewModelOut;
+        }
+
+        /// <summary>
+        /// Service of like post controller
+        /// </summary>
+        /// <param name="postID"></param>
+        /// <param name="accountLike"></param>
+        /// <returns></returns>
         public PostViewModelOut LikePost(int postID, int accountLike)
         {
             int ID = 0;
@@ -75,7 +153,13 @@ namespace SOFA_API.Service
             }
             return result;
         }
-
+        /// <summary>
+        /// Service of rate post controller
+        /// </summary>
+        /// <param name="postID"></param>
+        /// <param name="accountLike"></param>
+        /// <param name="ratePoint"></param>
+        /// <returns></returns>
         public PostViewModelOut RatePost(int postID, int accountLike, int ratePoint)
         {
             int ID = 0;
@@ -123,7 +207,13 @@ namespace SOFA_API.Service
             }
             return postViewModelOut;
         }
-
+        /// <summary>
+        /// Service of comment post controller
+        /// </summary>
+        /// <param name="accountID"></param>
+        /// <param name="postID"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
         public PostViewModelOut CommentPost(int accountID, int postID, string content)
         {
             int ID = 0;

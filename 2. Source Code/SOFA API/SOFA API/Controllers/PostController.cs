@@ -19,6 +19,22 @@ namespace SOFA_API.Controllers
             return Ok(listAllPost);
         }
 
+        [HttpGet("GetUserPublicPost")]
+        public ActionResult GetUserPublicPost([FromForm] PostViewModelIn postViewModelIn)
+        {
+            PostViewModelOut postViewModelOut = PostService.Instance.GetAllPublicPostOfUser(postViewModelIn);
+            return Ok(postViewModelOut);
+        }
+
+        [HttpGet("GetUserPost")]
+        [Authorize]
+        public ActionResult GetUserPost([FromForm] PostViewModelIn postViewModelIn)
+        {
+            int accountPost = Utils.Instance.GetUserID(User.Claims);
+            postViewModelIn.AccountPost = accountPost;
+            PostViewModelOut postViewModelOut = PostService.Instance.GetAllPostOfUser(postViewModelIn);
+            return Ok(postViewModelOut);
+        }
 
         [HttpPost("LikePost")]
         [Authorize]
