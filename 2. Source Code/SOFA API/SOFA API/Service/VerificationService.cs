@@ -109,17 +109,26 @@ namespace SOFA_API.Service
             //Verify phone for register
             if (verificationModelIn.TransactionType == Const.VERIFICATION_TRANSACTION_TYPE_REGISTER)
             {
-                OTP otp = CreateOTPCode();
-                if (otp.ID > 0)
+                AuthService authService = new AuthService();
+                if (authService.IsValidPhone(verificationModelIn.PhoneNumber))
                 {
-                    SendSMS(otp.Code, verificationModelIn.PhoneNumber, verificationModelIn.Username);
-                    verificationModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
-                    verificationModelOut.TransactionID = otp.ID;
-                }
-                else
+                    OTP otp = CreateOTPCode();
+                    if (otp.ID > 0)
+                    {
+                        SendSMS(otp.Code, verificationModelIn.PhoneNumber, verificationModelIn.Username);
+                        verificationModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                        verificationModelOut.TransactionID = otp.ID;
+                    }
+                    else
+                    {
+                        verificationModelOut.Code = Const.REQUEST_CODE_FAILED;
+                        verificationModelOut.TransactionID = 0;
+                    }
+                } else
                 {
                     verificationModelOut.Code = Const.REQUEST_CODE_FAILED;
                     verificationModelOut.TransactionID = 0;
+                    verificationModelOut.ErrorMessage = MessageUtils.ERROR_REGISTER_PHONE_NUMBER_EXISTED;
                 }
             }
             else

@@ -20,6 +20,7 @@ namespace SOFA_API.Common
         public const string ERROR_VERIFICATION_DONT_HAVE_EMAIL_AND_PHONE = "Can't miss both phone number and email";
         public const string ERROR_VERIFICATION_DONT_HAVE_EMAIL = "Email not found";
         public const string ERROR_VERIFICATION_ACCOUNT_NOT_FOUND = "Account not found";
+        public const string ERROR_REGISTER_PHONE_NUMBER_EXISTED = "Phone number have existed";
     }
 
 
