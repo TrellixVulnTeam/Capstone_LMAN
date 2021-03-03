@@ -39,9 +39,7 @@ namespace SOFA_API.Controllers
         {
             //get account ID
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
-            //int id = Int32.Parse(idClaim.Value.Trim());
-            int id = 1;
-
+            int id = Int32.Parse(idClaim.Value.Trim());
 
             ProfileViewModelOut profile = ProfileService.Instance.UpdateProfileByAccountID(id, newProfile);
             return Ok(profile);
