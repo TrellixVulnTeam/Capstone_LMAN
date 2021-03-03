@@ -74,7 +74,7 @@ export default class UpdateProfile extends Component{
                     var header = {
                         "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
                         "Accept": 'application/json',
-                        "Authorization": 'Bearer ' + token,
+                        "Authorization": 'Bearer ' + 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSUQiOiI0IiwiVXNlcm5hbWUiOiJ1c2VyIiwiZXhwIjoxNjE3MzgzODI2LCJpc3MiOiJTT0ZBIC0gRmFzaGlvbiBTb2NpYWwgTmV0d29yayBTZXJ2ZXIiLCJhdWQiOiJTT0ZBIC0gRmFzaGlvbiBTb2NpYWwgTmV0d29yayBDbGllbnQifQ.FbsZXqOWdySXio_5nuBBi4Oc0OT_MUm6G9xoP_7ALs4',
                     };
                     console.log(header);
                     let data = new FormData();
@@ -144,7 +144,7 @@ export default class UpdateProfile extends Component{
                             var header = {
                                 "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
                                 "Accept": 'application/json',
-                                "Authorization": 'Bearer ' + token,
+                                "Authorization": 'Bearer ' + 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSUQiOiI0IiwiVXNlcm5hbWUiOiJ1c2VyIiwiZXhwIjoxNjE3MzgzODI2LCJpc3MiOiJTT0ZBIC0gRmFzaGlvbiBTb2NpYWwgTmV0d29yayBTZXJ2ZXIiLCJhdWQiOiJTT0ZBIC0gRmFzaGlvbiBTb2NpYWwgTmV0d29yayBDbGllbnQifQ.FbsZXqOWdySXio_5nuBBi4Oc0OT_MUm6G9xoP_7ALs4',
                             };
                             console.log(header);
                             let data = new FormData();
@@ -170,11 +170,12 @@ export default class UpdateProfile extends Component{
 
 
     updateInfomation(){
-        const {account} = this.state;
+        const {account, token} = this.state;
         let header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Content-Type": "multipart/form-data",
-            "Host":"chientranhvietnam.org"
+            "Host":"chientranhvietnam.org",
+            "Authorization": 'Bearer ' + token,
           };
           let data = new FormData();
           data.append('AccountID', account.accountID);
@@ -206,6 +207,7 @@ export default class UpdateProfile extends Component{
                 }
             })
             .catch(reason => {
+                console.log('Lỗi rồi!');
                 console.log(reason);
             });
     }
