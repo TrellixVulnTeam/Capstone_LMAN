@@ -100,10 +100,18 @@ export const profile = StyleSheet.create({
     fontSize: Utils.scale(17.5, Const.Horizontal),
     marginLeft: Utils.scale(10, Const.Horizontal),
     color: "#ff5050"
+  },
+
+  line: {
+    marginTop : Utils.scale(15, Const.Vertical),
+    marginLeft : Utils.scale(30, Const.Horizontal),
+    marginRight : Utils.scale(30, Const.Horizontal),
+    borderBottomColor: '#ff5050',
+    borderBottomWidth: 1,
   }
 
-
 })
+
 
 
 export const newsfeed = StyleSheet.create({
@@ -175,5 +183,50 @@ export const newsfeed = StyleSheet.create({
     flexDirection: 'row',
     marginTop: scale(5, Vertical),
   }
+  
+});
+
+
+export const updateProfile = StyleSheet.create({
+  updateAvaText:{
+    alignSelf: 'center',
+    textAlignVertical: "center",
+    textAlign: 'center',
+    fontSize: Utils.scale(18, Const.Horizontal),
+    textDecorationLine: 'underline',
+    color: "#0066ff"
+  },
+
+
+  updateInfo: {
+    marginTop : Utils.scale(13, Const.Vertical),
+  },
+
+  updateItemFirst: {    
+    marginLeft : Utils.scale(15, Const.Horizontal),
+  },
+  updateItemSecond: {   
+    marginTop : Utils.scale(5, Const.Vertical),
+    marginLeft : Utils.scale(15, Const.Horizontal),
+  },
+
+  updateLabel: {
+    marginLeft : Utils.scale(15, Const.Horizontal),
+    fontSize: Utils.scale(15, Const.Horizontal),       
+    color: '#D81B54'  
+  },
+
+  updateInput: {
+    backgroundColor: 'pink',
+    backgroundColor: 'pink',
+    height: Utils.scale(40, Const.Vertical),
+    width: Utils.scale(365, Const.Horizontal),
+    borderColor: 'gray',
+    borderWidth: 0,
+    borderRadius: 20,
+    paddingLeft: 10,
+    fontSize: Utils.scale(20, Const.Horizontal),                          
+  }
+})
 
 });

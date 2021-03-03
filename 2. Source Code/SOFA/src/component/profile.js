@@ -4,6 +4,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
+import RadioButtonRN from 'radio-buttons-react-native';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -96,12 +97,24 @@ export default class Profile extends Component{
         return sex;
     }
 
+    onPressUpdateProfile(){
+        const { account, avatarUri} = this.state;
+        this.props.navigation.navigate('UpdateProfile', {
+            account: account,
+            avatarUri: avatarUri,
+          });
+    }
+
     componentWillUnmount() {
         //this._unsubcribe();
     }
 
     componentDidMount(){
         this.getProfile();
+        this._unsubcribe = this.props.navigation.addListener('focus', () => {
+            this.setState({ account: {}, avatarUri: ''});
+            this.getProfile();
+        });
     }
 
     render(){
@@ -122,7 +135,7 @@ export default class Profile extends Component{
                             <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
                         </View>
                         <View style={Style.profile.button}>
-                            <Button style={Style.profile.singleButton} color= '#ff7878' title="Update profile"/>
+                            <Button style={Style.profile.singleButton} color= '#ff7878' onPress = {() => this.onPressUpdateProfile()} title="Update profile"/>
                             <View style={{flex: 0.2}}></View>
                             <Button style={Style.profile.singleButton} color= '#ff7878' title="View balance"/>
                         </View>
@@ -160,6 +173,7 @@ export default class Profile extends Component{
                         </Text>                       
                     </Text>                   
                 </View>
+                <View style={Style.profile.line}/>
             </View>
         )
     }
