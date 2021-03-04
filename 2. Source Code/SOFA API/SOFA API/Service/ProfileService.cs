@@ -92,6 +92,34 @@ namespace SOFA_API.Service
                     throw new Exception(MessageUtils.ERROR_MISSING_PHONE_NUMBER);
                 }
                 else
+                {             
+                    int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, profileIn);
+                    if (result == 1)
+                    {
+                        newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    }
+                    else
+                    {
+                        newProfile.Code = Const.REQUEST_CODE_FAILED;
+                        newProfile.ErrorMessage = MessageUtils.ERROR_UPDATE_FAILED;
+                        throw new Exception(MessageUtils.ERROR_UPDATE_FAILED);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                newProfile.ErrorMessage = e.Message;
+                newProfile.Code = Const.REQUEST_CODE_FAILED;
+            }                             
+            return newProfile;
+        }
+
+        public ProfileViewModelOut UpdateAvatarByAccountID(int accountId, ProfileViewModelIn profileIn)
+        {
+            ProfileViewModelOut newProfile = new ProfileViewModelOut();
+            try
+            { 
+                if(profileIn.Avatar != null)
                 {
                     //get current data
                     ProfileViewModelOut currentProfile = ProfileService.Instance.GetProfileModelByAccountID(accountId);
@@ -122,9 +150,9 @@ namespace SOFA_API.Service
                     //save image
                     Utils.Instance.SaveImageFromBase64String(profileIn.Avatar.Trim(), path, (newImageName.ToString() + ".png"));
 
-                    profileIn.AvatarUri = currentProfile.UserName.Trim() + "/avatar/"+ (newImageName.ToString() + ".png");
+                    profileIn.AvatarUri = currentProfile.UserName.Trim() + "/avatar/" + (newImageName.ToString() + ".png");
 
-                    int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, profileIn);
+                    int result = ProfileDAO.Instance.UpdateAvatarByAccountID(accountId, profileIn);
                     if (result == 1)
                     {
                         newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -137,11 +165,11 @@ namespace SOFA_API.Service
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 newProfile.ErrorMessage = e.Message;
                 newProfile.Code = Const.REQUEST_CODE_FAILED;
-            }                             
+            }
             return newProfile;
         }
     }

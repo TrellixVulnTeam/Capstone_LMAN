@@ -75,12 +75,12 @@ namespace SOFA_API.DAO
         {
             int data = 0;
 
-            string sql = "EXEC updateProfileByAccountID @accountId , @firstName , @lastName , @gender , @dob , @email , @phone , @address , @avatar";
+            string sql = "EXEC updateProfileByAccountID @accountId , @firstName , @lastName , @gender , @dob , @email , @phone , @address";
             try
             {
                 data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountId, newProfile.FirstName, newProfile.LastName,
                                                                             newProfile.Gender, newProfile.DOB, newProfile.Email, newProfile.Phone,
-                                                                            newProfile.Address, newProfile.AvatarUri});
+                                                                            newProfile.Address});
             }
             catch (Exception e)
             {
@@ -88,6 +88,30 @@ namespace SOFA_API.DAO
                 throw e;
             }
             
+            return data;
+        }
+
+        /// <summary>
+        /// UpdateAvatarByAccountID
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="newProfile"></param>
+        /// <returns></returns>
+        public int UpdateAvatarByAccountID(int accountId, ProfileViewModelIn newProfile)
+        {
+            int data = 0;
+
+            string sql = "update dbo.Profile set Avatar = '" + newProfile.AvatarUri + "' where AccountId = " + accountId;
+            try
+            {
+                data = DataProvider.Instance.ExecuteNonQuery(sql);
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+
             return data;
         }
 

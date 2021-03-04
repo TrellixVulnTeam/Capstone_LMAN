@@ -45,5 +45,16 @@ namespace SOFA_API.Controllers
             return Ok(profile);
         }
 
+        [HttpPost("updateavatar")]
+        public ActionResult UpdateAvatar([FromForm] ProfileViewModelIn newProfile)
+        {
+            //get account ID
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int id = Int32.Parse(idClaim.Value.Trim());
+
+            ProfileViewModelOut profile = ProfileService.Instance.UpdateAvatarByAccountID(id, newProfile);
+            return Ok(profile);
+        }
+
     }
 }
