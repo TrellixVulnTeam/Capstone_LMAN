@@ -79,12 +79,12 @@ export default function Navigation() {
         }}
       />
       <Tab.Screen
-        name="Notification"
-        component={NotificationStack}
+        name="Recomendation"
+        component={SuggestStack}
         options={{
-          title: 'Thông báo',
+          title: 'Đề xuất',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="notifications" color={color} size={size} />
+            <MaterialIcons name="recommend" color={color} size={size} />
           ),
         }}
       />

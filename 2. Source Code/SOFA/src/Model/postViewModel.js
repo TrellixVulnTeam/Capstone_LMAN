@@ -16,6 +16,8 @@ export default class PostViewModel {
         let _numberOfLike = data.numberOfLike;
         let _numberOfComment = data.numberOfComment;
         let _rateAverage = data.rateAverage;
+        let _isLiked = data.isLiked;
+        let _myRatePoint = data.myRatePoint;
 
         this.getID = () => _iD;
         this.getContent = () => _content;
@@ -33,6 +35,8 @@ export default class PostViewModel {
         this.getNumberOfLike = () => _numberOfLike;
         this.getNumberOfComment = () => _numberOfComment;
         this.getRateAverage = () => _rateAverage;
+        this.IsLiked = () => _isLiked;
+        this.getMyRatePoint = () => _myRatePoint;
 
         this.setID = (id) => _iD = id;
         this.setContent = (content) => _content = content;
@@ -50,6 +54,8 @@ export default class PostViewModel {
         this.setNumberOfLike = (numberOfLike) => _numberOfLike = numberOfLike;
         this.setNumberOfComment = (numberOfComment) => _numberOfComment = numberOfComment;
         this.setRateAverage = (rateAverage) => _rateAverage = rateAverage;
+        this.setLiked = (isLiked) => _isLiked = isLiked;
+        this.setMyRatePoint = (myRatePoint) => _myRatePoint = myRatePoint;
 
     }
     calculateTime(time) {
@@ -64,27 +70,27 @@ export default class PostViewModel {
             res.push(temp);
             dif = parseInt(dif / 60, 10);
         }
-        if (dif > 1) {
+        if (dif >= 1) {
             let temp = dif + ' Phút trước';
             res.push(temp);
             dif = parseInt(dif / 60, 10);
         }
-        if (dif > 1) {
+        if (dif >= 1) {
             let temp = dif + ' Giờ trước';
             res.push(temp);
             dif = parseInt(dif / 24, 10)
         }
-        if (dif > 1) {
+        if (dif >= 1) {
             let temp = dif + ' Ngày trước';
             res.push(temp);
             dif = parseInt(dif / 30, 10)
         }
-        if (dif > 1) {
+        if (dif >= 1) {
             let temp = dif + ' Tháng trước';
             res.push(temp);
             dif = parseInt(dif / 12, 10)
         }
-        if (!dif < 0) {
+        if (dif >= 1) {
             let temp = dif + ' Năm trước';
             res.push(temp);
         }

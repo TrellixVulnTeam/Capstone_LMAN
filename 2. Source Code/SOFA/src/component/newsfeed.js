@@ -56,10 +56,22 @@ export default class Newsfeed extends Component {
         }
     }
 
-    getAllPost() {
+    getAllPost = async () => {
+        await this.getData('token')
+            .then(result => {
+                if (result) {
+                    console.log('Get all post', result);
+                    this.setState({ token: result.toString().substr(1, result.length - 2) });
+                }
+            })
+            .catch(reason => {
+                this.setState({ token: '' });
+                console.log(reason);
+            })
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json'
+            "Accept": 'application/json',
+            "Authorization": 'Bearer ' + this.state.token,
         };
         var data = {};
         var uri = Const.domain + 'api/post'
@@ -85,9 +97,25 @@ export default class Newsfeed extends Component {
 
     Article = ({ data }) => {
         let post = new PostViewModel(data);
+        console.log(post.getMyRatePoint());
         return (
-            <View style={Style.newsfeed.Article}>
+            <View
+                style={Style.newsfeed.Article}
+            >
+                <View style={{ flexDirection: 'row' }}>
+                    <Image
+                        source={post.getAvatar() && post.getAvatar().length > 0 ?
+                            { uri: Const.assets_domain + post.getAvatar() } : AVATAR}
+                        style={Style.newsfeed.ArticleAvatar} />
+                    <View style={Style.newsfeed.ArticleHeader}>
+                        <Text style={Style.newsfeed.ArticleAuthor}>{post.getFirstName() + ' ' + post.getLastName()}</Text>
+                        <Text>{post.getTime()}</Text>
+                    </View>
+                    <MaterialCommunityIcons
+                        style={Style.newsfeed.ArticleMenu}
+                        name='dots-horizontal' size={30} color={'#8B8B8B'} />
 
+                </View>
                 <View style={Style.newsfeed.ArticleImageList}>
                     <FlatList
                         contentContainerStyle={{ alignSelf: 'flex-start' }}
@@ -108,41 +136,39 @@ export default class Newsfeed extends Component {
                         }}
                     />
                 </View>
-                <View style={{ position: 'absolute', flexDirection: 'row' }}>
-                    <Image
-                        source={post.getAvatar() && post.getAvatar().length > 0 ?
-                            { uri: Const.assets_domain + post.getAvatar() } : AVATAR}
-                        style={Style.newsfeed.ArticleAvatar} />
-                    <View style={Style.newsfeed.ArticleHeader}>
-                        <Text style={Style.newsfeed.ArticleAuthor}>{post.getFirstName() + ' ' + post.getLastName()}</Text>
-                        <Text>{post.getTime()}</Text>
-                    </View>
-                    <MaterialCommunityIcons
-                        style={Style.newsfeed.ArticleMenu}
-                        name='dots-horizontal' size={30} color={'#8B8B8B'} />
-
-                </View>
-
                 <View style={Style.newsfeed.ArtileMore}>
-                    <Text style={{ fontSize: 14 }}>{post.getContent()}</Text>
                     <View style={Style.newsfeed.ArticleAction}>
-                        <MaterialCommunityIcons name='heart-outline' size={30} color={'#FBB897'} />
+                        <MaterialCommunityIcons name={post.IsLiked() ? 'heart' : 'heart-outline'} size={30} color={post.IsLiked() ? 'red' : '#232323'} />
                         <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.getNumberOfLike()}</Text>
-                        <FontAwesome5 style={{ marginLeft: scale(10, Horizontal) }} name='comment-dots' size={30} color={'#FBB897'} />
+                        <FontAwesome5 style={{ marginLeft: scale(10, Horizontal) }} name='comment-dots' size={30} color={'#232323'} />
                         <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.getNumberOfComment()}</Text>
                         <Rating
                             style={{ marginLeft: scale(10, Horizontal) }}
-                            ratingBackgroundColor={'transparent'}
-                            tintColor={'transparent'}
-                            ratingColor='#FBB897'
-                            backgroundColor='#FBB897'
                             ratingCount={5}
                             imageSize={30}
                             type='custom'
+                            ratingColor='#FBB897'
+                            //tintColor='#FFFFFF'
+                            //ratingBackgroundColor='#FFF2D1'
                             onFinishRating={this.ratingCompleted}
-                            startingValue={0}
+                            startingValue={post.getMyRatePoint()}
                         />
                         <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.getRateAverage()}</Text>
+                    </View>
+                    <Text style={{ fontSize: 14, marginTop: scale(5, Vertical) }}>{post.getContent()}</Text>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            marginTop: scale(5, Vertical)
+                        }}
+                    >
+                        <TextInput
+                            placeholder={'Bình luận'}
+                            style={{
+                                width: scale(300, Horizontal),
+                                backgroundColor: '#EEEEEE',
+                                borderRadius: 10,
+                            }} />
                     </View>
                 </View>
             </View>
@@ -153,21 +179,29 @@ export default class Newsfeed extends Component {
         const { account, listPost } = this.state;
         return (
             <View style={Style.common.container}>
-                <StatusBar hidden={false} backgroundColor={'#FBB897'} />
+                <StatusBar hidden={false} backgroundColor={'#FFF5F1'} />
                 <View style={[Style.newsfeed.Header]}>
                     <Ionicons
                         style={{
                             marginLeft: 'auto',
                             marginRight: scale(5, Horizontal)
                         }}
-                        name={'ios-search-circle'} color={'#707070'} size={30} />
+                        name={'search-outline'} color={'#232323'} size={30} />
+                    <Ionicons
+                        style={{
+                            marginRight: scale(5, Horizontal)
+                        }}
+                        name={'notifications'} color={'#232323'} size={30} />
+                    <MaterialCommunityIcons
+                        style={{
+                            marginRight: scale(5, Horizontal)
+                        }}
+                        name={'message-text-outline'} color={'#232323'} size={30} />
                 </View>
-
-                <View style={{ height: scale(625, Vertical) }}>
+                <View style={{ height: scale(577, Vertical) }}>
                     <FlatList
                         data={listPost}
                         keyExtractor={(item, index) => item.id + ''}
-                        pagingEnabled={true}
                         renderItem={({ item, index }) => <this.Article data={item} />}
                     />
                 </View>

@@ -97,7 +97,7 @@ namespace SOFA_API.DAO
                 rate = new Rate(data.Rows[0]);
             }
 
-            return null;
+            return rate;
         }
 
     }

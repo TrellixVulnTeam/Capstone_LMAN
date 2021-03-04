@@ -1,13 +1,14 @@
-import {StyleSheet} from 'react-native';
-import {scale} from '../common/utils';
+import { StyleSheet } from 'react-native';
+import { scale } from '../common/utils';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
-import {Vertical, Horizontal} from '../common/const';
+import { Vertical, Horizontal } from '../common/const';
 
 export const common = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF5F1',
+    backgroundColor: 'white'
+
   },
   flexRow: {
     flexDirection: 'row',
@@ -18,7 +19,7 @@ export const common = StyleSheet.create({
 });
 
 export const login = StyleSheet.create({
-  container: {flex: 1},
+  container: { flex: 1 },
 });
 
 export const profile = StyleSheet.create({
@@ -111,18 +112,15 @@ export const profile = StyleSheet.create({
 
 })
 
-
-
 export const newsfeed = StyleSheet.create({
   Header: {
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
     marginTop: scale(10, Vertical),
     flexDirection: 'row',
   },
   searchIcon: {
     marginRight: scale(5, Horizontal),
   },
+
   AddIcon: {
     marginRight: scale(5, Horizontal),
   },
@@ -136,7 +134,8 @@ export const newsfeed = StyleSheet.create({
     color: '#4E4E4E',
   },
   Article: {
-    backgroundColor: '#FBB897',
+    backgroundColor: 'white',
+    marginTop: scale(20, Vertical),
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
     paddingVertical: scale(10, Vertical),
@@ -146,45 +145,39 @@ export const newsfeed = StyleSheet.create({
     height: scale(45, Vertical),
     width: scale(45, Vertical),
     borderRadius: 50,
-    top: scale(10, Vertical),
-    left: scale(10, Horizontal)
+    marginLeft: scale(10, Horizontal)
   },
   ArticleHeader: {
-    borderRadius: 10,
-    backgroundColor: 'white',
-    position: 'absolute',
-    top: scale(10, Vertical),
-    left: scale(70, Horizontal),
-    paddingVertical: scale(5, Vertical),
-    paddingHorizontal: scale(5, Horizontal)
+    marginLeft: scale(25, Horizontal)
   },
   ArticleAuthor: {
     fontWeight: 'bold',
   },
   ArticleMenu: {
-    top: scale(10, Vertical),
-    left: scale(365, Horizontal),
-    position: 'absolute'
+    marginLeft: 'auto',
+    marginRight: scale(10, Horizontal),
+    marginTop: scale(5, Vertical)
   },
   ArticleImageList: {
-    // width: scale(400, Horizontal)
+    marginTop: scale(10, Vertical),
+    width: scale(400, Horizontal),
+
   },
   ArticleImageStyle: {
-    height: scale(625, Vertical),
+    height: scale(400, Vertical),
     width: scale(400, Horizontal),
   },
   ArticleImage: {
     flex: 1,
     height: null,
     width: null,
-    resizeMode: 'stretch'
+    resizeMode: 'stretch',
+    // borderTopLeftRadius: 5,
+    // borderBottomLeftRadius: 5,
   },
   ArtileMore: {
-    paddingLeft: scale(10, Horizontal),
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    top: scale(540, Vertical),
-
+    paddingLeft: scale(20, Horizontal),
+    paddingTop: scale(10, Vertical)
   },
   ArticleAction: {
     flexDirection: 'row',
@@ -201,7 +194,7 @@ export const balance = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
   },
-   container: {},
+  container: {},
   overlay: {
     backgroundColor: `rgba(251, 184, 151, 1)`,
   },
@@ -213,7 +206,7 @@ export const balance = StyleSheet.create({
     alignSelf: 'center',
   },
   textStyle: {
-    marginVertical:20,
+    marginVertical: 20,
     fontSize: 18,
     color: '#FFFFFF',
     fontWeight: 'bold',
@@ -226,27 +219,26 @@ export const balance = StyleSheet.create({
     marginBottom: 0,
     backgroundColor: `rgba(0, 0, 0, 0.03)`,
   },
-  card:{
-    position:'relative',
-    display:'flex',
-    backgroundColor:`rgba(255, 255, 255, 1)`,
-    marginLeft:10,
-    marginTop:10,
-    marginBottom:10,
-    marginRight:10,
+  card: {
+    position: 'relative',
+    display: 'flex',
+    backgroundColor: `rgba(255, 255, 255, 1)`,
+    marginLeft: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 10,
     borderRadius: 20,
   },
 
   textSuccess: {
     color: '#28a745',
-    textAlign:'right'
+    textAlign: 'right'
   },
   textDanger: {
     color: '#dc3545',
-    textAlign:'right'
+    textAlign: 'right'
   },
 });
-
 
 export const updateProfile = StyleSheet.create({
   updateAvaText: {
@@ -306,6 +298,7 @@ export const updateProfile = StyleSheet.create({
     fontSize: Utils.scale(20, Const.Horizontal),
   },
 
+
   updateInputDate: {
     backgroundColor: 'pink',
     backgroundColor: 'pink',
@@ -318,7 +311,8 @@ export const updateProfile = StyleSheet.create({
     fontSize: Utils.scale(20, Const.Horizontal),
   },
 
-  appButtonContainer:{
+
+  appButtonContainer: {
     marginTop: Utils.scale(25, Const.Vertical),
     elevation: 8,
     backgroundColor: "#E34242",
@@ -330,7 +324,7 @@ export const updateProfile = StyleSheet.create({
     flex: 0.3,
   },
 
-  appButtonText:{
+  appButtonText: {
     fontSize: 18,
     color: "#fff",
     fontWeight: "bold",
@@ -338,12 +332,12 @@ export const updateProfile = StyleSheet.create({
     textTransform: "uppercase"
   },
 
-  buttonAll:{
+  buttonAll: {
     flexDirection: 'row',
     alignSelf: "center",
   },
 
-  buttonEmpty:{
+  buttonEmpty: {
     marginLeft: Utils.scale(10, Const.Horizontal),
     marginRight: Utils.scale(10, Const.Horizontal),
   }
