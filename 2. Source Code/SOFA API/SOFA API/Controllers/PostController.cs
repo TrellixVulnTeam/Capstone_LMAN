@@ -15,14 +15,16 @@ namespace SOFA_API.Controllers
         [HttpGet]
         public ActionResult GetAllPost()
         {
-            PostViewModelOut listAllPost = PostService.Instance.GetAllPost();
+            int myID = Utils.Instance.GetUserID(User.Claims);
+            PostViewModelOut listAllPost = PostService.Instance.GetAllPost(myID);
             return Ok(listAllPost);
         }
 
         [HttpGet("GetUserPublicPost")]
         public ActionResult GetUserPublicPost([FromForm] PostViewModelIn postViewModelIn)
         {
-            PostViewModelOut postViewModelOut = PostService.Instance.GetAllPublicPostOfUser(postViewModelIn);
+            int myID = Utils.Instance.GetUserID(User.Claims);
+            PostViewModelOut postViewModelOut = PostService.Instance.GetAllPublicPostOfUser(postViewModelIn, myID);
             return Ok(postViewModelOut);
         }
 
@@ -32,7 +34,7 @@ namespace SOFA_API.Controllers
         {
             int accountPost = Utils.Instance.GetUserID(User.Claims);
             postViewModelIn.AccountPost = accountPost;
-            PostViewModelOut postViewModelOut = PostService.Instance.GetAllPostOfUser(postViewModelIn);
+            PostViewModelOut postViewModelOut = PostService.Instance.GetAllPostOfUser(postViewModelIn, accountPost);
             return Ok(postViewModelOut);
         }
 

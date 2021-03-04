@@ -56,15 +56,32 @@ namespace SOFA_API.DAO
         {
             List<Like> likes = new List<Like>();
             string sql = "EXEC dbo.GetAllLikeOfPost @postID";
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] {postID });
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID });
             if (data.Rows.Count > 0)
             {
-                foreach(DataRow row in data.Rows)
+                foreach (DataRow row in data.Rows)
                 {
                     likes.Add(new Like(row));
                 }
             }
             return likes;
+        }
+        /// <summary>
+        /// Get like of user for a post
+        /// </summary>
+        /// <param name="postID">ID of the post</param>
+        /// <param name="accountID">ID of the account</param>
+        /// <returns>An like object</returns>
+        public Like GetLikeOfUserForPost(int postID, int accountID)
+        {
+            Like like = null;
+            string sql = "EXEC dbo.GetLikeOfUserForPost @postID , @accountID";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID, accountID });
+            if (data.Rows.Count > 0)
+            {
+                like = new Like(data.Rows[0]);
+            }
+            return like;
         }
     }
 

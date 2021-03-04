@@ -33,7 +33,7 @@ namespace SOFA_API.Service
         /// Service of Get all post controller
         /// </summary>
         /// <returns></returns>
-        public PostViewModelOut GetAllPost()
+        public PostViewModelOut GetAllPost(int userID)
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
 
@@ -51,6 +51,12 @@ namespace SOFA_API.Service
                     postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
                     postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
                     postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                    if (userID != null)
+                    {
+                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
+                        Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
+                        postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                    }
                     postViewModelOut.ListPost.Add(postModelOut);
                 }
                 postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -67,7 +73,7 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="postViewModelIn"></param>
         /// <returns></returns>
-        public PostViewModelOut GetAllPublicPostOfUser(PostViewModelIn postViewModelIn)
+        public PostViewModelOut GetAllPublicPostOfUser(PostViewModelIn postViewModelIn, int userID)
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
 
@@ -85,6 +91,12 @@ namespace SOFA_API.Service
                     postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
                     postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
                     postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                    if (userID != null)
+                    {
+                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
+                        Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
+                        postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                    }
                     postViewModelOut.ListPost.Add(postModelOut);
                 }
                 postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -102,7 +114,7 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="postViewModelIn"></param>
         /// <returns></returns>
-        public PostViewModelOut GetAllPostOfUser(PostViewModelIn postViewModelIn)
+        public PostViewModelOut GetAllPostOfUser(PostViewModelIn postViewModelIn, int userID)
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
 
@@ -120,6 +132,12 @@ namespace SOFA_API.Service
                     postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
                     postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
                     postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                    if (userID != null)
+                    {
+                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
+                        Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
+                        postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                    }
                     postViewModelOut.ListPost.Add(postModelOut);
                 }
                 postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;

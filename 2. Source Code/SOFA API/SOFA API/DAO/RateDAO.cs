@@ -79,7 +79,26 @@ namespace SOFA_API.DAO
             }
             return rates;
         }
+        /// <summary>
+        /// Get rate of an user for a post
+        /// </summary>
+        /// <param name="postID">ID of the post</param>
+        /// <param name="accountID">ID of user</param>
+        /// <returns>An rate object</returns>
+        public Rate GetRatingOfUser(int postID, int accountID)
+        {
+            Rate rate = null;
 
+            string sql = "EXEC dbo.GetRateOfUserForPost @postID , @accountID";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID, accountID });
+
+            if(data.Rows.Count>0)
+            {
+                rate = new Rate(data.Rows[0]);
+            }
+
+            return null;
+        }
 
     }
 }

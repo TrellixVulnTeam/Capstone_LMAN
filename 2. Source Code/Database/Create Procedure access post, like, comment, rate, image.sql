@@ -271,5 +271,34 @@ BEGIN
 END
 GO
 
-SELECT * FROM POST ORDER BY TIME DESC
+DROP PROC IF EXISTS GetPostRateAverage
+GO
+CREATE PROC GetPostRateAverage
+@postID INT
+AS
+BEGIN
+	SELECT AVG(RatePoint) FROM Rate WHERE PostID = @postID
+END
+GO
+
+DROP PROC IF EXISTS GetRateOfUserForPost
+GO
+CREATE PROC GetRateOfUserForPost
+@postID INT, @accountID INT
+AS
+BEGIN
+	SELECT * FROM RATE
+	WHERE PostID = @postID AND AccountRate = @accountID
+END
+GO
+
+DROP PROC IF EXISTS GetLikeOfUserForPost
+GO
+CREATE PROC GetLikeOfUserForPost
+@postID INT, @accountID INT
+AS
+BEGIN
+		SELECT * FROM [Like] WHERE PostID = @postID AND AccountLike = @accountID 
+END
+GO
 

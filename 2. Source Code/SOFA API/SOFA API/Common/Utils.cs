@@ -115,8 +115,12 @@ namespace SOFA_API.Common
         /// <returns>Id of user (int)</returns>
         public int GetUserID(IEnumerable<System.Security.Claims.Claim> claims)
         {
+            int id = 0;
             var idClaim = claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
-            int id = Int32.Parse(idClaim.Value.Trim());
+            if (idClaim != null)
+            {
+                id = Int32.Parse(idClaim.Value.Trim());
+            }
             return id;
         }
     }

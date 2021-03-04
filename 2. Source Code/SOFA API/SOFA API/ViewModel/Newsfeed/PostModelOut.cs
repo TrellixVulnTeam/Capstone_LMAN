@@ -24,6 +24,9 @@ namespace SOFA_API.ViewModel.Newsfeed
         public int NumberOfLike { get; set; }
         public int NumberOfComment { get; set; }
         public int RateAverage { get; set; }
+        public bool IsLiked { get; set; }
+        public int MyRatePoint { get; set; }
+
         public PostModelOut()
         {
             ListImage = new List<Image>();
@@ -33,9 +36,11 @@ namespace SOFA_API.ViewModel.Newsfeed
             NumberOfLike = 0;
             NumberOfComment = 0;
             RateAverage = 0;
+            IsLiked = false;
+            MyRatePoint = 0;
         }
 
-        public PostModelOut(int iD, string content, int privacyID, DateTime time, int accountPost, string firstName, string lastName, string avatar, bool gender, List<Image> listImage, List<Like> listLike, List<Comment> listComment, List<Rate> listRate, int numberOfLike, int numberOfComment, int rateAverage)
+        public PostModelOut(int iD, string content, int privacyID, DateTime time, int accountPost, string firstName, string lastName, string avatar, bool gender, List<Image> listImage, List<Like> listLike, List<Comment> listComment, List<Rate> listRate, int numberOfLike, int numberOfComment, int rateAverage, bool isLiked, int myRatePoint)
         {
             ID = iD;
             Content = content;
@@ -53,6 +58,8 @@ namespace SOFA_API.ViewModel.Newsfeed
             NumberOfLike = numberOfLike;
             NumberOfComment = numberOfComment;
             RateAverage = rateAverage;
+            IsLiked = isLiked;
+            MyRatePoint = myRatePoint;
         }
 
         public void SetPostDetail(Post post)
