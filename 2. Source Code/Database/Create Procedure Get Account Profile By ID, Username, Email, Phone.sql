@@ -4,7 +4,7 @@ GO
 DROP PROC IF EXISTS UpdateProfileByAccountID
 GO
 CREATE PROC UpdateProfileByAccountID
-(@accountID int, @firstName nvarchar(50), @lastName nvarchar(50), @gender bit, @dob date, @email nvarchar(50), @phone nvarchar(50), @address nvarchar(max), @avatar nvarchar(max) )
+(@accountID int, @firstName nvarchar(50), @lastName nvarchar(50), @gender bit, @dob date, @email nvarchar(50), @phone nvarchar(50), @address nvarchar(max) )
 AS
 BEGIN
    UPDATE [dbo].[Profile]
@@ -15,7 +15,6 @@ BEGIN
       ,[Email] = @email
       ,[Phone] = @phone
       ,[Address] = @address
-      ,[Avatar] = @avatar
  WHERE AccountId = @accountID
 END
 GO
