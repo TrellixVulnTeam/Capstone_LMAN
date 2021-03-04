@@ -167,9 +167,57 @@ export default class UpdateProfile extends Component{
             });
     }
 
+    updateAvatar(){
+        const {account} = this.state;
+        this.getData('token')
+            .then(result => {
+                if (result) {
+                    let header = {
+                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                        "Content-Type": "multipart/form-data",
+                        "Host":"chientranhvietnam.org",
+                        "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2),
+                      };
+                      let data = new FormData();
+                      
+                      data.append('Avatar', account.avatar);
+                      console.log("Update avatar!");
+            
+                      console.log(account);
+                      let url = Const.domain + 'api/profile/updateavatar';
+            
+                      Request.Post(url, header, data)
+                        .then(response => {
+                            console.log(response);
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                Alert.alert('Update Successfully', 'Update avatar thành công!');
+                                console.log(response);
+                                this.props.navigation.goBack();               
+                            } else {
+                            if (response.code == Const.REQUEST_CODE_FAILED) {
+                                Alert.alert('Update Failed', 'Update avatar không thành công! Vui lòng kiểm tra lại');
+                                console.log(response);
+                            }
+                            }
+                        })
+                        .catch(reason => {
+                            console.log('Lỗi rồi!');
+                            console.log(reason);
+                        });
+
+                } else {
+                    this.props.navigation.navigate('Login')
+                }
+            })
+            .catch(reason => {
+                console.log('failed');
+                this.props.navigation.navigate('Login')
+            })
+    }
+
 
     updateInfomation(){
-        const {account, token} = this.state;
+        const {account} = this.state;
         this.getData('token')
             .then(result => {
                 if (result) {
@@ -270,11 +318,13 @@ export default class UpdateProfile extends Component{
                                         console.log('Take picture callback');
                                         account.avatar = source.base64;
                                         this.setState({ account: account });
+                                        this.updateAvatar();
                                     })} text='Máy ảnh' />
                                     <MenuOption onSelect={() => this.chooseFile(source => {
                                         console.log('Choose file callback');
                                         account.avatar = source.base64;
                                         this.setState({ account: account });
+                                        this.updateAvatar();
                                     })} text='Thư viện' />
                                 </MenuOptions>
                             </Menu>
@@ -368,6 +418,7 @@ export default class UpdateProfile extends Component{
                     <View style={Style.updateProfile.updateItemSecond}>
                         <Text style={Style.updateProfile.updateLabel}>Phone Number</Text>
                         <TextInput defaultValue={account.phone}
+                                    keyboardType='numeric'
                                     onChangeText={text => { 
                                         account.phone = text;
                                         this.setState({ account: account });
