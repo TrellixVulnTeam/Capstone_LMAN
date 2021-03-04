@@ -31,7 +31,7 @@ namespace SOFA_API.DAO
         {
             List<Post> listAllPost = new List<Post>();
 
-            String sql = "SELECT * FROM POST";
+            String sql = "EXEC dbo.GetAllPublicPost";
             try
             {
                 DataTable data = DataProvider.Instance.ExecuteQuery(sql);

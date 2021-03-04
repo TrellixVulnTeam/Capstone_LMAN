@@ -1,6 +1,17 @@
 USE CapstonesNoRelation
 GO
 
+DROP PROC IF EXISTS GetAllPublicPost
+GO
+CREATE PROC GetAllPublicPost
+AS
+BEGIN
+	SELECT * FROM dbo.Post
+	WHERE PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public')
+	ORDER BY [Time] DESC
+END
+GO
+
 DROP PROC IF EXISTS GetAllPostOfUser
 GO
 CREATE PROC GetAllPostOfUser

@@ -198,7 +198,7 @@ export default class Newsfeed extends Component {
                         }}
                         name={'message-text-outline'} color={'#232323'} size={30} />
                 </View>
-                <View style={{ height: scale(577, Vertical) }}>
+                <View style={{ height: scale(625, Vertical) }}>
                     <FlatList
                         data={listPost}
                         keyExtractor={(item, index) => item.id + ''}
