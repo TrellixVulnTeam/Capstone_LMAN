@@ -5,6 +5,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import DatePicker from 'react-native-datepicker'
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -73,8 +74,7 @@ export default class UpdateProfile extends Component{
                 if (source.base64) {
                     var header = {
                         "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                        "Authorization": 'Bearer ' + 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSUQiOiI0IiwiVXNlcm5hbWUiOiJ1c2VyIiwiZXhwIjoxNjE3MzgzODI2LCJpc3MiOiJTT0ZBIC0gRmFzaGlvbiBTb2NpYWwgTmV0d29yayBTZXJ2ZXIiLCJhdWQiOiJTT0ZBIC0gRmFzaGlvbiBTb2NpYWwgTmV0d29yayBDbGllbnQifQ.FbsZXqOWdySXio_5nuBBi4Oc0OT_MUm6G9xoP_7ALs4',
+                        "Accept": 'application/json',                       
                     };
                     console.log(header);
                     let data = new FormData();
@@ -143,8 +143,7 @@ export default class UpdateProfile extends Component{
                         if (source.base64) {
                             var header = {
                                 "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                                "Accept": 'application/json',
-                                "Authorization": 'Bearer ' + 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSUQiOiI0IiwiVXNlcm5hbWUiOiJ1c2VyIiwiZXhwIjoxNjE3MzgzODI2LCJpc3MiOiJTT0ZBIC0gRmFzaGlvbiBTb2NpYWwgTmV0d29yayBTZXJ2ZXIiLCJhdWQiOiJTT0ZBIC0gRmFzaGlvbiBTb2NpYWwgTmV0d29yayBDbGllbnQifQ.FbsZXqOWdySXio_5nuBBi4Oc0OT_MUm6G9xoP_7ALs4',
+                                "Accept": 'application/json',                               
                             };
                             console.log(header);
                             let data = new FormData();
@@ -171,45 +170,58 @@ export default class UpdateProfile extends Component{
 
     updateInfomation(){
         const {account, token} = this.state;
-        let header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Content-Type": "multipart/form-data",
-            "Host":"chientranhvietnam.org",
-            "Authorization": 'Bearer ' + token,
-          };
-          let data = new FormData();
-          data.append('AccountID', account.accountID);
-          data.append('FirstName', account.firstName);
-          data.append('LastName', account.lastName);
-          data.append('Gender', account.gender);
-          data.append('DOB', account.dob);
-          data.append('Email', account.email);
-          data.append('Phone', account.phone);
-          data.append('Address', account.address);
-          data.append('Avatar', account.avatar);
-          console.log("Update profile!");
+        this.getData('token')
+            .then(result => {
+                if (result) {
+                    let header = {
+                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                        "Content-Type": "multipart/form-data",
+                        "Host":"chientranhvietnam.org",
+                        "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2),
+                      };
+                      let data = new FormData();
+                      data.append('AccountID', account.accountID);
+                      data.append('FirstName', account.firstName);
+                      data.append('LastName', account.lastName);
+                      data.append('Gender', account.gender);
+                      data.append('DOB', account.dob);
+                      data.append('Email', account.email);
+                      data.append('Phone', account.phone);
+                      data.append('Address', account.address);
+                      data.append('Avatar', account.avatar);
+                      console.log("Update profile!");
+            
+                      console.log(account);
+                      let url = Const.domain + 'api/profile/updateprofile';
+            
+                      Request.Post(url, header, data)
+                        .then(response => {
+                            console.log(response);
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                Alert.alert('Update Successfully', 'Update thành công!');
+                                console.log(response);
+                                this.props.navigation.goBack();               
+                            } else {
+                            if (response.code == Const.REQUEST_CODE_FAILED) {
+                                Alert.alert('Update Failed', 'Update không thành công! Vui lòng kiểm tra lại');
+                                console.log(response);
+                            }
+                            }
+                        })
+                        .catch(reason => {
+                            console.log('Lỗi rồi!');
+                            console.log(reason);
+                        });
 
-          console.log(account);
-          let url = Const.domain + 'api/profile/updateprofile';
-
-          Request.Post(url, header, data)
-            .then(response => {
-                console.log(response);
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    Alert.alert('Update Successfully', 'Update thành công!');
-                    console.log(response);
-                    //this.props.navigation.goBack();               
                 } else {
-                if (response.code == Const.REQUEST_CODE_FAILED) {
-                    Alert.alert('Update Failed', 'Update không thành công! Vui lòng kiểm tra lại');
-                    console.log(response);
-                }
+                    this.props.navigation.navigate('Login')
                 }
             })
             .catch(reason => {
-                console.log('Lỗi rồi!');
-                console.log(reason);
-            });
+                console.log('failed');
+                this.props.navigation.navigate('Login')
+            })
+        
     }
 
 
@@ -269,28 +281,31 @@ export default class UpdateProfile extends Component{
                         </MenuProvider>
                         </View>                      
                     </View>
-                </LinearGradient> 
+                </LinearGradient>                 
                 <View style={Style.updateProfile.updateInfo}>
-                    <View style={Style.updateProfile.updateItemFirst}>
-                        <Text style={Style.updateProfile.updateLabel}>First Name</Text>
-                        <TextInput defaultValue={account.firstName}
-                                    onChangeText={text => { 
-                                        account.firstName = text;
-                                        this.setState({ account: account });
-                                    }}
-                                    style={Style.updateProfile.updateInput}
-                        />                      
-                    </View>    
-                    <View style={Style.updateProfile.updateItemSecond}>
-                        <Text style={Style.updateProfile.updateLabel}>Last Name</Text>
-                        <TextInput defaultValue={account.lastName}
-                                    onChangeText={text => { 
-                                        account.lastName = text;
-                                        this.setState({ account: account });
-                                    }}
-                                    style={Style.updateProfile.updateInput}
-                        />                      
-                    </View>   
+                    <View style={Style.updateProfile.updateName}>
+                        <View style={Style.updateProfile.updateItemFirst}>
+                            <Text style={Style.updateProfile.updateLabel}>First Name</Text>
+                            <TextInput defaultValue={account.firstName}
+                                        onChangeText={text => { 
+                                            account.firstName = text;
+                                            this.setState({ account: account });
+                                        }}
+                                        style={Style.updateProfile.updateInputFirst}
+                            />                      
+                        </View>    
+                        <View style={Style.updateProfile.updateItemFirst}>
+                            <Text style={Style.updateProfile.updateLabel}>Last Name</Text>
+                            <TextInput defaultValue={account.lastName}
+                                        onChangeText={text => { 
+                                            account.lastName = text;
+                                            this.setState({ account: account });
+                                        }}
+                                        style={Style.updateProfile.updateInputFirst}
+                            />                      
+                        </View>   
+                    </View>
+                    
                     <View style={Style.updateProfile.updateItemSecond}>
                         <Text style={Style.updateProfile.updateLabel}>Gender</Text> 
                         <View></View>           

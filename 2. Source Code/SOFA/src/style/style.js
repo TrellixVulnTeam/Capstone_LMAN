@@ -203,6 +203,23 @@ export const updateProfile = StyleSheet.create({
   updateItemFirst: {
     marginLeft: Utils.scale(15, Const.Horizontal),
   },
+
+  updateInputFirst: {
+    backgroundColor: 'pink',
+    backgroundColor: 'pink',
+    height: Utils.scale(40, Const.Vertical),
+    width: Utils.scale(175, Const.Horizontal),
+    borderColor: 'gray',
+    borderWidth: 0,
+    borderRadius: 20,
+    paddingLeft: 10,
+    fontSize: Utils.scale(20, Const.Horizontal),
+  },
+
+  updateName: {
+    flexDirection: 'row'
+  },
+
   updateItemSecond: {
     marginTop: Utils.scale(5, Const.Vertical),
     marginLeft: Utils.scale(15, Const.Horizontal),
