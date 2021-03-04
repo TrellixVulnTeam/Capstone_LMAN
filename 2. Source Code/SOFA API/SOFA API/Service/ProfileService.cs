@@ -97,7 +97,7 @@ namespace SOFA_API.Service
                     ProfileViewModelOut currentProfile = ProfileService.Instance.GetProfileModelByAccountID(accountId);
 
                     //update avatar
-                    String path = @"C:\inetpub\wwwroot\assets\Image\" + currentProfile.UserName + @"\";
+                    String path = Const.ASSETS_PATH + currentProfile.UserName + @"\avatar\";
 
                     //get current file name
                     string imageName = Path.GetFileNameWithoutExtension(currentProfile.AvatarUri);

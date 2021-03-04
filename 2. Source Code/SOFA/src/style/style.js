@@ -243,6 +243,18 @@ export const updateProfile = StyleSheet.create({
     fontSize: Utils.scale(20, Const.Horizontal),
   },
 
+  updateInputDate: {
+    backgroundColor: 'pink',
+    backgroundColor: 'pink',
+    height: Utils.scale(40, Const.Vertical),
+    width: Utils.scale(365, Const.Horizontal),
+    borderColor: 'gray',
+    borderWidth: 0,
+    borderRadius: 20,
+    paddingLeft: 10,
+    fontSize: Utils.scale(20, Const.Horizontal),
+  },
+
   appButtonContainer:{
     marginTop: Utils.scale(25, Const.Vertical),
     elevation: 8,

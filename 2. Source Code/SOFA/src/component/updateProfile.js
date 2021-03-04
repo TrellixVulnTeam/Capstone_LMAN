@@ -336,6 +336,36 @@ export default class UpdateProfile extends Component{
                         />                      
                     </View>    
                     <View style={Style.updateProfile.updateItemSecond}>
+                        <Text style={Style.updateProfile.updateLabel}>Date of Birth</Text>
+                        <DatePicker
+                            style={Style.updateProfile.updateInputDate}
+                            date={account.dob}
+                            mode="date"
+                            placeholder="select date"
+                            format="YYYY-MM-DD"
+                            minDate="1950-01-01"
+                            maxDate="2021-06-01"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            customStyles={{
+                            dateIcon: {
+                                position: 'absolute',
+                                left: 0,
+                                top: 4,
+                                marginRight: 2
+                            },
+                            dateInput: {
+                                borderWidth:0,
+                            }
+                            // ... You can check the source to find the other keys.
+                            }}
+                            onDateChange={(date) => {
+                                account.dob = date;
+                                this.setState({ account: account });
+                            }}
+                        />                     
+                    </View>    
+                    <View style={Style.updateProfile.updateItemSecond}>
                         <Text style={Style.updateProfile.updateLabel}>Phone Number</Text>
                         <TextInput defaultValue={account.phone}
                                     onChangeText={text => { 
