@@ -56,11 +56,25 @@ export default class Newsfeed extends Component {
         }
     }
 
+
+    checkLoginToken = async () => {
+        await this.getData('token')
+            .then(result => {
+                if (result) {
+                    this.setState({ token: result.toString().substr(1, result.length - 2) });
+                }
+            })
+            .catch(reason => {
+                this.setState({ token: '' });
+                console.log(reason);
+            })
+    }
+
     getAllPost = async () => {
         await this.getData('token')
             .then(result => {
                 if (result) {
-                    console.log('Get all post', result);
+                    // console.log('Get all post', result);
                     this.setState({ token: result.toString().substr(1, result.length - 2) });
                 }
             })
@@ -79,6 +93,10 @@ export default class Newsfeed extends Component {
             .then(response => {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     let listPostRes = response.listPost;
+                    let listPostTemp = this.state.listPost;
+                    for (let i = 0; i < listPostRes.length; i++) {
+                        listPostTemp.push(new PostViewModel(listPostRes[i]));
+                    }
                     this.setState({ listPost: listPostRes });
                 }
             })
@@ -87,29 +105,111 @@ export default class Newsfeed extends Component {
             })
     }
 
-    ratingCompleted(rating) {
-        console.log("Rating is: " + rating)
-    }
-
     componentDidMount() {
+        this.checkLoginToken();
         this.getAllPost();
     }
 
+    updatePostByID(postID, key, value) {
+        let listPostTemp = this.state.listPost;
+        for (let i = 0; i < listPostTemp.length; i++) {
+            if (listPostTemp[i].id == postID) {
+                listPostTemp[i][key] = value;
+                break;
+            }
+        }
+        this.setState({ listPost: listPostTemp });
+    }
+    /**
+     * Process when user press icon heart
+     * @param {Data of a post} post 
+     */
+    onPressLikePost(post) {
+        const { token } = this.state;
+        if (token && token.length > 0) {
+            var header = {
+                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                'Content-Type': 'multipart/form-data',
+                "Accept": 'application/json',
+                "Authorization": 'Bearer ' + token,
+            };
+            let data = new FormData();
+            data.append('PostID', post.id);
+            let uri = '';
+            if (!post.isLiked) {
+                uri = Const.domain + 'api/post/likepost';
+            } else {
+                uri = Const.domain + 'api/post/unlikepost';
+            }
+            Request.Post(uri, header, data)
+                .then(response => {
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        if (post.isLiked) {
+                            this.updatePostByID(post.id, 'numberOfLike', post.numberOfLike - 1);
+                        } else {
+                            this.updatePostByID(post.id, 'numberOfLike', post.numberOfLike + 1);
+                        }
+                        this.updatePostByID(post.id, 'isLiked', !post.isLiked);
+                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                        console.log(response.errorMessage);
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                })
+        } else {
+            Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+        }
+    }
+    /**
+     * Process when user rate a post
+     * @param {Data of the post} post 
+     * @param {Rate point} rating 
+     */
+    ratingCompleted(post, rating) {
+        console.log("Rating is: " + rating);
+        const { token } = this.state;
+        if (token && token.length > 0) {
+            var header = {
+                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                'Content-Type': 'multipart/form-data',
+                "Accept": 'application/json',
+                "Authorization": 'Bearer ' + token,
+            };
+            let data = new FormData();
+            data.append('PostID', post.id);
+            data.append('RatePoint', rating);
+            let uri = Const.domain + 'api/post/ratepost';
+            Request.Post(uri, header, data)
+                .then(response => {
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        this.updatePostByID(post.id, 'myRatePoint', rating);
+                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                        console.log(response.errorMessage);
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                })
+        } else {
+            Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+        }
+    }
+
     Article = ({ data }) => {
-        let post = new PostViewModel(data);
-        console.log(post.getMyRatePoint());
+        let post = data;
         return (
             <View
                 style={Style.newsfeed.Article}
             >
                 <View style={{ flexDirection: 'row' }}>
                     <Image
-                        source={post.getAvatar() && post.getAvatar().length > 0 ?
-                            { uri: Const.assets_domain + post.getAvatar() } : AVATAR}
+                        source={post.avatar && post.avatar.length > 0 ?
+                            { uri: Const.assets_domain + post.avatar } : AVATAR}
                         style={Style.newsfeed.ArticleAvatar} />
                     <View style={Style.newsfeed.ArticleHeader}>
-                        <Text style={Style.newsfeed.ArticleAuthor}>{post.getFirstName() + ' ' + post.getLastName()}</Text>
-                        <Text>{post.getTime()}</Text>
+                        <Text style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
+                        <Text>{Utils.calculateTime(post.time)}</Text>
                     </View>
                     <MaterialCommunityIcons
                         style={Style.newsfeed.ArticleMenu}
@@ -122,7 +222,7 @@ export default class Newsfeed extends Component {
                         showsVerticalScrollIndicator={false}
                         showsHorizontalScrollIndicator={true}
                         horizontal
-                        data={post.getListImage()}
+                        data={post.listImage}
                         keyExtractor={item => item.id + ''}
                         pagingEnabled={true}
                         renderItem={({ item }) => {
@@ -138,10 +238,14 @@ export default class Newsfeed extends Component {
                 </View>
                 <View style={Style.newsfeed.ArtileMore}>
                     <View style={Style.newsfeed.ArticleAction}>
-                        <MaterialCommunityIcons name={post.IsLiked() ? 'heart' : 'heart-outline'} size={30} color={post.IsLiked() ? 'red' : '#232323'} />
-                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.getNumberOfLike()}</Text>
+                        <MaterialCommunityIcons
+                            onPress={() => this.onPressLikePost(post)}
+                            name={post.isLiked ? 'heart' : 'heart-outline'}
+                            size={30}
+                            color={post.isLiked ? 'red' : '#232323'} />
+                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.numberOfLike}</Text>
                         <FontAwesome5 style={{ marginLeft: scale(10, Horizontal) }} name='comment-dots' size={30} color={'#232323'} />
-                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.getNumberOfComment()}</Text>
+                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.numberOfComment}</Text>
                         <Rating
                             style={{ marginLeft: scale(10, Horizontal) }}
                             ratingCount={5}
@@ -151,11 +255,11 @@ export default class Newsfeed extends Component {
                             //tintColor='#FFFFFF'
                             //ratingBackgroundColor='#FFF2D1'
                             onFinishRating={this.ratingCompleted}
-                            startingValue={post.getMyRatePoint()}
+                            startingValue={post.myRatePoint}
                         />
-                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.getRateAverage()}</Text>
+                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.rateAverage}</Text>
                     </View>
-                    <Text style={{ fontSize: 14, marginTop: scale(5, Vertical) }}>{post.getContent()}</Text>
+                    <Text style={{ fontSize: 14, marginTop: scale(5, Vertical) }}>{post.content}</Text>
                     <View
                         style={{
                             flexDirection: 'row',

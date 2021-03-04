@@ -47,6 +47,13 @@ namespace SOFA_API.DAO
             result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { postID, accountLike });
             return result;
         }
+        public int UnLikePost(int postID, int accountLike)
+        {
+            int result = 0;
+            string sql = "EXEC dbo.UnlikePost @postID , @accountLike";
+            result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { postID, accountLike });
+            return result;
+        }
         /// <summary>
         /// Get all like of the post by postID
         /// </summary>

@@ -13,5 +13,43 @@ const scale = (unit, direction) => {
   return result;
 };
 
+const calculateTime = (time) => {
+  let currentTime = new Date();
+  let postTime = new Date(time);
+  // currentTime = currentTime.setHours(currentTime.getHours() - 7);
+  let dif = currentTime - postTime;
+  dif = dif / 1000;
+  let res = ['Vừa xong'];
+  if (dif > 1) {
+    let temp = dif + ' Giây trước';
+    res.push(temp);
+    dif = parseInt(dif / 60, 10);
+  }
+  if (dif >= 1) {
+    let temp = dif + ' Phút trước';
+    res.push(temp);
+    dif = parseInt(dif / 60, 10);
+  }
+  if (dif >= 1) {
+    let temp = dif + ' Giờ trước';
+    res.push(temp);
+    dif = parseInt(dif / 24, 10)
+  }
+  if (dif >= 1) {
+    let temp = dif + ' Ngày trước';
+    res.push(temp);
+    dif = parseInt(dif / 30, 10)
+  }
+  if (dif >= 1) {
+    let temp = dif + ' Tháng trước';
+    res.push(temp);
+    dif = parseInt(dif / 12, 10)
+  }
+  if (dif >= 1) {
+    let temp = dif + ' Năm trước';
+    res.push(temp);
+  }
+  return res[res.length - 1];
+}
 
-export { scale };
+export { scale, calculateTime };

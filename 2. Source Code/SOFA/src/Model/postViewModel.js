@@ -1,24 +1,43 @@
 export default class PostViewModel {
     constructor(data = {}) {
-        let _iD = data.iD;
-        let _content = data.content;
-        let _privacyID = data.privacyID;
-        let _time = this.calculateTime(data.time);
-        let _accountPost = data.accountPost;
-        let _firstName = data.firstName;
-        let _lastName = data.lastName;
-        let _avatar = data.avatar;
-        let _gender = data.gender;
-        let _listImage = data.listImage;
-        let _listLike = data.listLike;
-        let _listComment = data.listComment;
-        let _listRate = data.listRate;
-        let _numberOfLike = data.numberOfLike;
-        let _numberOfComment = data.numberOfComment;
-        let _rateAverage = data.rateAverage;
-        let _isLiked = data.isLiked;
-        let _myRatePoint = data.myRatePoint;
-
+        let _iD = 0;
+        let _content = '';
+        let _privacyID = 0;
+        let _time = '';
+        let _accountPost = 0;
+        let _firstName = '';
+        let _lastName = '';
+        let _avatar = '';
+        let _gender = 0;
+        let _listImage = [];
+        let _listLike = [];
+        let _listComment = [];
+        let _listRate = [];
+        let _numberOfLike = 0;
+        let _numberOfComment = 0;
+        let _rateAverage = 0;
+        let _isLiked = false;
+        let _myRatePoint = 0;
+        if (data) {
+            _iD = data.iD;
+            _content = data.content;
+            _privacyID = data.privacyID;
+            _time = this.calculateTime(data.time);
+            _accountPost = data.accountPost;
+            _firstName = data.firstName;
+            _lastName = data.lastName;
+            _avatar = data.avatar;
+            _gender = data.gender;
+            _listImage = data.listImage;
+            _listLike = data.listLike;
+            _listComment = data.listComment;
+            _listRate = data.listRate;
+            _numberOfLike = data.numberOfLike;
+            _numberOfComment = data.numberOfComment;
+            _rateAverage = data.rateAverage;
+            _isLiked = data.isLiked;
+            _myRatePoint = data.myRatePoint;
+        }
         this.getID = () => _iD;
         this.getContent = () => _content;
         this.getPrivacyID = () => _privacyID;

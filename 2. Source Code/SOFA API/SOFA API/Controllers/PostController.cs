@@ -42,9 +42,17 @@ namespace SOFA_API.Controllers
         [Authorize]
         public ActionResult LikePost([FromForm] PostViewModelIn postViewModelIn)
         {
-            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
-            int id = Int32.Parse(idClaim.Value.Trim());
+            int id = Utils.Instance.GetUserID(User.Claims);
             PostViewModelOut result = PostService.Instance.LikePost(postViewModelIn.PostID, id);
+            return Ok(result);
+        }
+
+        [HttpPost("UnLikePost")]
+        [Authorize]
+        public ActionResult UnLikePost([FromForm] PostViewModelIn postViewModelIn)
+        {
+            int id = Utils.Instance.GetUserID(User.Claims);
+            PostViewModelOut result = PostService.Instance.UnLikePost(postViewModelIn.PostID, id);
             return Ok(result);
         }
 
@@ -52,8 +60,7 @@ namespace SOFA_API.Controllers
         [Authorize]
         public ActionResult RatePost([FromForm] PostViewModelIn postViewModelIn)
         {
-            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
-            int id = Int32.Parse(idClaim.Value.Trim());
+            int id = Utils.Instance.GetUserID(User.Claims);
             PostViewModelOut result = PostService.Instance.RatePost(postViewModelIn.PostID, id, postViewModelIn.RatePoint);
             return Ok(result);
         }

@@ -172,6 +172,27 @@ namespace SOFA_API.Service
             return result;
         }
         /// <summary>
+        /// Service of like post controller
+        /// </summary>
+        /// <param name="postID"></param>
+        /// <param name="accountLike"></param>
+        /// <returns></returns>
+        public PostViewModelOut UnLikePost(int postID, int accountLike)
+        {
+            int ID = 0;
+            ID = LikeDAO.Instance.UnLikePost(postID, accountLike);
+            PostViewModelOut result = new PostViewModelOut();
+            if (ID != 0)
+            {
+                result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                result.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return result;
+        }
+        /// <summary>
         /// Service of rate post controller
         /// </summary>
         /// <param name="postID"></param>

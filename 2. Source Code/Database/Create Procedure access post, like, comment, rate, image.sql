@@ -239,26 +239,6 @@ BEGIN
 END
 GO
 
-DROP PROC IF EXISTS CreateRate
-GO
-CREATE PROC CreateRate
-@postID INT, @accountRate INT, @ratePoint INT
-AS
-BEGIN
-	INSERT dbo.Rate
-	(
-	    PostId,
-	    AccountRate,
-	    RatePoint
-	)
-	VALUES
-	(   @postID, -- PostId - int
-	    @accountRate, -- AcountRate - int
-	    @ratePoint  -- RatePoint - int
-	    )
-END
-GO
-
 DROP PROC IF EXISTS UpdateRate
 GO
 CREATE PROC UpdateRate
@@ -313,3 +293,21 @@ BEGIN
 END
 GO
 
+DROP PROC IF EXISTS CreateRate
+GO
+CREATE PROC CreateRate
+@postID INT, @accountRate INT, @ratePoint INT
+AS
+BEGIN
+	DECLARE @rateID INT;
+	SET @rateID = (SELECT ID FROM Rate WHERE PostID = @postID AND AccountRate = @accountRate);
+	IF (@rateID IS NULL OR @rateID = 0) 
+	BEGIN
+		INSERT dbo.Rate VALUES(@postID, @accountRate, @ratePoint)
+	END
+	ELSE
+	BEGIN
+		UPDATE dbo.Rate SET RatePoint = @ratePoint WHERE ID = @rateID
+	END
+END
+GO
