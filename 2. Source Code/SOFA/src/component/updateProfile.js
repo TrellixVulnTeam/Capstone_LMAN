@@ -311,7 +311,7 @@ export default class UpdateProfile extends Component{
                         <View></View>           
                         <RadioForm
                             radio_props={data}
-                            initial={account.gender==true?0:1}
+                            initial={account.gender==true?1:0}
                             formHorizontal={true}
                             labelHorizontal={true}
                             buttonColor={'#F0054D'}
