@@ -53,13 +53,14 @@ namespace SOFA_API.Service
 
             try
             {
+                /*
                 // verify code
                 if (!VerificationService.Instance.VerifyCode(loginViewModelIn.TransactionId, loginViewModelIn.Code))
                 {
                     loginViewModelOut.Code = Const.REQUEST_CODE_FAILED;
                     throw new Exception("Invalid code");
                 }
-
+                */
                 if (loginViewModelIn.IsApplicationAccess)
                 {
                     loginViewModelIn.RoleId = Const.USER_ROLE_ID;

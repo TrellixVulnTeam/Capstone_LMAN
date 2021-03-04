@@ -22,7 +22,8 @@ export default class Profile extends Component{
         this.state = {
             account: {},
             avatarUri: '',
-            token: ''
+            token: '',
+        
         }
     }
     getData = async (key) => {
@@ -110,7 +111,7 @@ export default class Profile extends Component{
     }
 
     componentDidMount(){
-        this.getProfile();
+      //  this.getProfile();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
             this.setState({ account: {}, avatarUri: ''});
             this.getProfile();
@@ -137,7 +138,7 @@ export default class Profile extends Component{
                         <View style={Style.profile.button}>
                             <Button style={Style.profile.singleButton} color= '#ff7878' onPress = {() => this.onPressUpdateProfile()} title="Update profile"/>
                             <View style={{flex: 0.2}}></View>
-                            <Button style={Style.profile.singleButton} color= '#ff7878' title="View balance"/>
+                            <Button style={Style.profile.singleButton} color= '#ff7878' title="View balance" onPress={() => this.props.navigation.navigate('Balance')} />
                         </View>
                     </View>
                 </LinearGradient>                       

@@ -9,16 +9,19 @@ namespace SOFA_API.ViewModel.Balance
 {
     public class ListTransactionViewModelOut : BaseModelOut
     {
+        public decimal Balance { get; set; }
         public List<TransactionViewModelOut> listTransaction { get; set; }
 
         public ListTransactionViewModelOut()
         {
         }
 
-        public ListTransactionViewModelOut(List<TransactionViewModelOut> listTransaction)
+        public ListTransactionViewModelOut(decimal balance, List<TransactionViewModelOut> listTransaction)
         {
+            Balance = balance;
             this.listTransaction = listTransaction;
         }
+
         public ListTransactionViewModelOut(DataRow row)
         {
 

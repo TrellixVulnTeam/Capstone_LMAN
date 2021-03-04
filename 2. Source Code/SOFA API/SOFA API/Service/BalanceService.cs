@@ -34,9 +34,9 @@ namespace SOFA_API.Service
         /// This param require fields: AccountID
         /// </param>
         /// <returns></returns>
-        public GetBalanceViewModelOut GetBalanceByAccountID(GetBalanceViewModelIn modelIn)
+        public GetBalanceViewModelOut GetBalanceByAccountID(int id)
         {
-            GetBalanceViewModelOut balance = BalanceDAO.Instance.GetBalanceByAccountID(modelIn);
+            GetBalanceViewModelOut balance = BalanceDAO.Instance.GetBalanceByAccountID(id);
             if (balance != null)
             {
                 balance.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -55,9 +55,9 @@ namespace SOFA_API.Service
         /// This param require fields: AccountID
         /// </param>
         /// <returns></returns>
-        public ListTransactionViewModelOut GetTransactionHistory(GetBalanceViewModelIn modelIn)
+        public ListTransactionViewModelOut GetTransactionHistory(int accountId)
         {
-            ListTransactionViewModelOut viewModelOut = BalanceDAO.Instance.GetAllHistoryTransaction(modelIn);
+            ListTransactionViewModelOut viewModelOut = BalanceDAO.Instance.GetAllHistoryTransaction(accountId);
             if (viewModelOut != null)
             {
                 viewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;

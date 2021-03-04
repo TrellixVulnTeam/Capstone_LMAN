@@ -34,13 +34,13 @@ namespace SOFA_API.DAO
         /// This param require fields: AccountID
         /// </param>
         /// <returns></returns>
-        public GetBalanceViewModelOut GetBalanceByAccountID(GetBalanceViewModelIn modelIn)
+        public GetBalanceViewModelOut GetBalanceByAccountID(int id)
         {
             GetBalanceViewModelOut modelOut = null;
             string sql = "EXEC dbo.getBalanceByAccountID @AccountID";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { modelIn.AccountId });
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { id });
                 if (data.Rows.Count > 0)
                 {
                     modelOut = new GetBalanceViewModelOut((decimal)data.Rows[0]["Balance"]);
@@ -59,21 +59,31 @@ namespace SOFA_API.DAO
         /// This param require fields: AccountID
         /// </param>
         /// <returns></returns>
-        public ListTransactionViewModelOut GetAllHistoryTransaction(GetBalanceViewModelIn modelIn)
+        public ListTransactionViewModelOut GetAllHistoryTransaction(int accountId)
         {
             ListTransactionViewModelOut viewModelOut = null;
             List<TransactionViewModelOut> listTransaction = new List<TransactionViewModelOut>();
             string sql = "EXEC  dbo.getTransactionHistoryByAccountID @AccountID";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { modelIn.AccountId });
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId });
                 if (data.Rows.Count > 0)
                 {
+                    decimal balance = 0;
+                    if (data.Rows.Count > 1)
+                    {
+                         balance = (decimal)data.Rows[1]["Balance Current"];
+                    }
+                    else
+                    {
+                         balance = (decimal)data.Rows[0]["Balance Current"];
+                    }
                     foreach (DataRow row in data.Rows)
                     {
-                        listTransaction.Add(new TransactionViewModelOut(row));
+                        if (((int)row["TransactionID"])!=-1) {
+                            listTransaction.Add(new TransactionViewModelOut(row)); }
                     }
-                    viewModelOut = new ListTransactionViewModelOut(listTransaction);
+                    viewModelOut = new ListTransactionViewModelOut(balance,listTransaction);
                 }
             }
             catch (Exception e)

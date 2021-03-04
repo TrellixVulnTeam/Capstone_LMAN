@@ -14,17 +14,16 @@ namespace SOFA_API.Controllers
     [ApiController]
     public class BalanceController : ControllerBase
     {
-        /// <summary>
-        /// Get Balance By Account ID
-        /// </summary>
-        /// <param name="modelIn">
-        /// This param require fields: AccountID
-        /// </param>
-        /// <returns></returns>
+       /// <summary>
+       /// Get Balance By Id
+       /// </summary>
+       /// <returns></returns>
         [HttpGet]
-        public ActionResult GetBalance(GetBalanceViewModelIn modelIn)
+        public ActionResult GetBalance()
         {
-            GetBalanceViewModelOut modelOut = BalanceService.Instance.GetBalanceByAccountID(modelIn);
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int id = Int32.Parse(idClaim.Value.Trim());
+            GetBalanceViewModelOut modelOut = BalanceService.Instance.GetBalanceByAccountID(id);
             return Ok(modelOut);
         }
         /// <summary>
@@ -35,9 +34,12 @@ namespace SOFA_API.Controllers
         /// </param>
         /// <returns></returns>
         [HttpGet("history")]
-        public ActionResult GetTransactionHistory(GetBalanceViewModelIn modelIn)
+        public ActionResult GetTransactionHistory()
         {
-            ListTransactionViewModelOut viewModelOut = BalanceService.Instance.GetTransactionHistory(modelIn);
+            
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int id = Int32.Parse(idClaim.Value.Trim());
+            ListTransactionViewModelOut viewModelOut = BalanceService.Instance.GetTransactionHistory(id);
             return Ok(viewModelOut);
         }
         /// <summary>

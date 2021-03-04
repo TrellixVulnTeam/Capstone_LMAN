@@ -67,7 +67,7 @@ export default class Login extends Component {
           if (response.code == Const.REQUEST_CODE_FAILED) {
             this.setState({ isLoading: false });
             Alert.alert('Login status', 'Thông tin tài khoản hoặc mật khẩu không chính xác');
-          }
+      }
         }
       })
       .catch(reason => {

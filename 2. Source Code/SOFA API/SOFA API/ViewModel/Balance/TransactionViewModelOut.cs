@@ -11,6 +11,7 @@ namespace SOFA_API.ViewModel.Balance
         public decimal AfterBalance { get; set; }
         public decimal Amount { get; set; }
         public int TypeID { get; set; }
+        public string TypeName { get; set; }
         public DateTime TransactionTime { get; set; }
         public int AccountId { get; set; }
         public int AdminId { get; set; }
@@ -19,13 +20,14 @@ namespace SOFA_API.ViewModel.Balance
         {
         }
 
-        public TransactionViewModelOut(int transactionId, decimal beforeBalance, decimal afterBalance, decimal amount, int typeID, DateTime transactionTime, int accountId, int adminId)
+        public TransactionViewModelOut(int transactionId, decimal beforeBalance, decimal afterBalance, decimal amount, int typeID, string typeName, DateTime transactionTime, int accountId, int adminId)
         {
             TransactionId = transactionId;
             BeforeBalance = beforeBalance;
             AfterBalance = afterBalance;
             Amount = amount;
             TypeID = typeID;
+            TypeName = typeName;
             TransactionTime = transactionTime;
             AccountId = accountId;
             AdminId = adminId;
@@ -38,6 +40,7 @@ namespace SOFA_API.ViewModel.Balance
             AfterBalance = (row["AfterBalance"] != null) ? 0 : (decimal)row["AfterBalance"];
             Amount = (decimal)row["Amount"];
             TypeID = (int)row["TypeID"];
+            TypeName = row["TypeName"].ToString();
             TransactionTime = (DateTime)row["TransactionTime"];
             AccountId = (int)row["AccountId"];
             AdminId = (row["AdminId"] != null) ? -1 : (int)row["AdminId"];
