@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView} from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -23,6 +23,7 @@ export default class Profile extends Component{
             account: {},
             avatarUri: '',
             token: '',
+            listImageAll: []
         
         }
     }
@@ -47,10 +48,10 @@ export default class Profile extends Component{
         }
     }
 
-    getProfile(){
+    getProfile = async () => {
         const { account } = this.state;
-        console.log('Check login');
-        this.getData('token')
+        console.log('Access profile');
+        await this.getData('token')
         .then(result => {
             if(result){
                 var header = {
@@ -64,7 +65,48 @@ export default class Profile extends Component{
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                 this.setState({ account: response });
                                 this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
-                                this.setState({ token: result.toString().substr(1, result.length - 2) });
+                            } else {
+                                this.props.navigation.navigate('Login')
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            this.props.navigation.navigate('Login')
+
+                        });
+            }else{
+                this.props.navigation.navigate('Login')
+            }
+        })
+        .catch(reason => {
+            console.log('failed');
+            this.props.navigation.navigate('Login')
+        })
+    }
+
+    getListImage = async () =>{
+        await this.getData('token')
+        .then(result => {
+            if(result){
+                var header = {
+                    "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                    "Accept": 'application/json',
+                    "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
+                };
+                let url = Const.domain + 'api/post/getuserpost';
+                Request.Get(url, header)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                let listPost = response.listPost ;
+                                let listImageAll = [];
+                                for (let i = 0; i < listPost.length; i++) {
+                                    listImageAll.push(listPost[i].listImage[0]);
+                                    console.log(Const.assets_domain + listPost[i].listImage[0].url + '?time=' + new Date())
+                                }
+                                this.setState({ listImageAll: listImageAll });
+                                console.log(this.state.listImageAll);                               
+                                
+
                             } else {
                                 this.props.navigation.navigate('Login')
                             }
@@ -111,10 +153,12 @@ export default class Profile extends Component{
     }
 
     componentDidMount(){
-      //  this.getProfile();
+        this.getProfile();
+        this.getListImage();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
             this.setState({ account: {}, avatarUri: ''});
             this.getProfile();
+            this.getListImage();
         });
     }
 
@@ -175,6 +219,26 @@ export default class Profile extends Component{
                     </Text>                   
                 </View>
                 <View style={Style.profile.line}/>
+                <ScrollView>
+                <FlatList
+                    data={this.state.listImageAll}
+                    numColumns={3}
+                    keyExtractor={(item) => item.id + ''}
+                    renderItem={({ item }) => (<Image 
+                        style={{
+                            height: Utils.scale(100, Const.Vertical),
+                            width: Utils.scale(100, Const.Vertical),
+                            marginBottom: Utils.scale(10, Const.Vertical),
+                            marginTop: Utils.scale(10, Const.Vertical),
+                            marginLeft: Utils.scale(10, Const.Horizontal),
+                            marginRight: Utils.scale(10, Const.Horizontal),
+                            marginRight: Utils.scale(5, Const.Horizontal),
+                        }}
+                        source={{uri: Const.assets_domain + item.url + '?time=' + new Date()}} 
+                        />)
+                      }
+                />
+                </ScrollView>
             </View>
         )
     }
