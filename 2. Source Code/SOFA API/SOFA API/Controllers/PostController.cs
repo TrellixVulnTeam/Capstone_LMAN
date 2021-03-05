@@ -98,5 +98,11 @@ namespace SOFA_API.Controllers
             PostViewModelOut postViewModelOut = PostService.Instance.GetPostDetail(postViewModelIn);
             return Ok(postViewModelOut);
         }
+        [HttpGet("GetCommentOfPost")]
+        public ActionResult GetListCommentOfPost([FromForm] PostViewModelIn postViewModelIn)
+        {
+            PostViewModelOut postViewModelOut = PostService.Instance.GetListCommentOfPost(postViewModelIn);
+            return Ok(postViewModelOut);
+        }
     }
 }

@@ -108,6 +108,29 @@ namespace SOFA_API.Service
             }
             return postViewModelOut;
         }
+        /// <summary>
+        /// Service of get list comment of post
+        /// </summary>
+        /// <param name="postViewModelIn"></param>
+        /// <returns></returns>
+        public PostViewModelOut GetListCommentOfPost(PostViewModelIn postViewModelIn)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
+            try
+            {
+                PostModelOut postModelOut = new PostModelOut();
+                postModelOut.ListComment = CommentDAO.Instance.GetAllCommentOfPost(postViewModelIn.PostID);
+                postModelOut.ID = postViewModelIn.PostID;
+                postViewModelOut.ListPost.Add(postModelOut);
+                postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch(Exception e)
+            {
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
+            }
+            return postViewModelOut;
+        }
 
         /// <summary>
         /// Service of get post of user controller
