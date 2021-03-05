@@ -165,6 +165,7 @@ export default class Profile extends Component{
     render(){
         const { account, avatarUri} = this.state;
         return (
+            <ScrollView>
             <View>
                 <StatusBar hidden={false} backgroundColor='#fbb897' />
                 <LinearGradient colors={['#fbb897','#ff8683']}>
@@ -219,7 +220,10 @@ export default class Profile extends Component{
                     </Text>                   
                 </View>
                 <View style={Style.profile.line}/>
-                <ScrollView>
+                <View style={{
+                    alignSelf: 'center',
+                    marginTop: Utils.scale(10, Const.Vertical),
+                    }}>
                 <FlatList
                     data={this.state.listImageAll}
                     numColumns={3}
@@ -228,18 +232,16 @@ export default class Profile extends Component{
                         style={{
                             height: Utils.scale(100, Const.Vertical),
                             width: Utils.scale(100, Const.Vertical),
-                            marginBottom: Utils.scale(10, Const.Vertical),
-                            marginTop: Utils.scale(10, Const.Vertical),
-                            marginLeft: Utils.scale(10, Const.Horizontal),
-                            marginRight: Utils.scale(10, Const.Horizontal),
-                            marginRight: Utils.scale(5, Const.Horizontal),
+                            borderWidth: 1.5,
+                            borderColor: '#EA2338',
                         }}
                         source={{uri: Const.assets_domain + item.url + '?time=' + new Date()}} 
                         />)
                       }
                 />
-                </ScrollView>
+                </View>                                
             </View>
+            </ScrollView>
         )
     }
 }
