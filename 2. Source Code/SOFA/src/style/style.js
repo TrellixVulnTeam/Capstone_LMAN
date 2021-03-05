@@ -108,7 +108,12 @@ export const profile = StyleSheet.create({
     marginRight: Utils.scale(30, Const.Horizontal),
     borderBottomColor: '#ff5050',
     borderBottomWidth: 1,
-  }
+  },
+
+  images: {
+    flexDirection: 'row',
+    paddingHorizontal: 0.5
+  },
 
 })
 
