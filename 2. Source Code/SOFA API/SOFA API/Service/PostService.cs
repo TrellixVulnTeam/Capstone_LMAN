@@ -119,7 +119,17 @@ namespace SOFA_API.Service
             try
             {
                 PostModelOut postModelOut = new PostModelOut();
-                postModelOut.ListComment = CommentDAO.Instance.GetAllCommentOfPost(postViewModelIn.PostID);
+                List<Comment> comments = CommentDAO.Instance.GetAllCommentOfPost(postViewModelIn.PostID);
+                List<CommentModelOut> commentModelOuts = new List<CommentModelOut>();
+                foreach(Comment comment in comments)
+                {
+                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(comment.AccountID);
+                    CommentModelOut commentModelOut = new CommentModelOut();
+                    commentModelOut.SetComment(comment);
+                    commentModelOut.SetAccountComment(profile);
+                    commentModelOuts.Add(commentModelOut);
+                }
+                postModelOut.ListComment = commentModelOuts;
                 postModelOut.ID = postViewModelIn.PostID;
                 postViewModelOut.ListPost.Add(postModelOut);
                 postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -253,7 +263,18 @@ namespace SOFA_API.Service
                 postModelOut.SetPostDetail(post);
                 postModelOut.SetAccountPost(profile);
                 postModelOut.ListLike = LikeDAO.Instance.GetAllLikeOfPost(postViewModelIn.PostID);
-                postModelOut.ListComment = CommentDAO.Instance.GetAllCommentOfPost(postViewModelIn.PostID);
+
+                List<Comment> comments = CommentDAO.Instance.GetAllCommentOfPost(postViewModelIn.PostID);
+                List<CommentModelOut> commentModelOuts = new List<CommentModelOut>();
+                foreach (Comment comment in comments)
+                {
+                    Profile profileComment = ProfileDAO.Instance.GetProfileByAccountID(comment.AccountID);
+                    CommentModelOut commentModelOut = new CommentModelOut();
+                    commentModelOut.SetComment(comment);
+                    commentModelOut.SetAccountComment(profileComment);
+                    commentModelOuts.Add(commentModelOut);
+                }
+                postModelOut.ListComment = commentModelOuts;
                 postModelOut.ListRate = RateDAO.Instance.GetListOfRate(postViewModelIn.PostID);
                 postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(postViewModelIn.PostID);
                 postModelOut.NumberOfComment = postModelOut.ListComment.Count;
