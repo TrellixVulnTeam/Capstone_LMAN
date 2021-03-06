@@ -308,13 +308,23 @@ namespace SOFA_API.Service
             int ID = 0;
             ID = CommentDAO.Instance.CommentPost(accountID, postID, content);
             PostViewModelOut result = new PostViewModelOut();
-            if (ID != 0)
+            try
             {
-                result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
-            }
-            else
+                if (ID != 0)
+                {
+                    PostModelOut postModelOut = new PostModelOut();
+                    postModelOut.ID = postID;
+                    result.ListPost.Add(postModelOut);
+                    result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                {
+                    result.Code = Const.REQUEST_CODE_FAILED;
+                }
+            } catch(Exception e)
             {
                 result.Code = Const.REQUEST_CODE_FAILED;
+                result.ErrorMessage = e.Message;
             }
             return result;
         }
