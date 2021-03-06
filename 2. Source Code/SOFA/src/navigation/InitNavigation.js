@@ -6,6 +6,7 @@ import Login from '../component/login';
 import Register from '../component/register';
 import BottomNav from '../navigation/bottomNavigation'
 import OtherProfile from '../component/otherProfile';
+import Setting from "../component/setting";
 
 
 const Stack = createStackNavigator();
@@ -18,6 +19,7 @@ export default function Navigation() {
                 <Stack.Screen name='BottomNav' component={BottomNav} options={{ headerShown: false }} />
                 <Stack.Screen name='Register' component={Register} options={{ headerShown: false }} />
                 <Stack.Screen name='OtherProfile' component={OtherProfile} options={{ headerShown: false }} />
+                <Stack.Screen name='Setting' component={Setting} options={{ headerShown: false }} />
 
             </Stack.Navigator>
         </NavigationContainer>
