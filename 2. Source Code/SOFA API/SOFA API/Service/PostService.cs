@@ -206,6 +206,7 @@ namespace SOFA_API.Service
                     postModelOut.ID = postID;
                     postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(postID);
                     postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(postID, accountLike) != null;
+                    result.ListPost.Add(postModelOut);
                     result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 }
                 else
@@ -240,6 +241,7 @@ namespace SOFA_API.Service
                     postModelOut.ID = postID;
                     postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(postID);
                     postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(postID, accountLike) != null;
+                    result.ListPost.Add(postModelOut);
                     result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 }
                 else
@@ -275,6 +277,7 @@ namespace SOFA_API.Service
                     postModelOut.ID = postID;
                     postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(postID);
                     postModelOut.MyRatePoint = RateDAO.Instance.GetRatingOfUser(postID, accountLike).RatePoint;
+                    result.ListPost.Add(postModelOut);
                     result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 }
                 else
