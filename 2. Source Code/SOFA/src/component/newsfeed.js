@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, Keyboard, TextInput } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, Keyboard, TextInput, TouchableWithoutFeedback } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -299,12 +299,18 @@ export default class Newsfeed extends Component {
                 style={Style.newsfeed.Article}
             >
                 <View style={{ flexDirection: 'row' }}>
-                    <Image
-                        source={post.avatar && post.avatar.length > 0 ?
-                            { uri: Const.assets_domain + post.avatar } : AVATAR}
-                        style={Style.newsfeed.ArticleAvatar} />
+                    <TouchableWithoutFeedback
+                        onPress={() => { this.props.navigation.navigate('OtherProfile', { 'AccountID': post.accountID }) }}
+                    >
+                        <Image
+                            source={post.avatar && post.avatar.length > 0 ?
+                                { uri: Const.assets_domain + post.avatar } : AVATAR}
+                            style={Style.newsfeed.ArticleAvatar} />
+                    </TouchableWithoutFeedback>
                     <View style={Style.newsfeed.ArticleHeader}>
-                        <Text style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
+                        <Text
+                            onPress={() => { this.props.navigation.navigate('OtherProfile', { 'AccountID': post.accountID }) }}
+                            style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
                         <Text>{Utils.calculateTime(post.time)}</Text>
                     </View>
                     <MaterialCommunityIcons

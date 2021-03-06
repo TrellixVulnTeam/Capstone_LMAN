@@ -4,7 +4,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 
 import Newsfeed from '../component/newsfeed';
-
 const Stack = createStackNavigator();
 
 export default function NewsfeedStack() {

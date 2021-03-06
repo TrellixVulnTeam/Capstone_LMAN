@@ -33,7 +33,6 @@ export default function Navigation() {
         style: {
           backgroundColor: '#300808'
         }
-
       }}>
       <Tab.Screen
         name="Newsfeed"
