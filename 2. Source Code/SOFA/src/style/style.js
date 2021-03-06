@@ -7,7 +7,7 @@ import { Vertical, Horizontal } from '../common/const';
 export const common = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: '#e1b878'
 
   },
   flexRow: {
@@ -119,8 +119,11 @@ export const profile = StyleSheet.create({
 
 export const newsfeed = StyleSheet.create({
   Header: {
-    marginTop: scale(10, Vertical),
+    paddingTop:scale(10, Vertical),
     flexDirection: 'row',
+    backgroundColor: '#300808',
+    alignContent:'center',
+    alignItems:'center'
   },
   searchIcon: {
     marginRight: scale(5, Horizontal),
@@ -139,7 +142,7 @@ export const newsfeed = StyleSheet.create({
     color: '#4E4E4E',
   },
   Article: {
-    backgroundColor: 'white',
+    backgroundColor: '#f8e5d6',
     marginTop: scale(20, Vertical),
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,

@@ -25,14 +25,15 @@ import { color } from 'react-native-reanimated';
 import PostViewModel from '../Model/postViewModel';
 import { AVATAR } from '../../image/index';
 import { TextInput } from 'react-native-gesture-handler';
+import ImagePicker from 'react-native-image-crop-picker';
 
-export default class Newsfeed extends Component {
+export default class CreatePost extends Component {
     constructor(props) {
         super(props);
         this.state = {
             token: '',
             account: {},
-            listPost: []
+            listImage: []
         }
     }
     getData = async (key) => {
@@ -56,32 +57,26 @@ export default class Newsfeed extends Component {
         }
     }
 
-    getAllPost() {
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json'
-        };
-        var data = {};
-        var uri = Const.domain + 'api/post'
-        Request.Get(uri, header, data)
-            .then(response => {
-                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    let listPostRes = response.listPost;
-                    this.setState({ listPost: listPostRes });
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-            })
+    componentDidMount() {
+        ImagePicker.openPicker({
+            width: 100,
+            height: 100,
+            cropping: true,
+            includeBase64: true,
+            multiple:true,
+            compressImageMaxHeight:100,
+            compressImageMaxWidth:100,
+        }).then(image => {
+            console.log(image);
+        }).catch(reason => console.log(reason));
     }
-
 
     render() {
         const { account, listPost } = this.state;
         return (
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={'#FFF5F1'} />
-                
+
             </View>
         )
     }

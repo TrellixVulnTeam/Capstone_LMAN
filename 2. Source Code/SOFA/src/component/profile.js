@@ -226,6 +226,7 @@ export default class Profile extends Component{
                     }}>
                 <FlatList
                     data={this.state.listImageAll}
+                    scrollEnabled={false}
                     numColumns={3}
                     keyExtractor={(item) => item.id + ''}
                     renderItem={({ item }) => (<Image 

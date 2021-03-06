@@ -13,7 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import NewsfeedStack from './newsfeedStack';
 import HotStack from './hotStack';
 import SuggestStack from './suggestStack';
-import NotificationStack from './notficationStack';
+import CreatePostStack from './createPostStack';
 import ProfileStack from './profileStack';
 import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
@@ -25,10 +25,15 @@ export default function Navigation() {
     <Tab.Navigator
       initialRouteName="Newsfeed"
       tabBarOptions={{
-        activeTintColor: '#FF8683',
-        inactiveTintColor: '#FBB897',
+        activeTintColor: '#c92327',
+        inactiveTintColor: '#f8e5d7',
         activeBackgroundColor: 'transparent',
-        inactiveBackgroundColor: 'transparent'
+        inactiveBackgroundColor: 'transparent',
+        height: scale(50, Vertical),
+        style: {
+          backgroundColor: '#8fbbc4'
+        }
+
       }}>
       <Tab.Screen
         name="Newsfeed"
@@ -51,19 +56,19 @@ export default function Navigation() {
         }}
       />
       <Tab.Screen
-        name="Suggest"
-        component={SuggestStack}
+        name="createpost"
+        component={CreatePostStack}
         options={{
           title: '',
           tabBarIcon: ({ color, size }) => (
             <LinearGradient colors={['#FF3636', '#F970FE']}
               style={{
-                width: scale(70, Horizontal),
-                height: scale(70, Horizontal),
+                width: scale(40, Horizontal),
+                height: scale(40, Horizontal),
                 alignItems: 'center',
                 justifyContent: 'center',
                 //marginBottom: scale(40, Vertical),
-                top: scale(-35, Vertical),
+                top: scale(5, Vertical),
                 borderRadius: 50,
                 position: 'absolute',
                 shadowColor: '#7F58FF',
@@ -73,7 +78,7 @@ export default function Navigation() {
 
 
               }}>
-              <MaterialIcons name="add" color={'white'} size={scale(70, Horizontal)} />
+              <MaterialIcons name="add" color={'white'} size={scale(40, Horizontal)} />
             </LinearGradient>
           ),
         }}
@@ -98,6 +103,6 @@ export default function Navigation() {
           ),
         }}
       />
-    </Tab.Navigator>
+    </Tab.Navigator >
   );
 }

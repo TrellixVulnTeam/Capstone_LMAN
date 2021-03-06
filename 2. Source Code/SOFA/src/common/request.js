@@ -5,6 +5,7 @@ const Get = (uri, header) => {
             headers: header
         })
             .then((response) => {
+                //console.log(response);
                 return response.json();
             })
             .then((json) => {
@@ -27,7 +28,10 @@ const Post = (uri, header, data) => {
             headers: header,
             body: data
         })
-            .then((response) => { console.log(response); return response.json(); })
+            .then((response) => { 
+                //console.log(response); 
+                return response.json(); 
+            })
             .then((json) => {
                 console.log(json);
                 if (json && json.code) {

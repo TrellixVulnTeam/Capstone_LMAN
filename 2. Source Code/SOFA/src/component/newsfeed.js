@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, Keyboard, TextInput } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -24,7 +24,6 @@ import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import PostViewModel from '../Model/postViewModel';
 import { AVATAR } from '../../image/index';
-import { TextInput } from 'react-native-gesture-handler';
 
 export default class Newsfeed extends Component {
     constructor(props) {
@@ -32,7 +31,10 @@ export default class Newsfeed extends Component {
         this.state = {
             token: '',
             account: {},
-            listPost: []
+            listPost: [],
+            isKeyBoardShow: false,
+            keyboardHeight: 0,
+            commentText: '',
         }
     }
     getData = async (key) => {
@@ -93,9 +95,8 @@ export default class Newsfeed extends Component {
             .then(response => {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     let listPostRes = response.listPost;
-                    let listPostTemp = this.state.listPost;
                     for (let i = 0; i < listPostRes.length; i++) {
-                        listPostTemp.push(new PostViewModel(listPostRes[i]));
+                        listPostRes.isShowComment = false;
                     }
                     this.setState({ listPost: listPostRes });
                 }
@@ -108,6 +109,25 @@ export default class Newsfeed extends Component {
     componentDidMount() {
         this.checkLoginToken();
         this.getAllPost();
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow', (event) => {
+                this.setState({ isKeyBoardShow: true });
+                this.setState({ keyboardHeight: event.endCoordinates.height });
+                this.commentTextInput.focus();
+                this.props.navigation.dangerouslyGetParent().setOptions({
+                    tabBarVisible: false
+                });
+            }
+        );
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide', () => {
+                this.setState({ keyboardHeight: 0 });
+                this.setState({ isKeyBoardShow: false });
+                this.props.navigation.dangerouslyGetParent().setOptions({
+                    tabBarVisible: true
+                });
+            },
+        );
     }
 
     updatePostByID(postID, key, value) {
@@ -120,6 +140,34 @@ export default class Newsfeed extends Component {
         }
         this.setState({ listPost: listPostTemp });
     }
+
+    onPressCommentIcon(post) {
+        if (!post.isShowComment) {
+            var header = {
+                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                "Accept": 'application/json'
+            };
+            let uri = Const.domain + 'api/post/GetCommentOfPost?postID=' + post.id;
+            Request.Get(uri, header)
+                .then(response => {
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        if (response.listPost.length > 0) {
+                            let listComment = response.listPost[0].listComment;
+                            //console.log(listComment);
+                            let postID = response.listPost[0].id;
+                            this.updatePostByID(postID, 'listComment', listComment);
+                        }
+                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                        console.log(response.errorMessage);
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                })
+        }
+        this.updatePostByID(post.id, 'isShowComment', !post.isShowComment)
+    }
+
     /**
      * Process when user press icon heart
      * @param {Data of a post} post 
@@ -197,6 +245,7 @@ export default class Newsfeed extends Component {
     }
 
     Article = ({ data }) => {
+        const { isKeyBoardShow, keyboardHeight, commentText } = this.state;
         let post = data;
         return (
             <View
@@ -213,7 +262,7 @@ export default class Newsfeed extends Component {
                     </View>
                     <MaterialCommunityIcons
                         style={Style.newsfeed.ArticleMenu}
-                        name='dots-horizontal' size={30} color={'#8B8B8B'} />
+                        name='dots-horizontal' size={30} color={'black'} />
 
                 </View>
                 <View style={Style.newsfeed.ArticleImageList}>
@@ -242,65 +291,103 @@ export default class Newsfeed extends Component {
                             onPress={() => this.onPressLikePost(post)}
                             name={post.isLiked ? 'heart' : 'heart-outline'}
                             size={30}
-                            color={post.isLiked ? 'red' : '#232323'} />
+                            color={post.isLiked ? '#dc3f1c' : '#232323'} />
                         <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.numberOfLike}</Text>
-                        <FontAwesome5 style={{ marginLeft: scale(10, Horizontal) }} name='comment-dots' size={30} color={'#232323'} />
+                        <FontAwesome5
+                            onPress={() => this.onPressCommentIcon(post)}
+                            style={{ marginLeft: scale(10, Horizontal) }}
+                            name='comment-dots' size={30}
+                            color={'#232323'} />
                         <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.numberOfComment}</Text>
                         <Rating
                             style={{ marginLeft: scale(10, Horizontal) }}
                             ratingCount={5}
                             imageSize={30}
                             type='custom'
-                            ratingColor='#FBB897'
-                            //tintColor='#FFFFFF'
+                            ratingColor='#dc3f1c'
+                            tintColor='#f8e5d6'
                             //ratingBackgroundColor='#FFF2D1'
-                            onFinishRating={this.ratingCompleted}
+                            onFinishRating={(rating) => this.ratingCompleted(post, rating)}
                             startingValue={post.myRatePoint}
                         />
                         <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.rateAverage}</Text>
                     </View>
-                    <Text style={{ fontSize: 14, marginTop: scale(5, Vertical) }}>{post.content}</Text>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            marginTop: scale(5, Vertical)
-                        }}
-                    >
-                        <TextInput
-                            placeholder={'Bình luận'}
-                            style={{
-                                width: scale(300, Horizontal),
-                                backgroundColor: '#EEEEEE',
-                                borderRadius: 10,
-                            }} />
+                    <View style={{ flexDirection: 'row', marginTop: scale(5, Vertical) }}>
+                        <Text style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
+                        <Text style={{ fontSize: 14, marginLeft: scale(5, Horizontal) }}>{post.content}</Text>
                     </View>
+                    {post.isShowComment ? (
+                        <View
+                            style={{
+                                marginTop: scale(5, Vertical)
+                            }}
+                        >
+                            <FlatList
+                                data={post.listComment}
+                                keyExtractor={(item, index) => item.id + ''}
+                                renderItem={({ item }) => {
+                                    return (
+                                        <View style={{ marginLeft: scale(10, Horizontal), marginBottom: scale(5, Vertical) }}>
+                                            <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
+                                                <Image
+                                                    style={{
+                                                        width: scale(40, Horizontal),
+                                                        height: scale(40, Horizontal),
+                                                        borderRadius: 50
+                                                    }}
+                                                    source={item.avatar && item.avatar.length > 0 ? { uri: Const.assets_domain + item.avatar } : { AVATAR }} />
+                                                <Text style={{ fontWeight: 'bold', marginLeft: scale(10, Horizontal) }}>{item.firstName + " " + item.lastName}</Text>
+                                                <Text style={{ marginLeft: scale(5, Horizontal) }}>{item.content}</Text>
+
+                                            </View>
+                                        </View>
+                                    )
+                                }}
+                            />
+
+                            <View>
+                                <TextInput
+                                    placeholder={'Bình luận'}
+                                    value={commentText}
+                                    style={{
+                                        width: scale(300, Horizontal),
+                                        backgroundColor: '#EEEEEE',
+                                        borderRadius: 10,
+                                    }} />
+                            </View>
+
+
+                        </View>
+                    ) : (<View></View>)}
+
                 </View>
             </View>
         )
     }
 
     render() {
-        const { account, listPost } = this.state;
+        const { account, listPost, isKeyBoardShow, keyboardHeight, commentText } = this.state;
         return (
             <View style={Style.common.container}>
-                <StatusBar hidden={false} backgroundColor={'#FFF5F1'} />
+                <StatusBar hidden={false} backgroundColor={'#300808'} />
                 <View style={[Style.newsfeed.Header]}>
+                    <Text style={{fontFamily:'20db', fontSize: 30, color: '#fef4ca' }}>SOFA</Text>
                     <Ionicons
                         style={{
                             marginLeft: 'auto',
                             marginRight: scale(5, Horizontal)
                         }}
-                        name={'search-outline'} color={'#232323'} size={30} />
+                        name={'search-outline'} color={'#fef4ca'} size={30} />
                     <Ionicons
                         style={{
                             marginRight: scale(5, Horizontal)
                         }}
-                        name={'notifications'} color={'#232323'} size={30} />
+                        name={'notifications'} color={'#fef4ca'} size={30} />
                     <MaterialCommunityIcons
                         style={{
                             marginRight: scale(5, Horizontal)
                         }}
-                        name={'message-text-outline'} color={'#232323'} size={30} />
+                        name={'message-text-outline'} color={'#fef4ca'} size={30} />
                 </View>
                 <View style={{ height: scale(625, Vertical) }}>
                     <FlatList
@@ -309,6 +396,17 @@ export default class Newsfeed extends Component {
                         renderItem={({ item, index }) => <this.Article data={item} />}
                     />
                 </View>
+                {isKeyBoardShow ? (
+                    <View style={{ position: 'absolute', top: scale(700 - keyboardHeight - 40, Vertical), flexDirection: 'row' }}>
+                        <TextInput
+                            onChangeText={text => this.setState({ commentText: text })}
+                            ref={(input) => { this.commentTextInput = input }}
+                            placeholder={'Bình luận'}
+                            style={{ borderWidth: 1, backgroundColor: 'white', borderRadius: 5, height: scale(40, Vertical), width: scale(350, Horizontal) }}
+                        />
+                        <Ionicons size={scale(40, Vertical)} name='send' />
+                    </View>) : (<View></View>)}
+
             </View>
         )
     }
