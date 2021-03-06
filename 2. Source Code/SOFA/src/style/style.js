@@ -46,12 +46,13 @@ export const profile = StyleSheet.create({
   },
 
   image: {
-    height: Utils.scale(100, Const.Vertical),
+    height: Utils.scale(110, Const.Horizontal),
     width: Utils.scale(110, Const.Horizontal),
     borderRadius: Utils.scale(55, Const.Horizontal),
     borderWidth: 2,
     overflow: 'hidden',
     alignSelf: 'center',
+    marginLeft: Utils.scale(149, Const.Horizontal),
   },
 
   basicInfo: {

@@ -177,93 +177,10 @@ export default class Profile extends Component{
     render(){
         const { account, avatarUri} = this.state;
         return (
-            <ScrollView>
             <View>
-                <StatusBar hidden={false} backgroundColor='#fbb897' />
-                <LinearGradient colors={['#fbb897','#ff8683']}>
-                    <View style={Style.profile.firstHeader}>
-                        <View style={{flexDirection: 'row',
-                                    width: Utils.scale(400, Const.Horizontal),
-                                    }}>                                                               
-                            <Image 
-                                source={avatarUri ? { uri: avatarUri } : AVATAR}
-                                resizeMode={"cover"}
-                                style={Style.profile.image} />
-                           
-                           <Ionicons name='settings-sharp' size={30} color={'white'} style={{
-                               marginRight: Utils.scale(15, Const.Horizontal),
-                               marginLeft: 'auto'
-                           }} onPress={() => this.props.navigation.navigate('Setting')}/>
-                        </View>                                                 
-                        <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
-                        <Text style={Style.profile.email}>{account.email}</Text>
-                        <View style={Style.profile.basicInfo}>
-                            <Text style={Style.profile.basicSmallInfo}>{account.postNumber}{"\n"}Posts</Text>
-                            <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
-                        </View>
-                        <View style={Style.profile.button}>
-                            <Button style={Style.profile.singleButton} color= '#ff7878' onPress = {() => this.onPressUpdateProfile()} title="Update profile"/>
-                            <View style={{flex: 0.2}}></View>
-                            <Button style={Style.profile.singleButton} color= '#ff7878' title="View balance" onPress={() => this.props.navigation.navigate('Balance')} />
-                        </View>
-                    </View>
-                </LinearGradient>                       
-                <View style={Style.profile.information}>    
-                    <Image source={ADDRESS_ICON} style={Style.profile.info_icon} />                   
-                    <Text style={Style.profile.info_text}>
-                        Đến từ <Text style={{fontWeight: "bold"}}>
-                            {account.address}
-                        </Text>                       
-                    </Text>                   
-                </View>
-                <View style={Style.profile.information}>    
-                    <Image source={BIRTHDAY_ICON} style={Style.profile.info_icon} />                   
-                    <Text style={Style.profile.info_text}>
-                        Ngày sinh <Text style={{fontWeight: "bold"}}>
-                            {this.formatBirthday(account.dob)}
-                        </Text>                       
-                    </Text>                   
-                </View>
-                <View style={Style.profile.information}>    
-                    <Image source={PHONE_ICON} style={Style.profile.info_icon} />                   
-                    <Text style={Style.profile.info_text}>
-                        Điện thoại <Text style={{fontWeight: "bold"}}>
-                            {account.phone}
-                        </Text>                       
-                    </Text>                   
-                </View>
-                <View style={Style.profile.information}>    
-                    <Image source={GENDER_ICON} style={Style.profile.info_icon} />                   
-                    <Text style={Style.profile.info_text}>
-                        Giới tính <Text style={{fontWeight: "bold"}}>
-                            {this.formatGender(account.gender)}
-                        </Text>                       
-                    </Text>                   
-                </View>
-                <View style={Style.profile.line}/>
-                <View style={{
-                    alignSelf: 'center',
-                    marginTop: Utils.scale(10, Const.Vertical),
-                    }}>
-                <FlatList
-                    data={this.state.listImageAll}
-                    scrollEnabled={false}
-                    numColumns={3}
-                    keyExtractor={(item) => item.id + ''}
-                    renderItem={({ item }) => (<Image 
-                        style={{
-                            height: Utils.scale(100, Const.Vertical),
-                            width: Utils.scale(100, Const.Vertical),
-                            borderWidth: 1.5,
-                            borderColor: '#EA2338',
-                        }}
-                        source={{uri: Const.assets_domain + item.url + '?time=' + new Date()}} 
-                        />)
-                      }
-                />
-                </View>                                
-            </View>
-            </ScrollView>
+                <Button style={Style.profile.singleButton} color= '#ff7878' title="Logout" onPress={() => this.logout()} />
+            </View>                                
+            
         )
     }
 }
