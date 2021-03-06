@@ -302,7 +302,15 @@ export default class UpdateProfile extends Component{
                             <Image 
                             source={avatarUri ? { uri: avatarUri } : AVATAR}
                             resizeMode={"cover"}
-                            style={Style.profile.image} />
+                            style={{
+                                height: Utils.scale(110, Const.Horizontal),
+                                width: Utils.scale(110, Const.Horizontal),
+                                borderRadius: Utils.scale(55, Const.Horizontal),
+                                borderWidth: 2,
+                                overflow: 'hidden',
+                                alignSelf: 'center',
+                                //marginLeft: Utils.scale(149, Const.Horizontal),
+                            }} />
                             <View style={{
                                 marginTop: Utils.scale(10, Const.Vertical),
                                 height: Utils.scale(70, Const.Vertical),

@@ -5,6 +5,13 @@ import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
 import RadioButtonRN from 'radio-buttons-react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Octicons from 'react-native-vector-icons/Octicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -12,11 +19,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
-import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON } from '../../image/index';
+import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON, MORE_ICON } from '../../image/index';
 import { TextInput } from 'react-native-gesture-handler';
 import { acc } from 'react-native-reanimated';
 
-export default class OtherProfile extends Component{
+export default class Profile extends Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -148,6 +155,11 @@ export default class OtherProfile extends Component{
           });
     }
 
+    logout(){
+        AsyncStorage.removeItem('token');
+        this.props.navigation.navigate('Login');
+    }
+
     componentWillUnmount() {
         //this._unsubcribe();
     }
@@ -170,10 +182,19 @@ export default class OtherProfile extends Component{
                 <StatusBar hidden={false} backgroundColor='#fbb897' />
                 <LinearGradient colors={['#fbb897','#ff8683']}>
                     <View style={Style.profile.firstHeader}>
-                        <Image 
-                        source={avatarUri ? { uri: avatarUri } : AVATAR}
-                        resizeMode={"cover"}
-                        style={Style.profile.image} />
+                        <View style={{flexDirection: 'row',
+                                    width: Utils.scale(400, Const.Horizontal),
+                                    }}>                                                               
+                            <Image 
+                                source={avatarUri ? { uri: avatarUri } : AVATAR}
+                                resizeMode={"cover"}
+                                style={Style.profile.image} />
+                           
+                           <Entypo name='dots-three-vertical' size={30} color={'white'} style={{
+                               marginRight: Utils.scale(15, Const.Horizontal),
+                               marginLeft: 'auto'
+                           }} onPress={() => this.props.navigation.navigate('Setting')}/>
+                        </View>                                                 
                         <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
                         <Text style={Style.profile.email}>{account.email}</Text>
                         <View style={Style.profile.basicInfo}>
