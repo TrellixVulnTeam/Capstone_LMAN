@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, Keyboard, TextInput } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -35,6 +35,7 @@ export default class Newsfeed extends Component {
             isKeyBoardShow: false,
             keyboardHeight: 0,
             commentText: '',
+            currentPostComment: 0,
         }
     }
     getData = async (key) => {
@@ -111,21 +112,21 @@ export default class Newsfeed extends Component {
         this.getAllPost();
         this.keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow', (event) => {
-                this.setState({ isKeyBoardShow: true });
-                this.setState({ keyboardHeight: event.endCoordinates.height });
-                this.commentTextInput.focus();
                 this.props.navigation.dangerouslyGetParent().setOptions({
                     tabBarVisible: false
                 });
+                this.setState({ isKeyBoardShow: true });
+                this.setState({ keyboardHeight: event.endCoordinates.height });
+                this.commentTextInput.focus();
             }
         );
         this.keyboardDidHideListener = Keyboard.addListener(
             'keyboardDidHide', () => {
-                this.setState({ keyboardHeight: 0 });
-                this.setState({ isKeyBoardShow: false });
                 this.props.navigation.dangerouslyGetParent().setOptions({
                     tabBarVisible: true
                 });
+                this.setState({ keyboardHeight: 0 });
+                this.setState({ isKeyBoardShow: false });
             },
         );
     }
@@ -139,6 +140,53 @@ export default class Newsfeed extends Component {
             }
         }
         this.setState({ listPost: listPostTemp });
+    }
+
+    getFieldPostByID(postID, key) {
+        let listPostTemp = this.state.listPost;
+        for (let i = 0; i < listPostTemp.length; i++) {
+            if (listPostTemp[i].id == postID) {
+                return listPostTemp[i][key];
+            }
+        }
+        return null;
+    }
+
+    onPressCommentButton() {
+        const { token, currentPostComment, commentText } = this.state;
+        if (token && token.length > 0) {
+            console.log(currentPostComment, commentText);
+            if (currentPostComment > 0 && commentText.length > 0) {
+                var header = {
+                    "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                    'Content-Type': 'multipart/form-data',
+                    "Accept": 'application/json',
+                    "Authorization": 'Bearer ' + token,
+                };
+                let data = new FormData();
+                data.append('PostID', currentPostComment);
+                data.append('comment', commentText);
+                let uri = Const.domain + 'api/post/commentpost';
+                Request.Post(uri, header, data)
+                    .then(response => {
+                        if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                            let listComment = response.listPost[0].listComment;
+                            this.updatePostByID(response.listPost[0].id, 'listComment', listComment);
+                            this.updatePostByID(response.listPost[0].id, 'numberOfComment', listComment.length);
+                        } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                            console.log(response.errorMessage);
+                        }
+                    })
+                    .catch(reason => {
+                        console.log(reason);
+                    })
+            }
+        } else {
+            Alert.alert('Thông báo', 'Hãy đăng nhập để bình luận về bài viết');
+        }
+        this.commentTextInput.clear();
+        this.commentTextInput.
+            this.setState({ commentText: '' });
     }
 
     onPressCommentIcon(post) {
@@ -166,6 +214,8 @@ export default class Newsfeed extends Component {
                 })
         }
         this.updatePostByID(post.id, 'isShowComment', !post.isShowComment)
+        console.log(this.commentInputs.length);
+
     }
 
     /**
@@ -192,12 +242,8 @@ export default class Newsfeed extends Component {
             Request.Post(uri, header, data)
                 .then(response => {
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        if (post.isLiked) {
-                            this.updatePostByID(post.id, 'numberOfLike', post.numberOfLike - 1);
-                        } else {
-                            this.updatePostByID(post.id, 'numberOfLike', post.numberOfLike + 1);
-                        }
-                        this.updatePostByID(post.id, 'isLiked', !post.isLiked);
+                        this.updatePostByID(response.listPost[0].id, 'numberOfLike', response.listPost[0].numberOfLike);
+                        this.updatePostByID(response.listPost[0].id, 'isLiked', response.listPost[0].isLiked);
                     } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
                         console.log(response.errorMessage);
                     }
@@ -231,7 +277,8 @@ export default class Newsfeed extends Component {
             Request.Post(uri, header, data)
                 .then(response => {
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        this.updatePostByID(post.id, 'myRatePoint', rating);
+                        this.updatePostByID(response.listPost[0].id, 'myRatePoint', response.listPost[0].myRatePoint);
+                        this.updatePostByID(response.listPost[0].id, 'rateAverage', response.listPost[0].rateAverage);
                     } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
                         console.log(response.errorMessage);
                     }
@@ -240,7 +287,7 @@ export default class Newsfeed extends Component {
                     console.log(reason);
                 })
         } else {
-            Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+            Alert.alert('Thông báo', 'Hãy đăng nhập để đánh giá bài viết này');
         }
     }
 
@@ -306,6 +353,7 @@ export default class Newsfeed extends Component {
                             type='custom'
                             ratingColor='#dc3f1c'
                             tintColor='#f8e5d6'
+                            readonly={!(this.state.token && this.state.token.length > 0)}
                             //ratingBackgroundColor='#FFF2D1'
                             onFinishRating={(rating) => this.ratingCompleted(post, rating)}
                             startingValue={post.myRatePoint}
@@ -347,8 +395,10 @@ export default class Newsfeed extends Component {
 
                             <View>
                                 <TextInput
-                                    placeholder={'Bình luận'}
+                                    ref={(input) => { this.commentInputs = input }}
                                     value={commentText}
+                                    placeholder={'Bình luận'}
+                                    onFocus={() => this.setState({ currentPostComment: post.id })}
                                     style={{
                                         width: scale(300, Horizontal),
                                         backgroundColor: '#EEEEEE',
@@ -371,7 +421,7 @@ export default class Newsfeed extends Component {
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={'#300808'} />
                 <View style={[Style.newsfeed.Header]}>
-                    <Text style={{fontFamily:'20db', fontSize: 30, color: '#fef4ca' }}>SOFA</Text>
+                    <Text style={{ fontFamily: '20db', fontSize: 30, color: '#fef4ca' }}>SOFA</Text>
                     <Ionicons
                         style={{
                             marginLeft: 'auto',
@@ -399,12 +449,15 @@ export default class Newsfeed extends Component {
                 {isKeyBoardShow ? (
                     <View style={{ position: 'absolute', top: scale(700 - keyboardHeight - 40, Vertical), flexDirection: 'row' }}>
                         <TextInput
-                            onChangeText={text => this.setState({ commentText: text })}
+                            onFocus={() => console.log(this.commentInputs.length)}
+                            onChangeText={text => {
+                                this.setState({ commentText: text });
+                            }}
                             ref={(input) => { this.commentTextInput = input }}
                             placeholder={'Bình luận'}
                             style={{ borderWidth: 1, backgroundColor: 'white', borderRadius: 5, height: scale(40, Vertical), width: scale(350, Horizontal) }}
                         />
-                        <Ionicons size={scale(40, Vertical)} name='send' />
+                        <Ionicons size={scale(40, Vertical)} name='send' onPress={() => this.onPressCommentButton()} />
                     </View>) : (<View></View>)}
 
             </View>

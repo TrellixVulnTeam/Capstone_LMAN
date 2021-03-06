@@ -172,7 +172,7 @@ export const newsfeed = StyleSheet.create({
 
   },
   ArticleImageStyle: {
-    height: scale(400, Vertical),
+    height: scale(400, Horizontal),
     width: scale(400, Horizontal),
   },
   ArticleImage: {

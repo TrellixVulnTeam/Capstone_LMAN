@@ -25,13 +25,13 @@ export default function Navigation() {
     <Tab.Navigator
       initialRouteName="Newsfeed"
       tabBarOptions={{
-        activeTintColor: '#c92327',
+        activeTintColor: '#d8a027',
         inactiveTintColor: '#f8e5d7',
         activeBackgroundColor: 'transparent',
         inactiveBackgroundColor: 'transparent',
         height: scale(50, Vertical),
         style: {
-          backgroundColor: '#8fbbc4'
+          backgroundColor: '#300808'
         }
 
       }}>
@@ -51,7 +51,7 @@ export default function Navigation() {
         options={{
           title: 'Hot',
           tabBarIcon: ({ color, size }) => (
-            <SimpleLineIcons name="fire" color={color} size={size} />
+            <MaterialIcons name="local-fire-department" color={color} size={size} />
           ),
         }}
       />
