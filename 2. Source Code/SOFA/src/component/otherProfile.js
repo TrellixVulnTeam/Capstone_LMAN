@@ -12,6 +12,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { LogBox } from 'react-native';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -143,6 +144,7 @@ export default class Profile extends Component{
     }
 
     componentDidMount(){
+        LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
         const AccountID = this.props.route.params;
         this.setState({accountId: AccountID});
         console.log(AccountID);
