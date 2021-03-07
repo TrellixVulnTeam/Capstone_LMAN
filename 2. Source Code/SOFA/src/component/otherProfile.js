@@ -27,6 +27,7 @@ export default class Profile extends Component{
     constructor(props) {
         super(props);
         this.state = {
+            accountId: '',
             account: {},
             avatarUri: '',
             token: '',
@@ -55,21 +56,18 @@ export default class Profile extends Component{
         }
     }
 
-    getProfile = async () => {
-        const { account } = this.state;
-        console.log('Access profile');
-        await this.getData('token')
-        .then(result => {
-            if(result){
+    getProfile() {
+        const { accountId } = this.state;
+        console.log('Get other profile');        
                 var header = {
                     "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
                     "Accept": 'application/json',
-                    "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
                 };
-                let url = Const.domain + 'api/profile';
+                let url = Const.domain + 'api/profile/otherprofile?id=' + accountId;
                 Request.Get(url, header)
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                console.log(response);
                                 this.setState({ account: response });
                                 this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
                             } else {
@@ -80,57 +78,37 @@ export default class Profile extends Component{
                             console.log(reason);
                             this.props.navigation.navigate('Login')
 
-                        });
-            }else{
-                this.props.navigation.navigate('Login')
-            }
-        })
-        .catch(reason => {
-            console.log('failed');
-            this.props.navigation.navigate('Login')
-        })
+                });
+            
     }
 
-    getListImage = async () =>{
-        await this.getData('token')
-        .then(result => {
-            if(result){
-                var header = {
-                    "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                    "Accept": 'application/json',
-                    "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
-                };
-                let url = Const.domain + 'api/post/getuserpost';
-                Request.Get(url, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                let listPost = response.listPost ;
-                                let listImageAll = [];
-                                for (let i = 0; i < listPost.length; i++) {
-                                    listImageAll.push(listPost[i].listImage[0]);
-                                    console.log(Const.assets_domain + listPost[i].listImage[0].url + '?time=' + new Date())
-                                }
-                                this.setState({ listImageAll: listImageAll });
-                                console.log(this.state.listImageAll);                               
-                                
-
-                            } else {
-                                this.props.navigation.navigate('Login')
-                            }
-                        })
-                        .catch(reason => {
-                            console.log(reason);
-                            this.props.navigation.navigate('Login')
-
-                        });
-            }else{
-                this.props.navigation.navigate('Login')
-            }
-        })
-        .catch(reason => {
-            console.log('failed');
-            this.props.navigation.navigate('Login')
-        })
+    getListImage() {   
+        const { accountId } = this.state;     
+        var header = {
+            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+            "Accept": 'application/json',
+            };
+        let url = Const.domain + 'api/post/getuserpublicpost?accountPost='+ accountId;
+        Request.Get(url, header)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    let listPost = response.listPost ;
+                    let listImageAll = [];
+                    for (let i = 0; i < listPost.length; i++) {
+                        listImageAll.push(listPost[i].listImage[0]);
+                        console.log(Const.assets_domain + listPost[i].listImage[0].url + '?time=' + new Date())
+                    }
+                    this.setState({ listImageAll: listImageAll });
+                    console.log(this.state.listImageAll);                                                             
+                } else {
+                    this.props.navigation.navigate('Login')
+                }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                    this.props.navigation.navigate('Login')
+                });        
+            
     }
 
     formatBirthday(dob){
@@ -165,6 +143,9 @@ export default class Profile extends Component{
     }
 
     componentDidMount(){
+        const AccountID = this.props.route.params;
+        this.setState({accountId: AccountID});
+        console.log(AccountID);
         this.getProfile();
         this.getListImage();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {

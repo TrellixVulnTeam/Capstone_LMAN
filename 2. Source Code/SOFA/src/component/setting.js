@@ -55,106 +55,6 @@ export default class Profile extends Component{
         }
     }
 
-    getProfile = async () => {
-        const { account } = this.state;
-        console.log('Access profile');
-        await this.getData('token')
-        .then(result => {
-            if(result){
-                var header = {
-                    "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                    "Accept": 'application/json',
-                    "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
-                };
-                let url = Const.domain + 'api/profile';
-                Request.Get(url, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                this.setState({ account: response });
-                                this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
-                            } else {
-                                this.props.navigation.navigate('Login')
-                            }
-                        })
-                        .catch(reason => {
-                            console.log(reason);
-                            this.props.navigation.navigate('Login')
-
-                        });
-            }else{
-                this.props.navigation.navigate('Login')
-            }
-        })
-        .catch(reason => {
-            console.log('failed');
-            this.props.navigation.navigate('Login')
-        })
-    }
-
-    getListImage = async () =>{
-        await this.getData('token')
-        .then(result => {
-            if(result){
-                var header = {
-                    "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                    "Accept": 'application/json',
-                    "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
-                };
-                let url = Const.domain + 'api/post/getuserpost';
-                Request.Get(url, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                let listPost = response.listPost ;
-                                let listImageAll = [];
-                                for (let i = 0; i < listPost.length; i++) {
-                                    listImageAll.push(listPost[i].listImage[0]);
-                                    console.log(Const.assets_domain + listPost[i].listImage[0].url + '?time=' + new Date())
-                                }
-                                this.setState({ listImageAll: listImageAll });
-                                console.log(this.state.listImageAll);                               
-                                
-
-                            } else {
-                                this.props.navigation.navigate('Login')
-                            }
-                        })
-                        .catch(reason => {
-                            console.log(reason);
-                            this.props.navigation.navigate('Login')
-
-                        });
-            }else{
-                this.props.navigation.navigate('Login')
-            }
-        })
-        .catch(reason => {
-            console.log('failed');
-            this.props.navigation.navigate('Login')
-        })
-    }
-
-    formatBirthday(dob){
-        let today = new Date(dob);
-        let date=today.getDate() + "/"+ parseInt(today.getMonth()+1) +"/"+today.getFullYear();
-        return date;
-    }
-
-    formatGender(gender){
-        let sex = "Nam";
-        if(gender != true){
-            sex = "Nữ";
-        }
-        return sex;
-    }
-
-    onPressUpdateProfile(){
-        const { account, avatarUri} = this.state;
-        this.props.navigation.navigate('UpdateProfile', {
-            account: account,
-            avatarUri: avatarUri,
-          });
-    }
-
     logout(){
         AsyncStorage.removeItem('token');
         this.props.navigation.navigate('Login');
@@ -165,13 +65,13 @@ export default class Profile extends Component{
     }
 
     componentDidMount(){
-        this.getProfile();
-        this.getListImage();
-        this._unsubcribe = this.props.navigation.addListener('focus', () => {
-            this.setState({ account: {}, avatarUri: ''});
-            this.getProfile();
-            this.getListImage();
-        });
+        // this.getProfile();
+        // this.getListImage();
+        // this._unsubcribe = this.props.navigation.addListener('focus', () => {
+        //     this.setState({ account: {}, avatarUri: ''});
+        //     this.getProfile();
+        //     this.getListImage();
+        // });
     }
 
     render(){
