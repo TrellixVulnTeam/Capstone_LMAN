@@ -165,8 +165,13 @@ export default class Profile extends Component {
         //this._unsubcribe();
     }
 
+
     componentDidMount() {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+
+    componentDidMount(){
+        console.log('My Profile');
+
         this.getProfile();
         this.getListImage();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {

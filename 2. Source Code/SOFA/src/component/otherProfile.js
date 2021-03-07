@@ -58,13 +58,12 @@ export default class Profile extends Component{
     }
 
     getProfile() {
-        const { accountId } = this.state;
-        console.log('Get other profile');        
+        const AccountID = this.props.route.params.AccountID;     
                 var header = {
                     "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
                     "Accept": 'application/json',
                 };
-                let url = Const.domain + 'api/profile/otherprofile?id=' + accountId;
+                let url = Const.domain + 'api/profile/otherprofile?id=' + AccountID;
                 Request.Get(url, header)
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -84,12 +83,12 @@ export default class Profile extends Component{
     }
 
     getListImage() {   
-        const { accountId } = this.state;     
+        const AccountID = this.props.route.params.AccountID;    
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json',
             };
-        let url = Const.domain + 'api/post/getuserpublicpost?accountPost='+ accountId;
+        let url = Const.domain + 'api/post/getuserpublicpost?accountPost='+ AccountID;
         Request.Get(url, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -126,12 +125,11 @@ export default class Profile extends Component{
         return sex;
     }
 
-    onPressUpdateProfile(){
-        const { account, avatarUri} = this.state;
-        this.props.navigation.navigate('UpdateProfile', {
-            account: account,
-            avatarUri: avatarUri,
-          });
+    onPressFollow(){
+        console.log('Press Follow');
+    }
+    onPressBlock(){
+        console.log('Press Block');
     }
 
     logout(){
@@ -144,10 +142,13 @@ export default class Profile extends Component{
     }
 
     componentDidMount(){
+
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
         const AccountID = this.props.route.params;
         this.setState({accountId: AccountID});
         console.log(AccountID);
+        console.log('Other Profile!')
+
         this.getProfile();
         this.getListImage();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
@@ -185,9 +186,9 @@ export default class Profile extends Component{
                             <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
                         </View>
                         <View style={Style.profile.button}>
-                            <Button style={Style.profile.singleButton} color= '#ff7878' onPress = {() => this.onPressUpdateProfile()} title="Update profile"/>
+                            <Button style={Style.profile.singleButton} color= '#ff7878' onPress = {() => this.onPressBlock()} title="Block"/>
                             <View style={{flex: 0.2}}></View>
-                            <Button style={Style.profile.singleButton} color= '#ff7878' title="View balance" onPress={() => this.props.navigation.navigate('Balance')} />
+                            <Button style={Style.profile.singleButton} color= '#ff7878' title="Follow" onPress={() => this.onPressFollow()} />
                         </View>
                     </View>
                 </LinearGradient>                       
