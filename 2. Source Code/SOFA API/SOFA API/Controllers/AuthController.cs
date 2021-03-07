@@ -56,8 +56,8 @@ namespace SOFA_API.Controllers
         /// This controller process reset password for user, include reset password and change password
         /// </summary>
         /// <param name="data">
-        /// This param require fields: if the resquest is resert password: email, newPassword, transactionID and code
-        /// if the request is change password: email, password, newPassword
+        /// This param require fields: if the resquest is resert password: phone, newPassword, transactionID and code
+        /// if the request is change password: phone, password, newPassword
         /// </param>
         /// <returns></returns>
         [HttpPost("reset-password")]

@@ -295,15 +295,15 @@ namespace SOFA_API.Service
                     }
                 }
 
-                if (!string.IsNullOrEmpty(loginViewModelIn.Email))
+                if (!string.IsNullOrEmpty(loginViewModelIn.Phone))
                 {
                     // check account
-                    AccountViewModelOut account = AccountDAO.Instance.GetUserWithRoleByEmail(loginViewModelIn.Email);
+                    AccountViewModelOut account = AccountDAO.Instance.GetUserWithRoleByPhone(loginViewModelIn.Phone);
 
                     if (account != null)
                     {
                         loginViewModelIn.Username = account.Username;
-                        // check current pw if the request is change pw
+                        // check current request is change pw
                         if (!string.IsNullOrEmpty(loginViewModelIn.Password))
                         {
                             if (!VerifyPassword(loginViewModelIn.Password, account.Password))
@@ -327,8 +327,12 @@ namespace SOFA_API.Service
                     }
                     else
                     {
-                        throw new Exception("Email address is invalid");
+                        throw new Exception("Phone number is invalid");
                     }
+                }
+                else
+                {
+                    throw new Exception("Phone number is empty");
                 }
 
                 // update
