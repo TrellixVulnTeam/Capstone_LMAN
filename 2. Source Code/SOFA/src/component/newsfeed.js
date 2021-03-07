@@ -300,7 +300,7 @@ export default class Newsfeed extends Component {
             >
                 <View style={{ flexDirection: 'row' }}>
                     <TouchableWithoutFeedback
-                        onPress={() => { this.props.navigation.navigate('OtherProfile', { 'AccountID': post.accountID }) }}
+                        onPress={() => { this.props.navigation.navigate('OtherProfile', { 'AccountID': post.accountPost }) }}
                     >
                         <Image
                             source={post.avatar && post.avatar.length > 0 ?
@@ -309,7 +309,7 @@ export default class Newsfeed extends Component {
                     </TouchableWithoutFeedback>
                     <View style={Style.newsfeed.ArticleHeader}>
                         <Text
-                            onPress={() => { this.props.navigation.navigate('OtherProfile', { 'AccountID': post.accountID }) }}
+                            onPress={() => { this.props.navigation.navigate('OtherProfile', { 'AccountID': post.accountPost }) }}
                             style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
                         <Text>{Utils.calculateTime(post.time)}</Text>
                     </View>
