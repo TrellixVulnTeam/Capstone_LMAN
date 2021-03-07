@@ -350,4 +350,86 @@ export const updateProfile = StyleSheet.create({
     marginLeft: Utils.scale(10, Const.Horizontal),
     marginRight: Utils.scale(10, Const.Horizontal),
   }
-})
+});
+
+export const verification = StyleSheet.create({
+    
+  container: { 
+    flex: 1, 
+    backgroundColor: '#fbb897' 
+  },
+
+  logo: {
+    width: Utils.scale(100, Const.Horizontal), 
+    height: Utils.scale(100, Const.Vertical), 
+    alignSelf: 'center', 
+    marginTop: Utils.scale(50, Const.Vertical) 
+  },
+
+  content:{
+    marginTop: Utils.scale(20, Const.Vertical),
+    backgroundColor:'white',
+    marginLeft: Utils.scale(30, Const.Horizontal),
+    width: Utils.scale(340, Const.Horizontal), 
+    height: Utils.scale(350, Const.Vertical),
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10
+  },
+
+  labelTitle: {
+    fontSize: Utils.scale(40, Const.Horizontal),
+    color: 'black',
+    fontFamily: 'OpenSansCondensed-Light',
+    paddingBottom: Utils.scale(10, Const.Vertical),
+    paddingLeft:Utils.scale(70, Const.Horizontal),
+  },
+
+  phone: {
+    flexDirection: 'row',
+    marginTop:Utils.scale(30,Const.Vertical),
+    alignItems:'center',
+    fontSize: Utils.scale(30, Const.Horizontal),
+    paddingLeft: Utils.scale(70,Const.Horizontal),
+    textDecorationLine: 'underline',
+    textDecorationColor:'black',
+    
+  },
+
+  email: {
+    flexDirection: 'row',
+    marginTop:Utils.scale(20,Const.Vertical),
+    alignItems:'center',
+    fontSize: Utils.scale(30, Const.Horizontal),
+    paddingLeft: Utils.scale(100,Const.Horizontal)
+  },
+  otpText: {
+    flexDirection: 'row',
+    marginTop:Utils.scale(30,Const.Vertical),
+    alignItems:'center',
+    fontSize: Utils.scale(30, Const.Horizontal),
+    paddingLeft: Utils.scale(30,Const.Horizontal)
+  },
+  
+  otpTextInput:{
+    backgroundColor: 'white', 
+    marginLeft: Utils.scale(5, Const.Horizontal),
+    height: Utils.scale(40, Const.Vertical), 
+    width: Utils.scale(170, Const.Horizontal), 
+    borderColor: 'gray', borderWidth: 1,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5
+  },
+
+  btnSubmit :{
+    flexDirection: 'row',
+    marginTop:Utils.scale(30,Const.Vertical),
+    alignItems:'center',
+    fontSize: Utils.scale(30, Const.Horizontal),
+    paddingLeft: Utils.scale(240,Const.Horizontal),
+  }
+
+});
