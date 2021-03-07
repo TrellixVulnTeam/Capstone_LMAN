@@ -31,6 +31,7 @@ export default class Newsfeed extends Component {
         this.state = {
             token: '',
             account: {},
+            isLogin: false,
             listPost: [],
             isKeyBoardShow: false,
             keyboardHeight: 0,
@@ -64,7 +65,26 @@ export default class Newsfeed extends Component {
         await this.getData('token')
             .then(result => {
                 if (result) {
-                    this.setState({ token: result.toString().substr(1, result.length - 2) });
+                    let token = result.toString().substr(1, result.length - 2);
+                    var header = {
+                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                        "Accept": 'application/json',
+                        "Authorization": 'Bearer ' + token,
+                    };
+                    var uri = Const.domain + 'api/profile';
+                    Request.Get(uri, header)
+                        .then(response => {
+                            console.log(response);
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+
+                                this.setState({ account: response, isLogin: true, token: token });
+                            } else {
+                                this.setState({ account: {}, isLogin: false, token: '' });
+                            }
+                        })
+                        .catch(reason => {
+                            this.setState({ account: {}, isLogin: false, token: '' });
+                        })
                 }
             })
             .catch(reason => {
@@ -291,8 +311,17 @@ export default class Newsfeed extends Component {
         }
     }
 
+    navigateProfile(accountID) {
+        const { account, isLogin, token } = this.state;
+        if (account && account.accountID && account.accountID == accountID) {
+            this.props.navigation.navigate('Profile');
+        } else {
+            this.props.navigation.navigate('OtherProfile', { 'accountID': accountID });
+        }
+    }
+
     Article = ({ data }) => {
-        const { isKeyBoardShow, keyboardHeight, commentText } = this.state;
+        const { isKeyBoardShow, keyboardHeight, commentText, account, isLogin } = this.state;
         let post = data;
         return (
             <View
@@ -300,7 +329,7 @@ export default class Newsfeed extends Component {
             >
                 <View style={{ flexDirection: 'row' }}>
                     <TouchableWithoutFeedback
-                        onPress={() => { this.props.navigation.navigate('OtherProfile', { 'AccountID': post.accountPost }) }}
+                        onPress={() => this.navigateProfile(post.accountPost)}
                     >
                         <Image
                             source={post.avatar && post.avatar.length > 0 ?
@@ -309,7 +338,7 @@ export default class Newsfeed extends Component {
                     </TouchableWithoutFeedback>
                     <View style={Style.newsfeed.ArticleHeader}>
                         <Text
-                            onPress={() => { this.props.navigation.navigate('OtherProfile', { 'AccountID': post.accountPost }) }}
+                            onPress={() => this.navigateProfile(post.accountPost)}
                             style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
                         <Text>{Utils.calculateTime(post.time)}</Text>
                     </View>
