@@ -186,7 +186,8 @@ export const newsfeed = StyleSheet.create({
   },
   ArtileMore: {
     paddingLeft: scale(20, Horizontal),
-    paddingTop: scale(10, Vertical)
+    paddingTop: scale(10, Vertical),
+    width:scale(300, Horizontal)
   },
   ArticleAction: {
     flexDirection: 'row',

@@ -140,29 +140,6 @@ export default class Newsfeed extends Component {
 
         this.checkLoginToken();
         this.getAllPost();
-        this.keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow', (event) => {
-                if (this.state.inScreen) {
-                    this.props.navigation.dangerouslyGetParent().setOptions({
-                        tabBarVisible: false
-                    });
-                    this.setState({ isKeyBoardShow: true });
-                    this.setState({ keyboardHeight: event.endCoordinates.height });
-                    this.commentTextInput.focus();
-                }
-            }
-        );
-        this.keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide', () => {
-                if (this.state.inScreen) {
-                    this.props.navigation.dangerouslyGetParent().setOptions({
-                        tabBarVisible: true
-                    });
-                    this.setState({ keyboardHeight: 0 });
-                    this.setState({ isKeyBoardShow: false });
-                }
-            },
-        );
     }
 
     componentWillUnmount() {
@@ -190,68 +167,8 @@ export default class Newsfeed extends Component {
         return null;
     }
 
-    onPressCommentButton() {
-        const { token, currentPostComment, commentText } = this.state;
-        if (token && token.length > 0) {
-            console.log(currentPostComment, commentText);
-            if (currentPostComment > 0 && commentText.length > 0) {
-                var header = {
-                    "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                    'Content-Type': 'multipart/form-data',
-                    "Accept": 'application/json',
-                    "Authorization": 'Bearer ' + token,
-                };
-                let data = new FormData();
-                data.append('PostID', currentPostComment);
-                data.append('comment', commentText);
-                let uri = Const.domain + 'api/post/commentpost';
-                Request.Post(uri, header, data)
-                    .then(response => {
-                        if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                            let listComment = response.listPost[0].listComment;
-                            this.updatePostByID(response.listPost[0].id, 'listComment', listComment);
-                            this.updatePostByID(response.listPost[0].id, 'numberOfComment', listComment.length);
-                        } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
-                            console.log(response.errorMessage);
-                        }
-                    })
-                    .catch(reason => {
-                        console.log(reason);
-                    })
-            }
-        } else {
-            Alert.alert('Thông báo', 'Hãy đăng nhập để bình luận về bài viết');
-        }
-        this.commentTextInput.clear();
-        this.commentTextInput.
-            this.setState({ commentText: '' });
-    }
-
     onPressCommentIcon(post) {
-        if (!post.isShowComment) {
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                "Accept": 'application/json'
-            };
-            let uri = Const.domain + 'api/post/GetCommentOfPost?postID=' + post.id;
-            Request.Get(uri, header)
-                .then(response => {
-                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        if (response.listPost.length > 0) {
-                            let listComment = response.listPost[0].listComment;
-                            //console.log(listComment);
-                            let postID = response.listPost[0].id;
-                            this.updatePostByID(postID, 'listComment', listComment);
-                        }
-                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
-                        console.log(response.errorMessage);
-                    }
-                })
-                .catch(reason => {
-                    console.log(reason);
-                })
-        }
-        this.updatePostByID(post.id, 'isShowComment', !post.isShowComment)
+        this.props.navigation.navigate('Comment', { 'post': post });
     }
 
     /**
@@ -409,58 +326,12 @@ export default class Newsfeed extends Component {
                             onFinishRating={(rating) => this.ratingCompleted(post, rating)}
                             startingValue={post.myRatePoint}
                         />
-                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.rateAverage}</Text>
+                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.rateAverage + '/5'}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: scale(5, Vertical) }}>
                         <Text style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
                         <Text style={{ fontSize: 14, marginLeft: scale(5, Horizontal) }}>{post.content}</Text>
                     </View>
-                    {post.isShowComment ? (
-                        <View
-                            style={{
-                                marginTop: scale(5, Vertical)
-                            }}
-                        >
-                            <FlatList
-                                data={post.listComment}
-                                keyExtractor={(item, index) => item.id + ''}
-                                renderItem={({ item }) => {
-                                    return (
-                                        <View style={{ marginLeft: scale(10, Horizontal), marginBottom: scale(5, Vertical) }}>
-                                            <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
-                                                <Image
-                                                    style={{
-                                                        width: scale(40, Horizontal),
-                                                        height: scale(40, Horizontal),
-                                                        borderRadius: 50
-                                                    }}
-                                                    source={item.avatar && item.avatar.length > 0 ? { uri: Const.assets_domain + item.avatar } : { AVATAR }} />
-                                                <Text style={{ fontWeight: 'bold', marginLeft: scale(10, Horizontal) }}>{item.firstName + " " + item.lastName}</Text>
-                                                <Text style={{ marginLeft: scale(5, Horizontal) }}>{item.content}</Text>
-
-                                            </View>
-                                        </View>
-                                    )
-                                }}
-                            />
-
-                            <View>
-                                <TextInput
-                                    ref={(input) => { this.commentInputs = input }}
-                                    value={commentText}
-                                    placeholder={'Bình luận'}
-                                    onFocus={() => this.setState({ currentPostComment: post.id })}
-                                    style={{
-                                        width: scale(300, Horizontal),
-                                        backgroundColor: '#EEEEEE',
-                                        borderRadius: 10,
-                                    }} />
-                            </View>
-
-
-                        </View>
-                    ) : (<View></View>)}
-
                 </View>
             </View>
         )
@@ -497,19 +368,6 @@ export default class Newsfeed extends Component {
                         renderItem={({ item, index }) => <this.Article data={item} />}
                     />
                 </View>
-                {isKeyBoardShow ? (
-                    <View style={{ position: 'absolute', top: scale(700 - keyboardHeight - 40, Vertical), flexDirection: 'row' }}>
-                        <TextInput
-                            onChangeText={text => {
-                                this.setState({ commentText: text });
-                            }}
-                            ref={(input) => { this.commentTextInput = input }}
-                            placeholder={'Bình luận'}
-                            style={{ borderWidth: 1, backgroundColor: 'white', borderRadius: 5, height: scale(40, Vertical), width: scale(350, Horizontal) }}
-                        />
-                        <Ionicons size={scale(40, Vertical)} name='send' onPress={() => this.onPressCommentButton()} />
-                    </View>) : (<View></View>)}
-
             </View>
         )
     }
