@@ -56,7 +56,7 @@ namespace SOFA_API.Service
             }
             catch (Exception e)
             {
-                profile.ErrorMessage = e.Message;
+                profile.ErrorMessage = e.ToString();
                 profile.Code = Const.REQUEST_CODE_FAILED;
             }
             return profile;
@@ -108,7 +108,7 @@ namespace SOFA_API.Service
             }
             catch (Exception e)
             {
-                newProfile.ErrorMessage = e.Message;
+                newProfile.ErrorMessage = e.ToString();
                 newProfile.Code = Const.REQUEST_CODE_FAILED;
             }
             return newProfile;
@@ -170,7 +170,7 @@ namespace SOFA_API.Service
             }
             catch (Exception e)
             {
-                newProfile.ErrorMessage = e.Message;
+                newProfile.ErrorMessage = e.ToString();
                 newProfile.Code = Const.REQUEST_CODE_FAILED;
             }
             return newProfile;
