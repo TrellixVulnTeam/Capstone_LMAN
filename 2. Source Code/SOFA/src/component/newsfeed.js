@@ -37,6 +37,7 @@ export default class Newsfeed extends Component {
             keyboardHeight: 0,
             commentText: '',
             currentPostComment: 0,
+            inScreen: false
         }
     }
     getData = async (key) => {
@@ -128,27 +129,44 @@ export default class Newsfeed extends Component {
     }
 
     componentDidMount() {
+        this._screenFocus = this.props.navigation.addListener('focus', () => {
+            this.setState({ inScreen: true });
+            console.log('focus');
+        });
+        this._screenUnfocus = this.props.navigation.addListener('blur', () => {
+            this.setState({ inScreen: false });
+            console.log('unfocus');
+        })
+
         this.checkLoginToken();
         this.getAllPost();
         this.keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow', (event) => {
-                this.props.navigation.dangerouslyGetParent().setOptions({
-                    tabBarVisible: false
-                });
-                this.setState({ isKeyBoardShow: true });
-                this.setState({ keyboardHeight: event.endCoordinates.height });
-                this.commentTextInput.focus();
+                if (this.state.inScreen) {
+                    this.props.navigation.dangerouslyGetParent().setOptions({
+                        tabBarVisible: false
+                    });
+                    this.setState({ isKeyBoardShow: true });
+                    this.setState({ keyboardHeight: event.endCoordinates.height });
+                    this.commentTextInput.focus();
+                }
             }
         );
         this.keyboardDidHideListener = Keyboard.addListener(
             'keyboardDidHide', () => {
-                this.props.navigation.dangerouslyGetParent().setOptions({
-                    tabBarVisible: true
-                });
-                this.setState({ keyboardHeight: 0 });
-                this.setState({ isKeyBoardShow: false });
+                if (this.state.inScreen) {
+                    this.props.navigation.dangerouslyGetParent().setOptions({
+                        tabBarVisible: true
+                    });
+                    this.setState({ keyboardHeight: 0 });
+                    this.setState({ isKeyBoardShow: false });
+                }
             },
         );
+    }
+
+    componentWillUnmount() {
+
     }
 
     updatePostByID(postID, key, value) {
@@ -234,8 +252,6 @@ export default class Newsfeed extends Component {
                 })
         }
         this.updatePostByID(post.id, 'isShowComment', !post.isShowComment)
-        console.log(this.commentInputs.length);
-
     }
 
     /**
@@ -484,7 +500,6 @@ export default class Newsfeed extends Component {
                 {isKeyBoardShow ? (
                     <View style={{ position: 'absolute', top: scale(700 - keyboardHeight - 40, Vertical), flexDirection: 'row' }}>
                         <TextInput
-                            onFocus={() => console.log(this.commentInputs.length)}
                             onChangeText={text => {
                                 this.setState({ commentText: text });
                             }}
