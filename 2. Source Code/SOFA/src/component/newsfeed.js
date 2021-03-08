@@ -131,15 +131,22 @@ export default class Newsfeed extends Component {
     componentDidMount() {
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.setState({ inScreen: true });
-            console.log('focus');
+            this.checkLoginToken();
+            this.getAllPost();
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
-            this.setState({ inScreen: false });
-            console.log('unfocus');
+            this.setState({
+                token: '',
+                account: {},
+                isLogin: false,
+                listPost: [],
+                isKeyBoardShow: false,
+                keyboardHeight: 0,
+                commentText: '',
+                currentPostComment: 0,
+                inScreen: false
+            });
         })
-
-        this.checkLoginToken();
-        this.getAllPost();
     }
 
     componentWillUnmount() {

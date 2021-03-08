@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -127,7 +127,22 @@ export default class CreatePost extends Component {
     }
 
     componentDidMount() {
-        this.selectImage('primary');
+        this._screenFocus = this.props.navigation.addListener('focus', () => {
+            this.checkLoginToken();
+            //this.selectImage('primary');
+        });
+        this._screenUnfocus = this.props.navigation.addListener('blur', () => {
+            this.setState({
+                token: '',
+                account: {},
+                content: '',
+                privacy: '',
+                listPrimaryImage: [''],
+                listShirtImage: [''],
+                listTrousersImage: [''],
+                listAccessoriesImage: ['']
+            });
+        })
     }
 
     render() {
@@ -136,9 +151,24 @@ export default class CreatePost extends Component {
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={'#FFF5F1'} />
                 <ScrollView>
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableWithoutFeedback
+                            onPress={() => this.navigateProfile(account.accountID)}
+                        >
+                            <Image
+                                source={account.avatarUri && account.avatarUri.length > 0 ?
+                                    { uri: Const.assets_domain + account.avatarUri } : AVATAR}
+                                style={Style.newsfeed.ArticleAvatar} />
+                        </TouchableWithoutFeedback>
+                        <View style={Style.newsfeed.ArticleHeader}>
+                            <Text
+                                onPress={() => this.navigateProfile(account.accountID)}
+                                style={Style.newsfeed.ArticleAuthor}>{account.firstName + ' ' + account.lastName}</Text>
+                        </View>
+                    </View>
                     <View>
                         <TextInput
-                            style={{ height: scale(300, Vertical), backgroundColor:'white' }}
+                            style={{ height: scale(300, Vertical), backgroundColor: 'white' }}
                         />
                     </View>
                     <FlatList
