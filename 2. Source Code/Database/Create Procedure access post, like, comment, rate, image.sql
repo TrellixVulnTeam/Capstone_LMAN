@@ -268,7 +268,7 @@ CREATE PROC GetPostRateAverage
 @postID INT
 AS
 BEGIN
-	SELECT AVG(RatePoint) FROM Rate WHERE PostID = @postID
+	SELECT AVG(Cast(RatePoint as float)) FROM Rate WHERE PostID = @postID
 END
 GO
 
