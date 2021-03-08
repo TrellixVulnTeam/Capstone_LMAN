@@ -54,11 +54,11 @@ namespace SOFA_API.Service
                     throw new Exception("Can't get profile");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 profile.ErrorMessage = e.Message;
                 profile.Code = Const.REQUEST_CODE_FAILED;
-            }                 
+            }
             return profile;
         }
 
@@ -70,7 +70,7 @@ namespace SOFA_API.Service
         /// <returns>number of changed record </returns>
         public ProfileViewModelOut UpdateProfileByAccountID(int accountId, ProfileViewModelIn profileIn)
         {
-            ProfileViewModelOut newProfile  = new ProfileViewModelOut();
+            ProfileViewModelOut newProfile = new ProfileViewModelOut();
             try
             {
                 if (String.IsNullOrEmpty(profileIn.FirstName))
@@ -92,7 +92,7 @@ namespace SOFA_API.Service
                     throw new Exception(MessageUtils.ERROR_MISSING_PHONE_NUMBER);
                 }
                 else
-                {             
+                {
                     int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, profileIn);
                     if (result == 1)
                     {
@@ -106,11 +106,11 @@ namespace SOFA_API.Service
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 newProfile.ErrorMessage = e.Message;
                 newProfile.Code = Const.REQUEST_CODE_FAILED;
-            }                             
+            }
             return newProfile;
         }
 
@@ -118,18 +118,23 @@ namespace SOFA_API.Service
         {
             ProfileViewModelOut newProfile = new ProfileViewModelOut();
             try
-            { 
-                if(profileIn.Avatar != null)
+            {
+                if (profileIn.Avatar != null)
                 {
                     //get current data
                     ProfileViewModelOut currentProfile = ProfileService.Instance.GetProfileModelByAccountID(accountId);
 
                     //update avatar
                     String path = Const.ASSETS_PATH + currentProfile.UserName + @"\avatar\";
+                    if (!System.IO.Directory.Exists(path))
+                    {
+                        //Create directory if it doesn't exist
+                        Directory.CreateDirectory(path);
+                    }
 
                     //get current file name
                     string imageName = Path.GetFileNameWithoutExtension(currentProfile.AvatarUri);
-
+                    if (String.IsNullOrEmpty(imageName)) imageName = "0";
                     //make new file name
 
                     int newImageName = 1;
@@ -144,8 +149,6 @@ namespace SOFA_API.Service
                         throw new Exception("Image name is wrong format");
                     }
 
-                    //set the image path
-                    string imgPath = Path.Combine(path, (newImageName.ToString() + ".jpg"));
 
                     //save image
                     Utils.Instance.SaveImageFromBase64String(profileIn.Avatar.Trim(), path, (newImageName.ToString() + ".png"));
