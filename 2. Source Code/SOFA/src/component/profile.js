@@ -158,6 +158,7 @@ export default class Profile extends Component {
 
     logout() {
         AsyncStorage.removeItem('token');
+        AsyncStorage.removeItem('user');
         this.props.navigation.navigate('Login');
     }
 
