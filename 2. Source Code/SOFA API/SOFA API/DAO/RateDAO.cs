@@ -35,7 +35,7 @@ namespace SOFA_API.DAO
             try
             {
                 object data = DataProvider.Instance.ExecuteScalar(sql, new object[] { postID });
-                avgRatePoint = Convert.IsDBNull(data) ? 0 : (int)data;
+                avgRatePoint = Convert.IsDBNull(data) ? 0 : (double)data;
             }
             catch (Exception ex)
             {
