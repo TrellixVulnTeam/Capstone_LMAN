@@ -30,38 +30,38 @@ namespace SOFA_API.ViewModel.Profile
         }
         public ProfileViewModelIn(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, string avatar, int followerNumber, List<Post> listPost, string username, string role)
         {
-        this.AccountID = accountID;
-        this.FirstName = firstName;
-        this.LastName = lastName;
-        this.Gender = gender;
-        this.DOB = dOB;
-        this.Email = email;
-        this.Phone = phone;
-        this.Address = address;
-        this.AvatarUri = avatarUri;
-        this.Avatar = avatar;
-        this.FollowerNumber = followerNumber;
-        this.ListPost = listPost;
-        this.UserName = username;        
-        this.Role = role;
+            this.AccountID = accountID;
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.Gender = gender;
+            this.DOB = dOB;
+            this.Email = email;
+            this.Phone = phone;
+            this.Address = address;
+            this.AvatarUri = avatarUri;
+            this.Avatar = avatar;
+            this.FollowerNumber = followerNumber;
+            this.ListPost = listPost;
+            this.UserName = username;
+            this.Role = role;
         }
-        
+
         public ProfileViewModelIn(DataRow row) : base()
         {
-        this.AccountID = (int)row["AccountId"];
-        this.FirstName = row["FirstName"].ToString();
-        this.LastName = row["LastName"].ToString();
-        this.Gender = (row["Gender"] == null) ? true : (bool)row["Gender"];
-        this.DOB = (row["DOB"] == null) ? new DateTime(1999,01,01) : (DateTime) row["DOB"];
-        this.Email = row["Email"].ToString();
-        this.Phone = row["Phone"].ToString();
-        this.Address = row["Address"].ToString();
-        this.AvatarUri = row["Avatar"].ToString();
-        this.Avatar = null;
-        this.FollowerNumber = 0;
-        this.ListPost = null;
-        this.UserName = row["UserName"].ToString();
-        this.Role = null;        
+            this.AccountID = (int)row["AccountId"];
+            this.FirstName = row["FirstName"].ToString();
+            this.LastName = row["LastName"].ToString();
+            this.Gender = Convert.IsDBNull(row["Gender"]) ? true : (bool)row["Gender"];
+            this.DOB = Convert.IsDBNull(row["DOB"]) ? new DateTime(1999, 01, 01) : (DateTime)row["DOB"];
+            this.Email = row["Email"].ToString();
+            this.Phone = row["Phone"].ToString();
+            this.Address = row["Address"].ToString();
+            this.AvatarUri = row["Avatar"].ToString();
+            this.Avatar = null;
+            this.FollowerNumber = 0;
+            this.ListPost = null;
+            this.UserName = row["UserName"].ToString();
+            this.Role = null;
         }
     }
 }

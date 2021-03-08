@@ -24,7 +24,7 @@ namespace SOFA_API.ViewModel.Profile
         public int PostNumber { get; set; }
         public string UserName { get; set; }
         public string Role { get; set; }
-        public ProfileViewModelOut():base()
+        public ProfileViewModelOut() : base()
         {
 
         }
@@ -46,13 +46,13 @@ namespace SOFA_API.ViewModel.Profile
             this.Role = role;
         }
 
-        public ProfileViewModelOut(DataRow row):base()
+        public ProfileViewModelOut(DataRow row) : base()
         {
             this.AccountID = (int)row["AccountId"];
             this.FirstName = row["FirstName"].ToString();
             this.LastName = row["LastName"].ToString();
-            this.Gender = (row["Gender"] == null) ? true : (bool)row["Gender"];
-            this.DOB = (row["DOB"] == null) ? new DateTime(1999, 01, 01) : (DateTime)row["DOB"];
+            this.Gender = Convert.IsDBNull(row["Gender"]) ? true : (bool)row["Gender"];
+            this.DOB = Convert.IsDBNull(row["DOB"]) ? new DateTime(1999, 01, 01) : (DateTime)row["DOB"];
             this.Email = row["Email"].ToString();
             this.Phone = row["Phone"].ToString();
             this.Address = row["Address"].ToString();
