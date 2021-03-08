@@ -37,8 +37,8 @@ namespace SOFA_API.DTO
             this.AccountID = (int)row["AccountId"];
             this.FirstName = row["FirstName"].ToString();
             this.LastName = row["LastName"].ToString();
-            this.Gender = (row["Gender"] == null) ? true : (bool)row["Gender"];
-            this.DOB = (row["DOB"] == null) ? new DateTime(1999,01,01) : (DateTime) row["DOB"];
+            this.Gender = Convert.IsDBNull(row["Gender"]) ? true : (bool)row["Gender"];
+            this.DOB = Convert.IsDBNull(row["DOB"]) ? new DateTime(1999,01,01) : (DateTime) row["DOB"];
             this.Email = row["Email"].ToString();
             this.Phone = row["Phone"].ToString();
             this.Address = row["Address"].ToString();

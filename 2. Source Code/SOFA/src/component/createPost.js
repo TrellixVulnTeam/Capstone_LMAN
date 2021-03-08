@@ -23,9 +23,10 @@ import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import PostViewModel from '../Model/postViewModel';
-import { AVATAR } from '../../image/index';
-import { TextInput } from 'react-native-gesture-handler';
+import { AVATAR, ADD_PRIMARY_IMAGE } from '../../image/index';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-crop-picker';
+
 
 export default class CreatePost extends Component {
     constructor(props) {
@@ -33,7 +34,12 @@ export default class CreatePost extends Component {
         this.state = {
             token: '',
             account: {},
-            listImage: []
+            content: '',
+            privacy: '',
+            listPrimaryImage: [''],
+            listShirtImage: [''],
+            listTrousersImage: [''],
+            listAccessoriesImage: ['']
         }
     }
     getData = async (key) => {
@@ -57,26 +63,161 @@ export default class CreatePost extends Component {
         }
     }
 
-    componentDidMount() {
+    checkLoginToken = async () => {
+        await this.getData('token')
+            .then(result => {
+                if (result) {
+                    let token = result.toString().substr(1, result.length - 2);
+                    var header = {
+                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                        "Accept": 'application/json',
+                        "Authorization": 'Bearer ' + token,
+                    };
+                    var uri = Const.domain + 'api/profile';
+                    Request.Get(uri, header)
+                        .then(response => {
+                            console.log(response);
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+
+                                this.setState({ account: response, isLogin: true, token: token });
+                            } else {
+                                this.setState({ account: {}, isLogin: false, token: '' });
+                            }
+                        })
+                        .catch(reason => {
+                            this.setState({ account: {}, isLogin: false, token: '' });
+                        })
+                }
+            })
+            .catch(reason => {
+                this.setState({ token: '' });
+                console.log(reason);
+            })
+    }
+
+    cropImage = async (imagePath) => {
+
+    }
+
+    selectImage = async (imageType) => {
         ImagePicker.openPicker({
-            width: 100,
-            height: 100,
-            cropping: true,
+            width: 1000,
+            height: 1000,
+            compressImageMaxHeight: 1000,
+            compressImageMaxWidth: 1000,
             includeBase64: true,
-            multiple:true,
-            compressImageMaxHeight:100,
-            compressImageMaxWidth:100,
-        }).then(image => {
-            console.log(image);
-        }).catch(reason => console.log(reason));
+            cropping: true
+        })
+            .then(result => {
+                if (imageType == 'primary') {
+                    this.setState({ listPrimaryImage: [...this.state.listPrimaryImage, result.data] });
+                } else if (imageType == 'shirt') {
+                    this.setState({ listPrimaryImage: [...this.state.listShirtImage, result.data] });
+                }
+                else if (imageType == 'trousers') {
+                    this.setState({ listTrousersImage: [...this.state.listTrousersImage, result.data] });
+                }
+                else if (imageType == 'accessories') {
+                    this.setState({ listAccessoriesImage: [...this.state.listAccessoriesImage, result.data] });
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
+    }
+
+    componentDidMount() {
+        this.selectImage('primary');
     }
 
     render() {
-        const { account, listPost } = this.state;
+        const { account, listPrimaryImage, listAccessoriesImage, listShirtImage, listTrousersImage, content, privacy } = this.state;
         return (
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={'#FFF5F1'} />
-
+                <ScrollView>
+                    <View>
+                        <TextInput
+                            style={{ height: scale(300, Vertical), backgroundColor:'white' }}
+                        />
+                    </View>
+                    <FlatList
+                        data={listPrimaryImage}
+                        contentContainerStyle={{ alignSelf: 'flex-start' }}
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={true}
+                        horizontal
+                        keyExtractor={(item, index) => index + ''}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <Image
+                                    style={{
+                                        width: scale(100, Horizontal),
+                                        height: scale(100, Horizontal),
+                                        resizeMode: 'stretch'
+                                    }}
+                                    source={index == 0 ? ADD_PRIMARY_IMAGE : { uri: 'data:image/png;base64,' + item }} />
+                            )
+                        }}
+                    />
+                    <FlatList
+                        data={listShirtImage}
+                        contentContainerStyle={{ alignSelf: 'flex-start' }}
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={true}
+                        horizontal
+                        keyExtractor={(item, index) => index + ''}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <Image
+                                    style={{
+                                        width: scale(100, Horizontal),
+                                        height: scale(100, Horizontal),
+                                        resizeMode: 'stretch'
+                                    }}
+                                    source={index == 0 ? ADD_PRIMARY_IMAGE : { uri: 'data:image/png;base64,' + item }} />
+                            )
+                        }}
+                    />
+                    <FlatList
+                        data={listTrousersImage}
+                        contentContainerStyle={{ alignSelf: 'flex-start' }}
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={true}
+                        horizontal
+                        keyExtractor={(item, index) => index + ''}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <Image
+                                    style={{
+                                        width: scale(100, Horizontal),
+                                        height: scale(100, Horizontal),
+                                        resizeMode: 'stretch'
+                                    }}
+                                    source={index == 0 ? ADD_PRIMARY_IMAGE : { uri: 'data:image/png;base64,' + item }} />
+                            )
+                        }}
+                    />
+                    <FlatList
+                        data={listAccessoriesImage}
+                        contentContainerStyle={{ alignSelf: 'flex-start' }}
+                        showsVerticalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={true}
+                        horizontal
+                        keyExtractor={(item, index) => index + ''}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <Image
+                                    style={{
+                                        width: scale(100, Horizontal),
+                                        height: scale(100, Horizontal),
+                                        resizeMode: 'stretch'
+                                    }}
+                                    source={index == 0 ? ADD_PRIMARY_IMAGE : { uri: 'data:image/png;base64,' + item }} />
+                            )
+                        }}
+                    />
+                </ScrollView>
             </View>
         )
     }
