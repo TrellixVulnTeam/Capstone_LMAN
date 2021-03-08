@@ -28,9 +28,9 @@ namespace SOFA_API.DAO
         /// </summary>
         /// <param name="postID">ID of the post</param>
         /// <returns>Average of rate point</returns>
-        public int GetPostRateAverage(int postID)
+        public double GetPostRateAverage(int postID)
         {
-            int avgRatePoint = 0;
+            double avgRatePoint = 0;
             String sql = "EXEC dbo.GetPostRateAverage @postID";
             try
             {
@@ -41,7 +41,7 @@ namespace SOFA_API.DAO
             {
                 Utils.Instance.SaveLog(ex.ToString());
             }
-            return avgRatePoint;
+            return Math.Round(avgRatePoint, 1);
         }
         /// <summary>
         /// Create new rating of the post
