@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
 import * as Request from '../common/request';
+import { LOGO_ICON, GOOGLE_ICON, FACEBOOK_ICON } from '../../image/index';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 
@@ -53,23 +55,70 @@ export default class Login extends Component {
             console.log(e);
         }
     }
-  onPressLogin() {
-          this.setState({ loginStatus: true })
-          this.storeData('token', 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJ1c2VyIiwiSUQiOiI2IiwiVXNlcm5hbWUiOiJuZ2ExMjMiLCJleHAiOjE2MTc4NjA0NzcsImlzcyI6IlNPRkEgLSBGYXNoaW9uIFNvY2lhbCBOZXR3b3JrIFNlcnZlciIsImF1ZCI6IlNPRkEgLSBGYXNoaW9uIFNvY2lhbCBOZXR3b3JrIENsaWVudCJ9.Kz84G1kjHd8hLWztgG81DhIysV9ZRvtuiZhtAJ0nNXE')
+
+    onLogin() {
+        if (this.state.username.length < 6 || this.state.password.length < 6) {
+            this.setState({ isValidUser: false, errMsg: 'Username and password must be 6 characters long' })
+        }
+        else {
+            const { username, password } = this.state;
+            let header = {
+                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                "Content-Type": "multipart/form-data",
+                "Host": "chientranhvietnam.org"
+            };
+            let data = new FormData();
+            data.append('username', username);
+            data.append('password', password);
+            let url = Const.domain + 'api/auth/login';
+            Request.Post(url, header, data)
+                .then(response => {
+                    if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        const user = { username: response.username, role: response.roleName, email: response.email, phone: response.phone };
+                        this.storeData('token', response.token)
                             .then(res => {
                                 this.storeData('user', user)
                                     .then(res => {
                                         this.setState({ isLoading: false });
                                         this.props.navigation.navigate('BottomNav');
                                     });
-        }  
-  onPressRegister() {
-    this.props.navigation.navigate('Register')
-  }
+                            });
+                    } else {
+                        if (response.code == Const.REQUEST_CODE_FAILED) {
+                            this.setState({ isValidUser: false, errMsg: response.errorMessage })
+                        }
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                });
+        }
+    }
+
     render() {
         const { navigate } = this.props.navigation;
         if (this.state.isLoading) {
             return (
+                <View style={styles.loading}>
+                    <ActivityIndicator size='large' color='#ff8683' />
+                </View>
+            )
+        } else {
+            return (
+                <View style={styles.container}>
+                    <View>
+                        <Image
+                            style={styles.logo}
+                            source={LOGO_ICON}
+                        />
+                        <View style={styles.signInContent}>
+                            <Text style={{ fontSize: Utils.scale(38, Const.Horizontal) }}>Sign in</Text>
+                            <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Sign in to your registed username</Text>
+                            <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
+                        </View>
+                        <View style={styles.containerInput}>
+                            <View style={styles.inputView} >
+                                <Text style={styles.inputTitle}>Username</Text>
                                 <TextInput
                                     style={styles.inputText}
                                     placeholder='Your username'

@@ -56,14 +56,14 @@ namespace SOFA_API.DAO
         /// eg: { "AccountID": 9,  "IsExpiress": true, "IsUsed": false}
         /// </param>
         /// <returns></returns>
-        public ListVoucherViewModelOut GetListVoucherByAccountID(int accountId, VoucherViewModelIn viewModelIn)
+        public ListVoucherViewModelOut GetListVoucherByAccountID(VoucherViewModelIn viewModelIn)
         {
             ListVoucherViewModelOut listVoucherOuts = null;
             List<VoucherViewModelOut> listVoucher = new List<VoucherViewModelOut>();
             string sql = "EXEC dbo.getVoucherByAccountID @AccountID , @IsExpires , @IsUsed";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] {accountId, viewModelIn.IsExpiress, viewModelIn.IsUsed });
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { viewModelIn.AccountID, viewModelIn.IsExpiress, viewModelIn.IsUsed });
                 if (data.Rows.Count > 0)
                 {
                     foreach (DataRow row in data.Rows)

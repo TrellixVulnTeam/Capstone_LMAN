@@ -23,7 +23,6 @@ namespace SOFA_API.Controllers
         /// </param>
         /// <returns></returns>
         [HttpPost("addVoucher")]
-
         public ActionResult AddVoucher(AddVoucherViewModelIn viewModelIn)
         {
             AddVoucherViewModelOut modelOut = VoucherService.Instance.AddVoucher(viewModelIn);
@@ -37,11 +36,10 @@ namespace SOFA_API.Controllers
         /// eg: { "AccountID": 9,  "IsExpiress": true, "IsUsed": false}
         /// </param>
         /// <returns></returns>
-        [HttpPost("getVoucherByAccount")]
-        public ActionResult GetVoucherByAccount([FromForm]  VoucherViewModelIn viewModelIn) {
-            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
-            int id = Int32.Parse(idClaim.Value.Trim());
-            ListVoucherViewModelOut listVoucher = VoucherService.Instance.GetListVoucherByAccountID(id, viewModelIn);
+        [HttpGet("getVoucherByAccount")]
+        public ActionResult GetVoucherByAccount(VoucherViewModelIn viewModelIn)
+        {
+            ListVoucherViewModelOut listVoucher = VoucherService.Instance.GetListVoucherByAccountID(viewModelIn);
             return Ok(listVoucher);
         }
         /// <summary>
