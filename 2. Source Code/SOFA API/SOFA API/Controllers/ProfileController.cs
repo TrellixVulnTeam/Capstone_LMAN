@@ -56,5 +56,11 @@ namespace SOFA_API.Controllers
             return Ok(profile);
         }
 
+        [HttpGet("getfollower")]
+        public ActionResult GetFollower(int accountId)
+        {
+            ProfileViewModelOut profile = ProfileService.Instance.GetFollowerPeopelByAccountID(accountId);
+            return Ok(profile);
+        }
     }
 }

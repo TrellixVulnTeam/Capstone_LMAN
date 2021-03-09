@@ -187,5 +187,27 @@ namespace SOFA_API.DAO
             }
             return profile;
         }
+
+        /// <summary>
+        /// Function get people who follow someone
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>a list of People</returns>
+        public List<ProfileFollowerViewModelOut> getPeopleFollowByAccountId(int accountId)
+        {
+            List<ProfileFollowerViewModelOut> list = new List<ProfileFollowerViewModelOut>();
+            string sql = "EXEC getPeopleFollowByAccountID @accountId";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId });
+
+            if(data.Rows.Count > 0)
+            {
+                for(int i = 0; i < data.Rows.Count, i++)
+                {
+                    ProfileFollowerViewModelOut profile = new ProfileFollowerViewModelOut(data.Rows[i]);
+                    list.Add(profile);
+                }
+            }
+            return list;
+        }
     }
 }

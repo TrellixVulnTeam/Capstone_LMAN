@@ -63,6 +63,27 @@ namespace SOFA_API.Service
         }
 
         /// <summary>
+        /// Function get Follow People by Account Id
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns>A profileViewModelOut</returns>
+        public ProfileViewModelOut GetFollowerPeopelByAccountID(int accountId)
+        {
+            ProfileViewModelOut newProfile = new ProfileViewModelOut();
+            try
+            {
+                newProfile.ListFollower = ProfileDAO.Instance.getPeopleFollowByAccountId(accountId);
+                newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                newProfile.ErrorMessage = e.ToString();
+                newProfile.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return newProfile;
+        }
+
+        /// <summary>
         /// Function UpdateProfileByAccountID
         /// </summary>
         /// <param name="accountId"></param>
