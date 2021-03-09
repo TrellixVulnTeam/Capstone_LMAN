@@ -30,7 +30,7 @@ export default class Profile extends Component {
         this.state = {
             account: {},
             avatarUri: '',
-            token: '',
+            token: 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJ1c2VyIiwiSUQiOiI2IiwiVXNlcm5hbWUiOiJuZ2ExMjMiLCJleHAiOjE2MTc0MzU2MDUsImlzcyI6IlNPRkEgLSBGYXNoaW9uIFNvY2lhbCBOZXR3b3JrIFNlcnZlciIsImF1ZCI6IlNPRkEgLSBGYXNoaW9uIFNvY2lhbCBOZXR3b3JrIENsaWVudCJ9.MuAHQf-Y5Rfeg0od8bApqirJpW4Xvtf8htUMydJalA0',
             listImageAll: []
 
         }
@@ -155,6 +155,12 @@ export default class Profile extends Component {
             avatarUri: avatarUri,
         });
     }
+    onPressViewBalance(){
+        const {  avatarUri} = this.state;
+        this.props.navigation.navigate('balance', {
+            avatarUri: avatarUri,
+          });
+    }
 
     logout() {
         AsyncStorage.removeItem('token');
@@ -173,11 +179,10 @@ export default class Profile extends Component {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
         this.getProfile();
         this.getListImage();
-        this._unsubcribe = this.props.navigation.addListener('focus', () => {
-            this.setState({ account: {}, avatarUri: '' });
-            this.getProfile();
-            this.getListImage();
-        });
+        // this._unsubcribe = this.props.navigation.addListener('focus', () => {
+        //     this.setState({ account: {}, avatarUri: ''});
+        //     this.getProfile();
+        // });
     }
 
     render() {

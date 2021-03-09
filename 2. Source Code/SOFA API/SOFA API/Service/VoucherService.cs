@@ -59,9 +59,9 @@ namespace SOFA_API.Service
         /// eg: { "AccountID": 9,  "IsExpiress": true, "IsUsed": false}
         /// </param>
         /// <returns></returns>
-        public ListVoucherViewModelOut GetListVoucherByAccountID(VoucherViewModelIn viewModelIn)
+        public ListVoucherViewModelOut GetListVoucherByAccountID(int accountId, VoucherViewModelIn viewModelIn)
         {
-            ListVoucherViewModelOut listVouchers = VoucherDAO.Instance.GetListVoucherByAccountID(viewModelIn);
+            ListVoucherViewModelOut listVouchers = VoucherDAO.Instance.GetListVoucherByAccountID(accountId ,viewModelIn);
             if (listVouchers != null)
             {
                 listVouchers.Code = Const.REQUEST_CODE_SUCCESSFULLY;

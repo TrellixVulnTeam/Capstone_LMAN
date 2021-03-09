@@ -33,7 +33,7 @@ namespace SOFA_API.Common
         /// <param name="text">Message that you want to save</param>
         public void SaveLog(string text)
         {
-            string path = @"E:\Log.txt";
+            string path = @"F:\Log.txt";
             if (!File.Exists(path))
             {
                 using (StreamWriter sw = File.CreateText(path))

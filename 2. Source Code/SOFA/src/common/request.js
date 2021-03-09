@@ -1,8 +1,9 @@
-const Get = (uri, header) => {
+const Get = (uri, header, data) => {
     return new Promise((resolve, reject) => {
         fetch(uri, {
             method: 'GET',
-            headers: header
+            headers: header,
+            body: data
         })
             .then((response) => {
                 //console.log(response);
