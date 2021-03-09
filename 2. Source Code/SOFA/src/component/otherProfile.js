@@ -134,6 +134,9 @@ export default class Profile extends Component{
     onPressBlock(){
         console.log('Press Block');
     }
+    onPressMessage(){
+        console.log('Press Message');
+    }
 
     logout(){
         AsyncStorage.removeItem('token');
@@ -184,9 +187,9 @@ export default class Profile extends Component{
                             <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
                         </View>
                         <View style={Style.profile.button}>
-                            <Button style={Style.profile.singleButton} color= '#ff7878' onPress = {() => this.onPressBlock()} title="Block"/>
+                            <Button style={Style.profile.singleButton} color= '#ff7878' onPress = {() => this.onPressFollow()} title="Follow"/>
                             <View style={{flex: 0.2}}></View>
-                            <Button style={Style.profile.singleButton} color= '#ff7878' title="Follow" onPress={() => this.onPressFollow()} />
+                            <Button style={Style.profile.singleButton} color= '#ff7878' title="Message" onPress={() => this.onPressMessage()} />
                         </View>
                     </View>
                 </LinearGradient>                       
