@@ -58,12 +58,14 @@ export default class Profile extends Component{
     }
 
     getProfile() {
-        const AccountID = this.props.route.params.AccountID;     
+        const AccountID = this.props.route.params; 
+        console.log('Get Profile');     
+        
                 var header = {
                     "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
                     "Accept": 'application/json',
                 };
-                let url = Const.domain + 'api/profile/otherprofile?id=' + AccountID;
+                let url = Const.domain + 'api/profile/otherprofile?id=' + AccountID.accountID;
                 Request.Get(url, header)
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -83,12 +85,13 @@ export default class Profile extends Component{
     }
 
     getListImage() {   
-        const AccountID = this.props.route.params.AccountID;    
+        const AccountID = this.props.route.params; 
+        console.log('Get Image');   
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json',
             };
-        let url = Const.domain + 'api/post/getuserpublicpost?accountPost='+ AccountID;
+        let url = Const.domain + 'api/post/getuserpublicpost?accountPost='+ AccountID.accountID;
         Request.Get(url, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -142,17 +145,12 @@ export default class Profile extends Component{
     }
 
     componentDidMount(){
-
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-        const AccountID = this.props.route.params;
-        this.setState({accountId: AccountID});
-        console.log(AccountID);
-        console.log('Other Profile!')
-
-        this.getProfile();
-        this.getListImage();
+        
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
-            this.setState({ account: {}, avatarUri: ''});
+            const AccountID = this.props.route.params;
+            console.log(AccountID.accountID);
+
             this.getProfile();
             this.getListImage();
         });
@@ -177,7 +175,7 @@ export default class Profile extends Component{
                            <Entypo name='dots-three-vertical' size={30} color={'white'} style={{
                                marginRight: Utils.scale(15, Const.Horizontal),
                                marginLeft: 'auto'
-                           }} onPress={() => this.props.navigation.navigate('Setting')}/>
+                           }} />
                         </View>                                                 
                         <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
                         <Text style={Style.profile.email}>{account.email}</Text>
