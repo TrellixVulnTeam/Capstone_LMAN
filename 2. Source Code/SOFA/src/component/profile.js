@@ -58,7 +58,7 @@ export default class Profile extends Component {
 
     getProfile = async () => {
         const { account } = this.state;
-        console.log('Access profile');
+        console.log('Access profile');       
         await this.getData('token')
             .then(result => {
                 if (result) {
@@ -112,9 +112,6 @@ export default class Profile extends Component {
                                     console.log(Const.assets_domain + listPost[i].listImage[0].url + '?time=' + new Date())
                                 }
                                 this.setState({ listImageAll: listImageAll });
-                                console.log(this.state.listImageAll);
-
-
                             } else {
                                 this.props.navigation.navigate('Login')
                             }
@@ -122,7 +119,6 @@ export default class Profile extends Component {
                         .catch(reason => {
                             console.log(reason);
                             this.props.navigation.navigate('Login')
-
                         });
                 } else {
                     this.props.navigation.navigate('Login')
@@ -182,6 +178,8 @@ export default class Profile extends Component {
 
     render() {
         const { account, avatarUri } = this.state;
+        console.log(account);
+        LogBox.ignoreLogs(['source.uri should not be an empty string']);
         return (
             <ScrollView>
                 <View>
@@ -193,7 +191,7 @@ export default class Profile extends Component {
                                 width: Utils.scale(400, Const.Horizontal),
                             }}>
                                 <Image
-                                    source={avatarUri ? { uri: avatarUri } : AVATAR}
+                                    source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
                                     resizeMode={"cover"}
                                     style={Style.profile.image} />
 

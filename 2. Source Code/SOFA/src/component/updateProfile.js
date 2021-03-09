@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableOpacity, KeyboardAvoidingView, ScrollView, LogBox } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -192,7 +192,7 @@ export default class UpdateProfile extends Component{
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                 Alert.alert('Update Successfully', 'Update avatar thành công!');
                                 console.log(response);
-                                this.props.navigation.goBack();               
+                                //this.props.navigation.goBack();               
                             } else {
                             if (response.code == Const.REQUEST_CODE_FAILED) {
                                 Alert.alert('Update Failed', 'Update avatar không thành công! Vui lòng kiểm tra lại');
@@ -284,9 +284,10 @@ export default class UpdateProfile extends Component{
         this.setState({account: account})
     }
 
-
     render(){
         const {avatarUri, account} = this.state;
+        LogBox.ignoreAllLogs();
+        LogBox.ignoreLogs['componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.'];
         const data = [
             {label: 'Nam                                ', value:1},
             {label: 'Nữ', value:2},
@@ -300,7 +301,7 @@ export default class UpdateProfile extends Component{
                     <LinearGradient colors={['#fbb897','#ff8683']}>
                         <View style={Style.profile.firstHeader}>
                             <Image 
-                            source={avatarUri ? { uri: avatarUri } : AVATAR}
+                            source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
                             resizeMode={"cover"}
                             style={{
                                 height: Utils.scale(110, Const.Horizontal),
