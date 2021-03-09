@@ -50,7 +50,7 @@ namespace SOFA_API.Controllers
         /// </param>
         /// <returns></returns>
         [HttpPost("topUpAccount")]
-        public ActionResult TopUpAccount(TopUpAccountModelIn topUp)
+        public ActionResult TopUpAccount([FromForm] TopUpAccountModelIn topUp)
         {
             TopUpAccountModelOut topUpAccountModelOut = BalanceService.Instance.topUpAccount(topUp);
             return Ok(topUpAccountModelOut);

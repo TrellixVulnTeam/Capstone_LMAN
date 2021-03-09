@@ -10,19 +10,15 @@ namespace SOFA_API.ViewModel.Voucher
     public class ListVoucherViewModelOut : BaseModelOut
     {
 
-        public List<VoucherViewModelOut> voucherViewModelOuts { get; set; }
+        public List<VoucherViewModelOut> listVoucher { get; set; }
 
         public ListVoucherViewModelOut() : base()
         {
         }
 
-        public ListVoucherViewModelOut(List<VoucherViewModelOut> voucherViewModelOuts)
+        public ListVoucherViewModelOut(List<VoucherViewModelOut> listVoucher)
         {
-            this.voucherViewModelOuts = voucherViewModelOuts;
-        }
-        public ListVoucherViewModelOut(DataRow row) : base()
-        {
-
+            this.listVoucher = listVoucher;
         }
     }
 }

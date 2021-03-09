@@ -11,6 +11,8 @@ import Setting from "../component/setting";
 import ChangePassword from '../component/changePassword';
 import PhoneRegister from '../component/phoneRegister';
 import Verification from '../component/verification';
+import Balance from '../component/balance';
+import Voucher from '../component/voucher';
 
 const Stack = createStackNavigator();
 
@@ -26,6 +28,9 @@ export default function Navigation() {
                 <Stack.Screen name='ChangePassword' component={ChangePassword} options={{headerShown:false}} />
                 <Stack.Screen name='PhoneRegister' component={PhoneRegister} options={{headerShown:false}} />
                 <Stack.Screen name="Verification" component={Verification}options={{headerShown:false}} />
+                <Stack.Screen name="Balance" component={Balance}options={{headerShown:false}} />
+                <Stack.Screen name="Voucher" component={Voucher}options={{headerShown:false}} />
+
             </Stack.Navigator>
         </NavigationContainer>
     )

@@ -56,14 +56,14 @@ namespace SOFA_API.DAO
         /// eg: { "AccountID": 9,  "IsExpiress": true, "IsUsed": false}
         /// </param>
         /// <returns></returns>
-        public ListVoucherViewModelOut GetListVoucherByAccountID(VoucherViewModelIn viewModelIn)
+        public ListVoucherViewModelOut GetListVoucherByAccountID(int accountId, VoucherViewModelIn viewModelIn)
         {
             ListVoucherViewModelOut listVoucherOuts = null;
             List<VoucherViewModelOut> listVoucher = new List<VoucherViewModelOut>();
             string sql = "EXEC dbo.getVoucherByAccountID @AccountID , @IsExpires , @IsUsed";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { viewModelIn.AccountID, viewModelIn.IsExpiress, viewModelIn.IsUsed });
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId, viewModelIn.IsExpiress, viewModelIn.IsUsed });
                 if (data.Rows.Count > 0)
                 {
                     foreach (DataRow row in data.Rows)
@@ -80,13 +80,13 @@ namespace SOFA_API.DAO
             }
             return listVoucherOuts;
         }
-        public VoucherDetaiForUserViewModelOut GetVoucherDetailByAccountId(VoucherDetaiForUserViewModelIn viewModelIn)
+        public VoucherDetaiForUserViewModelOut GetVoucherDetailByAccountId(int accountId, VoucherDetaiForUserViewModelIn viewModelIn)
         {
             VoucherDetaiForUserViewModelOut viewModelOut = null;
             string sql = "EXEC dbo.getVoucherDetailByAccountId @AccountID , @Id";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { viewModelIn.AccountId, viewModelIn.ID });
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId, viewModelIn.ID });
                 if (data.Rows.Count > 0)
                 {
                     viewModelOut = new VoucherDetaiForUserViewModelOut(data.Rows[0]);

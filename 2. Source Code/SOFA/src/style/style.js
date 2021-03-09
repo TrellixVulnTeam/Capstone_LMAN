@@ -204,7 +204,7 @@ export const balance = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
   },
-  container: {},
+   container: {},
   overlay: {
     backgroundColor: `rgba(251, 184, 151, 1)`,
   },
@@ -229,24 +229,24 @@ export const balance = StyleSheet.create({
     marginBottom: 0,
     backgroundColor: `rgba(0, 0, 0, 0.03)`,
   },
-  card: {
-    position: 'relative',
-    display: 'flex',
-    backgroundColor: `rgba(255, 255, 255, 1)`,
-    marginLeft: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    marginRight: 10,
+  card:{
+    position:'relative',
+    display:'flex',
+    backgroundColor:`rgba(255, 255, 255, 1)`,
+    marginLeft:10,
+    marginTop:10,
+    marginBottom:10,
+    marginRight:10,
     borderRadius: 20,
   },
 
   textSuccess: {
     color: '#28a745',
-    textAlign: 'right'
+    textAlign:'right'
   },
   textDanger: {
     color: '#dc3545',
-    textAlign: 'right'
+    textAlign:'right'
   },
 });
 
@@ -433,4 +433,63 @@ export const verification = StyleSheet.create({
     paddingLeft: Utils.scale(240,Const.Horizontal),
   }
 
+});
+export const voucher = StyleSheet.create({
+  main: {
+    backgroundColor: `rgba(251, 184, 151, 1)`,
+  },
+
+  mainContainer: {
+    backgroundColor: `rgba(240, 243, 247, 1)`,
+    borderRadius: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
+   container: {},
+  overlay: {
+    backgroundColor: `rgba(251, 184, 151, 1)`,
+  },
+  avatarStyle: {
+    width: 100,
+    height: 100,
+    marginTop: 10,
+    borderRadius: 50,
+    alignSelf: 'center',
+  },
+  textStyle: {
+    marginVertical:20,
+    fontSize: 18,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    alignSelf: 'center',
+  },
+  balanceContainer: {
+    padding: 10,
+  },
+  cardHeader: {
+    marginBottom: 0,
+    backgroundColor: `rgba(0, 0, 0, 0.03)`,
+  },
+  card:{
+    position:'relative',
+    display:'flex',
+    backgroundColor:`rgba(255, 255, 255, 1)`,
+    marginLeft:10,
+    marginTop:10,
+    marginBottom:10,
+    marginRight:10,
+    borderRadius: 20,
+  },
+
+  textSuccess: {
+    color: '#28a745',
+    textAlign:'right'
+  },
+  textDanger: {
+    color: '#dc3545',
+    textAlign:'right'
+  },
+});
+export const voucherDetail = StyleSheet.create({
+  
 });

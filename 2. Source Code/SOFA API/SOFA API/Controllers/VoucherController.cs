@@ -23,7 +23,7 @@ namespace SOFA_API.Controllers
         /// </param>
         /// <returns></returns>
         [HttpPost("addVoucher")]
-        public ActionResult AddVoucher(AddVoucherViewModelIn viewModelIn)
+        public ActionResult AddVoucher([FromForm] AddVoucherViewModelIn viewModelIn)
         {
             AddVoucherViewModelOut modelOut = VoucherService.Instance.AddVoucher(viewModelIn);
             return Ok(modelOut);
@@ -33,13 +33,14 @@ namespace SOFA_API.Controllers
         /// </summary>
         /// <param name="viewModelIn">
         /// This param require fields: AccountId , IsExpiress , IsUsed
-        /// eg: { "AccountID": 9,  "IsExpiress": true, "IsUsed": false}
         /// </param>
         /// <returns></returns>
-        [HttpGet("getVoucherByAccount")]
-        public ActionResult GetVoucherByAccount(VoucherViewModelIn viewModelIn)
+        [HttpPost("getVoucherByAccount")]
+        public ActionResult GetVoucherByAccount([FromForm] VoucherViewModelIn viewModelIn)
         {
-            ListVoucherViewModelOut listVoucher = VoucherService.Instance.GetListVoucherByAccountID(viewModelIn);
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int id = Int32.Parse(idClaim.Value.Trim());
+            ListVoucherViewModelOut listVoucher = VoucherService.Instance.GetListVoucherByAccountID(id, viewModelIn);
             return Ok(listVoucher);
         }
         /// <summary>
@@ -47,13 +48,14 @@ namespace SOFA_API.Controllers
         /// </summary>
         /// <param name="viewModelIn">
         /// This param require fields: ID, AccountId
-        ///eg: { "ID":11,  "AccountId":9 }
         /// </param>
         /// <returns></returns>
-        [HttpGet("getVoucherDetailByAccount")]
-        public ActionResult GetVoucherDetailByAccount(VoucherDetaiForUserViewModelIn viewModelIn)
+        [HttpPost("getVoucherDetailByAccount")]
+        public ActionResult GetVoucherDetailByAccount([FromForm]  VoucherDetaiForUserViewModelIn viewModelIn)
         {
-            VoucherDetaiForUserViewModelOut viewModelOut = VoucherService.Instance.GetVoucherDetailByAccountId(viewModelIn);
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int id = Int32.Parse(idClaim.Value.Trim());
+            VoucherDetaiForUserViewModelOut viewModelOut = VoucherService.Instance.GetVoucherDetailByAccountId(id, viewModelIn);
             return Ok(viewModelOut);
         }
     }

@@ -56,12 +56,11 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="viewModelIn">
         /// This param require fields: AccountId , IsExpiress , IsUsed
-        /// eg: { "AccountID": 9,  "IsExpiress": true, "IsUsed": false}
         /// </param>
         /// <returns></returns>
-        public ListVoucherViewModelOut GetListVoucherByAccountID(VoucherViewModelIn viewModelIn)
+        public ListVoucherViewModelOut GetListVoucherByAccountID(int accountId, VoucherViewModelIn viewModelIn)
         {
-            ListVoucherViewModelOut listVouchers = VoucherDAO.Instance.GetListVoucherByAccountID(viewModelIn);
+            ListVoucherViewModelOut listVouchers = VoucherDAO.Instance.GetListVoucherByAccountID(accountId, viewModelIn);
             if (listVouchers != null)
             {
                 listVouchers.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -78,12 +77,11 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="viewModelIn">
         /// This param require fields: ID, AccountId
-        ///eg: { "ID":11,  "AccountId":9 }
         /// </param>
         /// <returns></returns>
-        public VoucherDetaiForUserViewModelOut GetVoucherDetailByAccountId(VoucherDetaiForUserViewModelIn viewModelIn)
+        public VoucherDetaiForUserViewModelOut GetVoucherDetailByAccountId(int accountId, VoucherDetaiForUserViewModelIn viewModelIn)
         {
-            VoucherDetaiForUserViewModelOut viewModelOut = VoucherDAO.Instance.GetVoucherDetailByAccountId(viewModelIn);
+            VoucherDetaiForUserViewModelOut viewModelOut = VoucherDAO.Instance.GetVoucherDetailByAccountId(accountId, viewModelIn);
             if (viewModelOut != null)
             {
                 viewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
