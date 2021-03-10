@@ -117,32 +117,32 @@ namespace SOFA_API.Service
                     }
                     else
                     {
-                        throw new Exception("Password must contain at least 6 digits");
+                        throw new Exception("Mật khẩu bao gồm 6 ký tự trở lên");
                     }
                     // check valid email
                     if (!IsValidEmail(loginViewModelIn.Email))
                     {
-                        throw new Exception("Email address is invalid or already exists");
+                        throw new Exception("Email đã tồn tại");
 
                     }
                     // check phone number
                     if (!IsValidPhone(loginViewModelIn.Phone))
                     {
-                        throw new Exception("Phone number is already exists");
+                        throw new Exception("Số điện thoại đã tồn tại");
                     }
                     // check firstname
                     if (string.IsNullOrEmpty(loginViewModelIn.Firstname))
                     {
-                        throw new Exception("Firstname is empty");
+                        throw new Exception("Tên không được để trống");
                     }
                     // check lastname
                     if (string.IsNullOrEmpty(loginViewModelIn.Lastname))
                     {
-                        throw new Exception("Lastname is empty");
+                        throw new Exception("Họ không được để trống");
                     }
                 }
                 else
-                    throw new Exception("Username is exist");
+                    throw new Exception("Tài khoản đã tồn tại");
             }
             return loginViewModelIn;
         }
@@ -180,7 +180,7 @@ namespace SOFA_API.Service
                 AccountViewModelOut account = AccountDAO.Instance.GetUserWithRoleByEmail(emailAddress);
                 if (account != null)
                 {
-                    throw new Exception("Email address is already exists");
+                    throw new Exception("Email đã tồn tại");
                 }
 
                 var addr = new MailAddress(emailAddress);
@@ -225,7 +225,7 @@ namespace SOFA_API.Service
                         // check password
                         if (!VerifyPassword(loginViewModelIn.Password, account.Password))
                         {
-                            throw new Exception("Incorrect username or password");
+                            throw new Exception("Tên tài khoản hoặc mật khẩu không đúng");
                         }
 
                         // security key
@@ -263,12 +263,12 @@ namespace SOFA_API.Service
                     }
                     else
                     {
-                        throw new Exception("Incorrect username or password");
+                        throw new Exception("Tên tài khoản hoặc mật khẩu không đúng");
                     }
                 }
                 else
                 {
-                    throw new Exception("Username and password must not be empty");
+                    throw new Exception("Nhập tên tài khoản và mật khẩu");
                 }
             }
             catch (Exception e)
@@ -296,7 +296,7 @@ namespace SOFA_API.Service
                     if (!VerificationService.Instance.VerifyCode(loginViewModelIn.TransactionId, loginViewModelIn.Code))
                     {
                         loginViewModelOut.Code = Const.REQUEST_CODE_FAILED;
-                        throw new Exception("Invalid code");
+                        throw new Exception("Code không hợp lệ");
                     }
 
                     if (!string.IsNullOrEmpty(loginViewModelIn.NewPassword) && loginViewModelIn.NewPassword.Length >= 6)
@@ -305,7 +305,7 @@ namespace SOFA_API.Service
                     }
                     else
                     {
-                        throw new Exception("Password must contain at least 6 digits");
+                        throw new Exception("Mật khẩu bao gồm 6 ký tự trở lên");
                     }
                 }
 
@@ -322,11 +322,11 @@ namespace SOFA_API.Service
                         {
                             if (!VerifyPassword(loginViewModelIn.Password, account.Password))
                             {
-                                throw new Exception("Wrong password");
+                                throw new Exception("Sai mật khẩu");
                             }
                             if (loginViewModelIn.Password == loginViewModelIn.NewPassword)
                             {
-                                throw new Exception("New password must be different from old");
+                                throw new Exception("Mật khẩu mới không được trùng với mật khẩu cũ");
                             }
 
                             if (!string.IsNullOrEmpty(loginViewModelIn.NewPassword) && loginViewModelIn.NewPassword.Length >= 6)
@@ -335,18 +335,18 @@ namespace SOFA_API.Service
                             }
                             else
                             {
-                                throw new Exception("Password must contain at least 6 digits");
+                                throw new Exception("Mật khẩu bao gồm 6 ký tự trở lên");
                             }
                         }
                     }
                     else
                     {
-                        throw new Exception("Phone number is invalid");
+                        throw new Exception("Số điện thoại không hợp lệ");
                     }
                 }
                 else
                 {
-                    throw new Exception("Phone number is empty");
+                    throw new Exception("Nhập số điện thoại");
                 }
 
                 // update
