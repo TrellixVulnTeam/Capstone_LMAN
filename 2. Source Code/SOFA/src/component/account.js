@@ -12,7 +12,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {LogBox} from 'react-native';
+import {LogBox, TouchableOpacity} from 'react-native';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -22,7 +22,7 @@ import * as Const from "../common/const";
 import * as Utils from "../common/utils";
 import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON, MORE_ICON } from '../../image/index';
 import { TextInput } from 'react-native-gesture-handler';
-import { acc } from 'react-native-reanimated';
+import { acc, color } from 'react-native-reanimated';
 
 export default class Profile extends Component {
     constructor(props) {
@@ -70,6 +70,7 @@ export default class Profile extends Component {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                 this.setState({ account: response });
                                 this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
+                                this.setState({isLogin: true});
                             } else {
                                 this.props.navigation.navigate('Login')
                             }
@@ -115,7 +116,41 @@ export default class Profile extends Component {
                 <View style = {{
                     alignSelf: 'center'
                 }}>
-                    <Text>Hãy đăng nhập để sử dụng chức năng này</Text>
+                    <Text style={{
+                        marginTop: Utils.scale(100, Const.Vertical),
+                        fontWeight: 'bold',
+                        color: '#EA0D1A',
+                        fontSize: 20,
+                    }}>Hãy đăng nhập để sử dụng chức năng này</Text>
+                    <TouchableOpacity                       
+                        style={{
+                            alignSelf: 'center',
+                            marginTop: Utils.scale(20, Const.Vertical),
+                        }}
+                        onPress={() => this.props.navigation.navigate('Login')}
+                        >
+                            
+                            <LinearGradient
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 0 }}
+                                        colors={['#fbb897', '#ff8683']}
+                                        style={{
+                                            width: Utils.scale(120, Const.Horizontal),
+                                            borderRadius: Utils.scale(25, Const.Horizontal),
+                                            height: Utils.scale(50, Const.Horizontal),
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            marginBottom: Utils.scale(10, Const.Horizontal),
+                                            elevation: Utils.scale(7, Const.Horizontal),
+                                        }}>
+                                        <Text style={{
+                                            color: "white",
+                                            fontSize: Utils.scale(16, Const.Horizontal),
+                                            backgroundColor: 'transparent',
+                                        }}>ĐĂNG NHẬP</Text>
+                                    </LinearGradient>
+                        
+                    </TouchableOpacity>
                 </View>
             )
         }else{
@@ -123,6 +158,35 @@ export default class Profile extends Component {
                 <ScrollView>
                    <View>
                         <Text>Bạn đã đăng nhập!</Text>
+                        <TouchableOpacity                       
+                        style={{
+                            alignSelf: 'center',
+                            marginTop: Utils.scale(20, Const.Vertical),
+                        }}
+                        onPress={() => this.props.navigation.navigate('Profile')}
+                        >
+                            
+                            <LinearGradient
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 0 }}
+                                        colors={['#fbb897', '#ff8683']}
+                                        style={{
+                                            width: Utils.scale(180, Const.Horizontal),
+                                            borderRadius: Utils.scale(25, Const.Horizontal),
+                                            height: Utils.scale(50, Const.Horizontal),
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            marginBottom: Utils.scale(10, Const.Horizontal),
+                                            elevation: Utils.scale(7, Const.Horizontal),
+                                        }}>
+                                        <Text style={{
+                                            color: "white",
+                                            fontSize: Utils.scale(16, Const.Horizontal),
+                                            backgroundColor: 'transparent',
+                                        }}>Trang cá nhân</Text>
+                                    </LinearGradient>
+                        
+                    </TouchableOpacity>
                    </View>
                 </ScrollView>
             )

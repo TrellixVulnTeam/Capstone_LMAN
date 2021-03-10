@@ -81,6 +81,7 @@ export default class Login extends Component {
                                     .then(res => {
                                         this.setState({ isLoading: false });
                                         this.props.navigation.navigate('BottomNav');
+                                        this.props.navigation.goBack();
                                     });
                             });
                     } else {

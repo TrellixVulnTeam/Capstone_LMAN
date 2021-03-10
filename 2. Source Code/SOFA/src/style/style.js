@@ -493,3 +493,7 @@ export const voucher = StyleSheet.create({
 export const voucherDetail = StyleSheet.create({
   
 });
+
+export const account = StyleSheet.create({
+
+});
