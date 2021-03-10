@@ -18,13 +18,15 @@ namespace SOFA_API.ViewModel.Account
         public int Code { get; set; }
         public bool IsAfterReset { get; set; }
         public int RoleId { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
 
         public AccountViewModelIn():base()
         {
         }
 
         public AccountViewModelIn(string username, string password, string newPassword, string email, string phone, bool isApplicationAccess, 
-            int transactionId, int code, bool isAfterReset, int roleId):base()
+            int transactionId, int code, bool isAfterReset, int roleId, string firstname, string lastname):base()
         {
             Username = username;
             Password = password;
@@ -36,6 +38,8 @@ namespace SOFA_API.ViewModel.Account
             Code = code;
             IsAfterReset = isAfterReset;
             RoleId = roleId;
+            Firstname = firstname;
+            Lastname = lastname;
         }
 
     }

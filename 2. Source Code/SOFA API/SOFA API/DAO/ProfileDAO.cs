@@ -201,7 +201,7 @@ namespace SOFA_API.DAO
 
             if(data.Rows.Count > 0)
             {
-                for(int i = 0; i < data.Rows.Count, i++)
+                for(int i = 0; i < data.Rows.Count; i++)
                 {
                     ProfileFollowerViewModelOut profile = new ProfileFollowerViewModelOut(data.Rows[i]);
                     list.Add(profile);

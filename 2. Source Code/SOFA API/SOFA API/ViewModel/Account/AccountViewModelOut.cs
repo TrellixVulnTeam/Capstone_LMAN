@@ -20,6 +20,8 @@ namespace SOFA_API.ViewModel.Account
         public string Phone { get; set; }
         public bool IsActive { get; set; }
         public string Token { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
 
         public AccountViewModelOut():base()
         {

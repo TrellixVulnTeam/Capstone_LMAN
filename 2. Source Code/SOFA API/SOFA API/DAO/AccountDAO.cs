@@ -41,9 +41,9 @@ namespace SOFA_API.DAO
 
         public int AddAccount(AccountViewModelIn accountViewModel)
         {
-            string query = "EXEC AddNewAccount @Username , @Password , @Email , @Phone , @RoleId";
+            string query = "EXEC AddNewAccount @Username , @Password , @Firstname , @Lastname , @Email , @Phone , @RoleId";
             int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { accountViewModel.Username, accountViewModel.Password, 
-                accountViewModel.Email, accountViewModel.Phone, accountViewModel.RoleId});
+                 accountViewModel.Firstname, accountViewModel.Lastname, accountViewModel.Email, accountViewModel.Phone, accountViewModel.RoleId});
             return result;
         }
 

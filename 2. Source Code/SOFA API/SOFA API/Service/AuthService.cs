@@ -64,8 +64,10 @@ namespace SOFA_API.Service
                 if (loginViewModelIn.IsApplicationAccess)
                 {
                     loginViewModelIn.RoleId = Const.USER_ROLE_ID;
+                } else
+                {
+                    loginViewModelIn.RoleId = Const.ADMIN_ROLE_ID;
                 }
-                // else - TODO
 
 
                 int result = AccountDAO.Instance.AddAccount(AccountValidation(loginViewModelIn));
@@ -80,6 +82,8 @@ namespace SOFA_API.Service
                 loginViewModelOut.Phone = loginViewModelIn.Phone;
                 loginViewModelOut.RoleId = loginViewModelIn.RoleId;
                 loginViewModelOut.IsActive = true;
+                loginViewModelOut.Firstname = loginViewModelIn.Firstname;
+                loginViewModelOut.Lastname = loginViewModelIn.Lastname;
 
                 return loginViewModelOut;
             }
@@ -125,6 +129,16 @@ namespace SOFA_API.Service
                     if (!IsValidPhone(loginViewModelIn.Phone))
                     {
                         throw new Exception("Phone number is already exists");
+                    }
+                    // check firstname
+                    if (string.IsNullOrEmpty(loginViewModelIn.Firstname))
+                    {
+                        throw new Exception("Firstname is empty");
+                    }
+                    // check lastname
+                    if (string.IsNullOrEmpty(loginViewModelIn.Lastname))
+                    {
+                        throw new Exception("Lastname is empty");
                     }
                 }
                 else
