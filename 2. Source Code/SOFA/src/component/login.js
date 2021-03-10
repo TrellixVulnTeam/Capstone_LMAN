@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
@@ -58,7 +58,7 @@ export default class Login extends Component {
 
     onLogin() {
         if (this.state.username.length < 6 || this.state.password.length < 6) {
-            this.setState({ isValidUser: false, errMsg: 'Username and password must be 6 characters long' })
+            this.setState({ isValidUser: false, errMsg: 'Tài khoản và mật khẩu bao gồm 6 ký tự trở lên' })
         }
         else {
             const { username, password } = this.state;
@@ -106,75 +106,77 @@ export default class Login extends Component {
         } else {
             return (
                 <View style={styles.container}>
-                    <View>
-                        <Image
-                            style={styles.logo}
-                            source={LOGO_ICON}
-                        />
-                        <View style={styles.signInContent}>
-                            <Text style={{ fontSize: Utils.scale(38, Const.Horizontal) }}>Sign in</Text>
-                            <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Sign in to your registed username</Text>
-                            <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
-                        </View>
-                        <View style={styles.containerInput}>
-                            <View style={styles.inputView} >
-                                <Text style={styles.inputTitle}>Username</Text>
-                                <TextInput
-                                    style={styles.inputText}
-                                    placeholder='Your username'
-                                    onChangeText={text => this.setState({ username: text, isValidUser: !this.stateisValidUser })} />
+                    <ScrollView>
+                        <View>
+                            <Image
+                                style={styles.logo}
+                                source={LOGO_ICON}
+                            />
+                            <View style={styles.signInContent}>
+                                <Text style={{ fontSize: Utils.scale(38, Const.Horizontal) }}>Đăng nhập</Text>
+                                <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Đăng nhập với tài khoản bạn đã đăng ký</Text>
+                                <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                             </View>
-                            <View style={styles.inputView} >
-                                <Text style={styles.inputTitle}>Password</Text>
-                                <TextInput
-                                    secureTextEntry
-                                    placeholder='Your password'
-                                    style={styles.inputText}
-                                    onChangeText={text => this.setState({ password: text, isValidUser: !this.stateisValidUser })} />
+                            <View style={styles.containerInput}>
+                                <View style={styles.inputView} >
+                                    <Text style={styles.inputTitle}>Tài khoản</Text>
+                                    <TextInput
+                                        style={styles.inputText}
+                                        placeholder='Tài khoản'
+                                        onChangeText={text => this.setState({ username: text, isValidUser: !this.stateisValidUser })} />
+                                </View>
+                                <View style={styles.inputView} >
+                                    <Text style={styles.inputTitle}>Mật khẩu</Text>
+                                    <TextInput
+                                        secureTextEntry
+                                        placeholder='Mật khẩu'
+                                        style={styles.inputText}
+                                        onChangeText={text => this.setState({ password: text, isValidUser: !this.stateisValidUser })} />
+                                </View>
                             </View>
-                        </View>
-                        {this.state.isValidUser ? null :
-                            <Animatable.View duration={500}>
-                                <Text style={styles.errMsg}>{this.state.errMsg}</Text>
-                            </Animatable.View>
-                        }
-                        <TouchableOpacity >
-                            <Text style={styles.forgot} onPress={() => navigate('PhoneRegister', { isResetPassword: true })}>Forgot Password?</Text>
-                        </TouchableOpacity>
-                        <View style={styles.loginContainer}>
-                            <TouchableOpacity style={styles.loginTouch} onPress={() => this.onLogin()}>
-                                <LinearGradient
-                                    start={{ x: 0, y: 0 }}
-                                    end={{ x: 1, y: 0 }}
-                                    colors={['#fbb897', '#ff8683']}
-                                    style={styles.loginBtn}>
-                                    <Text style={styles.loginText}>SIGN IN</Text>
-                                </LinearGradient>
+                            {this.state.isValidUser ? null :
+                                <Animatable.View duration={500}>
+                                    <Text style={styles.errMsg}>{this.state.errMsg}</Text>
+                                </Animatable.View>
+                            }
+                            <TouchableOpacity >
+                                <Text style={styles.forgot} onPress={() => navigate('PhoneRegister', { isResetPassword: true })}>Quên mật khẩu?</Text>
                             </TouchableOpacity>
+                            <View style={styles.loginContainer}>
+                                <TouchableOpacity style={styles.loginTouch} onPress={() => this.onLogin()}>
+                                    <LinearGradient
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 0 }}
+                                        colors={['#fbb897', '#ff8683']}
+                                        style={styles.loginBtn}>
+                                        <Text style={styles.loginText}>ĐĂNG NHẬP</Text>
+                                    </LinearGradient>
+                                </TouchableOpacity>
 
-                            <TouchableOpacity style={[styles.iconContainer, { marginLeft: '30%' }]}>
-                                <Image style={styles.iconGoogle}
-                                    source={GOOGLE_ICON}
-                                />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.iconContainer, { marginLeft: '4%' }]}>
-                                <Image style={styles.iconGoogle}
-                                    source={FACEBOOK_ICON}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignSelf: 'center', marginTop: Utils.scale(100, Const.Horizontal) }}>
-                            <Text style={{ opacity: Utils.scale(0.4, Const.Horizontal), fontSize: Utils.scale(14, Const.Horizontal) }}>
-                                Not having an account?
+                                <TouchableOpacity style={[styles.iconContainer, { marginLeft: '25%' }]}>
+                                    <Image style={styles.iconGoogle}
+                                        source={GOOGLE_ICON}
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.iconContainer, { marginLeft: '4%' }]}>
+                                    <Image style={styles.iconGoogle}
+                                        source={FACEBOOK_ICON}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignSelf: 'center', marginTop: Utils.scale(120, Const.Horizontal) }}>
+                                <Text style={{ opacity: Utils.scale(0.4, Const.Horizontal), fontSize: Utils.scale(14, Const.Horizontal) }}>
+                                    Bạn chưa có tài khoản?
                         </Text>
-                            <TouchableOpacity>
-                                <Text
-                                    style={{ color: '#ff8683', fontWeight: 'bold', fontSize: Utils.scale(14, Const.Horizontal) }}
-                                    onPress={() => navigate('PhoneRegister', { isResetPassword: false })}
-                                > Register</Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity>
+                                    <Text
+                                        style={{ color: '#ff8683', fontWeight: 'bold', fontSize: Utils.scale(14, Const.Horizontal) }}
+                                        onPress={() => navigate('PhoneRegister', { isResetPassword: false })}
+                                    > Đăng ký</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
+                    </ScrollView>
                 </View>
             )
         }
@@ -242,7 +244,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     loginBtn: {
-        width: Utils.scale(100, Const.Horizontal),
+        width: Utils.scale(120, Const.Horizontal),
         borderRadius: Utils.scale(25, Const.Horizontal),
         height: Utils.scale(45, Const.Horizontal),
         alignItems: "center",

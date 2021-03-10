@@ -66,7 +66,7 @@ export default class PhoneRegister extends Component {
                         console.log(reason);
                     });
         } else {
-            this.setState({ isValidPhone: false, errMsg: 'Invalid phone number' })
+            this.setState({ isValidPhone: false, errMsg: 'Số điện thoại không hợp lệ' })
         }
 
     }
@@ -76,22 +76,22 @@ export default class PhoneRegister extends Component {
             <View style={styles.container}>
                 {this.state.isResetPassword ?
                     <View style={styles.signInContent}>
-                        <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Forgot password?</Text>
-                        <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Enter your registed phone number to reset</Text>
+                        <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Quên mật khẩu?</Text>
+                        <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Nhập số điện thoại đã đăng ký</Text>
                         <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                     </View>
                     :
                     <View style={styles.signInContent}>
-                        <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Welcome!</Text>
-                        <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Register your phone number to use application</Text>
+                        <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Chào mừng!</Text>
+                        <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Đăng ký số điện thoại của bạn</Text>
                         <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                     </View>
                 }
                 <View style={styles.containerInput}>
                     <View style={styles.inputView} >
-                        <Text style={styles.inputTitle}>Phone</Text>
+                        <Text style={styles.inputTitle}>Số điện thoại</Text>
                         <TextInput
-                            placeholder='Your phone'
+                            placeholder='Số điện thoại'
                             style={styles.inputText}
                             keyboardType='numeric'
                             onChangeText={text => this.setState({ phone: text, isValidPhone: !this.stateisValidUser })} />
@@ -111,9 +111,9 @@ export default class PhoneRegister extends Component {
                             style={styles.registerBtn}>
                             {this.state.isResetPassword
                                 ?
-                                <Text style={styles.registerText}>CONFIRM</Text>
+                                <Text style={styles.registerText}>XÁC NHẬN</Text>
                                 :
-                                <Text style={styles.registerText}>REGISTER</Text>
+                                <Text style={styles.registerText}>ĐĂNG KÝ</Text>
                             }
                         </LinearGradient>
                     </TouchableOpacity>
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
         marginLeft: Utils.scale(40, Const.Horizontal),
     },
     registerBtn: {
-        width: Utils.scale(100, Const.Horizontal),
+        width: Utils.scale(120, Const.Horizontal),
         borderRadius: Utils.scale(25, Const.Horizontal),
         height: Utils.scale(45, Const.Horizontal),
         alignItems: "center",

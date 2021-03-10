@@ -28,7 +28,7 @@ export default class ChangePassword extends Component {
     checkConfirmPassword(cfNewPassword) {
         this.setState({ confirmNewPassword: cfNewPassword })
         if (cfNewPassword !== this.state.newPassword) {
-            this.setState({ isValidUser: false, errMsg: 'Confirm password is not same as password' })
+            this.setState({ isValidUser: false, errMsg: 'Xác nhận mật khẩu không đúng' })
         } else {
             this.setState({ isValidUser: true })
         }
@@ -37,16 +37,16 @@ export default class ChangePassword extends Component {
     checkValidPassword() {
         if (!this.state.isResetPassword) {
             if (this.state.password.length < 6) {
-                this.setState({ isValidUser: false, errMsg: 'Password must be 6 characters long' })
+                this.setState({ isValidUser: false, errMsg: 'Mật khẩu bao gồm 6 ký tự trở lên' })
                 return false;
             }
         }
         if (this.state.newPassword.length < 6) {
-            this.setState({ isValidUser: false, errMsg: 'Password must be 6 characters long' })
+            this.setState({ isValidUser: false, errMsg: 'Mật khẩu bao gồm 6 ký tự trở lên' })
             return false;
         }
         if (this.state.newPassword !== this.state.confirmNewPassword) {
-            this.setState({ isValidUser: false, errMsg: 'Confirm password is not same as password' })
+            this.setState({ isValidUser: false, errMsg: 'Xác nhận mật khẩu không đúng' })
             return false;
         }
         return true;
@@ -107,7 +107,7 @@ export default class ChangePassword extends Component {
                             this.setState({ isLoading: false });
                             AsyncStorage.clear().then(() => {
                                 Alert.alert(
-                                    'Your password has been changed successfully',
+                                    'Đổi mật khẩu thành công',
                                     '',
                                     [
                                       {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
@@ -134,14 +134,14 @@ export default class ChangePassword extends Component {
             <View style={styles.container}>
                 {this.state.isResetPassword ?
                     <View style={styles.signInContent}>
-                        <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Set new password</Text>
-                        <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Enter your new password to reset</Text>
+                        <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Đổi Mật khẩu</Text>
+                        <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Nhập mật khẩu mới của bạn</Text>
                         <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                     </View>
                     :
                     <View style={styles.signInContent}>
-                        <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Change password!</Text>
-                        <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Enter your password and new password to change</Text>
+                        <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Đổi Mật khẩu!</Text>
+                        <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Nhập thông tin mật khẩu của bạn</Text>
                         <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                     </View>
                 }
@@ -149,27 +149,27 @@ export default class ChangePassword extends Component {
                     {this.state.isResetPassword ? null
                         :
                         <View style={styles.inputView} >
-                            <Text style={styles.inputTitle}>Password</Text>
+                            <Text style={styles.inputTitle}>Mật khẩu</Text>
                             <TextInput
                                 secureTextEntry
-                                placeholder='Your password'
+                                placeholder='Mật khẩu'
                                 style={styles.inputText}
                                 onChangeText={text => this.setState({ password: text, isValidUser: !this.stateisValidUser })} />
                         </View>
                     }
                     <View style={styles.inputView} >
-                        <Text style={styles.inputTitle}>New password</Text>
+                        <Text style={styles.inputTitle}>Mật khẩu mới</Text>
                         <TextInput
                             secureTextEntry
-                            placeholder='Your new password'
+                            placeholder='Mật khẩu mới'
                             style={styles.inputText}
                             onChangeText={text => this.setState({ newPassword: text, isValidUser: !this.stateisValidUser })} />
                     </View>
                     <View style={styles.inputView} >
-                        <Text style={styles.inputTitle}>Confirm new password</Text>
+                        <Text style={styles.inputTitle}>Nhập lại mật khẩu mới</Text>
                         <TextInput
                             secureTextEntry
-                            placeholder='Your confirm new password'
+                            placeholder='Nhập lại mật khẩu mới'
                             style={styles.inputText}
                             onChangeText={text => this.checkConfirmPassword(text)} />
                     </View>
@@ -186,7 +186,7 @@ export default class ChangePassword extends Component {
                             end={{ x: 1, y: 0 }}
                             colors={['#fbb897', '#ff8683']}
                             style={styles.registerBtn}>
-                            <Text style={styles.registerText}>CONFIRM</Text>
+                            <Text style={styles.registerText}>XÁC NHẬN</Text>
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
         marginLeft: Utils.scale(40, Const.Horizontal),
     },
     registerBtn: {
-        width: Utils.scale(100, Const.Horizontal),
+        width: Utils.scale(120, Const.Horizontal),
         borderRadius: Utils.scale(25, Const.Horizontal),
         height: Utils.scale(45, Const.Horizontal),
         alignItems: "center",
