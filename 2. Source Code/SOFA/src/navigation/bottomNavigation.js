@@ -6,7 +6,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 
 
@@ -40,7 +43,7 @@ export default function Navigation() {
         options={{
           title: 'Bảng tin',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="article" color={color} size={size} />
+            <Entypo name="news" color={color} size={size} />
           ),
         }}
       />
@@ -50,7 +53,7 @@ export default function Navigation() {
         options={{
           title: 'Hot',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="local-fire-department" color={color} size={size} />
+            <FontAwesome5 name="fire" color={color} size={size} />
           ),
         }}
       />
@@ -88,7 +91,7 @@ export default function Navigation() {
         options={{
           title: 'Đề xuất',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="recommend" color={color} size={size} />
+            <AntDesign name="like1" color={color} size={size} />
           ),
         }}
       />

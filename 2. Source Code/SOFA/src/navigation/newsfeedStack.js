@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Newsfeed from '../component/newsfeed';
 import Comment from '../component/comment'
+
 const Stack = createStackNavigator();
 
 export default function NewsfeedStack() {
@@ -12,6 +13,7 @@ export default function NewsfeedStack() {
         <Stack.Navigator initialRouteName='Newsfeed' >
             <Stack.Screen name='Newsfeed' component={Newsfeed} options={{ headerShown: false }} />
             <Stack.Screen name='Comment' component={Comment} options={{ headerShown: false }} />
+
         </Stack.Navigator>
     )
 }

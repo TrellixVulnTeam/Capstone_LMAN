@@ -18,13 +18,9 @@ const calculateTime = (time) => {
   let postTime = new Date(time);
   // currentTime = currentTime.setHours(currentTime.getHours() - 7);
   let dif = currentTime - postTime;
-  dif = dif / 1000;
+  dif = parseInt(dif / 1000, 10);
   let res = ['Vừa xong'];
-  if (dif > 1) {
-    let temp = dif + ' Giây trước';
-    res.push(temp);
-    dif = parseInt(dif / 60, 10);
-  }
+  dif = parseInt(dif / 60, 10);
   if (dif >= 1) {
     let temp = dif + ' Phút trước';
     res.push(temp);
