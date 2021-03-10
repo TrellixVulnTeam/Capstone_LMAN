@@ -18,6 +18,7 @@ import HotStack from './hotStack';
 import SuggestStack from './suggestStack';
 import CreatePostStack from './createPostStack';
 import ProfileStack from './profileStack';
+import AccountStack from './accountStack';
 import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 
@@ -96,8 +97,8 @@ export default function Navigation() {
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={ProfileStack}
+        name="Account"
+        component={AccountStack}
         options={{
           title: 'Tài khoản',
           tabBarIcon: ({ color, size }) => (
