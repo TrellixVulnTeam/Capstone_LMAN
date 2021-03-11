@@ -267,7 +267,7 @@ export default class Newsfeed extends Component {
     }
 
 
-    deletePost(post) {
+    deletePost(postID) {
         const { token } = this.state;
         if (token && token.length > 0) {
             var header = {
@@ -277,7 +277,7 @@ export default class Newsfeed extends Component {
                 "Authorization": 'Bearer ' + token,
             };
             let data = new FormData();
-            data.append('PostID', post.id);
+            data.append('PostID', postID);
             let uri = Const.domain + 'api/post/deletepost';
             Request.Post(uri, header, data)
                 .then(response => {

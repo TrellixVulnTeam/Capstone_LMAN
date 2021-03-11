@@ -130,6 +130,7 @@ namespace SOFA_API.Service
                     {
                         postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                         postModelOut.ID = postID;
+                        postViewModelOut.ListPost.Add(postModelOut);
                     } else
                     {
                         postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
