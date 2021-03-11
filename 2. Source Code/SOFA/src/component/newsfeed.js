@@ -1,8 +1,6 @@
 import React, { Component, createRef } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, Keyboard, TextInput, TouchableWithoutFeedback } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { MenuProvider } from 'react-native-popup-menu';
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, FlatList, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
+
 import LinearGradient from 'react-native-linear-gradient';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,6 +10,8 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -35,11 +35,41 @@ export default class Newsfeed extends Component {
             listPost: [],
             isKeyBoardShow: false,
             keyboardHeight: 0,
-            commentText: '',
-            currentPostComment: 0,
-            inScreen: false
+            inScreen: false,
+            currentPostSelect: {},
+            isShowMenu: false
         }
     }
+    listActionArticle = [
+        {
+            key: 'savepost',
+            icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
+            title: () => 'Lưu bài viết',
+            detail: () => 'Thêm vào danh sách các mục đã lưu',
+            onPress: () => {
+                console.log('save post', this.state.currentPostSelect.id);
+            }
+        },
+        {
+            key: 'hidepost',
+            icon: () => <AntDesign name='closesquareo' size={scale(30, Horizontal)} color={'black'} />,
+            title: () => 'Ẩn bài viết',
+            detail: () => 'Ẩn bài viết này khỏi newsfeed của bạn',
+            onPress: () => {
+                console.log('hide post', this.state.currentPostSelect.id);
+            }
+        },
+        {
+            key: 'followuserpost',
+            icon: () => <SimpleLineIcons name='user-following' size={scale(30, Horizontal)} color={'black'} />,
+            title: () => 'Theo dõi ' + this.state.currentPostSelect.lastName,
+            detail: () => 'Xem những bài viết từ người này',
+            onPress: () => {
+                console.log('follow user', this.state.currentPostSelect.id);
+            }
+        },
+
+    ]
     getData = async (key) => {
         try {
             const value = await AsyncStorage.getItem(key);
@@ -143,7 +173,9 @@ export default class Newsfeed extends Component {
                 keyboardHeight: 0,
                 commentText: '',
                 currentPostComment: 0,
-                inScreen: false
+                inScreen: false,
+                isShowMenu: false,
+                currentPostID: 0
             });
         })
     }
@@ -259,8 +291,25 @@ export default class Newsfeed extends Component {
         }
     }
 
+    ArticleMenu = (props) => {
+        const { isShowMenu, currentPostID } = this.state;
+        return (
+            <View>
+                { isShowMenu ? (
+                    <View style={{
+                        width: scale(400, Horizontal),
+                        height: scale(500, Vertical),
+                        position: 'absolute',
+                        backgroundColor: 'white'
+                        //bottom: scale(700, Vertical)
+                    }}>
+                        <Text>{currentPostID}</Text>
+                    </View>) : (<View></View>)}
+            </View>
+        )
+    }
+
     Article = ({ data }) => {
-        const { isKeyBoardShow, keyboardHeight, commentText, account, isLogin } = this.state;
         let post = data;
         return (
             <View
@@ -282,6 +331,10 @@ export default class Newsfeed extends Component {
                         <Text>{Utils.calculateTime(post.time)}</Text>
                     </View>
                     <MaterialCommunityIcons
+                        onPress={() => {
+                            this.setState({ currentPostSelect: post });
+                            this.setState({ isShowMenu: true });
+                        }}
                         style={Style.newsfeed.ArticleMenu}
                         name='dots-horizontal' size={30} color={'black'} />
 
@@ -344,7 +397,7 @@ export default class Newsfeed extends Component {
     }
 
     render() {
-        const { account, listPost, isKeyBoardShow, keyboardHeight, commentText } = this.state;
+        const { isShowMenu, listPost } = this.state;
         return (
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={'#300808'} />
@@ -373,6 +426,49 @@ export default class Newsfeed extends Component {
                         keyExtractor={(item, index) => item.id + ''}
                         renderItem={({ item, index }) => <this.Article data={item} />}
                     />
+                    <Modal
+                        animationType='slide'
+                        transparent={true}
+                        visible={isShowMenu}
+                        onRequestClose={() => {
+                            this.setState({ isShowMenu: false });
+                        }}
+                    >
+                        <View style={{
+                            width: scale(400, Horizontal),
+                            position: 'absolute',
+                            backgroundColor: 'white',
+                            borderTopLeftRadius: 20,
+                            borderTopRightRadius: 20,
+                            bottom: scale(0, Vertical),
+                            elevation: 5
+                        }}>
+                            {this.listActionArticle.map(item =>
+                                <TouchableHighlight
+                                    key={item.key}
+                                    onPress={() => item.onPress()}
+                                    underlayColor={'#9E9E9E'}
+                                >
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            height: scale(50, Vertical),
+                                            borderBottomColor: '#9E9E9E',
+                                            borderBottomWidth: 0.5,
+                                            alignItems: 'center',
+                                            paddingLeft: scale(20, Horizontal)
+                                        }}>
+                                        {item.icon()}
+                                        <View style={{ marginLeft: scale(10, Horizontal) }} >
+                                            <Text>{item.title()}</Text>
+                                            <Text style={{ color: '#9E9E9E' }}>{item.detail()}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableHighlight>
+                            )}
+                        </View>
+                    </Modal>
+
                 </View>
             </View>
         )

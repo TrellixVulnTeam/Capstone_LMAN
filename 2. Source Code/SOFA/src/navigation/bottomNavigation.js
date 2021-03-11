@@ -29,6 +29,7 @@ export default function Navigation() {
     <Tab.Navigator
       initialRouteName="Newsfeed"
       tabBarOptions={{
+        showLabel: false,
         activeTintColor: '#d8a027',
         inactiveTintColor: '#f8e5d7',
         activeBackgroundColor: 'transparent',
@@ -64,25 +65,25 @@ export default function Navigation() {
         options={{
           title: '',
           tabBarIcon: ({ color, size }) => (
-            <LinearGradient colors={['#FF3636', '#F970FE']}
-              style={{
-                width: scale(40, Horizontal),
-                height: scale(40, Horizontal),
-                alignItems: 'center',
-                justifyContent: 'center',
-                //marginBottom: scale(40, Vertical),
-                top: scale(5, Vertical),
-                borderRadius: 50,
-                position: 'absolute',
-                shadowColor: '#7F58FF',
-                shadowRadius: 5,
-                shadowOffset: { height: scale(10, Vertical) },
-                shadowOpacity: 0.3,
+            // <LinearGradient colors={['#FF3636', '#F970FE']}
+            //   style={{
+            //     width: scale(40, Horizontal),
+            //     height: scale(40, Horizontal),
+            //     alignItems: 'center',
+            //     justifyContent: 'center',
+            //     //marginBottom: scale(40, Vertical),
+            //     top: scale(5, Vertical),
+            //     borderRadius: 50,
+            //     position: 'absolute',
+            //     shadowColor: '#7F58FF',
+            //     shadowRadius: 5,
+            //     shadowOffset: { height: scale(10, Vertical) },
+            //     shadowOpacity: 0.3,
 
 
-              }}>
-              <MaterialIcons name="add" color={'white'} size={scale(40, Horizontal)} />
-            </LinearGradient>
+            //   }}>
+            <Ionicons name="add-circle-sharp" color={color} size={size} />
+            // </LinearGradient>
           ),
         }}
       />
