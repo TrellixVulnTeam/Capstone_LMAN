@@ -127,5 +127,20 @@ namespace SOFA_API.DAO
 
             return posts;
         }
+        /// <summary>
+        /// Delete a post by post id
+        /// </summary>
+        /// <param name="postID">Id of the post</param>
+        /// <returns>result > 0 if successfully, 0 if failed</returns>
+        public int DeletePostByPostID(int postID)
+        {
+            int result = 0;
+
+            string sql = "EXEC dbo.DeletePost @postID";
+
+            result = (int)DataProvider.Instance.ExecuteNonQuery(sql, new object[] { postID });
+
+            return result;
+        }
     }
 }

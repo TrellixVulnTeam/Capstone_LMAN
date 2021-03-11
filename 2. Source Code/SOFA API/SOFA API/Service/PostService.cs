@@ -111,6 +111,45 @@ namespace SOFA_API.Service
             return postViewModelOut;
         }
         /// <summary>
+        /// Service of delete post controller
+        /// </summary>
+        /// <param name="postID"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public PostViewModelOut DeletePostByID(int postID, int userID)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
+            try
+            {
+                Post post = PostDAO.Instance.GetPostByID(postID);
+                if (post.AccountPost == userID)
+                {
+                    PostModelOut postModelOut = new PostModelOut();
+                    int flag = PostDAO.Instance.DeletePostByPostID(postID);
+                    if (flag > 0)
+                    {
+                        postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                        postModelOut.ID = postID;
+                    } else
+                    {
+                        postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    }
+                }
+                else
+                {
+                    postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    postViewModelOut.ErrorMessage = MessageUtils.ERROR_DONT_HAVE_PERMISSION;
+                }
+            } catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.ToString();
+            }
+            return postViewModelOut;
+        }
+
+        /// <summary>
         /// Service of get list comment of post
         /// </summary>
         /// <param name="postViewModelIn"></param>

@@ -99,6 +99,8 @@ export default class EditImage extends Component {
             temperature: 6500,
             exposure: 0,
             filePath: '',
+            index:0,
+            imageType:'',
             currentPress: 'NoPreset',
         };
     }
@@ -185,7 +187,7 @@ export default class EditImage extends Component {
             this.props.navigation.dangerouslyGetParent().setOptions({
                 tabBarVisible: false
             });
-            let { image } = this.props.route.params;
+            let { image, imageType, index } = this.props.route.params;
             this.setState({
                 hue: 0,
                 blur: 0,
@@ -199,7 +201,7 @@ export default class EditImage extends Component {
                 exposure: 0,
                 filePath: '',
             });
-            this.setState({ filePath: image.path });
+            this.setState({ filePath: image.path, imageType:imageType, index:index });
         });
     }
 

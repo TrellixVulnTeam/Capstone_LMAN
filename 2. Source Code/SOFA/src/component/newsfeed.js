@@ -40,7 +40,7 @@ export default class Newsfeed extends Component {
             isShowMenu: false
         }
     }
-    listActionArticle = [
+    actionArticleNotOwn = [
         {
             key: 'savepost',
             icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
@@ -60,12 +60,62 @@ export default class Newsfeed extends Component {
             }
         },
         {
+            key: 'reportpost',
+            icon: () => <Octicons name='report' size={scale(30, Horizontal)} color={'black'} />,
+            title: () => 'Báo cáo bài viết này',
+            detail: () => 'Tôi lo ngại về bài viết này',
+            onPress: () => {
+                console.log('report post', this.state.currentPostSelect.id);
+            }
+        },
+        {
             key: 'followuserpost',
-            icon: () => <SimpleLineIcons name='user-following' size={scale(30, Horizontal)} color={'black'} />,
+            icon: () => <SimpleLineIcons name='user-follow' size={scale(30, Horizontal)} color={'black'} />,
             title: () => 'Theo dõi ' + this.state.currentPostSelect.lastName,
             detail: () => 'Xem những bài viết từ người này',
             onPress: () => {
                 console.log('follow user', this.state.currentPostSelect.id);
+            }
+        },
+        {
+            key: 'reportuser',
+            icon: () => <MaterialIcons name='report' size={scale(30, Horizontal)} color={'black'} />,
+            title: () => 'Báo cáo ' + this.state.currentPostSelect.lastName,
+            detail: () => 'Tôi lo ngại về người dùng này',
+            onPress: () => {
+                console.log('report user', this.state.currentPostSelect.id);
+            }
+        },
+
+
+    ]
+    actionArticleOwn = [
+        {
+            key: 'savepost',
+            icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
+            title: () => 'Lưu bài viết',
+            detail: () => 'Thêm vào danh sách các mục đã lưu',
+            onPress: () => {
+                console.log('save post', this.state.currentPostSelect.id);
+            }
+        },
+        {
+            key: 'deletepost',
+            icon: () => <AntDesign name='delete' size={scale(30, Horizontal)} color={'black'} />,
+            title: () => 'Xóa bài viết',
+            detail: () => 'Xóa bài viết này khỏi danh sách bài viết của bạn',
+            onPress: () => {
+                console.log('delete post', this.state.currentPostSelect.id);
+                this.deletePost(this.state.currentPostSelect.id);
+            }
+        },
+        {
+            key: 'editpost',
+            icon: () => <MaterialIcons name='mode-edit' size={scale(30, Horizontal)} color={'black'} />,
+            title: () => 'Chỉnh sửa bài viết',
+            detail: () => 'Chỉnh sửa nội dung của bài viết',
+            onPress: () => {
+                console.log('edit post', this.state.currentPostSelect.id);
             }
         },
 
@@ -180,8 +230,19 @@ export default class Newsfeed extends Component {
         })
     }
 
-    componentWillUnmount() {
-
+    removePost(postID) {
+        let { listPost } = this.state;
+        let flag = false;
+        for (let i = 0; i < listPost.length; i++) {
+            if (!flag && listPost[i].id == postID) {
+                flag = true;
+            };
+            if (flag) {
+                listPost[i] = listPost[i + 1];
+            }
+        }
+        listPost.pop();
+        this.setState({ listPost: listPost });
     }
 
     updatePostByID(postID, key, value) {
@@ -205,6 +266,39 @@ export default class Newsfeed extends Component {
         return null;
     }
 
+
+    deletePost(post) {
+        const { token } = this.state;
+        if (token && token.length > 0) {
+            var header = {
+                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                'Content-Type': 'multipart/form-data',
+                "Accept": 'application/json',
+                "Authorization": 'Bearer ' + token,
+            };
+            let data = new FormData();
+            data.append('PostID', post.id);
+            let uri = Const.domain + 'api/post/deletepost';
+            Request.Post(uri, header, data)
+                .then(response => {
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        this.removePost(response.listPost[0].id);
+                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                        console.log(response.errorMessage);
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                })
+        } else {
+            Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+        }
+    }
+
+    /**
+     * Navigate to list comment of this post
+     * @param {Data of the post} post 
+     */
     onPressCommentIcon(post) {
         this.props.navigation.navigate('Comment', { 'post': post });
     }
@@ -328,7 +422,7 @@ export default class Newsfeed extends Component {
                         <Text
                             onPress={() => this.navigateProfile(post.accountPost)}
                             style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
-                        <Text>{Utils.calculateTime(post.time)}</Text>
+                        <Text style={{ fontFamily: 'SanFranciscoText-Regular' }}>{Utils.calculateTime(post.time)}</Text>
                     </View>
                     <MaterialCommunityIcons
                         onPress={() => {
@@ -389,7 +483,7 @@ export default class Newsfeed extends Component {
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: scale(5, Vertical) }}>
                         <Text style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
-                        <Text style={{ fontSize: 14, marginLeft: scale(5, Horizontal) }}>{post.content}</Text>
+                        <Text style={{ fontSize: 14, textAlignVertical: 'center', marginLeft: scale(5, Horizontal) }}>{post.content}</Text>
                     </View>
                 </View>
             </View>
@@ -397,7 +491,7 @@ export default class Newsfeed extends Component {
     }
 
     render() {
-        const { isShowMenu, listPost } = this.state;
+        const { isShowMenu, listPost, account, currentPostSelect } = this.state;
         return (
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={'#300808'} />
@@ -443,29 +537,54 @@ export default class Newsfeed extends Component {
                             bottom: scale(0, Vertical),
                             elevation: 5
                         }}>
-                            {this.listActionArticle.map(item =>
-                                <TouchableHighlight
-                                    key={item.key}
-                                    onPress={() => item.onPress()}
-                                    underlayColor={'#9E9E9E'}
-                                >
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            height: scale(50, Vertical),
-                                            borderBottomColor: '#9E9E9E',
-                                            borderBottomWidth: 0.5,
-                                            alignItems: 'center',
-                                            paddingLeft: scale(20, Horizontal)
-                                        }}>
-                                        {item.icon()}
-                                        <View style={{ marginLeft: scale(10, Horizontal) }} >
-                                            <Text>{item.title()}</Text>
-                                            <Text style={{ color: '#9E9E9E' }}>{item.detail()}</Text>
+                            {account.accountID != currentPostSelect.accountPost ?
+                                this.actionArticleNotOwn.map(item =>
+                                    <TouchableHighlight
+                                        key={item.key}
+                                        onPress={() => item.onPress()}
+                                        underlayColor={'#9E9E9E'}
+                                    >
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                height: scale(50, Vertical),
+                                                borderBottomColor: '#9E9E9E',
+                                                borderBottomWidth: 0.5,
+                                                alignItems: 'center',
+                                                paddingLeft: scale(20, Horizontal)
+                                            }}>
+                                            {item.icon()}
+                                            <View style={{ marginLeft: scale(10, Horizontal) }} >
+                                                <Text>{item.title()}</Text>
+                                                <Text style={{ color: '#9E9E9E' }}>{item.detail()}</Text>
+                                            </View>
                                         </View>
-                                    </View>
-                                </TouchableHighlight>
-                            )}
+                                    </TouchableHighlight>
+                                ) :
+                                this.actionArticleOwn.map(item =>
+                                    <TouchableHighlight
+                                        key={item.key}
+                                        onPress={() => item.onPress()}
+                                        underlayColor={'#9E9E9E'}
+                                    >
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                height: scale(50, Vertical),
+                                                borderBottomColor: '#9E9E9E',
+                                                borderBottomWidth: 0.5,
+                                                alignItems: 'center',
+                                                paddingLeft: scale(20, Horizontal)
+                                            }}>
+                                            {item.icon()}
+                                            <View style={{ marginLeft: scale(10, Horizontal) }} >
+                                                <Text>{item.title()}</Text>
+                                                <Text style={{ color: '#9E9E9E' }}>{item.detail()}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableHighlight>
+                                )
+                            }
                         </View>
                     </Modal>
 

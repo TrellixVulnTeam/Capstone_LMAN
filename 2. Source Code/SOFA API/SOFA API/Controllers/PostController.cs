@@ -110,5 +110,13 @@ namespace SOFA_API.Controllers
             PostViewModelOut postViewModelOut = PostService.Instance.GetListCommentOfPost(postViewModelIn);
             return Ok(postViewModelOut);
         }
+        [HttpPost("DeletePost")]
+        [Authorize]
+        public ActionResult DeletePost([FromForm] PostViewModelIn postViewModelIn)
+        {
+            int id = Utils.Instance.GetUserID(User.Claims);
+            PostViewModelOut postViewModelOut = PostService.Instance.DeletePostByID(postViewModelIn.PostID, id);
+            return Ok(postViewModelOut);
+        }
     }
 }

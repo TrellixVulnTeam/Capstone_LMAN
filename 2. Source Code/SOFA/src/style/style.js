@@ -160,7 +160,7 @@ export const newsfeed = StyleSheet.create({
     marginLeft: scale(25, Horizontal)
   },
   ArticleAuthor: {
-    fontWeight: 'bold',
+    fontFamily:'SanFranciscoText-Bold'
   },
   ArticleMenu: {
     marginLeft: 'auto',

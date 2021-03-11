@@ -22,27 +22,27 @@ const calculateTime = (time) => {
   let res = ['Vừa xong'];
   dif = parseInt(dif / 60, 10);
   if (dif >= 1) {
-    let temp = dif + ' Phút trước';
+    let temp = dif + ' phút';
     res.push(temp);
     dif = parseInt(dif / 60, 10);
   }
   if (dif >= 1) {
-    let temp = dif + ' Giờ trước';
+    let temp = dif + ' giờ';
     res.push(temp);
     dif = parseInt(dif / 24, 10)
   }
   if (dif >= 1) {
-    let temp = dif + ' Ngày trước';
+    let temp = dif + ' ngày';
     res.push(temp);
     dif = parseInt(dif / 30, 10)
   }
   if (dif >= 1) {
-    let temp = dif + ' Tháng trước';
+    let temp = dif + ' tháng';
     res.push(temp);
     dif = parseInt(dif / 12, 10)
   }
   if (dif >= 1) {
-    let temp = dif + ' Năm trước';
+    let temp = dif + ' năm';
     res.push(temp);
   }
   return res[res.length - 1];

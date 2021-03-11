@@ -205,6 +205,52 @@
 		<string>Roboto_medium.ttf</string>
 		<string>Roboto.ttf</string>
 		<string>rubicon-icon-font.ttf</string>
+		<string>SFMonoHeavy.otf</string>
+		<string>SFMonoHeavyItalic.otf</string>
+		<string>SFMonoLight.otf</string>
+		<string>SFMonoLightItalic.otf</string>
+		<string>SFMonoMedium.otf</string>
+		<string>SFMonoMediumItalic.otf</string>
+		<string>SFMonoRegular.otf</string>
+		<string>SFMonoRegularItalic.otf</string>
+		<string>SFMonoSemibold.otf</string>
+		<string>SFMonoSemiboldItalic.otf</string>
+		<string>SFProRegular.ttf</string>
+		<string>SanFranciscoDisplay-Black.otf</string>
+		<string>SanFranciscoDisplay-Bold.otf</string>
+		<string>SanFranciscoDisplay-Heavy.otf</string>
+		<string>SanFranciscoDisplay-Light.otf</string>
+		<string>SanFranciscoDisplay-Medium.otf</string>
+		<string>SanFranciscoDisplay-Regular.otf</string>
+		<string>SanFranciscoDisplay-Semibold.otf</string>
+		<string>SanFranciscoDisplay-Thin.otf</string>
+		<string>SanFranciscoDisplay-Ultralight.otf</string>
+		<string>SanFranciscoText-Bold.otf</string>
+		<string>SanFranciscoText-BoldG1.otf</string>
+		<string>SanFranciscoText-BoldG2.otf</string>
+		<string>SanFranciscoText-BoldG3.otf</string>
+		<string>SanFranciscoText-BoldItalic.otf</string>
+		<string>SanFranciscoText-BoldItalicG1.otf</string>
+		<string>SanFranciscoText-BoldItalicG2.otf</string>
+		<string>SanFranciscoText-BoldItalicG3.otf</string>
+		<string>SanFranciscoText-Heavy.otf</string>
+		<string>SanFranciscoText-HeavyItalic.otf</string>
+		<string>SanFranciscoText-Italic.otf</string>
+		<string>SanFranciscoText-ItalicG1.otf</string>
+		<string>SanFranciscoText-ItalicG2.otf</string>
+		<string>SanFranciscoText-ItalicG3.otf</string>
+		<string>SanFranciscoText-Light.otf</string>
+		<string>SanFranciscoText-LightItalic.otf</string>
+		<string>SanFranciscoText-Medium.otf</string>
+		<string>SanFranciscoText-MediumItalic.otf</string>
+		<string>SanFranciscoText-Regular.otf</string>
+		<string>SanFranciscoText-RegularG1.otf</string>
+		<string>SanFranciscoText-RegularG2.otf</string>
+		<string>SanFranciscoText-RegularG3.otf</string>
+		<string>SanFranciscoText-Semibold.otf</string>
+		<string>SanFranciscoText-SemiboldItalic.otf</string>
+		<string>SanFranciscoText-Thin.otf</string>
+		<string>SanFranciscoText-ThinItalic.otf</string>
 	</array>
 </dict>
 </plist>
