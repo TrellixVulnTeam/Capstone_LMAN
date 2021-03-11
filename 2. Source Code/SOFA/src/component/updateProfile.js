@@ -427,15 +427,21 @@ export default class UpdateProfile extends Component{
                             />                     
                         </View>    
                         <View style={Style.updateProfile.updateItemSecond}>
-                            <Text style={Style.updateProfile.updateLabel}>Phone Number</Text>
-                            <TextInput defaultValue={account.phone}
+                            <Text style={Style.updateProfile.updateLabel}>Email</Text>
+                            <TouchableOpacity onPress={() => Alert.alert(
+                                                                'You can change mail in Account -> Update Privacy'
+                                                            )}>
+                            <TextInput defaultValue={account.email}    
+                                        editable = {false}                                   
+                                        selectTextOnFocus={false}
                                         keyboardType='numeric'
                                         onChangeText={text => { 
                                             account.phone = text;
                                             this.setState({ account: account });
                                         }}
                                         style={Style.updateProfile.updateInput}
-                            />                      
+                            />            
+                            </TouchableOpacity>          
                         </View>  
                         <View style={Style.updateProfile.buttonAll}>
                             <TouchableOpacity onPress={()=>this.props.navigation.goBack()} style={Style.updateProfile.appButtonContainer}>
