@@ -48,6 +48,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Thêm vào danh sách các mục đã lưu',
             onPress: () => {
                 console.log('save post', this.state.currentPostSelect.id);
+                this.setState({isShowMenu:false});
             }
         },
         {
@@ -57,6 +58,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Ẩn bài viết này khỏi newsfeed của bạn',
             onPress: () => {
                 console.log('hide post', this.state.currentPostSelect.id);
+                this.setState({isShowMenu:false});
             }
         },
         {
@@ -66,6 +68,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Tôi lo ngại về bài viết này',
             onPress: () => {
                 console.log('report post', this.state.currentPostSelect.id);
+                this.setState({isShowMenu:false});
             }
         },
         {
@@ -75,6 +78,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Xem những bài viết từ người này',
             onPress: () => {
                 console.log('follow user', this.state.currentPostSelect.id);
+                this.setState({isShowMenu:false});
             }
         },
         {
@@ -84,6 +88,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
                 console.log('report user', this.state.currentPostSelect.id);
+                this.setState({isShowMenu:false});
             }
         },
 
@@ -97,6 +102,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Thêm vào danh sách các mục đã lưu',
             onPress: () => {
                 console.log('save post', this.state.currentPostSelect.id);
+                this.setState({isShowMenu:false});
             }
         },
         {
@@ -106,6 +112,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Xóa bài viết này khỏi danh sách bài viết của bạn',
             onPress: () => {
                 console.log('delete post', this.state.currentPostSelect.id);
+                this.setState({isShowMenu:false});
                 this.deletePost(this.state.currentPostSelect.id);
             }
         },
@@ -116,6 +123,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Chỉnh sửa nội dung của bài viết',
             onPress: () => {
                 console.log('edit post', this.state.currentPostSelect.id);
+                this.setState({isShowMenu:false});
             }
         },
 
