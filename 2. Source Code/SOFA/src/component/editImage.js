@@ -99,8 +99,8 @@ export default class EditImage extends Component {
             temperature: 6500,
             exposure: 0,
             filePath: '',
-            index:0,
-            imageType:'',
+            index: 0,
+            imageType: '',
             currentPress: 'NoPreset',
         };
     }
@@ -201,13 +201,13 @@ export default class EditImage extends Component {
                 exposure: 0,
                 filePath: '',
             });
-            this.setState({ filePath: image.path, imageType:imageType, index:index });
+            this.setState({ filePath: image.path, imageType: imageType, index: index });
         });
     }
 
     render() {
         return (
-            <View style={{ backgroundColor: '#9E9E9E' }}>
+            <View style={styles.container}>
                 <Surface style={{ width, height: width }} ref={ref => (this.image = ref)}>
                     <ImageFilters {...this.state} width={width} height={width}>
                         {{ uri: this.state.filePath }}
@@ -218,25 +218,13 @@ export default class EditImage extends Component {
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={true}
                     horizontal
-                    style={{
-                        height: scale(90, Vertical),
-                        backgroundColor: 'white'
-                    }}
+                    style={styles.presetArea}
                 >
                     {this.presets.map(item =>
                         <TouchableNativeFeedback
                             onPress={() => this.setPreset(Presets[item])}
                         >
-                            <Surface style={{
-                                marginHorizontal: scale(5, Horizontal),
-                                marginVertical: scale(5, Vertical),
-                                width: scale(80, Horizontal),
-                                height: scale(80, Horizontal),
-                                borderTopLeftRadius: 25,
-                                borderTopRightRadius: 15,
-                                borderBottomRightRadius: 10,
-                                borderBottomLeftRadius: 15
-                            }}>
+                            <Surface style={styles.presetItem}>
                                 <ImageFilters {...Presets[item]} width={scale(70, Horizontal)} height={scale(70, Horizontal)}>
                                     {{ uri: this.state.filePath }}
                                 </ImageFilters>
@@ -247,7 +235,7 @@ export default class EditImage extends Component {
 
                 </ScrollView>
                 <ScrollView
-                    style={{ height: scale(230, Vertical) }}>
+                    style={styles.editArea}>
                     {settings.map(filter => (
                         <Filter
                             ref={this.sliderRef[filter.name]}
@@ -276,6 +264,22 @@ export default class EditImage extends Component {
 }
 
 const styles = StyleSheet.create({
+    container: { backgroundColor: '#9E9E9E' },
     content: { marginTop: 20, marginHorizontal: 20 },
     button: { marginVertical: 20, borderRadius: 0 },
+    presetArea: {
+        height: scale(90, Vertical),
+        backgroundColor: 'white'
+    },
+    presetItem: {
+        marginHorizontal: scale(5, Horizontal),
+        marginVertical: scale(5, Vertical),
+        width: scale(80, Horizontal),
+        height: scale(80, Horizontal),
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 15,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 15
+    },
+    editArea: { height: scale(230, Vertical) }
 });

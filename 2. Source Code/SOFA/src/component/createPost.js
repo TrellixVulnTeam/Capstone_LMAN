@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableWithoutFeedback } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { MenuProvider } from 'react-native-popup-menu';
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
-import LinearGradient from 'react-native-linear-gradient';
+import { View, Text, StatusBar, Image, Alert, FlatList, TouchableWithoutFeedback, StyleSheet, TextInput } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
-import { Rating, AirbnbRating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -15,20 +10,15 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
-import * as Utils from "../common/utils";
 import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
-import PostViewModel from '../Model/postViewModel';
 import { AVATAR, ADD_PRIMARY_IMAGE, BACKGROUND } from '../../image/index';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-crop-picker';
-
 
 export default class CreatePost extends Component {
     constructor(props) {
@@ -41,7 +31,8 @@ export default class CreatePost extends Component {
             listPrimaryImage: [],
             listShirtImage: [],
             listTrousersImage: [],
-            listAccessoriesImage: []
+            listAccessoriesImage: [],
+            isLoading:[],
         }
     }
     getData = async (key) => {
@@ -78,24 +69,73 @@ export default class CreatePost extends Component {
                     var uri = Const.domain + 'api/profile';
                     Request.Get(uri, header)
                         .then(response => {
+                            console.log(response);
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
 
                                 this.setState({ account: response, isLogin: true, token: token });
                             } else {
                                 this.setState({ account: {}, isLogin: false, token: '' });
-                                this.props.navigation.navigate('Newsfeed');
+                                Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
+                                    [
+                                        {
+                                            text: 'Đăng nhập',
+                                            onPress: () => this.props.navigation.navigate('Login')
+                                        },
+                                        {
+                                            text: 'Lần sau',
+                                            onPress: () => this.props.navigation.navigate('Newsfeed')
+                                        }
+                                    ]
+                                )
                             }
                         })
                         .catch(reason => {
                             this.setState({ account: {}, isLogin: false, token: '' });
-                            this.props.navigation.navigate('Newsfeed');
+                            Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
+                                [
+                                    {
+                                        text: 'Đăng nhập',
+                                        onPress: () => this.props.navigation.navigate('Login')
+                                    },
+                                    {
+                                        text: 'Lần sau',
+                                        onPress: () => this.props.navigation.navigate('Newsfeed')
+                                    }
+                                ]
+                            )
                         })
+                } else {
+                    Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
+                        [
+                            {
+                                text: 'Đăng nhập',
+                                onPress: () => this.props.navigation.navigate('Login')
+                            },
+                            {
+                                text: 'Lần sau',
+                                onPress: () => this.props.navigation.navigate('Newsfeed')
+                            }
+                        ]
+                    )
                 }
             })
             .catch(reason => {
                 this.setState({ token: '' });
                 console.log(reason);
-                this.props.navigation.navigate('Newsfeed');
+                Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
+                    [
+                        {
+                            text: 'Đăng nhập',
+                            onPress: () => this.props.navigation.navigate('Login'),
+                            style: 'default'
+                        },
+                        {
+                            text: 'Lần sau',
+                            onPress: () => this.props.navigation.navigate('Newsfeed'),
+                            style: 'cancel'
+                        }
+                    ]
+                )
             })
     }
 
@@ -126,7 +166,7 @@ export default class CreatePost extends Component {
         })
     }
 
-    removeIndex = (list = [], index) => {
+    removeIndex = (index, list = []) => {
         let listTemp = list;
         for (let i = index; i < listTemp.length; i++) {
             listTemp[i] = listTemp[i + 1];
@@ -137,9 +177,9 @@ export default class CreatePost extends Component {
 
     deleteImage = (imageType, index) => {
         if (imageType == 'primary') {
-            this.setState({ listPrimaryImage: this.removeIndex(this.state.listPrimaryImage, index) });
+            this.setState({ listPrimaryImage: this.removeIndex(index, this.state.listPrimaryImage) });
         } else if (imageType == 'shirt') {
-            this.setState({ listShirtImage: this.removeIndex(this.state.listShirtImage, index) });
+            this.setState({ listShirtImage: this.removeIndex(index, this.state.listShirtImage, index) });
         }
         else if (imageType == 'trousers') {
             this.setState({ listTrousersImage: this.removeIndex(this.state.listTrousersImage, index) });
@@ -203,7 +243,7 @@ export default class CreatePost extends Component {
     }
 
     postStatus = () => {
-        const { token, account, content, privacy, listPrimaryImage, listShirtImage, listTrousersImage, listAccessoriesImage } = this.state;
+        const { token, content, privacy, listPrimaryImage, listShirtImage, listTrousersImage, listAccessoriesImage } = this.state;
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             'Content-Type': 'multipart/form-data',
@@ -213,7 +253,6 @@ export default class CreatePost extends Component {
         let data = new FormData();
         data.append('content', content);
         data.append('PrivacyID', privacy);
-        let listImage = [];
         let count = 0;
         for (let i = 0; i < listPrimaryImage.length; i++) {
             data.append('ListImage[' + count + '].Image', listPrimaryImage[i].data);
@@ -240,7 +279,6 @@ export default class CreatePost extends Component {
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     if (response.listPost && response.listPost.length > 0) {
-                        let post = response.listPost[0];
                         this.props.navigation.dangerouslyGetParent().setOptions({
                             tabBarVisible: true
                         });
@@ -268,8 +306,14 @@ export default class CreatePost extends Component {
     }
 
     componentDidMount() {
+        this.checkLoginToken();
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.checkLoginToken();
+            this.props.navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible: false
+            });
+        });
+        this._screenFocus = this.props.navigation.addListener('blur', () => {
             this.props.navigation.dangerouslyGetParent().setOptions({
                 tabBarVisible: false
             });
@@ -298,32 +342,22 @@ export default class CreatePost extends Component {
             }
         ]
         return (
-            <View style={{ backgroundColor: 'white', flex: 1 }}>
+            <View style={styles().Container}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
-                <View style={{
-                    height: scale(50, Vertical),
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#9E9E9E',
-                    alignItems: 'center',
-                    flexDirection: 'row'
-                }}>
-                    <Ionicons onPress={() => this.props.navigation.goBack()} style={{ marginLeft: scale(15, Horizontal) }} name='close' size={40} color={'black'} />
-                    <Text style={{ marginLeft: 'auto' }}>Tạo bài viết</Text>
+                <View style={styles().Header}>
+                    <Ionicons
+                        onPress={() => this.props.navigation.goBack()}
+                        style={styles().IconClose}
+                        name='close' size={40} color={'black'} />
+                    <Text style={styles().HeaderText}>Tạo bài viết</Text>
 
-                    <View style={{
-                        marginLeft: 'auto',
-                        marginRight: scale(15, Horizontal),
-                        backgroundColor: (content.length > 0 || listPrimaryImage.length > 0) ? '#4489FF' : '#c1c1c1',
-                        borderRadius: 5,
-                        paddingVertical: scale(3, Vertical),
-                        paddingHorizontal: scale(10, Horizontal)
-                    }}>
+                    <View style={[styles().ButtonPost, listPrimaryImage.length > 0 && content.length > 0 ? styles().ButtonPostActiveColor : styles().ButtonPostInactiveColor]}>
                         <TouchableWithoutFeedback onPress={() => this.postStatus()}>
-                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Đăng</Text>
+                            <Text style={styles().ButtonPostText}>Đăng</Text>
                         </TouchableWithoutFeedback>
                     </View>
                 </View>
-                <View style={{ flexDirection: 'row', marginTop: scale(10, Vertical) }}>
+                <View style={styles().ArticleHeader}>
                     <TouchableWithoutFeedback
                         onPress={() => this.navigateProfile(account.accountID)}
                     >
@@ -340,7 +374,7 @@ export default class CreatePost extends Component {
                             defaultValue={3}
                             containerStyle={{ width: scale(150, Horizontal), height: scale(30, Vertical) }}
                             items={privacies}
-                            style={{ borderRadius: 5, borderColor: '#9E9E9E' }}
+                            style={styles().ArticlePrivacy}
                             onChangeItem={(item) => this.setState({ privacy: item.id })}
                         />
                     </View>
@@ -352,48 +386,27 @@ export default class CreatePost extends Component {
                     keyExtractor={(item, index) => index + ''}
                     renderItem={({ item, index }) => {
                         return (
-                            <View style={{
-                                marginLeft: scale(10, Horizontal),
-                            }}>
+                            <View style={styles().ArticleImageBounder}>
                                 <Image
-                                    style={{
-                                        width: scale(180, Horizontal),
-                                        height: scale(180, Horizontal),
-                                        resizeMode: 'stretch',
-                                        borderRadius: 10
-                                    }}
+                                    style={styles().ArticleImage}
                                     source={{ uri: 'data:image/png;base64,' + item.data }} />
                                 <TouchableWithoutFeedback
                                     onPress={() => this.editImage(item, index, 'primary')}
                                 >
                                     <View
-                                        style={{
-                                            position: 'absolute',
-                                            backgroundColor: 'rgba(255,255,255,0.6)',
-                                            borderRadius: 5,
-                                            top: scale(5, Vertical),
-                                            left: scale(5, Horizontal),
-                                            flexDirection: 'row'
-                                        }}>
-
+                                        style={styles().ArticleEditImage}>
                                         <FontAwesome5 name='edit' color='#5E5E5E' size={20} />
-                                        <Text style={{ marginLeft: scale(5, Horizontal) }}>Chỉnh sửa</Text>
+                                        <Text style={styles().ArticleEditImageText}>Chỉnh sửa</Text>
                                     </View>
                                 </TouchableWithoutFeedback>
                                 <TouchableWithoutFeedback
                                     onPress={() => this.deleteImage('primary', index)}
                                 >
                                     <View
-                                        style={{
-                                            position: 'absolute',
-                                            borderRadius: 5,
-                                            left: scale(150, Horizontal),
-                                        }}>
-
+                                        style={styles().ArticleDeleteImage}>
                                         <Ionicons name='close-circle' color='#5E5E5E' size={30} />
                                     </View>
                                 </TouchableWithoutFeedback>
-
                             </View>
                         )
                     }}
@@ -404,44 +417,30 @@ export default class CreatePost extends Component {
                                 onChangeText={(text) => this.setState({ content: text })}
                                 placeholder={'Hãy nói gì đó về phong cách này...'}
                                 value={content}
-                                style={{
-                                    backgroundColor: 'white',
-                                    borderColor: '#9E9E9E',
-                                    marginHorizontal: scale(10, Horizontal),
-                                    marginVertical: scale(10, Vertical),
-                                    borderRadius: 5
-                                }}
+                                style={styles().ArticleCaption}
                             />
                         </View>
                     )}
                 />
-                <View style={{
-                    backgroundColor: 'transparent',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    marginTop: 'auto',
-                    marginBottom: 0,
-                    height: scale(40, Vertical)
-                }}>
+                <View style={styles().ToolArea}>
                     <TouchableWithoutFeedback onPress={() => this.selectImage('primary')}>
                         <MaskedView
                             style={{ flex: 1 }}
                             maskElement={
-                                <FontAwesome5 style={{ marginLeft: 'auto', marginRight: 'auto' }} name='file-image' size={30} color={'black'} />
+                                <FontAwesome5 style={styles().IconTool} name='file-image' size={30} color={'black'} />
                             }
                         >
-                            <Image style={{ height: null, width: null, flex: 1, resizeMode: 'stretch' }} source={BACKGROUND} />
+                            <Image style={styles().ToolAreaBackground} source={BACKGROUND} />
                         </MaskedView>
                     </TouchableWithoutFeedback>
                     <TouchableWithoutFeedback onPress={() => this.takePicture('primary')}>
                         <MaskedView
                             style={{ flex: 1 }}
                             maskElement={
-                                <Entypo style={{ marginLeft: 'auto', marginRight: 'auto' }} name='camera' size={30} color={'black'} />
+                                <Entypo style={styles().IconTool} name='camera' size={30} color={'black'} />
                             }
                         >
-                            <Image style={{ height: null, width: null, flex: 1, resizeMode: 'stretch' }} source={BACKGROUND} />
+                            <Image style={styles().ToolAreaBackground} source={BACKGROUND} />
                         </MaskedView>
                     </TouchableWithoutFeedback>
                 </View>
@@ -449,3 +448,86 @@ export default class CreatePost extends Component {
         )
     }
 }
+
+const styles = (props) => StyleSheet.create({
+    Container: {
+        backgroundColor: 'white',
+        flex: 1
+    },
+    Header: {
+        height: scale(50, Vertical),
+        borderBottomWidth: 1,
+        borderBottomColor: '#9E9E9E',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    IconClose: { marginLeft: scale(15, Horizontal) },
+    HeaderText: { marginLeft: 'auto' },
+    ButtonPost: {
+        marginLeft: 'auto',
+        marginRight: scale(15, Horizontal),
+        borderRadius: 5,
+        paddingVertical: scale(3, Vertical),
+        paddingHorizontal: scale(10, Horizontal)
+    },
+    ButtonPostActiveColor: {
+        backgroundColor: '#4489FF'
+    },
+    ButtonPostInactiveColor: {
+        backgroundColor: '#c1c1c1'
+    },
+    ButtonPostText: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        color: 'white'
+    },
+    ArticleHeader: {
+        flexDirection: 'row',
+        marginTop: scale(10, Vertical)
+    },
+    ArticlePrivacy: {
+        borderRadius: 5,
+        borderColor: '#9E9E9E'
+    },
+    ArticleCaption: {
+        backgroundColor: 'white',
+        borderColor: '#9E9E9E',
+        marginHorizontal: scale(10, Horizontal),
+        marginVertical: scale(10, Vertical),
+        borderRadius: 5
+    },
+    ToolArea: {
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginTop: 'auto',
+        marginBottom: 0,
+        height: scale(40, Vertical)
+    },
+    ToolAreaBackground: { height: null, width: null, flex: 1, resizeMode: 'stretch' },
+    IconTool: { marginLeft: 'auto', marginRight: 'auto' },
+    ArticleImageBounder: {
+        marginLeft: scale(10, Horizontal),
+    },
+    ArticleImage: {
+        width: scale(180, Horizontal),
+        height: scale(180, Horizontal),
+        resizeMode: 'stretch',
+        borderRadius: 10
+    },
+    ArticleEditImage: {
+        position: 'absolute',
+        backgroundColor: 'rgba(255,255,255,0.6)',
+        borderRadius: 5,
+        top: scale(5, Vertical),
+        left: scale(5, Horizontal),
+        flexDirection: 'row'
+    },
+    ArticleEditImageText: { marginLeft: scale(5, Horizontal) },
+    ArticleDeleteImage: {
+        position: 'absolute',
+        borderRadius: 5,
+        left: scale(150, Horizontal),
+    },
+})

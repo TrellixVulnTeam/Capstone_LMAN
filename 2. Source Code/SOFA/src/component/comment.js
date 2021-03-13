@@ -1,10 +1,5 @@
-import React, { Component, createRef } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, Keyboard, TextInput, TouchableWithoutFeedback } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { MenuProvider } from 'react-native-popup-menu';
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
-import LinearGradient from 'react-native-linear-gradient';
-import { Rating, AirbnbRating } from 'react-native-ratings';
+import React, { Component } from 'react';
+import { View, Text, StatusBar,  Image, Alert, FlatList, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -13,16 +8,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
-import * as Utils from "../common/utils";
 import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
-import { color } from 'react-native-reanimated';
-import PostViewModel from '../Model/postViewModel';
 import { AVATAR } from '../../image/index';
 
 export default class Newsfeed extends Component {
@@ -194,7 +185,7 @@ export default class Newsfeed extends Component {
     }
 
     navigateProfile(accountID) {
-        const { account, isLogin, token } = this.state;
+        const { account } = this.state;
         if (account && account.accountID && account.accountID == accountID) {
             this.props.navigation.navigate('Profile');
         } else {
@@ -204,7 +195,7 @@ export default class Newsfeed extends Component {
 
 
     render() {
-        const { account, listComment, isKeyBoardShow, keyboardHeight, commentText } = this.state;
+        const { listComment, commentText } = this.state;
         return (
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
@@ -213,24 +204,20 @@ export default class Newsfeed extends Component {
                     keyExtractor={(item, index) => item.id + ''}
                     renderItem={({ item }) => {
                         return (
-                            <View style={{ marginLeft: scale(10, Horizontal), marginBottom: scale(5, Vertical) }}>
-                                <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
+                            <View style={styles.CommentItemBounder}>
+                                <View style={styles.CommentItem}>
                                     <TouchableWithoutFeedback
                                         onPress={() => this.navigateProfile(item.accountID)}
                                     >
                                         <Image
-                                            style={{
-                                                width: scale(40, Horizontal),
-                                                height: scale(40, Horizontal),
-                                                borderRadius: 50
-                                            }}
+                                            style={styles.CommentAvatar}
                                             source={item.avatar && item.avatar.length > 0 ? { uri: Const.assets_domain + item.avatar } : { AVATAR }} />
                                     </TouchableWithoutFeedback>
                                     <Text
-                                        style={{ fontWeight: 'bold', marginLeft: scale(10, Horizontal) }}
+                                        style={styles.CommentAuthor}
                                         onPress={() => this.navigateProfile(item.accountID)}>{item.firstName + " " + item.lastName}
                                     </Text>
-                                    <Text style={{ marginLeft: scale(5, Horizontal) }}>{item.content}</Text>
+                                    <Text style={styles.CommentContent}>{item.content}</Text>
 
                                 </View>
                             </View>
@@ -247,12 +234,34 @@ export default class Newsfeed extends Component {
                         returnKeyLabel={'Gửi'}
                         returnKeyType={'send'}
                         placeholder={'Bình luận'}
-                        style={{
-                            backgroundColor: 'white',
-                            borderRadius: 10
-                        }} />
+                        style={styles.CommentTextBox} />
                 </View>
             </View>
         )
     }
 }
+const styles = StyleSheet.create({
+    CommentItemBounder: {
+        marginLeft: scale(10, Horizontal),
+        marginBottom: scale(5, Vertical)
+    },
+    CommentItem: {
+        flexDirection: 'row',
+        alignContent: 'center',
+        alignItems: 'center'
+    },
+    CommentAvatar: {
+        width: scale(40, Horizontal),
+        height: scale(40, Horizontal),
+        borderRadius: 50
+    },
+    CommentAuthor: {
+        fontWeight: 'bold',
+        marginLeft: scale(10, Horizontal)
+    },
+    CommentContent: { marginLeft: scale(5, Horizontal) },
+    CommentTextBox: {
+        backgroundColor: 'white',
+        borderRadius: 10
+    },
+})

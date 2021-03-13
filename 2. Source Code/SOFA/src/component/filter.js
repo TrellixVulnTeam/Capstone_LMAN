@@ -17,24 +17,14 @@ export default class Filter extends Component {
         const { currentValue } = this.state;
         return (
             <View style={styles.container}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={styles.sliderHeader}>
                     <Text style={styles.text}>{name}</Text>
                     <Text
-                        style={{
-                            width: scale(50, Horizontal),
-                            backgroundColor: 'white',
-                            marginLeft: 'auto',
-                            marginRight: scale(40, Horizontal),
-                            marginTop: scale(5, Vertical),
-                            borderRadius: 10,
-                            textAlign: 'center',
-                            textAlignVertical: 'center'
-
-                        }}
+                        style={styles.currentValue}
                     >{currentValue + ""}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ color: 'white', width: scale(33, Horizontal), textAlign: 'right' }}>{minimum}</Text>
+                <View style={styles.sliderView}>
+                    <Text style={styles.sliderMinimumText}>{minimum}</Text>
                     <Slider
                         style={styles.slider}
                         minimumValue={minimum}
@@ -49,7 +39,7 @@ export default class Filter extends Component {
                         minimumTrackTintColor="#FFFFFF"
                         maximumTrackTintColor="#000000"
                     />
-                    <Text style={{ color: 'white', width: scale(45, Horizontal) }}>{maximum}</Text>
+                    <Text style={styles.sliderMaximumText}>{maximum}</Text>
                 </View>
 
             </View>
@@ -72,4 +62,32 @@ const styles = StyleSheet.create({
         width: scale(310, Horizontal),
         height: scale(40, Vertical),
     },
+    sliderHeader: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    currentValue: {
+        width: scale(50, Horizontal),
+        backgroundColor: 'white',
+        marginLeft: 'auto',
+        marginRight: scale(40, Horizontal),
+        marginTop: scale(5, Vertical),
+        borderRadius: 10,
+        textAlign: 'center',
+        textAlignVertical: 'center'
+    },
+    sliderView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    sliderMinimumText: {
+        color: 'white',
+        width: scale(33, Horizontal),
+        textAlign: 'right'
+    },
+    sliderMaximumText: {
+        color: 'white',
+        width: scale(45, Horizontal)
+    }
 });

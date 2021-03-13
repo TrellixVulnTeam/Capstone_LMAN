@@ -125,7 +125,7 @@ export const newsfeed = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center'
   },
-  SofaTitle= {
+  SofaTitle: {
     fontFamily: '20db',
     fontSize: 30,
     color: '#fef4ca'
