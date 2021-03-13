@@ -42,6 +42,7 @@ export default class Notification extends Component{
     render(){
         return (
             <View>
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <Text>Notification</Text>
             </View>
         )

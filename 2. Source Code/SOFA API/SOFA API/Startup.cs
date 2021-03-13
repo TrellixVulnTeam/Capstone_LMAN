@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using SOFA_API.Hubs;
 
 namespace SOFA_API
 {
@@ -43,12 +45,28 @@ namespace SOFA_API
                         ValidAudience = Configuration["JWT:Audience"],
                         IssuerSigningKey = symmetricSecurityKey
                     };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/message")))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
             services.AddCors(option =>
             {
                 option.AddPolicy("AllowOrigin", builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
             });
             services.AddControllers();
+
+            services.AddSignalR();
+            services.AddSingleton<IUserIdProvider, UserProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -65,6 +83,7 @@ namespace SOFA_API
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<MessageHub>("/message");
                 endpoints.MapControllers();
             });
         }

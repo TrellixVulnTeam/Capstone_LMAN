@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView} from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -24,7 +24,7 @@ import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON, MORE_ICON
 import { TextInput } from 'react-native-gesture-handler';
 import { acc } from 'react-native-reanimated';
 
-export default class Profile extends Component{
+export default class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -33,7 +33,7 @@ export default class Profile extends Component{
             avatarUri: '',
             token: '',
             listImageAll: []
-        
+
         }
     }
     getData = async (key) => {
@@ -58,87 +58,87 @@ export default class Profile extends Component{
     }
 
     getProfile() {
-        const AccountID = this.props.route.params; 
-        console.log('Get Profile');     
-        
-                var header = {
-                    "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                    "Accept": 'application/json',
-                };
-                let url = Const.domain + 'api/profile/otherprofile?id=' + AccountID.accountID;
-                Request.Get(url, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                console.log(response);
-                                this.setState({ account: response });
-                                this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
-                            } else {
-                                this.props.navigation.navigate('Login')
-                            }
-                        })
-                        .catch(reason => {
-                            console.log(reason);
-                            this.props.navigation.navigate('Login')
+        const AccountID = this.props.route.params;
+        console.log('Get Profile');
 
-                });
-            
-    }
-
-    getListImage() {   
-        const AccountID = this.props.route.params; 
-        console.log('Get Image');   
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json',
-            };
-        let url = Const.domain + 'api/post/getuserpublicpost?accountPost='+ AccountID.accountID;
+        };
+        let url = Const.domain + 'api/profile/otherprofile?id=' + AccountID.accountID;
         Request.Get(url, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    let listPost = response.listPost ;
+                    console.log(response);
+                    this.setState({ account: response });
+                    this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
+                } else {
+                    this.props.navigation.navigate('Login')
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                this.props.navigation.navigate('Login')
+
+            });
+
+    }
+
+    getListImage() {
+        const AccountID = this.props.route.params;
+        console.log('Get Image');
+        var header = {
+            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+            "Accept": 'application/json',
+        };
+        let url = Const.domain + 'api/post/getuserpublicpost?accountPost=' + AccountID.accountID;
+        Request.Get(url, header)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    let listPost = response.listPost;
                     let listImageAll = [];
                     for (let i = 0; i < listPost.length; i++) {
                         listImageAll.push(listPost[i].listImage[0]);
                         console.log(Const.assets_domain + listPost[i].listImage[0].url + '?time=' + new Date())
                     }
                     this.setState({ listImageAll: listImageAll });
-                    console.log(this.state.listImageAll);                                                             
+                    console.log(this.state.listImageAll);
                 } else {
                     this.props.navigation.navigate('Login')
                 }
-                })
-                .catch(reason => {
-                    console.log(reason);
-                    this.props.navigation.navigate('Login')
-                });        
-            
+            })
+            .catch(reason => {
+                console.log(reason);
+                this.props.navigation.navigate('Login')
+            });
+
     }
 
-    formatBirthday(dob){
+    formatBirthday(dob) {
         let today = new Date(dob);
-        let date=today.getDate() + "/"+ parseInt(today.getMonth()+1) +"/"+today.getFullYear();
+        let date = today.getDate() + "/" + parseInt(today.getMonth() + 1) + "/" + today.getFullYear();
         return date;
     }
 
-    formatGender(gender){
+    formatGender(gender) {
         let sex = "Nam";
-        if(gender != true){
+        if (gender != true) {
             sex = "Nữ";
         }
         return sex;
     }
 
-    onPressFollow(){
+    onPressFollow() {
         console.log('Press Follow');
     }
-    onPressBlock(){
+    onPressBlock() {
         console.log('Press Block');
     }
-    onPressMessage(){
+    onPressMessage() {
         console.log('Press Message');
     }
 
-    logout(){
+    logout() {
         AsyncStorage.removeItem('token');
         this.props.navigation.navigate('Login');
     }
@@ -147,9 +147,9 @@ export default class Profile extends Component{
         //this._unsubcribe();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-        
+
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
             const AccountID = this.props.route.params;
             console.log(AccountID.accountID);
@@ -159,95 +159,96 @@ export default class Profile extends Component{
         });
     }
 
-    render(){
-        const { account, avatarUri} = this.state;
+    render() {
+        const { account, avatarUri } = this.state;
         return (
             <ScrollView>
-            <View>
-                <StatusBar hidden={false} backgroundColor='#fbb897' />
-                <LinearGradient colors={['#fbb897','#ff8683']}>
-                    <View style={Style.profile.firstHeader}>
-                        <View style={{flexDirection: 'row',
-                                    width: Utils.scale(400, Const.Horizontal),
-                                    }}>                                                               
-                            <Image 
-                                source={avatarUri ? { uri: avatarUri } : AVATAR}
-                                resizeMode={"cover"}
-                                style={Style.profile.image} />
-                           
-                           <Entypo name='dots-three-vertical' size={30} color={'white'} style={{
-                               marginRight: Utils.scale(15, Const.Horizontal),
-                               marginLeft: 'auto'
-                           }} />
-                        </View>                                                 
-                        <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
-                        <Text style={Style.profile.email}>{account.email}</Text>
-                        <View style={Style.profile.basicInfo}>
-                            <Text style={Style.profile.basicSmallInfo}>{account.postNumber}{"\n"}Posts</Text>
-                            <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
+                <View>
+                    <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
+                    <LinearGradient colors={['#fbb897', '#ff8683']}>
+                        <View style={Style.profile.firstHeader}>
+                            <View style={{
+                                flexDirection: 'row',
+                                width: Utils.scale(400, Const.Horizontal),
+                            }}>
+                                <Image
+                                    source={avatarUri ? { uri: avatarUri } : AVATAR}
+                                    resizeMode={"cover"}
+                                    style={Style.profile.image} />
+
+                                <Entypo name='dots-three-vertical' size={30} color={'white'} style={{
+                                    marginRight: Utils.scale(15, Const.Horizontal),
+                                    marginLeft: 'auto'
+                                }} />
+                            </View>
+                            <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
+                            <Text style={Style.profile.email}>{account.email}</Text>
+                            <View style={Style.profile.basicInfo}>
+                                <Text style={Style.profile.basicSmallInfo}>{account.postNumber}{"\n"}Posts</Text>
+                                <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
+                            </View>
+                            <View style={Style.profile.button}>
+                                <Button style={Style.profile.singleButton} color='#ff7878' onPress={() => this.onPressFollow()} title="Follow" />
+                                <View style={{ flex: 0.2 }}></View>
+                                <Button style={Style.profile.singleButton} color='#ff7878' title="Message" onPress={() => this.onPressMessage()} />
+                            </View>
                         </View>
-                        <View style={Style.profile.button}>
-                            <Button style={Style.profile.singleButton} color= '#ff7878' onPress = {() => this.onPressFollow()} title="Follow"/>
-                            <View style={{flex: 0.2}}></View>
-                            <Button style={Style.profile.singleButton} color= '#ff7878' title="Message" onPress={() => this.onPressMessage()} />
-                        </View>
+                    </LinearGradient>
+                    <View style={Style.profile.information}>
+                        <Image source={ADDRESS_ICON} style={Style.profile.info_icon} />
+                        <Text style={Style.profile.info_text}>
+                            Đến từ <Text style={{ fontWeight: "bold" }}>
+                                {account.address}
+                            </Text>
+                        </Text>
                     </View>
-                </LinearGradient>                       
-                <View style={Style.profile.information}>    
-                    <Image source={ADDRESS_ICON} style={Style.profile.info_icon} />                   
-                    <Text style={Style.profile.info_text}>
-                        Đến từ <Text style={{fontWeight: "bold"}}>
-                            {account.address}
-                        </Text>                       
-                    </Text>                   
-                </View>
-                <View style={Style.profile.information}>    
-                    <Image source={BIRTHDAY_ICON} style={Style.profile.info_icon} />                   
-                    <Text style={Style.profile.info_text}>
-                        Ngày sinh <Text style={{fontWeight: "bold"}}>
-                            {this.formatBirthday(account.dob)}
-                        </Text>                       
-                    </Text>                   
-                </View>
-                <View style={Style.profile.information}>    
-                    <Image source={PHONE_ICON} style={Style.profile.info_icon} />                   
-                    <Text style={Style.profile.info_text}>
-                        Điện thoại <Text style={{fontWeight: "bold"}}>
-                            {account.phone}
-                        </Text>                       
-                    </Text>                   
-                </View>
-                <View style={Style.profile.information}>    
-                    <Image source={GENDER_ICON} style={Style.profile.info_icon} />                   
-                    <Text style={Style.profile.info_text}>
-                        Giới tính <Text style={{fontWeight: "bold"}}>
-                            {this.formatGender(account.gender)}
-                        </Text>                       
-                    </Text>                   
-                </View>
-                <View style={Style.profile.line}/>
-                <View style={{
-                    alignSelf: 'center',
-                    marginTop: Utils.scale(10, Const.Vertical),
+                    <View style={Style.profile.information}>
+                        <Image source={BIRTHDAY_ICON} style={Style.profile.info_icon} />
+                        <Text style={Style.profile.info_text}>
+                            Ngày sinh <Text style={{ fontWeight: "bold" }}>
+                                {this.formatBirthday(account.dob)}
+                            </Text>
+                        </Text>
+                    </View>
+                    <View style={Style.profile.information}>
+                        <Image source={PHONE_ICON} style={Style.profile.info_icon} />
+                        <Text style={Style.profile.info_text}>
+                            Điện thoại <Text style={{ fontWeight: "bold" }}>
+                                {account.phone}
+                            </Text>
+                        </Text>
+                    </View>
+                    <View style={Style.profile.information}>
+                        <Image source={GENDER_ICON} style={Style.profile.info_icon} />
+                        <Text style={Style.profile.info_text}>
+                            Giới tính <Text style={{ fontWeight: "bold" }}>
+                                {this.formatGender(account.gender)}
+                            </Text>
+                        </Text>
+                    </View>
+                    <View style={Style.profile.line} />
+                    <View style={{
+                        alignSelf: 'center',
+                        marginTop: Utils.scale(10, Const.Vertical),
                     }}>
-                <FlatList
-                    data={this.state.listImageAll}
-                    scrollEnabled={false}
-                    numColumns={3}
-                    keyExtractor={(item) => item.id + ''}
-                    renderItem={({ item }) => (<Image 
-                        style={{
-                            height: Utils.scale(100, Const.Vertical),
-                            width: Utils.scale(100, Const.Vertical),
-                            borderWidth: 1.5,
-                            borderColor: '#EA2338',
-                        }}
-                        source={{uri: Const.assets_domain + item.url + '?time=' + new Date()}} 
-                        />)
-                      }
-                />
-                </View>                                
-            </View>
+                        <FlatList
+                            data={this.state.listImageAll}
+                            scrollEnabled={false}
+                            numColumns={3}
+                            keyExtractor={(item) => item.id + ''}
+                            renderItem={({ item }) => (<Image
+                                style={{
+                                    height: Utils.scale(100, Const.Vertical),
+                                    width: Utils.scale(100, Const.Vertical),
+                                    borderWidth: 1.5,
+                                    borderColor: '#EA2338',
+                                }}
+                                source={{ uri: Const.assets_domain + item.url + '?time=' + new Date() }}
+                            />)
+                            }
+                        />
+                    </View>
+                </View>
             </ScrollView>
         )
     }

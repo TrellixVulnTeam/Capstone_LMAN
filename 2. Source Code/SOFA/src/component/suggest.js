@@ -42,6 +42,7 @@ export default class Suggest extends Component {
     render() {
         return (
             <View>
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <Text>Suggest</Text>
             </View>
         )

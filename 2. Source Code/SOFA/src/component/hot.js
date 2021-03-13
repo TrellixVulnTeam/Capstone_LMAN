@@ -12,7 +12,7 @@ import * as Style from '../style/style';
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
 
-export default class Hot extends Component{
+export default class Hot extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -39,9 +39,10 @@ export default class Hot extends Component{
         }
     }
 
-    render(){
+    render() {
         return (
             <View>
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <Text>Hot</Text>
             </View>
         )

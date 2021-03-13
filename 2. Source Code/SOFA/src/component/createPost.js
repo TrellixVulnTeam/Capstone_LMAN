@@ -299,7 +299,7 @@ export default class CreatePost extends Component {
         ]
         return (
             <View style={{ backgroundColor: 'white', flex: 1 }}>
-                <StatusBar hidden={false} backgroundColor={'#FFF5F1'} />
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <View style={{
                     height: scale(50, Vertical),
                     borderBottomWidth: 1,

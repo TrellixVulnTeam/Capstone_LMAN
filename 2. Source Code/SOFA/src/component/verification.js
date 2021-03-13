@@ -76,6 +76,7 @@ export default class Verification extends Component {
     return (
 
       <View style={[Style.verification.container]}>
+        <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
         <Image source={USER_ICON} style={[Style.verification.logo]} />
 
         <View style={[Style.verification.content]}>

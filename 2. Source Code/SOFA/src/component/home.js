@@ -288,7 +288,7 @@ export default class Home extends Component {
 
         return (
             <View style={[Style.common.container]}>
-                <StatusBar hidden={false} backgroundColor='orange' />
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <View style={Style.common.header}>
                     <Text style={Style.common.labelTitle}>Home Screen</Text>
                 </View>

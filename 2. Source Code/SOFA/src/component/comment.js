@@ -207,7 +207,7 @@ export default class Newsfeed extends Component {
         const { account, listComment, isKeyBoardShow, keyboardHeight, commentText } = this.state;
         return (
             <View style={Style.common.container}>
-                <StatusBar hidden={false} backgroundColor={'#300808'} />
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <FlatList
                     data={listComment}
                     keyExtractor={(item, index) => item.id + ''}

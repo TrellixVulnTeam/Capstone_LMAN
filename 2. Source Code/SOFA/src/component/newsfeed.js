@@ -1,8 +1,6 @@
-import React, { Component, createRef } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, FlatList, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
-
-import LinearGradient from 'react-native-linear-gradient';
-import { Rating, AirbnbRating } from 'react-native-ratings';
+import React, { Component } from 'react';
+import { View, Text, StatusBar, Image, TouchableHighlight, Alert, FlatList, TouchableWithoutFeedback, Modal } from 'react-native';
+import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -22,7 +20,6 @@ import * as Utils from "../common/utils";
 import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
-import PostViewModel from '../Model/postViewModel';
 import { AVATAR } from '../../image/index';
 
 export default class Newsfeed extends Component {
@@ -48,7 +45,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Thêm vào danh sách các mục đã lưu',
             onPress: () => {
                 console.log('save post', this.state.currentPostSelect.id);
-                this.setState({isShowMenu:false});
+                this.setState({ isShowMenu: false });
             }
         },
         {
@@ -58,7 +55,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Ẩn bài viết này khỏi newsfeed của bạn',
             onPress: () => {
                 console.log('hide post', this.state.currentPostSelect.id);
-                this.setState({isShowMenu:false});
+                this.setState({ isShowMenu: false });
             }
         },
         {
@@ -68,7 +65,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Tôi lo ngại về bài viết này',
             onPress: () => {
                 console.log('report post', this.state.currentPostSelect.id);
-                this.setState({isShowMenu:false});
+                this.setState({ isShowMenu: false });
             }
         },
         {
@@ -78,7 +75,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Xem những bài viết từ người này',
             onPress: () => {
                 console.log('follow user', this.state.currentPostSelect.id);
-                this.setState({isShowMenu:false});
+                this.setState({ isShowMenu: false });
             }
         },
         {
@@ -88,7 +85,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
                 console.log('report user', this.state.currentPostSelect.id);
-                this.setState({isShowMenu:false});
+                this.setState({ isShowMenu: false });
             }
         },
 
@@ -102,7 +99,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Thêm vào danh sách các mục đã lưu',
             onPress: () => {
                 console.log('save post', this.state.currentPostSelect.id);
-                this.setState({isShowMenu:false});
+                this.setState({ isShowMenu: false });
             }
         },
         {
@@ -112,7 +109,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Xóa bài viết này khỏi danh sách bài viết của bạn',
             onPress: () => {
                 console.log('delete post', this.state.currentPostSelect.id);
-                this.setState({isShowMenu:false});
+                this.setState({ isShowMenu: false });
                 this.deletePost(this.state.currentPostSelect.id);
             }
         },
@@ -123,7 +120,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Chỉnh sửa nội dung của bài viết',
             onPress: () => {
                 console.log('edit post', this.state.currentPostSelect.id);
-                this.setState({isShowMenu:false});
+                this.setState({ isShowMenu: false });
             }
         },
 
@@ -244,7 +241,7 @@ export default class Newsfeed extends Component {
         for (let i = 0; i < listPost.length; i++) {
             if (!flag && listPost[i].id == postID) {
                 flag = true;
-            };
+            }
             if (flag) {
                 listPost[i] = listPost[i + 1];
             }
@@ -385,30 +382,12 @@ export default class Newsfeed extends Component {
     }
 
     navigateProfile(accountID) {
-        const { account, isLogin, token } = this.state;
+        const { account } = this.state;
         if (account && account.accountID && account.accountID == accountID) {
             this.props.navigation.navigate('Profile');
         } else {
             this.props.navigation.navigate('OtherProfile', { 'accountID': accountID });
         }
-    }
-
-    ArticleMenu = (props) => {
-        const { isShowMenu, currentPostID } = this.state;
-        return (
-            <View>
-                { isShowMenu ? (
-                    <View style={{
-                        width: scale(400, Horizontal),
-                        height: scale(500, Vertical),
-                        position: 'absolute',
-                        backgroundColor: 'white'
-                        //bottom: scale(700, Vertical)
-                    }}>
-                        <Text>{currentPostID}</Text>
-                    </View>) : (<View></View>)}
-            </View>
-        )
     }
 
     Article = ({ data }) => {
@@ -417,7 +396,7 @@ export default class Newsfeed extends Component {
             <View
                 style={Style.newsfeed.Article}
             >
-                <View style={{ flexDirection: 'row' }}>
+                <View style={Style.common.flexRow}>
                     <TouchableWithoutFeedback
                         onPress={() => this.navigateProfile(post.accountPost)}
                     >
@@ -430,7 +409,7 @@ export default class Newsfeed extends Component {
                         <Text
                             onPress={() => this.navigateProfile(post.accountPost)}
                             style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
-                        <Text style={{ fontFamily: 'SanFranciscoText-Regular' }}>{Utils.calculateTime(post.time)}</Text>
+                        <Text style={Style.newsfeed.ArticleTime}>{Utils.calculateTime(post.time)}</Text>
                     </View>
                     <MaterialCommunityIcons
                         onPress={() => {
@@ -468,15 +447,15 @@ export default class Newsfeed extends Component {
                             name={post.isLiked ? 'heart' : 'heart-outline'}
                             size={30}
                             color={post.isLiked ? '#dc3f1c' : '#232323'} />
-                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.numberOfLike}</Text>
+                        <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.numberOfLike}</Text>
                         <FontAwesome5
                             onPress={() => this.onPressCommentIcon(post)}
-                            style={{ marginLeft: scale(10, Horizontal) }}
+                            style={Style.newsfeed.ArticleIconOfReact}
                             name='comment-dots' size={30}
                             color={'#232323'} />
-                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.numberOfComment}</Text>
+                        <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.numberOfComment}</Text>
                         <Rating
-                            style={{ marginLeft: scale(10, Horizontal) }}
+                            style={Style.newsfeed.ArticleIconOfReact}
                             ratingCount={5}
                             imageSize={30}
                             type='custom'
@@ -487,11 +466,11 @@ export default class Newsfeed extends Component {
                             onFinishRating={(rating) => this.ratingCompleted(post, rating)}
                             startingValue={post.myRatePoint}
                         />
-                        <Text style={{ marginLeft: scale(5, Horizontal), marginTop: scale(5, Horizontal) }}>{post.rateAverage + '/5'}</Text>
+                        <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.rateAverage + '/5'}</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', marginTop: scale(5, Vertical) }}>
+                    <View style={Style.newsfeed.ArticleCaption}>
                         <Text style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
-                        <Text style={{ fontSize: 14, textAlignVertical: 'center', marginLeft: scale(5, Horizontal) }}>{post.content}</Text>
+                        <Text style={Style.newsfeed.ArticleCaptionContent}>{post.content}</Text>
                     </View>
                 </View>
             </View>
@@ -502,27 +481,20 @@ export default class Newsfeed extends Component {
         const { isShowMenu, listPost, account, currentPostSelect } = this.state;
         return (
             <View style={Style.common.container}>
-                <StatusBar hidden={false} backgroundColor={'#300808'} />
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <View style={[Style.newsfeed.Header]}>
-                    <Text style={{ fontFamily: '20db', fontSize: 30, color: '#fef4ca' }}>SOFA</Text>
+                    <Text style={Style.newsfeed.SofaTitle}>SOFA</Text>
                     <Ionicons
-                        style={{
-                            marginLeft: 'auto',
-                            marginRight: scale(5, Horizontal)
-                        }}
+                        style={Style.newsfeed.searchIcon}
                         name={'search-outline'} color={'#fef4ca'} size={30} />
                     <Ionicons
-                        style={{
-                            marginRight: scale(5, Horizontal)
-                        }}
+                        style={Style.newsfeed.notificationIcon}
                         name={'notifications'} color={'#fef4ca'} size={30} />
                     <MaterialCommunityIcons
-                        style={{
-                            marginRight: scale(5, Horizontal)
-                        }}
+                        style={Style.newsfeed.notificationIcon}
                         name={'message-text-outline'} color={'#fef4ca'} size={30} />
                 </View>
-                <View style={{ height: scale(625, Vertical) }}>
+                <View style={Style.newsfeed.listArticle}>
                     <FlatList
                         data={listPost}
                         keyExtractor={(item, index) => item.id + ''}
@@ -536,15 +508,7 @@ export default class Newsfeed extends Component {
                             this.setState({ isShowMenu: false });
                         }}
                     >
-                        <View style={{
-                            width: scale(400, Horizontal),
-                            position: 'absolute',
-                            backgroundColor: 'white',
-                            borderTopLeftRadius: 20,
-                            borderTopRightRadius: 20,
-                            bottom: scale(0, Vertical),
-                            elevation: 5
-                        }}>
+                        <View style={Style.newsfeed.articleMenu}>
                             {account.accountID != currentPostSelect.accountPost ?
                                 this.actionArticleNotOwn.map(item =>
                                     <TouchableHighlight
@@ -553,18 +517,11 @@ export default class Newsfeed extends Component {
                                         underlayColor={'#9E9E9E'}
                                     >
                                         <View
-                                            style={{
-                                                flexDirection: 'row',
-                                                height: scale(50, Vertical),
-                                                borderBottomColor: '#9E9E9E',
-                                                borderBottomWidth: 0.5,
-                                                alignItems: 'center',
-                                                paddingLeft: scale(20, Horizontal)
-                                            }}>
+                                            style={Style.newsfeed.articleMenuItem}>
                                             {item.icon()}
-                                            <View style={{ marginLeft: scale(10, Horizontal) }} >
+                                            <View style={Style.newsfeed.articleMenuItemText} >
                                                 <Text>{item.title()}</Text>
-                                                <Text style={{ color: '#9E9E9E' }}>{item.detail()}</Text>
+                                                <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
                                             </View>
                                         </View>
                                     </TouchableHighlight>
@@ -576,18 +533,11 @@ export default class Newsfeed extends Component {
                                         underlayColor={'#9E9E9E'}
                                     >
                                         <View
-                                            style={{
-                                                flexDirection: 'row',
-                                                height: scale(50, Vertical),
-                                                borderBottomColor: '#9E9E9E',
-                                                borderBottomWidth: 0.5,
-                                                alignItems: 'center',
-                                                paddingLeft: scale(20, Horizontal)
-                                            }}>
+                                            style={Style.newsfeed.articleMenuItem}>
                                             {item.icon()}
-                                            <View style={{ marginLeft: scale(10, Horizontal) }} >
+                                            <View style={Style.newsfeed.articleMenuItemText} >
                                                 <Text>{item.title()}</Text>
-                                                <Text style={{ color: '#9E9E9E' }}>{item.detail()}</Text>
+                                                <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
                                             </View>
                                         </View>
                                     </TouchableHighlight>
