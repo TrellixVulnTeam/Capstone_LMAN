@@ -204,14 +204,15 @@ export const newsfeed = StyleSheet.create({
 
   },
   ArticleImageStyle: {
-    height: scale(400, Horizontal),
-    width: scale(400, Horizontal),
+
   },
   ArticleImage: {
     flex: 1,
-    height: null,
-    width: null,
-    resizeMode: 'stretch',
+    // height: null,
+    // width: null,
+    height: scale(534, Vertical),
+    width: scale(400, Horizontal),
+    resizeMode: 'cover',
     // borderTopLeftRadius: 5,
     // borderBottomLeftRadius: 5,
   },
@@ -229,7 +230,12 @@ export const newsfeed = StyleSheet.create({
   },
   ArticleIconOfReact: { marginLeft: scale(10, Horizontal) },
   ArticleCaption: { flexDirection: 'row', marginTop: scale(5, Vertical) },
-  ArticleCaptionContent: { fontSize: 14, textAlignVertical: 'center', marginLeft: scale(5, Horizontal) },
+  ArticleCaptionContent: {
+    fontSize: 14,
+    textAlignVertical: 'center',
+    marginLeft: scale(5, Horizontal),
+    marginRight: scale(10, Horizontal)
+  },
 });
 export const balance = StyleSheet.create({
   main: {

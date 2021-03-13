@@ -390,6 +390,10 @@ export default class Newsfeed extends Component {
         }
     }
 
+    onPressImage(post, image) {
+        this.props.navigation.navigate('ViewImage', { 'post': post, 'image': image });
+    }
+
     Article = ({ data }) => {
         let post = data;
         return (
@@ -420,7 +424,11 @@ export default class Newsfeed extends Component {
                         name='dots-horizontal' size={30} color={'black'} />
 
                 </View>
+                <View style={Style.newsfeed.ArticleCaption}>
+                    <Text style={Style.newsfeed.ArticleCaptionContent}>{post.content}</Text>
+                </View>
                 <View style={Style.newsfeed.ArticleImageList}>
+
                     <FlatList
                         contentContainerStyle={{ alignSelf: 'flex-start' }}
                         showsVerticalScrollIndicator={false}
@@ -431,14 +439,19 @@ export default class Newsfeed extends Component {
                         pagingEnabled={true}
                         renderItem={({ item }) => {
                             return (
-                                <View style={Style.newsfeed.ArticleImageStyle}>
-                                    <Image
-                                        style={Style.newsfeed.ArticleImage}
-                                        source={{ uri: Const.assets_domain + item.url }} />
-                                </View>
+                                <TouchableWithoutFeedback
+                                    onPress={() => this.onPressImage(post, item)}
+                                >
+                                    <View style={Style.newsfeed.ArticleImageStyle}>
+                                        <Image
+                                            style={Style.newsfeed.ArticleImage}
+                                            source={{ uri: Const.assets_domain + item.url }} />
+                                    </View>
+                                </TouchableWithoutFeedback>
                             )
                         }}
                     />
+
                 </View>
                 <View style={Style.newsfeed.ArtileMore}>
                     <View style={Style.newsfeed.ArticleAction}>
@@ -467,10 +480,6 @@ export default class Newsfeed extends Component {
                             startingValue={post.myRatePoint}
                         />
                         <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.rateAverage + '/5'}</Text>
-                    </View>
-                    <View style={Style.newsfeed.ArticleCaption}>
-                        <Text style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
-                        <Text style={Style.newsfeed.ArticleCaptionContent}>{post.content}</Text>
                     </View>
                 </View>
             </View>

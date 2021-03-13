@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, Alert, FlatList, TouchableWithoutFeedback, StyleSheet, TextInput } from 'react-native';
+import { View, Text, StatusBar, Image, Alert, FlatList, TouchableWithoutFeedback, StyleSheet, TextInput, ActivityIndicator, TouchableHighlight } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -25,14 +25,17 @@ export default class CreatePost extends Component {
         super(props);
         this.state = {
             token: '',
-            account: {},
+            account: {
+                firstName: '',
+                lastName: '',
+            },
             content: '',
             privacy: 3,
             listPrimaryImage: [],
             listShirtImage: [],
             listTrousersImage: [],
             listAccessoriesImage: [],
-            isLoading:[],
+            isLoading: false,
         }
     }
     getData = async (key) => {
@@ -55,8 +58,11 @@ export default class CreatePost extends Component {
             console.log(e);
         }
     }
+    imageHeight = 1200;
+    imageWidth = 900;
 
     checkLoginToken = async () => {
+        this.setState({ isLoading: true });
         await this.getData('token')
             .then(result => {
                 if (result) {
@@ -71,9 +77,10 @@ export default class CreatePost extends Component {
                         .then(response => {
                             console.log(response);
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-
+                                this.setState({ isLoading: false });
                                 this.setState({ account: response, isLogin: true, token: token });
                             } else {
+                                this.setState({ isLoading: false });
                                 this.setState({ account: {}, isLogin: false, token: '' });
                                 Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
                                     [
@@ -90,6 +97,7 @@ export default class CreatePost extends Component {
                             }
                         })
                         .catch(reason => {
+                            this.setState({ isLoading: false });
                             this.setState({ account: {}, isLogin: false, token: '' });
                             Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
                                 [
@@ -105,6 +113,7 @@ export default class CreatePost extends Component {
                             )
                         })
                 } else {
+                    this.setState({ isLoading: false });
                     Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
                         [
                             {
@@ -120,6 +129,7 @@ export default class CreatePost extends Component {
                 }
             })
             .catch(reason => {
+                this.setState({ isLoading: false });
                 this.setState({ token: '' });
                 console.log(reason);
                 Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
@@ -191,10 +201,10 @@ export default class CreatePost extends Component {
 
     selectImage = (imageType) => {
         ImagePicker.openPicker({
-            width: 1000,
-            height: 1000,
-            compressImageMaxHeight: 2160,
-            compressImageMaxWidth: 2160,
+            width: this.imageWidth,
+            height: this.imageHeight,
+            compressImageMaxHeight: this.imageHeight,
+            compressImageMaxWidth: this.imageWidth,
             includeBase64: true,
             cropping: true
         })
@@ -217,10 +227,10 @@ export default class CreatePost extends Component {
     }
     takePicture = (imageType) => {
         ImagePicker.openCamera({
-            width: 1000,
-            height: 1000,
-            compressImageMaxHeight: 1000,
-            compressImageMaxWidth: 1000,
+            width: this.imageWidth,
+            height: this.imageHeight,
+            compressImageMaxHeight: this.imageHeight,
+            compressImageMaxWidth: this.imageWidth,
             includeBase64: true,
             cropping: true
         })
@@ -244,6 +254,7 @@ export default class CreatePost extends Component {
 
     postStatus = () => {
         const { token, content, privacy, listPrimaryImage, listShirtImage, listTrousersImage, listAccessoriesImage } = this.state;
+        this.setState({ isLoading: true });
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             'Content-Type': 'multipart/form-data',
@@ -278,6 +289,7 @@ export default class CreatePost extends Component {
         Request.Post(uri, header, data)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.setState({ isLoading: false });
                     if (response.listPost && response.listPost.length > 0) {
                         this.props.navigation.dangerouslyGetParent().setOptions({
                             tabBarVisible: true
@@ -295,11 +307,13 @@ export default class CreatePost extends Component {
                         this.props.navigation.navigate('Newsfeed');
                     }
                 } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                    this.setState({ isLoading: true });
                     console.log(response.errorMessage);
                     Alert.alert('Thông báo', 'Đăng bài không thành công');
                 }
             })
             .catch(reason => {
+                this.setState({ isLoading: true });
                 console.log(reason);
                 Alert.alert('Thông báo', 'Đăng bài không thành công');
             })
@@ -321,7 +335,7 @@ export default class CreatePost extends Component {
     }
 
     render() {
-        const { account, listPrimaryImage, listAccessoriesImage, listShirtImage, listTrousersImage, content, privacy } = this.state;
+        const { account, listPrimaryImage, listAccessoriesImage, listShirtImage, listTrousersImage, content, privacy, isLoading } = this.state;
         const privacies = [
             {
                 value: 1,
@@ -350,12 +364,19 @@ export default class CreatePost extends Component {
                         style={styles().IconClose}
                         name='close' size={40} color={'black'} />
                     <Text style={styles().HeaderText}>Tạo bài viết</Text>
+                    <TouchableHighlight
+                        style={[
+                            styles().ButtonPost,
+                            listPrimaryImage.length > 0 && content.length > 0 ? styles().ButtonPostActiveColor : styles().ButtonPostInactiveColor
+                        ]}
+                        underlayColor={'#0000FF'}
+                        disabled={isLoading || listPrimaryImage.length == 0 || content.length == 0}
+                        onPress={() => this.postStatus()}>
+                        <View>
 
-                    <View style={[styles().ButtonPost, listPrimaryImage.length > 0 && content.length > 0 ? styles().ButtonPostActiveColor : styles().ButtonPostInactiveColor]}>
-                        <TouchableWithoutFeedback onPress={() => this.postStatus()}>
                             <Text style={styles().ButtonPostText}>Đăng</Text>
-                        </TouchableWithoutFeedback>
-                    </View>
+                        </View>
+                    </TouchableHighlight>
                 </View>
                 <View style={styles().ArticleHeader}>
                     <TouchableWithoutFeedback
@@ -444,6 +465,11 @@ export default class CreatePost extends Component {
                         </MaskedView>
                     </TouchableWithoutFeedback>
                 </View>
+                {isLoading ? (
+                    <View style={styles().PostingIndicator}>
+                        <ActivityIndicator size="large" color="#00ff00" />
+                    </View>) :
+                    (<View></View>)}
             </View >
         )
     }
@@ -512,8 +538,8 @@ const styles = (props) => StyleSheet.create({
     },
     ArticleImage: {
         width: scale(180, Horizontal),
-        height: scale(180, Horizontal),
-        resizeMode: 'stretch',
+        height: scale(320, Horizontal),
+        resizeMode: 'cover',
         borderRadius: 10
     },
     ArticleEditImage: {
@@ -530,4 +556,11 @@ const styles = (props) => StyleSheet.create({
         borderRadius: 5,
         left: scale(150, Horizontal),
     },
+    PostingIndicator: {
+        height: scale(711, Vertical),
+        width: scale(400, Horizontal),
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)'
+    }
 })

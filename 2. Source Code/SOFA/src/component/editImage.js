@@ -10,6 +10,7 @@ import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 
 const width = Dimensions.get('window').width;
+
 const settings = [
     {
         name: 'exposure',
@@ -105,6 +106,9 @@ export default class EditImage extends Component {
         };
     }
 
+    imageHeight = 1334;
+    imageWidth = 1000;
+
     sliderRef = {
         hue: createRef(),
         blur: createRef(),
@@ -137,10 +141,10 @@ export default class EditImage extends Component {
         if (!this.image) return;
         const result = await this.image.glView.capture();
         ImagePicker.openCropper({
-            width: 1000,
-            height: 1000,
-            compressImageMaxHeight: 2160,
-            compressImageMaxWidth: 2160,
+            width: this.imageWidth,
+            height: this.imageHeight,
+            compressImageMaxHeight: this.imageHeight,
+            compressImageMaxWidth: this.imageWidth,
             includeBase64: true,
             cropping: true,
             path: result.localUri
