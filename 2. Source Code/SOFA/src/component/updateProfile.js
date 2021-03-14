@@ -295,8 +295,6 @@ export default class UpdateProfile extends Component{
         return (
             <View style={[Style.common.container]}>
                 <ScrollView>               
-                    <StatusBar hidden={false} backgroundColor='orange' />
-
                     <StatusBar hidden={false} backgroundColor='#fbb897' />
                     <LinearGradient colors={['#fbb897','#ff8683']}>
                         <View style={Style.profile.firstHeader}>
@@ -321,7 +319,7 @@ export default class UpdateProfile extends Component{
                             <MenuProvider>
                                 <Menu>
                                     <MenuTrigger >
-                                        <Text style={Style.updateProfile.updateAvaText}>Update Avatar</Text>
+                                        <Text style={Style.updateProfile.updateAvaText}>Thay đổi ảnh đại diện</Text>
                                     </MenuTrigger>
                                     <MenuOptions>
                                         <MenuOption onSelect={() => this.takePicture(source => {
@@ -345,7 +343,7 @@ export default class UpdateProfile extends Component{
                     <View style={Style.updateProfile.updateInfo}>
                         <View style={Style.updateProfile.updateName}>
                             <View style={Style.updateProfile.updateItemFirst}>
-                                <Text style={Style.updateProfile.updateLabel}>First Name</Text>
+                                <Text style={Style.updateProfile.updateLabel}>Họ</Text>
                                 <TextInput defaultValue={account.firstName}
                                             onChangeText={text => { 
                                                 account.firstName = text;
@@ -355,7 +353,7 @@ export default class UpdateProfile extends Component{
                                 />                      
                             </View>    
                             <View style={Style.updateProfile.updateItemFirst}>
-                                <Text style={Style.updateProfile.updateLabel}>Last Name</Text>
+                                <Text style={Style.updateProfile.updateLabel}>Tên</Text>
                                 <TextInput defaultValue={account.lastName}
                                             onChangeText={text => { 
                                                 account.lastName = text;
@@ -367,7 +365,7 @@ export default class UpdateProfile extends Component{
                         </View>
                         
                         <View style={Style.updateProfile.updateItemSecond}>
-                            <Text style={Style.updateProfile.updateLabel}>Gender</Text> 
+                            <Text style={Style.updateProfile.updateLabel}>Giới tính</Text> 
                             <View></View>           
                             <RadioForm
                                 radio_props={data}
@@ -387,7 +385,7 @@ export default class UpdateProfile extends Component{
                         </View> 
                         
                         <View style={Style.updateProfile.updateItemSecond}>
-                            <Text style={Style.updateProfile.updateLabel}>Address</Text>
+                            <Text style={Style.updateProfile.updateLabel}>Địa chỉ</Text>
                             <TextInput defaultValue={account.address}
                                         onChangeText={text => { 
                                             account.address = text;
@@ -397,7 +395,7 @@ export default class UpdateProfile extends Component{
                             />                      
                         </View>    
                         <View style={Style.updateProfile.updateItemSecond}>
-                            <Text style={Style.updateProfile.updateLabel}>Date of Birth</Text>
+                            <Text style={Style.updateProfile.updateLabel}>Ngày sinh</Text>
                             <DatePicker
                                 style={Style.updateProfile.updateInputDate}
                                 date={account.dob}
@@ -429,12 +427,11 @@ export default class UpdateProfile extends Component{
                         <View style={Style.updateProfile.updateItemSecond}>
                             <Text style={Style.updateProfile.updateLabel}>Email</Text>
                             <TouchableOpacity onPress={() => Alert.alert(
-                                                                'You can change mail in Account -> Update Privacy'
+                                                                'Bạn có thể thay đổi Email tại Account -> Cập nhật bảo mật'
                                                             )}>
                             <TextInput defaultValue={account.email}    
                                         editable = {false}                                   
                                         selectTextOnFocus={false}
-                                        keyboardType='numeric'
                                         onChangeText={text => { 
                                             account.phone = text;
                                             this.setState({ account: account });
@@ -445,11 +442,11 @@ export default class UpdateProfile extends Component{
                         </View>  
                         <View style={Style.updateProfile.buttonAll}>
                             <TouchableOpacity onPress={()=>this.props.navigation.goBack()} style={Style.updateProfile.appButtonContainer}>
-                                <Text style={Style.updateProfile.appButtonText}>Cancel</Text>
+                                <Text style={Style.updateProfile.appButtonText}>Hủy bỏ</Text>
                             </TouchableOpacity>
                             <View style={Style.updateProfile.buttonEmpty}></View>
                             <TouchableOpacity onPress={()=>this.updateInfomation()} style={Style.updateProfile.appButtonContainer}>
-                                <Text style={Style.updateProfile.appButtonText}>Update</Text>
+                                <Text style={Style.updateProfile.appButtonText}>Cập nhật</Text>
                             </TouchableOpacity>
                         </View>
                         

@@ -110,12 +110,15 @@ export default class Profile extends Component {
 
     render() {
         const { account, avatarUri, isLogin } = this.state;
+        LogBox.ignoreLogs(['source.uri should not be an empty string']);
         console.log(account);     
         if(!isLogin){
             return (
+                
                 <View style = {{
                     alignSelf: 'center'
                 }}>
+                    <StatusBar hidden={false} backgroundColor='#fbb897' />
                     <Text style={{
                         marginTop: Utils.scale(100, Const.Vertical),
                         fontWeight: 'bold',
@@ -156,37 +159,76 @@ export default class Profile extends Component {
         }else{
             return (
                 <ScrollView>
-                   <View>
-                        <Text>Bạn đã đăng nhập!</Text>
-                        <TouchableOpacity                       
-                        style={{
-                            alignSelf: 'center',
-                            marginTop: Utils.scale(20, Const.Vertical),
-                        }}
-                        onPress={() => this.props.navigation.navigate('Profile')}
-                        >
-                            
-                            <LinearGradient
-                                        start={{ x: 0, y: 0 }}
-                                        end={{ x: 1, y: 0 }}
-                                        colors={['#fbb897', '#ff8683']}
-                                        style={{
-                                            width: Utils.scale(180, Const.Horizontal),
-                                            borderRadius: Utils.scale(25, Const.Horizontal),
-                                            height: Utils.scale(50, Const.Horizontal),
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            marginBottom: Utils.scale(10, Const.Horizontal),
-                                            elevation: Utils.scale(7, Const.Horizontal),
-                                        }}>
-                                        <Text style={{
-                                            color: "white",
-                                            fontSize: Utils.scale(16, Const.Horizontal),
-                                            backgroundColor: 'transparent',
-                                        }}>Trang cá nhân</Text>
-                                    </LinearGradient>
-                        
-                    </TouchableOpacity>
+                    <Text style={{
+                        marginTop: Utils.scale(5, Const.Vertical),
+                        marginLeft: Utils.scale(15, Const.Vertical),
+                        fontWeight: 'bold',
+                        fontSize: Utils.scale(23, Const.Horizontal),
+                    }}>Account</Text>
+                    <StatusBar hidden={false} backgroundColor='#fbb897' />
+                   <View style={{
+                       marginLeft: Utils.scale(15, Const.Horizontal),
+                       marginTop: Utils.scale(13, Const.Vertical),
+                       }}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile')}>
+                            <View style={{
+                                flexDirection: 'row',
+                            }}>
+                                <View>
+                                <Image 
+                                    source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
+                                    resizeMode={"cover"}
+                                    style={{
+                                        height: Utils.scale(40, Const.Horizontal),
+                                        width: Utils.scale(40, Const.Horizontal),
+                                        borderRadius: Utils.scale(20, Const.Horizontal),
+                                        borderWidth: 1,
+                                        overflow: 'hidden',
+                                        //alignSelf: 'center',
+                                        //marginLeft: Utils.scale(149, Const.Horizontal),
+                                    }} />
+                                </View>
+                                <View style={{
+                                    marginLeft: Utils.scale(10, Const.Horizontal),
+                                }}>
+                                    <Text style={{
+                                        fontSize: Utils.scale(19, Const.Horizontal),
+                                        fontWeight: 'bold',
+                                    }}>{account.firstName+' '+account.lastName}</Text>
+                                    <Text style={{
+                                        fontSize: Utils.scale(13, Const.Horizontal),
+                                    }}>Xem trang cá nhân của bạn</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={{
+                            marginTop: Utils.scale(15, Const.Vertical),
+                            marginLeft: Utils.scale(0, Const.Horizontal),
+                            marginRight: Utils.scale(15, Const.Horizontal),
+                            borderBottomColor: 'black',
+                            borderBottomWidth: 1,
+                        }} />
+                        <View style={{
+                            marginLeft: Utils.scale(5, Const.Horizontal),
+                        }}>
+                            <TouchableOpacity onPress={() => this.logout()}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                }}>
+                                    <Entypo name='log-out' size={30} color={'black'} style={{
+                                        marginTop: Utils.scale(15, Const.Horizontal),
+                                        
+                                    }} />
+                                    <Text style={{
+                                        marginLeft: Utils.scale(15, Const.Horizontal),
+                                        marginTop: Utils.scale(15, Const.Vertical),
+                                        alignSelf: 'center',
+                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontWeight: 'bold'
+                                    }}>Đăng xuất</Text>
+                                </View>                              
+                            </TouchableOpacity>
+                        </View>
                    </View>
                 </ScrollView>
             )
