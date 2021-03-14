@@ -58,5 +58,13 @@ namespace SOFA_API.Controllers
             VoucherDetaiForUserViewModelOut viewModelOut = VoucherService.Instance.GetVoucherDetailByAccountId(id, viewModelIn);
             return Ok(viewModelOut);
         }
+        [HttpPost("useVoucher")]
+        public ActionResult UseVoucher([FromForm] AddVoucherViewModelIn viewModelIn)
+        {
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int id = Int32.Parse(idClaim.Value.Trim());
+            AddVoucherViewModelOut modelOut = VoucherService.Instance.UseVoucher(id,viewModelIn);
+            return Ok(modelOut);
+        }
     }
 }

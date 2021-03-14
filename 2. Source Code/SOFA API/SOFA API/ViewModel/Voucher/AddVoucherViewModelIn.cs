@@ -9,6 +9,8 @@ namespace SOFA_API.ViewModel.Voucher
 {
     public class AddVoucherViewModelIn : BaseModelIn
     {
+        public int Id { get; set; }
+
         public string Title { get; set; }
         public string Code { get; set; }
         public string Content { get; set; }
@@ -22,8 +24,9 @@ namespace SOFA_API.ViewModel.Voucher
         {
         }
 
-        public AddVoucherViewModelIn(string title, string code, string content, string image, string description, DateTime fromDate, DateTime toDate, int quantity)
+        public AddVoucherViewModelIn(int id, string title, string code, string content, string image, string description, DateTime fromDate, DateTime toDate, int quantity)
         {
+            Id = id;
             Title = title;
             Code = code;
             Content = content;
@@ -36,6 +39,7 @@ namespace SOFA_API.ViewModel.Voucher
 
         public AddVoucherViewModelIn(DataRow row)
         {
+            Id = (int)row["Id"];
             Title = row["title"].ToString();
             Code = row["Code"].ToString(); ;
             Content = row["Content"].ToString();

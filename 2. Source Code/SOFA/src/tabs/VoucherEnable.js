@@ -1,49 +1,9 @@
 import React, {Component} from 'react';
-import {
-  SafeAreaView,
-  ImageBackground,
-  StyleSheet,
-  View,
-  Text,
-  StatusBar,
-  Button,
-  Image,
-  TouchableHighlight,
-  Alert,
-  PermissionsAndroid,
-  FlatList,
-  Dimensions,
-  RefreshControl,
-  TouchableOpacity,
-  NavigationContainer,
-} from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {MenuProvider} from 'react-native-popup-menu';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
-import LinearGradient from 'react-native-linear-gradient';
-import * as signalR from '@microsoft/signalr';
+import { Text, SafeAreaView, View,  FlatList, TouchableOpacity} from 'react-native';
 import * as Request from '../common/request';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Style from '../style/style';
 import * as Const from '../common/const';
-import * as Utils from '../common/utils';
-import {
-  AVATAR,
-  ADDRESS_ICON,
-  BIRTHDAY_ICON,
-  PHONE_ICON,
-  GENDER_ICON,
-} from '../../image/index';
-import {ScrollView, TextInput} from 'react-native-gesture-handler';
-import {acc} from 'react-native-reanimated';
-import { StackNavigator } from 'react-navigation';
-
-
 
 export default class VoucherEnable extends Component {
   static navigationOptions = {
@@ -165,7 +125,8 @@ export default class VoucherEnable extends Component {
                 data={listVoucher}
                 renderItem={({item, index}) => {
                   return (
-                    <MyListItem
+                    <MyListVoucher
+                    navigate={this.props.navigation.navigate} 
                       id={item.id}
                       title={item.title}
                       voucherCode={item.voucherCode}
@@ -176,7 +137,7 @@ export default class VoucherEnable extends Component {
                       toDate={item.toDate}
                       isExpriress={item.isExpriress}
                       isUsed={item.isUsed}
-                    />
+                                         />
                   );
                 }}
                 keyExtractor={(item, index) => `${item.id}`}
@@ -196,40 +157,39 @@ export default class VoucherEnable extends Component {
     );
   }
 }
-class MyListItem extends Component {
-  formatDate(dataDate){
-    let today = new Date(dataDate);
-    let date=today.getDate() + "/"+ parseInt(today.getMonth()+1) +"/"+today.getFullYear();
-    return date;
-}
-
-  render() {
-
-    return (
-      <TouchableOpacity >
-        <View>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              fontSize: 18,
-              color: 'black',
-              marginHorizontal: 10,
-              marginTop: 10,
-            }}>
-            {this.props.title}
-          </Text>
-          <Text
-            style={{
-              fontWeight: 'nomal',
-              fontSize: 12,
-              color: 'black',
-              marginHorizontal: 10,
-              marginVertical: 10,
-            }}>
-            {this.props.toDate}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
+ class MyListVoucher extends Component {
+  navigateVoucherDetail = () => {
+    console.log(`Start navigate`)
+    this.props.navigate(`VoucherDetail`);
+    console.log(`End navigate`)
+    };
+  
+    render() {
+      return (
+        <TouchableOpacity onPress={this.navigateVoucherDetail} >
+          <View>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 18,
+                color: 'black',
+                marginHorizontal: 10,
+                marginTop: 10,
+              }}>
+              {this.props.title}
+            </Text>
+            <Text
+              style={{
+                fontWeight: 'nomal',
+                fontSize: 12,
+                color: 'black',
+                marginHorizontal: 10,
+                marginVertical: 10,
+              }}>
+              {this.props.toDate}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
   }
-}

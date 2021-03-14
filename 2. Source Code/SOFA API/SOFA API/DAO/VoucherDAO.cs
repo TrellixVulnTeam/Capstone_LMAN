@@ -98,6 +98,20 @@ namespace SOFA_API.DAO
             }
             return viewModelOut;
         }
+        public int UseVoucher(int accountId, AddVoucherViewModelIn voucher)
+        {
+            int data = 0;
+            string sql = "EXEC dbo.UseVoucher @AccountID , @VoucherID ";
+            try
+            {
+                data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountId, voucher.Id });
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            return data; ;
+        }
 
     }
 }

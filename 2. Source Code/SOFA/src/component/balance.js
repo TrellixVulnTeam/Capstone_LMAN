@@ -1,27 +1,11 @@
 import React, {Component} from 'react';
-import { SafeAreaView, ImageBackground, StyleSheet, View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid,FlatList,Dimensions,RefreshControl,TouchableOpacity,} from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {MenuProvider} from 'react-native-popup-menu';
-import {Menu,MenuOptions,MenuOption,MenuTrigger,} from 'react-native-popup-menu';
-import LinearGradient from 'react-native-linear-gradient';
-import * as signalR from '@microsoft/signalr';
+import { SafeAreaView, ImageBackground, View, Text, Button, Image, FlatList, TouchableOpacity} from 'react-native';
 import * as Request from '../common/request';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Style from '../style/style';
 import * as Const from '../common/const';
-import * as Utils from '../common/utils';
-import {AVATAR,ADDRESS_ICON,BIRTHDAY_ICON,PHONE_ICON,GENDER_ICON,} from '../../image/index';
-import {ScrollView, TextInput} from 'react-native-gesture-handler';
-import {acc} from 'react-native-reanimated';
-import Octicons from 'react-native-vector-icons/Octicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { scale } from '../common/utils';
-import { Horizontal, Vertical } from '../common/const';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-var {width, height} = Dimensions.get('window');
+import {AVATAR} from '../../image/index';
+import {ScrollView} from 'react-native-gesture-handler';
 
 export default class Balance extends Component {
   constructor(props) {
@@ -29,7 +13,7 @@ export default class Balance extends Component {
     this.state = {
       listTransaction: [],
       avatarUri: '',
-      token:'',
+      token: '',
     };
   }
   getData = async (key) => {
@@ -124,13 +108,13 @@ export default class Balance extends Component {
       parseInt(hours[2]),
     ];
   }
-  onPressTopUp(){
-    const { account, avatarUri} = this.state;
+  onPressTopUp() {
+    const {account, avatarUri} = this.state;
     this.props.navigation.navigate('topUp', {
-        account: account,
-        avatarUri: avatarUri,
-      });
-}
+      account: account,
+      avatarUri: avatarUri,
+    });
+  }
 
   componentWillUnmount() {}
 
@@ -145,7 +129,7 @@ export default class Balance extends Component {
       <View style={Style.balance.main}>
         <ScrollView>
           <ImageBackground
-        source={avatarUri ? { uri: avatarUri } : AVATAR}
+            source={avatarUri ? {uri: avatarUri} : AVATAR}
             style={Style.balance.container}>
             <View style={Style.balance.overlay}>
               <Text
@@ -159,7 +143,7 @@ export default class Balance extends Component {
                 My Balance
               </Text>
               <Image
-                source={avatarUri ? { uri: avatarUri } : AVATAR}
+                source={avatarUri ? {uri: avatarUri} : AVATAR}
                 style={Style.balance.avatarStyle}
               />
               <Text style={Style.balance.textStyle}>
@@ -178,7 +162,12 @@ export default class Balance extends Component {
                   title="TopUp"
                 />
                 <View style={{flex: 0.2}}></View>
-                <Button style={Style.profile.singleButton} color= '#ff7878' title="View Voucher" onPress={() => this.props.navigation.navigate('Voucher')} />
+                <Button
+                  style={Style.profile.singleButton}
+                  color="#ff7878"
+                  title="View Voucher"
+                  onPress={() => this.props.navigation.navigate('Voucher')}
+                />
               </View>
               <Text
                 style={{
@@ -199,30 +188,31 @@ export default class Balance extends Component {
                 }}
               />
               <SafeAreaView>
-              <FlatList
-                data={listTransaction}
-                renderItem={({item, index}) => {
-                  return (
-                    <MyListItem
-                      transactionId={item.transactionId}
-                      typeId={item.typeId}
-                      beforeBalance={item.beforeBalance}
-                      transactionTime={item.transactionTime}
-                      typeName={item.typeName}
-                      amount={item.amount}
+                <FlatList
+                  data={listTransaction}
+                  renderItem={({item, index}) => {
+                    return (
+                      <MyListItem
+                        transactionId={item.transactionId}
+                        typeId={item.typeId}
+                        beforeBalance={item.beforeBalance}
+                        transactionTime={item.transactionTime}
+                        typeName={item.typeName}
+                        amount={item.amount}
+                        navigate={this.props.navigation.navigate}
+                      />
+                    );
+                  }}
+                  keyExtractor={(item, index) => `${item.transactionId}`}
+                  ItemSeparatorComponent={() => (
+                    <View
+                      style={{
+                        height: 1,
+                        backgroundColor: 'steelblue',
+                      }}
                     />
-                  );
-                }}
-                keyExtractor={(item, index) => `${item.transactionId}`}
-                ItemSeparatorComponent={() => (
-                  <View
-                    style={{
-                      height: 1,
-                      backgroundColor: 'steelblue',
-                    }}
-                  />
-                )}
-              />
+                  )}
+                />
               </SafeAreaView>
             </View>
           </View>
@@ -232,12 +222,12 @@ export default class Balance extends Component {
   }
 }
 class MyListItem extends Component {
-  _onPress = () => {
-    alert(`TransactionId: ${this.props.transactionId}`);
+  voucherDetail = () => {
+    this.props.navigate(`VoucherDetail`);
   };
   render() {
     return (
-      <TouchableOpacity onPress={this._onPress}>
+      <TouchableOpacity onPress={this.voucherDetail}>
         <View>
           <Text
             style={{
@@ -249,10 +239,21 @@ class MyListItem extends Component {
             }}>
             {this.props.typeName}
           </Text>
-          <Text style={Style.balance.textSuccess}>
-            +{this.props.amount}
-            VND
-          </Text>
+          <View>
+            {this.props.typeId != 1 && (
+              <Text style={Style.balance.textSuccess}>
+                +{this.props.amount}
+                VND
+              </Text>
+            )}
+            {this.props.typeId == 1 && (
+              <Text style={Style.balance.textDanger}>
+                -{this.props.amount}
+                VND
+              </Text>
+            )}
+          </View>
+
           <Text
             style={{
               fontSize: 12,

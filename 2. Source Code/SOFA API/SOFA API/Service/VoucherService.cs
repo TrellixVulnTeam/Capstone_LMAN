@@ -93,5 +93,20 @@ namespace SOFA_API.Service
             }
             return viewModelOut;
         }
+
+        public AddVoucherViewModelOut UseVoucher(int accountId, AddVoucherViewModelIn modelIn)
+        {
+            AddVoucherViewModelOut modelOut = new AddVoucherViewModelOut();
+            int result = VoucherDAO.Instance.UseVoucher(accountId, modelIn);
+            if (result > 0)
+            {
+                modelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            else
+            {
+                modelOut.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return modelOut;
+        }
     }
 }

@@ -1,46 +1,10 @@
 import React, {Component} from 'react';
-import {
-  SafeAreaView,
-  ImageBackground,
-  StyleSheet,
-  View,
-  Text,
-  StatusBar,
-  Button,
-  Image,
-  TouchableHighlight,
-  Alert,
-  PermissionsAndroid,
-  FlatList,
-  Dimensions,
-  RefreshControl,
-  TouchableOpacity,
-  NavigationContainer,
-} from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {MenuProvider} from 'react-native-popup-menu';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
-import LinearGradient from 'react-native-linear-gradient';
-import * as signalR from '@microsoft/signalr';
+import { SafeAreaView, View,  FlatList} from 'react-native';
 import * as Request from '../common/request';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Style from '../style/style';
 import * as Const from '../common/const';
-import * as Utils from '../common/utils';
-import {
-  AVATAR,
-  ADDRESS_ICON,
-  BIRTHDAY_ICON,
-  PHONE_ICON,
-  GENDER_ICON,
-} from '../../image/index';
-import {ScrollView, TextInput} from 'react-native-gesture-handler';
-import {acc} from 'react-native-reanimated';
+import MyListVoucher from './MyListVoucher';
 
 export default class VoucherExpired extends Component {
   static navigationOptions = {
@@ -54,7 +18,7 @@ export default class VoucherExpired extends Component {
     this.state = {
       avatarUri: '',
       listVoucher: [],
-      token:'',
+      token: '',
     };
   }
   getData = async (key) => {
@@ -146,7 +110,6 @@ export default class VoucherExpired extends Component {
     return (
       <SafeAreaView>
         <View style={Style.voucher.mainContainer}>
-          
           <View style={Style.voucher.card}>
             <View
               style={{
@@ -159,7 +122,7 @@ export default class VoucherExpired extends Component {
                 data={listVoucher}
                 renderItem={({item, index}) => {
                   return (
-                    <MyListItem
+                    <MyListVoucher
                       id={item.id}
                       title={item.title}
                       voucherCode={item.voucherCode}
@@ -187,39 +150,6 @@ export default class VoucherExpired extends Component {
           </View>
         </View>
       </SafeAreaView>
-    );
-  }
-}
-class MyListItem extends Component {
-  _onPress = () => {
-    alert(`VoucherId: ${this.props.id}`);
-  };
-  render() {
-    return (
-      <TouchableOpacity onPress={this._onPress}>
-        <View>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              fontSize: 18,
-              color: 'black',
-              marginHorizontal: 10,
-              marginTop: 10,
-            }}>
-            {this.props.title}
-          </Text>
-          <Text
-            style={{
-              fontWeight: 'nomal',
-              fontSize: 12,
-              color: 'black',
-              marginHorizontal: 10,
-              marginVertical: 10,
-            }}>
-            {this.props.toDate}
-          </Text>
-        </View>
-      </TouchableOpacity>
     );
   }
 }
