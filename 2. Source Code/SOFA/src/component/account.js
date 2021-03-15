@@ -95,6 +95,30 @@ export default class Profile extends Component {
         this.props.navigation.navigate('Login');
     }
 
+    onPressBalance() {
+        this.props.navigation.navigate('Balance');
+    }
+
+    onPressMarkup() {
+        alert('Click Markup');
+    }
+
+    onPressPrivacy() {
+        alert('Click Privacy');
+    }
+
+    onPressSetting() {
+        alert('Click Setting');
+    }
+
+    onPressFeedback() {
+        alert('Click Feedback');
+    }
+
+    onPressSupprot() {
+        alert('Click Support');
+    }
+
     componentWillUnmount() {
         //this._unsubcribe();
     }
@@ -208,6 +232,138 @@ export default class Profile extends Component {
                             borderBottomColor: 'black',
                             borderBottomWidth: 1,
                         }} />
+                        <View style={{
+                            marginLeft: Utils.scale(3, Const.Horizontal),
+                        }}>
+                            <TouchableOpacity onPress={() => this.onPressBalance()}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                }}>
+                                    <MaterialIcons name='account-balance-wallet' size={30} color={'black'} style={{
+                                        marginTop: Utils.scale(15, Const.Horizontal),
+                                        
+                                    }} />
+                                    <Text style={{
+                                        marginLeft: Utils.scale(15, Const.Horizontal),
+                                        marginTop: Utils.scale(15, Const.Vertical),
+                                        alignSelf: 'center',
+                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontWeight: 'bold'
+                                    }}>Xem số dư tài khoản</Text>
+                                </View>                              
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{
+                            marginLeft: Utils.scale(3, Const.Horizontal),
+                        }}>
+                            <TouchableOpacity onPress={() => this.onPressMarkup()}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                }}>
+                                    <Ionicons name='bookmark' size={30} color={'black'} style={{
+                                        marginTop: Utils.scale(15, Const.Horizontal),
+                                        
+                                    }} />
+                                    <Text style={{
+                                        marginLeft: Utils.scale(16, Const.Horizontal),
+                                        marginTop: Utils.scale(15, Const.Vertical),
+                                        alignSelf: 'center',
+                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontWeight: 'bold'
+                                    }}>Xem bài đã lưu</Text>
+                                </View>                              
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{
+                            marginLeft: Utils.scale(3, Const.Horizontal),
+                        }}>
+                            <TouchableOpacity onPress={() => this.onPressPrivacy()}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                }}>
+                                    <MaterialIcons name='security' size={30} color={'black'} style={{
+                                        marginTop: Utils.scale(15, Const.Horizontal),
+                                        
+                                    }} />
+                                    <Text style={{
+                                        marginLeft: Utils.scale(15, Const.Horizontal),
+                                        marginTop: Utils.scale(15, Const.Vertical),
+                                        alignSelf: 'center',
+                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontWeight: 'bold'
+                                    }}>Cài đặt bảo mật</Text>
+                                </View>                              
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{
+                            marginLeft: Utils.scale(4, Const.Horizontal),
+                        }}>
+                            <TouchableOpacity onPress={() => this.onPressSetting()}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                }}>
+                                    <Ionicons name='settings' size={30} color={'black'} style={{
+                                        marginTop: Utils.scale(15, Const.Horizontal),
+                                        
+                                    }} />
+                                    <Text style={{
+                                        marginLeft: Utils.scale(17, Const.Horizontal),
+                                        marginTop: Utils.scale(15, Const.Vertical),
+                                        alignSelf: 'center',
+                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontWeight: 'bold'
+                                    }}>Cài đặt chung</Text>
+                                </View>                              
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{
+                            marginLeft: Utils.scale(4, Const.Horizontal),
+                        }}>
+                            <TouchableOpacity onPress={() => this.onPressFeedback()}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                }}>
+                                    <MaterialIcons name='feedback' size={30} color={'black'} style={{
+                                        marginTop: Utils.scale(15, Const.Horizontal),
+                                        
+                                    }} />
+                                    <Text style={{
+                                        marginLeft: Utils.scale(16, Const.Horizontal),
+                                        marginTop: Utils.scale(15, Const.Vertical),
+                                        alignSelf: 'center',
+                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontWeight: 'bold'
+                                    }}>Phản hồi và thắc mắc</Text>
+                                </View>                              
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{
+                            marginLeft: Utils.scale(4, Const.Horizontal),
+                        }}>
+                            <TouchableOpacity onPress={() => this.onPressSupprot()}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                }}>
+                                    <MaterialCommunityIcons name='comment-question' size={30} color={'black'} style={{
+                                        marginTop: Utils.scale(15, Const.Horizontal),
+                                        
+                                    }} />
+                                    <Text style={{
+                                        marginLeft: Utils.scale(16, Const.Horizontal),
+                                        marginTop: Utils.scale(15, Const.Vertical),
+                                        alignSelf: 'center',
+                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontWeight: 'bold'
+                                    }}>Hỗ trợ</Text>
+                                </View>                              
+                            </TouchableOpacity>
+                        </View>
+
                         <View style={{
                             marginLeft: Utils.scale(5, Const.Horizontal),
                         }}>

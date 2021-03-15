@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -194,11 +194,17 @@ export default class Profile extends Component {
                                     source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
                                     resizeMode={"cover"}
                                     style={Style.profile.image} />
-
-                                <Ionicons name='settings-sharp' size={30} color={'white'} style={{
+                                <TouchableOpacity  onPress={() => this.onPressUpdateProfile()} style={{
                                     marginRight: Utils.scale(15, Const.Horizontal),
                                     marginLeft: 'auto'
-                                }} onPress={() => this.props.navigation.navigate('Setting')} />
+                                }}>
+                                   <Ionicons name='settings-sharp' size={30} color={'white'}/>
+                                   <Text style={{
+                                       color: 'white',
+                                       marginLeft: 1.2,
+                                   }}>Sửa</Text>
+                                </TouchableOpacity>
+                                
                             </View>
                             <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
                             <Text style={Style.profile.email}>{account.email}</Text>
@@ -206,11 +212,7 @@ export default class Profile extends Component {
                                 <Text style={Style.profile.basicSmallInfo}>{account.postNumber}{"\n"}Posts</Text>
                                 <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
                             </View>
-                            <View style={Style.profile.button}>
-                                <Button style={Style.profile.singleButton} color='#ff7878' onPress={() => this.onPressUpdateProfile()} title="Update profile" />
-                                <View style={{ flex: 0.2 }}></View>
-                                <Button style={Style.profile.singleButton} color='#ff7878' title="View balance" onPress={() => this.props.navigation.navigate('Balance')} />
-                            </View>
+                            
                         </View>
                     </LinearGradient>
                     <View style={Style.profile.information}>
