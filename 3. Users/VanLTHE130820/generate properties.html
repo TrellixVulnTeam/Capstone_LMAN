@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Page Title</title>
+    <script>
+        function generate() {
+            var properties = document.getElementById("txtProperties").value;
+            var props = properties.split("\n");
+            var result = "";
+            for (var i = 0; i < props.length; i++) {
+                var prop = props[i];
+                var property = "@property\ndef " + prop + "(self):\n    return self.__" + prop + "\n\n";
+                result = result + property;
+                var setter = "@"+prop+".setter\ndef "+prop +"(self, value):\n   self.__"+prop+" = value\n\n"
+                result = result + setter;
+            }
+            document.getElementById("txtMethod").value = result;
+        }
+    </script>
+    <style>
+        body{
+            height: 900px;
+            width: 100%;
+        }
+        #txtProperties {
+            height: 100%;
+            width: 40%;
+        }
+
+        #txtMethod {
+            height: 100%;
+            width: 40%;
+        }
+    </style>
+</head>
+
+<body>
+    <textarea id="txtProperties"></textarea>
+    <button onclick="generate()">Generate</button>
+    <textarea id="txtMethod"></textarea>
+</body>
+
+</html>
