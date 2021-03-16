@@ -27,14 +27,14 @@ namespace SOFA_API.DAO
         /// Get all post in database
         /// </summary>
         /// <returns>A list post</returns>
-        public List<Post> GetAllPost()
+        public List<Post> GetAllPost(int page, int rowsOfPage)
         {
             List<Post> listAllPost = new List<Post>();
 
-            String sql = "EXEC dbo.GetAllPublicPost";
+            String sql = "EXEC dbo.GetAllPublicPost @page , @rowsOfPage";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql);
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { page, rowsOfPage });
                 if (data.Rows.Count > 0)
                 {
                     foreach (DataRow row in data.Rows)
@@ -49,7 +49,7 @@ namespace SOFA_API.DAO
             }
             return listAllPost;
         }
-        
+
         /// <summary>
         /// Create post in database
         /// </summary>
@@ -90,15 +90,15 @@ namespace SOFA_API.DAO
         /// </summary>
         /// <param name="accountID">ID of that user</param>
         /// <returns>List of post</returns>
-        public List<Post> GetAllPublicPostOfUser(int accountID)
+        public List<Post> GetAllPublicPostOfUser(int accountID, int page, int rowsOfPage)
         {
             List<Post> posts = new List<Post>();
-            string sql = "EXEC dbo.GetAllPublicPostOfUser @accountPost";
+            string sql = "EXEC dbo.GetAllPublicPostOfUser @accountPost , @page , @rowsOfPage";
 
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID });
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID, page, rowsOfPage });
             if (data.Rows.Count > 0)
             {
-                foreach(DataRow row in data.Rows)
+                foreach (DataRow row in data.Rows)
                 {
                     posts.Add(new Post(row));
                 }
@@ -111,12 +111,12 @@ namespace SOFA_API.DAO
         /// </summary>
         /// <param name="accountID">ID of that user</param>
         /// <returns>List of post</returns>
-        public List<Post> GetAllPostOfUser(int accountID)
+        public List<Post> GetAllPostOfUser(int accountID, int page, int rowsOfPage)
         {
             List<Post> posts = new List<Post>();
-            string sql = "EXEC dbo.GetAllPostOfUser @accountPost";
+            string sql = "EXEC dbo.GetAllPostOfUser @accountPost , @page , @rowsOfPage";
 
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID });
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID, page, rowsOfPage });
             if (data.Rows.Count > 0)
             {
                 foreach (DataRow row in data.Rows)

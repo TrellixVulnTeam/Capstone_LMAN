@@ -196,7 +196,7 @@ export default class Newsfeed extends Component {
             "Authorization": 'Bearer ' + this.state.token,
         };
         var data = {};
-        var uri = Const.domain + 'api/post'
+        var uri = Const.domain + 'api/post?page=' + 1 + '&rowsOfPage=' + Const.NEWSFEED_ROWS_OF_PAGE;
         Request.Get(uri, header, data)
             .then(response => {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {

@@ -4,36 +4,43 @@ GO
 DROP PROC IF EXISTS GetAllPublicPost
 GO
 CREATE PROC GetAllPublicPost
+@page INT, @rowsOfPage INT
 AS
 BEGIN
 	SELECT * FROM dbo.Post
 	WHERE PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public')
 	ORDER BY [Time] DESC
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
 END
 GO
 
 DROP PROC IF EXISTS GetAllPostOfUser
 GO
 CREATE PROC GetAllPostOfUser
-@accountPost INT
+@accountPost INT, @page INT, @rowsOfPage INT
 AS
 BEGIN
 	SELECT * FROM dbo.Post
 	WHERE AccountPost = @accountPost
 	ORDER BY [Time] DESC
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
 END
 GO
 
 DROP PROC IF EXISTS GetAllPublicPostOfUser
 GO
 CREATE PROC GetAllPublicPostOfUser
-@accountPost INT
+@accountPost INT, @page INT, @rowsOfPage INT
 AS
 BEGIN
 	SELECT * FROM dbo.Post
 	WHERE AccountPost = @accountPost 
 	AND PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public')
 	ORDER BY [Time] DESC
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
 END
 GO
 
@@ -187,12 +194,15 @@ BEGIN
 	(
 	    AccountId,
 	    PostId,
-	    Content
+	    Content,
+		[Time]
 	)
+	OUTPUT inserted.*
 	VALUES
 	(   @accountID,  -- AccountId - int
 	    @postID,  -- PostId - int
-	    @content -- Content - nvarchar(max)
+	    @content, -- Content - nvarchar(max)
+		GETDATE()
 	    )
 END
 GO
@@ -232,10 +242,14 @@ GO
 DROP PROC IF EXISTS GetAllCommentOfPost
 GO
 CREATE PROC GetAllCommentOfPost
-@postID INT
+@postID INT, @page INT, @rowsOfPage INT
 AS
 BEGIN
-    SELECT * FROM dbo.Comment WHERE PostId = @postID
+    SELECT * FROM dbo.Comment 
+	WHERE PostId = @postID
+	ORDER BY [Time] ASC
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
 END
 GO
 

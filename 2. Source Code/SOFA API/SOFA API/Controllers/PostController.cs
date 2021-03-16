@@ -13,31 +13,31 @@ namespace SOFA_API.Controllers
     public class PostController : ControllerBase
     {
         [HttpGet]
-        public ActionResult GetAllPost()
+        public ActionResult GetAllPost(int page, int rowsOfPage)
         {
             int myID = Utils.Instance.GetUserID(User.Claims);
-            PostViewModelOut listAllPost = PostService.Instance.GetAllPost(myID);
+            PostViewModelOut listAllPost = PostService.Instance.GetAllPost(myID, page, rowsOfPage);
             return Ok(listAllPost);
         }
 
         [HttpGet("GetUserPublicPost")]
-        public ActionResult GetUserPublicPost(int accountPost)
+        public ActionResult GetUserPublicPost(int accountPost, int page, int rowsOfPage)
         {
             int myID = Utils.Instance.GetUserID(User.Claims);
             PostViewModelIn postViewModelIn = new PostViewModelIn();
             postViewModelIn.AccountPost = accountPost;
-            PostViewModelOut postViewModelOut = PostService.Instance.GetAllPublicPostOfUser(postViewModelIn, myID);
+            PostViewModelOut postViewModelOut = PostService.Instance.GetAllPublicPostOfUser(postViewModelIn, myID, page, rowsOfPage);
             return Ok(postViewModelOut);
         }
 
         [HttpGet("GetUserPost")]
         [Authorize]
-        public ActionResult GetUserPost()
+        public ActionResult GetUserPost(int page, int rowsOfPage)
         {
             int accountPost = Utils.Instance.GetUserID(User.Claims);
             PostViewModelIn postViewModelIn = new PostViewModelIn();
             postViewModelIn.AccountPost = accountPost;
-            PostViewModelOut postViewModelOut = PostService.Instance.GetAllPostOfUser(postViewModelIn, accountPost);
+            PostViewModelOut postViewModelOut = PostService.Instance.GetAllPostOfUser(postViewModelIn, accountPost, page, rowsOfPage);
             return Ok(postViewModelOut);
         }
 
@@ -94,20 +94,20 @@ namespace SOFA_API.Controllers
             return Ok(postViewModelOut);
         }
         [HttpGet("GetPostDetail")]
-        public ActionResult GetPostDetail(int postID)
+        public ActionResult GetPostDetail(int postID, int commentRowsOfPage)
         {
             int id = Utils.Instance.GetUserID(User.Claims);
             PostViewModelIn postViewModelIn = new PostViewModelIn();
             postViewModelIn.PostID = postID;
-            PostViewModelOut postViewModelOut = PostService.Instance.GetPostDetail(postViewModelIn, id);
+            PostViewModelOut postViewModelOut = PostService.Instance.GetPostDetail(postViewModelIn, id, commentRowsOfPage);
             return Ok(postViewModelOut);
         }
         [HttpGet("GetCommentOfPost")]
-        public ActionResult GetListCommentOfPost(int postID)
+        public ActionResult GetListCommentOfPost(int postID, int page, int rowsOfPage)
         {
             PostViewModelIn postViewModelIn = new PostViewModelIn();
             postViewModelIn.PostID = postID;
-            PostViewModelOut postViewModelOut = PostService.Instance.GetListCommentOfPost(postViewModelIn);
+            PostViewModelOut postViewModelOut = PostService.Instance.GetListCommentOfPost(postViewModelIn, page, rowsOfPage);
             return Ok(postViewModelOut);
         }
         [HttpPost("DeletePost")]

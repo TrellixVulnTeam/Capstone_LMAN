@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar,  Image, Alert, FlatList, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, Text, StatusBar, Image, Alert, FlatList, Keyboard, TextInput, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -144,8 +144,8 @@ export default class Newsfeed extends Component {
                 Request.Post(uri, header, data)
                     .then(response => {
                         if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                            let listComment = response.listPost[0].listComment;
-                            this.setState({ listComment: listComment });
+                            let comment = response.listPost[0].listComment[0];
+                            this.setState({ listComment: [...this.state.listComment, comment] });
                         } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
                             console.log(response.errorMessage);
                         }
@@ -161,12 +161,11 @@ export default class Newsfeed extends Component {
     }
 
     GetAllComment(post) {
-        console.log(post)
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json'
         };
-        let uri = Const.domain + 'api/post/GetCommentOfPost?postID=' + post.id;
+        let uri = Const.domain + 'api/post/GetCommentOfPost?postID=' + post.id + '&page=' + 1 + '&rowsOfPage=' + Const.COMMENT_ROWS_OF_PAGE;
         Request.Get(uri, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {

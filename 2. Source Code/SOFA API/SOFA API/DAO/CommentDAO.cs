@@ -48,11 +48,15 @@ namespace SOFA_API.DAO
         /// <param name="postID">ID of the post</param>
         /// <param name="content">Content of comment</param>
         /// <returns>1 if successfully, 0 if failed</returns>
-        public int CommentPost(int accountID, int postID, string content)
+        public Comment CommentPost(int accountID, int postID, string content)
         {
-            int result = 0;
+            Comment result = null;
             string sql = "EXEC dbo.CreateComment @accountID , @postID , @content";
-            result = (int)DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountID, postID, content });
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID, postID, content });
+            if (data.Rows.Count > 0)
+            {
+                result = new Comment(data.Rows[0]);
+            }
             return result;
         }
         /// <summary>
@@ -60,14 +64,14 @@ namespace SOFA_API.DAO
         /// </summary>
         /// <param name="postID">ID of the post</param>
         /// <returns>List of comment</returns>
-        public List<Comment> GetAllCommentOfPost(int postID)
+        public List<Comment> GetAllCommentOfPost(int postID, int page, int rowsOfPage)
         {
             List<Comment> comments = new List<Comment>();
-            string sql = "EXEC dbo.GetAllCommentOfPost @postID";
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID });
+            string sql = "EXEC dbo.GetAllCommentOfPost @postID , @page , @rowsOfPage";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID, page, rowsOfPage });
             if (data.Rows.Count > 0)
             {
-                foreach(DataRow row in data.Rows)
+                foreach (DataRow row in data.Rows)
                 {
                     comments.Add(new Comment(row));
                 }

@@ -17,14 +17,15 @@ namespace SOFA_API.ViewModel.Newsfeed
         public bool Gender { get; set; }
         public int PostID { get; set; }
         public string Content { get; set; }
-
+        public DateTime Time { get; set; }
         public CommentModelOut() { }
 
-        public CommentModelOut(int accountID, int postID, string content)
+        public CommentModelOut(int accountID, int postID, string content, DateTime time)
         {
             this.AccountID = accountID;
             this.PostID = postID;
             this.Content = content;
+            this.Time = time;
         }
 
         public CommentModelOut(DataRow row)
@@ -33,6 +34,7 @@ namespace SOFA_API.ViewModel.Newsfeed
             this.AccountID = (int)row["AccountId"];
             this.PostID = (int)row["PostId"];
             this.Content = row["content"].ToString();
+            this.Time = (DateTime)row["time"];
         }
         public void SetComment(Comment comment)
         {
@@ -40,6 +42,7 @@ namespace SOFA_API.ViewModel.Newsfeed
             this.AccountID = comment.AccountID;
             this.PostID = comment.PostID;
             this.Content = comment.Content;
+            this.Time = comment.Time;
         }
         public void SetAccountComment(DTO.Profile profile)
         {

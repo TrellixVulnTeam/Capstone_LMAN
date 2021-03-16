@@ -33,13 +33,13 @@ namespace SOFA_API.Service
         /// Service of Get all post controller
         /// </summary>
         /// <returns></returns>
-        public PostViewModelOut GetAllPost(int userID)
+        public PostViewModelOut GetAllPost(int userID, int page, int rowsOfPage)
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
 
             try
             {
-                List<Post> listAllPost = PostDAO.Instance.GetAllPost();
+                List<Post> listAllPost = PostDAO.Instance.GetAllPost(page, rowsOfPage);
 
                 foreach (Post item in listAllPost)
                 {
@@ -74,13 +74,13 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="postViewModelIn"></param>
         /// <returns></returns>
-        public PostViewModelOut GetAllPublicPostOfUser(PostViewModelIn postViewModelIn, int userID)
+        public PostViewModelOut GetAllPublicPostOfUser(PostViewModelIn postViewModelIn, int userID, int page, int rowsOfPage)
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
 
             try
             {
-                List<Post> listAllPost = PostDAO.Instance.GetAllPublicPostOfUser(postViewModelIn.AccountPost);
+                List<Post> listAllPost = PostDAO.Instance.GetAllPublicPostOfUser(postViewModelIn.AccountPost, page, rowsOfPage);
 
                 foreach (Post item in listAllPost)
                 {
@@ -131,7 +131,8 @@ namespace SOFA_API.Service
                         postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                         postModelOut.ID = postID;
                         postViewModelOut.ListPost.Add(postModelOut);
-                    } else
+                    }
+                    else
                     {
                         postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
                     }
@@ -141,7 +142,8 @@ namespace SOFA_API.Service
                     postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
                     postViewModelOut.ErrorMessage = MessageUtils.ERROR_DONT_HAVE_PERMISSION;
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Utils.Instance.SaveLog(e.ToString());
                 postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
@@ -155,13 +157,13 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="postViewModelIn"></param>
         /// <returns></returns>
-        public PostViewModelOut GetListCommentOfPost(PostViewModelIn postViewModelIn)
+        public PostViewModelOut GetListCommentOfPost(PostViewModelIn postViewModelIn, int page, int rowsOfPage)
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
             try
             {
                 PostModelOut postModelOut = new PostModelOut();
-                List<Comment> comments = CommentDAO.Instance.GetAllCommentOfPost(postViewModelIn.PostID);
+                List<Comment> comments = CommentDAO.Instance.GetAllCommentOfPost(postViewModelIn.PostID, page, rowsOfPage);
                 List<CommentModelOut> commentModelOuts = new List<CommentModelOut>();
                 foreach (Comment comment in comments)
                 {
@@ -190,13 +192,13 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="postViewModelIn"></param>
         /// <returns></returns>
-        public PostViewModelOut GetAllPostOfUser(PostViewModelIn postViewModelIn, int userID)
+        public PostViewModelOut GetAllPostOfUser(PostViewModelIn postViewModelIn, int userID, int page, int rowsOfPage)
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
 
             try
             {
-                List<Post> listAllPost = PostDAO.Instance.GetAllPostOfUser(postViewModelIn.AccountPost);
+                List<Post> listAllPost = PostDAO.Instance.GetAllPostOfUser(postViewModelIn.AccountPost, page, rowsOfPage);
 
                 foreach (Post item in listAllPost)
                 {
@@ -338,7 +340,7 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="postViewModelIn">Include ID of the post(postID)</param>
         /// <returns>PostViewModelOut include list of the post </returns>
-        public PostViewModelOut GetPostDetail(PostViewModelIn postViewModelIn, int userID)
+        public PostViewModelOut GetPostDetail(PostViewModelIn postViewModelIn, int userID, int commentRowsOfPage)
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
             try
@@ -350,7 +352,7 @@ namespace SOFA_API.Service
                 postModelOut.SetAccountPost(profile);
                 postModelOut.ListLike = LikeDAO.Instance.GetAllLikeOfPost(postViewModelIn.PostID);
 
-                List<Comment> comments = CommentDAO.Instance.GetAllCommentOfPost(postViewModelIn.PostID);
+                List<Comment> comments = CommentDAO.Instance.GetAllCommentOfPost(postViewModelIn.PostID, 1, commentRowsOfPage);
                 List<CommentModelOut> commentModelOuts = new List<CommentModelOut>();
                 foreach (Comment comment in comments)
                 {
@@ -392,25 +394,21 @@ namespace SOFA_API.Service
         /// <returns></returns>
         public PostViewModelOut CommentPost(int accountID, int postID, string content)
         {
-            int ID = 0;
-            ID = CommentDAO.Instance.CommentPost(accountID, postID, content);
+            Comment comment = CommentDAO.Instance.CommentPost(accountID, postID, content);
             PostViewModelOut result = new PostViewModelOut();
             try
             {
-                if (ID != 0)
+                if (comment != null && comment.ID > 0)
                 {
                     PostModelOut postModelOut = new PostModelOut();
                     postModelOut.ID = postID;
-                    List<Comment> comments = CommentDAO.Instance.GetAllCommentOfPost(postID);
                     List<CommentModelOut> commentModelOuts = new List<CommentModelOut>();
-                    foreach (Comment comment in comments)
-                    {
-                        Profile profileComment = ProfileDAO.Instance.GetProfileByAccountID(comment.AccountID);
-                        CommentModelOut commentModelOut = new CommentModelOut();
-                        commentModelOut.SetComment(comment);
-                        commentModelOut.SetAccountComment(profileComment);
-                        commentModelOuts.Add(commentModelOut);
-                    }
+                    Profile profileComment = ProfileDAO.Instance.GetProfileByAccountID(comment.AccountID);
+                    CommentModelOut commentModelOut = new CommentModelOut();
+                    commentModelOut.SetComment(comment);
+                    commentModelOut.SetAccountComment(profileComment);
+                    commentModelOuts.Add(commentModelOut);
+
                     postModelOut.ListComment = commentModelOuts;
 
                     result.ListPost.Add(postModelOut);
