@@ -12,7 +12,7 @@ import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
-import { scale } from '../common/utils';
+import { scale, calculateTime } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { AVATAR } from '../../image/index';
 
@@ -172,7 +172,6 @@ export default class Newsfeed extends Component {
         Request.Get(uri, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    console.log(response);
                     if (response.listPost.length > 0) {
                         let listComment = response.listPost[0].listComment;
                         if (page == 1) {
@@ -219,7 +218,7 @@ export default class Newsfeed extends Component {
                     renderItem={({ item }) => {
                         return (
                             <View style={styles.CommentItemBounder}>
-                                <View style={styles.CommentItem}>
+                                <View style={{ flexDirection: 'row' }}>
                                     <TouchableWithoutFeedback
                                         onPress={() => this.navigateProfile(item.accountID)}
                                     >
@@ -227,11 +226,19 @@ export default class Newsfeed extends Component {
                                             style={styles.CommentAvatar}
                                             source={item.avatar && item.avatar.length > 0 ? { uri: Const.assets_domain + item.avatar } : { AVATAR }} />
                                     </TouchableWithoutFeedback>
-                                    <Text
-                                        style={styles.CommentAuthor}
-                                        onPress={() => this.navigateProfile(item.accountID)}>{item.firstName + " " + item.lastName}
-                                    </Text>
-                                    <Text style={styles.CommentContent}>{item.content}</Text>
+                                    <View style={styles.CommentItem}>
+                                        <Text
+                                            style={styles.CommentAuthor}
+                                            onPress={() => this.navigateProfile(item.accountID)}>{item.firstName + " " + item.lastName}
+                                        </Text>
+                                        <Text style={styles.CommentContent}>{item.content}</Text>
+
+                                    </View>
+                                </View>
+                                <View style={styles.CommentAction}>
+                                    <Text style={{ fontSize: 13 }}>{calculateTime(item.time)}</Text>
+                                    <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Thích</Text>
+                                    <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Trả lời</Text>
 
                                 </View>
                             </View>
@@ -269,12 +276,13 @@ export default class Newsfeed extends Component {
 const styles = StyleSheet.create({
     CommentItemBounder: {
         marginLeft: scale(10, Horizontal),
-        marginBottom: scale(5, Vertical)
+        marginTop: scale(10, Vertical),
     },
     CommentItem: {
-        flexDirection: 'row',
-        alignContent: 'center',
-        alignItems: 'center'
+        width: scale(300, Horizontal),
+        minHeight: scale(50, Vertical),
+        borderRadius: 10,
+        backgroundColor: 'rgba(222,222,222,0.3)'
     },
     CommentAvatar: {
         width: scale(40, Horizontal),
@@ -285,9 +293,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: scale(10, Horizontal)
     },
-    CommentContent: { marginLeft: scale(5, Horizontal) },
+    CommentContent: { marginLeft: scale(10, Horizontal) },
     CommentTextBox: {
         backgroundColor: 'white',
         borderRadius: 10
     },
+    CommentAction: {
+        marginTop:scale(5, Vertical),
+        flexDirection: 'row',
+        marginLeft: scale(50, Horizontal)
+    }
 })
