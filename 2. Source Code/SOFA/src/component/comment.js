@@ -27,7 +27,9 @@ export default class Newsfeed extends Component {
             keyboardHeight: 0,
             commentText: '',
             post: {},
-            listComment: []
+            listComment: [],
+            page: 1,
+            isRefresing: false
         }
     }
     getData = async (key) => {
@@ -90,7 +92,7 @@ export default class Newsfeed extends Component {
                 tabBarVisible: false
             });
             this.checkLoginToken();
-            this.GetAllComment(post);
+            this.GetAllComment(post, 1);
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
             this.props.navigation.dangerouslyGetParent().setOptions({
@@ -104,7 +106,8 @@ export default class Newsfeed extends Component {
                 keyboardHeight: 0,
                 commentText: '',
                 post: {},
-                listComment: []
+                listComment: [],
+                page: 1
             })
             console.log('unfocus');
         })
@@ -160,19 +163,31 @@ export default class Newsfeed extends Component {
         this.setState({ commentText: '' });
     }
 
-    GetAllComment(post) {
+    GetAllComment(post, page) {
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json'
         };
-        let uri = Const.domain + 'api/post/GetCommentOfPost?postID=' + post.id + '&page=' + 1 + '&rowsOfPage=' + Const.COMMENT_ROWS_OF_PAGE;
+        let uri = Const.domain + 'api/post/GetCommentOfPost?postID=' + post.id + '&page=' + page + '&rowsOfPage=' + Const.COMMENT_ROWS_OF_PAGE;
         Request.Get(uri, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     console.log(response);
                     if (response.listPost.length > 0) {
                         let listComment = response.listPost[0].listComment;
-                        this.setState({ listComment: listComment });
+                        if (page == 1) {
+                            if (listComment.length > 0) {
+                                this.setState({ listComment: listComment, isRefresing: false });
+                            } else {
+                                this.setState({ isRefresing: false });
+                            }
+                        } else {
+                            if (listComment.length > 0) {
+                                this.setState({ listComment: [...this.state.listComment, ...listComment], isRefresing: false })
+                            } else {
+                                this.setState({ isRefresing: false });
+                            }
+                        }
                     }
                 } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
                     console.log(response.errorMessage);
@@ -221,6 +236,18 @@ export default class Newsfeed extends Component {
                                 </View>
                             </View>
                         )
+                    }}
+                    refreshing={this.state.isRefresing}
+                    onEndReached={() => {
+                        // this.setState({ isRefresing: true });
+                        this.GetAllComment(this.state.post, this.state.page + 1);
+                        this.setState({ page: this.state.page + 1 })
+                    }}
+                    onEndReachedThreshold={0.3}
+                    onRefresh={() => {
+                        this.setState({ isRefresing: true });
+                        this.GetAllComment(this.state.post, 1);
+                        this.setState({ page: 1 })
                     }}
 
                 />

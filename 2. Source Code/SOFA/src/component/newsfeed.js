@@ -32,9 +32,10 @@ export default class Newsfeed extends Component {
             listPost: [],
             isKeyBoardShow: false,
             keyboardHeight: 0,
-            inScreen: false,
             currentPostSelect: {},
-            isShowMenu: false
+            isShowMenu: false,
+            page: 1,
+            listPostRefreshing: false,
         }
     }
     actionArticleNotOwn = [
@@ -178,7 +179,7 @@ export default class Newsfeed extends Component {
             })
     }
 
-    getAllPost = async () => {
+    getAllPost = async (page) => {
         await this.getData('token')
             .then(result => {
                 if (result) {
@@ -196,7 +197,7 @@ export default class Newsfeed extends Component {
             "Authorization": 'Bearer ' + this.state.token,
         };
         var data = {};
-        var uri = Const.domain + 'api/post?page=' + 1 + '&rowsOfPage=' + Const.NEWSFEED_ROWS_OF_PAGE;
+        var uri = Const.domain + 'api/post?page=' + page + '&rowsOfPage=' + Const.NEWSFEED_ROWS_OF_PAGE;
         Request.Get(uri, header, data)
             .then(response => {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -204,7 +205,21 @@ export default class Newsfeed extends Component {
                     for (let i = 0; i < listPostRes.length; i++) {
                         listPostRes.isShowComment = false;
                     }
-                    this.setState({ listPost: listPostRes });
+                    if (page > 1) {
+                        console.log('load more', listPostRes.length);
+                        if (listPostRes.length > 0) {
+                            this.setState({ listPost: [...this.state.listPost, ...listPostRes], listPostRefreshing: false });
+                        } else {
+                            this.setState({ listPostRefreshing: false });
+                        }
+                    } else {
+                        console.log('reload', listPostRes.length);
+                        if (listPostRes.length > 0) {
+                            this.setState({ listPost: listPostRes, listPostRefreshing: false })
+                        } else {
+                            this.setState({ listPostRefreshing: false });
+                        }
+                    }
                 }
             })
             .catch(reason => {
@@ -213,22 +228,19 @@ export default class Newsfeed extends Component {
     }
 
     componentDidMount() {
+        this.checkLoginToken();
+        this.getAllPost(1);
         this._screenFocus = this.props.navigation.addListener('focus', () => {
-            this.setState({ inScreen: true });
             this.checkLoginToken();
-            this.getAllPost();
+            //this.getAllPost(1);
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
             this.setState({
                 token: '',
                 account: {},
                 isLogin: false,
-                listPost: [],
                 isKeyBoardShow: false,
                 keyboardHeight: 0,
-                commentText: '',
-                currentPostComment: 0,
-                inScreen: false,
                 isShowMenu: false,
                 currentPostID: 0
             });
@@ -487,7 +499,7 @@ export default class Newsfeed extends Component {
     }
 
     render() {
-        const { isShowMenu, listPost, account, currentPostSelect } = this.state;
+        const { isShowMenu, listPost, account, currentPostSelect, listPostRefreshing } = this.state;
         return (
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
@@ -508,6 +520,18 @@ export default class Newsfeed extends Component {
                         data={listPost}
                         keyExtractor={(item, index) => item.id + ''}
                         renderItem={({ item, index }) => <this.Article data={item} />}
+                        onEndReached={() => {
+                            //this.setState({ listPostRefreshing: true });
+                            this.getAllPost(this.state.page + 1);
+                            this.setState({ page: this.state.page + 1 });
+
+                        }}
+                        onEndReachedThreshold={0.5}
+                        refreshing={listPostRefreshing}
+                        onRefresh={() => {
+                            this.setState({ page: 1, listPostRefreshing: true });
+                            this.getAllPost(1);
+                        }}
                     />
                     <Modal
                         animationType='slide'
