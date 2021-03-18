@@ -31,8 +31,8 @@ export default class Profile extends Component {
             account: {},
             avatarUri: '',
             token: '',
-            listImageAll: []
-
+            listImageAll: [],
+            pageNumber: 1,
         }
     }
     getData = async (key) => {
@@ -93,6 +93,7 @@ export default class Profile extends Component {
     }
 
     getListImage = async () => {
+        var {pageNumber} = this.state;
         await this.getData('token')
             .then(result => {
                 if (result) {
@@ -101,7 +102,7 @@ export default class Profile extends Component {
                         "Accept": 'application/json',
                         "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
                     };
-                    let url = Const.domain + 'api/post/getuserpost';
+                    let url = Const.domain + 'api/post/getuserpost?page='+pageNumber+'&rowsofpage=?'+Const.PROFILE_ROW_OF_PAGE;
                     Request.Get(url, header)
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -112,6 +113,7 @@ export default class Profile extends Component {
                                     console.log(Const.assets_domain + listPost[i].listImage[0].url + '?time=' + new Date())
                                 }
                                 this.setState({ listImageAll: listImageAll });
+                                this.setState({pageNumber: pageNumber+1});
                             } else {
                                 this.props.navigation.navigate('Login')
                             }
@@ -253,6 +255,8 @@ export default class Profile extends Component {
                         marginTop: Utils.scale(10, Const.Vertical),
                     }}>
                         <FlatList
+                            onEndReachedThreshold = {0.5}
+                            onEndReached = {() => this.getListImage()}
                             data={this.state.listImageAll}
                             scrollEnabled={false}
                             numColumns={3}
