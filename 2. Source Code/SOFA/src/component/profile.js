@@ -115,7 +115,7 @@ export default class Profile extends Component {
                                     for (let i = 0; i < listPost.length; i++) {
                                         listImageAll.push(listPost[i].listImage[0]);
                                     }
-                                    this.setState({ listImageAll: listImageAll});
+                                    this.setState({ listImageAll: listImageAll });
                                     this.setState({ pageNumber: pageNumber + 1 });
                                     console.log('next page: ' + this.state.pageNumber);
                                 }
@@ -181,11 +181,14 @@ export default class Profile extends Component {
             this.getProfile();
             this.getListImage(1);
         });
+        this._unfocus = this.props.navigation.addListener('blur', () => {
+            this.setState({ account: {}, avatarUri: '', pageNumber: 1, listImageAll: [] });
+        });
     }
 
     render() {
         const { account, avatarUri } = this.state;
-        console.log(account);
+        // console.log(account);
         LogBox.ignoreLogs(['source.uri should not be an empty string']);
         return (
             <View>
@@ -274,15 +277,16 @@ export default class Profile extends Component {
                         keyExtractor={(item) => item.id + ''}
                         renderItem={({ item, index }) => {
                             return (<Image
-                            style={{
-                                marginLeft: index%3==0? Utils.scale(33.5, Const.Horizontal):Utils.scale(0, Const.Horizontal),
-                                height: Utils.scale(100, Const.Vertical),
-                                width: Utils.scale(100, Const.Vertical),
-                                borderWidth: 1,
-                                borderColor: '#EA2338',
-                            }}
-                            source={{ uri: Const.assets_domain + item.url}}
-                        />)}
+                                style={{
+                                    marginLeft: index % 3 == 0 ? Utils.scale(33.5, Const.Horizontal) : Utils.scale(0, Const.Horizontal),
+                                    height: Utils.scale(100, Const.Vertical),
+                                    width: Utils.scale(100, Const.Vertical),
+                                    borderWidth: 0.5,
+                                    borderColor: 'black',
+                                }}
+                                source={{ uri: Const.assets_domain + item.url }}
+                            />)
+                        }
                         }
                     />
                 </View>

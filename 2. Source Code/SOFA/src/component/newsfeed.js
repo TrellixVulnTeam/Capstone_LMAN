@@ -526,7 +526,7 @@ export default class Newsfeed extends Component {
                             this.setState({ page: this.state.page + 1 });
 
                         }}
-                        onEndReachedThreshold={0.5}
+                        onEndReachedThreshold={0.8}
                         refreshing={listPostRefreshing}
                         onRefresh={() => {
                             this.setState({ page: 1, listPostRefreshing: true });

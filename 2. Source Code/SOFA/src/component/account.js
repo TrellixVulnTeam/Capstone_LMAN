@@ -135,7 +135,7 @@ export default class Profile extends Component {
     render() {
         const { account, avatarUri, isLogin } = this.state;
         LogBox.ignoreLogs(['source.uri should not be an empty string']);
-        console.log(account);     
+        // console.log(account);     
         if(!isLogin){
             return (
                 
