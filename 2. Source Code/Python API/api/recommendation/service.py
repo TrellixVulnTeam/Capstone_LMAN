@@ -1,5 +1,4 @@
 import database as database
-from sklearn.metrics.pairwise import cosine_similarity
 from scipy import spatial
 
 
