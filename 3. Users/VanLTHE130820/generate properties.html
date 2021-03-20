@@ -15,6 +15,13 @@
                 var setter = "@"+prop+".setter\ndef "+prop +"(self, value):\n   self.__"+prop+" = value\n\n"
                 result = result + setter;
             }
+			var toJson = "def to_json(self):\n    json_str = \{\n";
+			for(var i = 0; i<props.length;i++){
+				var prop = props[i];
+				toJson = toJson + "        '"+prop+"': self.__"+prop+",\n"
+			}
+			toJson = toJson + "\n    \}\n    return json_str\n\n" 
+			result = result + toJson;
             document.getElementById("txtMethod").value = result;
         }
     </script>

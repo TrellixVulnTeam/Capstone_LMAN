@@ -17,3 +17,5 @@ future~=0.18.2
 requests~=2.24.0
 Markdown~=3.3.3
 six~=1.15.0
+sklearn~=0.0
+scikit-learn~=0.24.1

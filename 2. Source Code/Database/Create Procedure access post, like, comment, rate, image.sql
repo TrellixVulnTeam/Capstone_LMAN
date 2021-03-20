@@ -50,7 +50,7 @@ CREATE PROC GetPostByID
 @postID INT
 AS
 BEGIN
-	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar 
+	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID
 	FROM dbo.Post
 	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
 	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
@@ -58,10 +58,24 @@ BEGIN
 END
 GO
 
+DROP PROC IF EXISTS GetPostByBodyInfoID
+GO
+CREATE PROC GetPostByBodyInfoID
+@bodyInfoID INT
+AS
+BEGIN
+	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID
+	FROM dbo.Post
+	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
+	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
+	WHERE Post.BodyInfoID = @bodyInfoID;
+END
+GO
+
 DROP PROC IF EXISTS AddNewPost
 GO
 CREATE PROC AddNewPost
-@content NVARCHAR(MAX), @privacyID INT, @accountPost INT
+@content NVARCHAR(MAX), @privacyID INT, @accountPost INT, @bodyInfoID INT
 AS
 BEGIN
 	INSERT INTO dbo.Post
@@ -69,14 +83,16 @@ BEGIN
 	    Content,
 	    PrivacyID,
 	    Time,
-	    AccountPost
+	    AccountPost,
+		BodyInfoID
 	)
 	OUTPUT Inserted.*
 	VALUES
 	(   @content,       -- Content - nvarchar(max)
 	    @privacyID,         -- PrivacyID - int
 	    GETDATE(), -- Time - datetime
-	    @accountPost          -- AccountPost - int
+	    @accountPost ,         -- AccountPost - int
+		@bodyInfoID
 	    )
 END
 GO
@@ -84,7 +100,7 @@ GO
 DROP PROC IF EXISTS UpdatePost
 GO
 CREATE PROC UpdatePost
-@postId INT, @content NVARCHAR(MAX), @privacyID INT, @time DATETIME
+@postId INT, @content NVARCHAR(MAX), @privacyID INT, @time DATETIME, @bodyInfoID INT
 AS
 BEGIN
 	UPDATE dbo.Post 
