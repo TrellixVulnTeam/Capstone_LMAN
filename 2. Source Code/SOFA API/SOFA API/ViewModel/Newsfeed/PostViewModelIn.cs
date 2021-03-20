@@ -14,6 +14,7 @@ namespace SOFA_API.ViewModel.Newsfeed
         public string Content { get; set; }
         public int PrivacyID { get; set; }
         public DateTime Time { get; set; }
+        public int BodyInfoID { get; set; }
         public List<ImageModelIn> ListImage { get; set; }
         public int AccountPost { get; set; }
         public int RatePoint { get; set; }
@@ -24,12 +25,13 @@ namespace SOFA_API.ViewModel.Newsfeed
             ListImage = new List<ImageModelIn>();
         }
 
-        public PostViewModelIn(int id, string content, int privacyID, DateTime time, int accountPost, int ratePoint, string comment)
+        public PostViewModelIn(int id, string content, int privacyID, DateTime time, int bodyInfoID, int accountPost, int ratePoint, string comment)
         {
             PostID = id;
             Content = content;
             PrivacyID = privacyID;
             Time = time;
+            BodyInfoID = bodyInfoID;
             AccountPost = accountPost;
             RatePoint = ratePoint;
             Comment = comment;

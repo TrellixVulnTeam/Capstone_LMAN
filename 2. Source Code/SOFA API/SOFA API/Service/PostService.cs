@@ -439,7 +439,7 @@ namespace SOFA_API.Service
             PostViewModelOut postViewModelOut = new PostViewModelOut();
             try
             {
-                Post post = new Post(0, postViewModelIn.Content, postViewModelIn.PrivacyID, postViewModelIn.Time, postViewModelIn.AccountPost);
+                Post post = new Post(0, postViewModelIn.Content, postViewModelIn.PrivacyID, postViewModelIn.Time, postViewModelIn.AccountPost, postViewModelIn.BodyInfoID);
                 post = PostDAO.Instance.CreatePost(post);
                 if (post != null && post.ID != 0)
                 {

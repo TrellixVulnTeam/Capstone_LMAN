@@ -5,7 +5,7 @@ export const Vertical = 'Vertical';
 export const domain = 'https://chientranhvietnam.org/sofaapi/'
 export const assets_domain = 'https://chientranhvietnam.org/assets/'
 
-export const COMMENT_ROWS_OF_PAGE = 1
+export const COMMENT_ROWS_OF_PAGE = 8
 export const NEWSFEED_ROWS_OF_PAGE = 2
 export const PROFILE_ROW_OF_PAGE = 12
 

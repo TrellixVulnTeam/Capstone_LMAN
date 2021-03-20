@@ -59,8 +59,8 @@ namespace SOFA_API.DAO
         {
             Post res = null;
 
-            string sql = "EXEC dbo.AddNewPost @content , @privacyID , @accountPost";
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { post.Content, post.PrivacyID, post.AccountPost });
+            string sql = "EXEC dbo.AddNewPost @content , @privacyID , @accountPost , @bodyInfoID";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { post.Content, post.PrivacyID, post.AccountPost, post.BodyInfoID });
 
             if (data.Rows.Count > 0)
             {

@@ -12,6 +12,7 @@ namespace SOFA_API.ViewModel.Newsfeed
         public string Content { get; set; }
         public int PrivacyID { get; set; }
         public DateTime Time { get; set; }
+        public int BodyInfoID { get; set; }
         public int AccountPost { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -33,6 +34,7 @@ namespace SOFA_API.ViewModel.Newsfeed
             ListLike = new List<Like>();
             ListComment = new List<CommentModelOut>();
             ListRate = new List<Rate>();
+            BodyInfoID = 0;
             NumberOfLike = 0;
             NumberOfComment = 0;
             RateAverage = 0;
@@ -40,12 +42,13 @@ namespace SOFA_API.ViewModel.Newsfeed
             MyRatePoint = 0;
         }
 
-        public PostModelOut(int iD, string content, int privacyID, DateTime time, int accountPost, string firstName, string lastName, string avatar, bool gender, List<Image> listImage, List<Like> listLike, List<CommentModelOut> listComment, List<Rate> listRate, int numberOfLike, int numberOfComment, double rateAverage, bool isLiked, int myRatePoint)
+        public PostModelOut(int iD, string content, int privacyID, DateTime time, int bodyInfoID, int accountPost, string firstName, string lastName, string avatar, bool gender, List<Image> listImage, List<Like> listLike, List<CommentModelOut> listComment, List<Rate> listRate, int numberOfLike, int numberOfComment, double rateAverage, bool isLiked, int myRatePoint)
         {
             ID = iD;
             Content = content;
             PrivacyID = privacyID;
             Time = time;
+            BodyInfoID = bodyInfoID;
             AccountPost = accountPost;
             FirstName = firstName;
             LastName = lastName;
@@ -69,6 +72,7 @@ namespace SOFA_API.ViewModel.Newsfeed
             PrivacyID = post.PrivacyID;
             Time = post.Time;
             AccountPost = post.AccountPost;
+            BodyInfoID = post.BodyInfoID;
         }
         public void SetAccountPost(DTO.Profile profile)
         {

@@ -75,7 +75,6 @@ export default class CreatePost extends Component {
                     var uri = Const.domain + 'api/profile';
                     Request.Get(uri, header)
                         .then(response => {
-                            console.log(response);
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                 this.setState({ isLoading: false });
                                 this.setState({ account: response, isLogin: true, token: token });

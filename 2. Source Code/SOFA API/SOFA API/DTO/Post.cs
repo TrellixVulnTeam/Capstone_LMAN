@@ -11,16 +11,18 @@ namespace SOFA_API.DTO
         public int PrivacyID { get; set; }
         public DateTime Time { get; set; }
         public int AccountPost { get; set; }
+        public int BodyInfoID { get; set; }
 
         public Post() { }
 
-        public Post(int id, string content, int privacyID, DateTime time, int accountPost)
+        public Post(int id, string content, int privacyID, DateTime time, int accountPost, int bodyInfoID)
         {
             this.ID = id;
             this.Content = content;
             this.PrivacyID = privacyID;
             this.Time = time;
             this.AccountPost = accountPost;
+            this.BodyInfoID = bodyInfoID;
         }
 
         public Post(DataRow row)
@@ -30,6 +32,7 @@ namespace SOFA_API.DTO
             this.PrivacyID = (int)row["PrivacyID"];
             this.Time = (DateTime)row["Time"];
             this.AccountPost = (int)row["AccountPost"];
+            this.BodyInfoID = Convert.IsDBNull(row["BodyInfoID"]) ? 0 : (int)row["BodyInfoID"];
         }
     }
 }
