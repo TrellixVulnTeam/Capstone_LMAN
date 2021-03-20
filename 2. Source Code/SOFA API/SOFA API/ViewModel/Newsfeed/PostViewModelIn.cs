@@ -20,7 +20,9 @@ namespace SOFA_API.ViewModel.Newsfeed
         public string Comment { get; set; }
 
 
-        public PostViewModelIn() : base() { }
+        public PostViewModelIn() : base() {
+            ListImage = new List<ImageModelIn>();
+        }
 
         public PostViewModelIn(int id, string content, int privacyID, DateTime time, int accountPost, int ratePoint, string comment)
         {
