@@ -90,11 +90,11 @@ namespace SOFA_API.DAO
         /// <param name="hipSize">hip size of user</param>
         /// <param name="skinColor">skin color of user</param>
         /// <returns></returns>
-        public Info CreateInfo(int accountID, double height, double weight, double bustSize, double waistSize, double hipSize, int skinColor)
+        public Info CreateInfo(int accountID, double height, double weight, double bustSize, double waistSize, double hipSize, int skinColor, string name)
         {
             Info info = null;
-            string sql = "EXEC dbo.CreateInfo @accountID , @height , @weight , @bustSize , @waistSize , @hipSize , @skinColor";
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID, height, weight, bustSize, waistSize, hipSize, skinColor });
+            string sql = "EXEC dbo.CreateInfo @accountID , @height , @weight , @bustSize , @waistSize , @hipSize , @skinColor , @name";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID, height, weight, bustSize, waistSize, hipSize, skinColor, name });
             if (data.Rows.Count > 0)
             {
                 info = new Info(data.Rows[0]);

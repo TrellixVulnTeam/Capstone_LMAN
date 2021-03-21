@@ -59,7 +59,7 @@ namespace SOFA_API.Service
             InfoViewModelOut infoViewModelOut = new InfoViewModelOut();
             try
             {
-                Info info = InfoDAO.Instance.CreateInfo(infoViewModelIn.AccountID, infoViewModelIn.Height, infoViewModelIn.Weight, infoViewModelIn.BustSize, infoViewModelIn.WaistSize, infoViewModelIn.HipSize, infoViewModelIn.SkinColor);
+                Info info = InfoDAO.Instance.CreateInfo(infoViewModelIn.AccountID, infoViewModelIn.Height, infoViewModelIn.Weight, infoViewModelIn.BustSize, infoViewModelIn.WaistSize, infoViewModelIn.HipSize, infoViewModelIn.SkinColor, infoViewModelIn.Name);
                 if (info.ID > 0)
                 {
                     InfoModelOut infoModelOut = new InfoModelOut(info);
