@@ -1,4 +1,4 @@
-USE CapstonesNoRelation
+﻿USE CapstonesNoRelation
 GO
 
 DROP PROC IF EXISTS GetAllInfo
@@ -33,23 +33,23 @@ GO
 DROP PROC IF EXISTS CreateInfo
 GO
 CREATE PROC CreateInfo
-@accountID INT, @height FLOAT, @weight FLOAT, @bustSize FLOAT, @waistSize FLOAT, @hipSize FLOAT, @skinColor INT
+@accountID INT, @height FLOAT, @weight FLOAT, @bustSize FLOAT, @waistSize FLOAT, @hipSize FLOAT, @skinColor INT, @name NVARCHAR(MAX)
 AS
 BEGIN
-	INSERT INTO Info(AccountId, height, [weight], BustSize, WaistSize, HipSize, SkinColor)
+	INSERT INTO Info(AccountId, height, [weight], BustSize, WaistSize, HipSize, SkinColor, [Name])
 	OUTPUT inserted.*
-	VALUES(@accountID, @height, @weight, @bustSize, @waistSize, @hipSize, @skinColor)
+	VALUES(@accountID, @height, @weight, @bustSize, @waistSize, @hipSize, @skinColor, @name)
 END
 GO
 
 DROP PROC IF EXISTS UpdateInfo
 GO
 CREATE PROC UpdateInfo
-@id INT, @height FLOAT, @weight FLOAT, @bustSize FLOAT, @waistSize FLOAT, @hipSize FLOAT, @skinColor INT
+@id INT, @height FLOAT, @weight FLOAT, @bustSize FLOAT, @waistSize FLOAT, @hipSize FLOAT, @skinColor INT, @name NVARCHAR(MAX)
 AS
 BEGIN
 	UPDATE Info
-	SET height = @height, weight = @weight, BustSize = @bustSize, WaistSize = @waistSize, HipSize = @hipSize, SkinColor = @skinColor
+	SET height = @height, weight = @weight, BustSize = @bustSize, WaistSize = @waistSize, HipSize = @hipSize, SkinColor = @skinColor, [Name] = @name
 	WHERE Id = @id
 END
 GO
@@ -74,42 +74,48 @@ BEGIN
 END
 GO
 
-EXEC dbo.CreateInfo @accountID = 1,   -- int
+EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @height = 160.0,    -- float
                     @weight = 58.0,    -- float
                     @bustSize = 88.0,  -- float
                     @waistSize = 65.0, -- float
                     @hipSize = 102.0,   -- float
-                    @skinColor = 0    -- int
+                    @skinColor = 0,    -- int
+					@name = N'Lê Thiện Văn 1'
 
-EXEC dbo.CreateInfo @accountID = 1,   -- int
+EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @height = 150.0,    -- float
                     @weight = 45.0,    -- float
                     @bustSize = 88.0,  -- float
                     @waistSize = 65.0, -- float
                     @hipSize = 90.0,   -- float
-                    @skinColor = 0    -- int
+                    @skinColor = 0,    -- int
+					@name = N'Lê Thiện Văn 1'
 
-EXEC dbo.CreateInfo @accountID = 1,   -- int
+EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @height = 158,    -- float
                     @weight = 56,    -- float
                     @bustSize = 100,  -- float
                     @waistSize = 66, -- float
                     @hipSize = 104,   -- float
-                    @skinColor = 0    -- int
+                    @skinColor = 0,    -- int
+					@name = N'Lê Thiện Văn 1'
 
-EXEC dbo.CreateInfo @accountID = 1,   -- int
+
+EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @height = 173,    -- float
                     @weight = 78.5,    -- float
                     @bustSize = 115,  -- float
                     @waistSize = 81, -- float
                     @hipSize = 90,   -- float
-                    @skinColor = 0    -- int
+                    @skinColor = 0,    -- int
+					@name = N'Lê Thiện Văn 1'
 
-EXEC dbo.CreateInfo @accountID = 1,   -- int
+EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @height = 166,    -- float
                     @weight = 68,    -- float
                     @bustSize = 108,  -- float
                     @waistSize = 74, -- float
                     @hipSize = 86,   -- float
-                    @skinColor = 0    -- int
+                    @skinColor = 0,    -- int
+					@name = N'Lê Thiện Văn 1'

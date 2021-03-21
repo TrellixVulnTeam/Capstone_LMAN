@@ -16,12 +16,13 @@ namespace SOFA_API.ViewModel.Info
         public double WaistSize { get; set; }
         public double HipSize { get; set; }
         public int SkinColor { get; set; }
+        public string Name { get; set; }
 
         public InfoModelOut()
         {
         }
 
-        public InfoModelOut(int iD, int accountID, double height, double weight, double bustSize, double waistSize, double hipSize, int skinColor)
+        public InfoModelOut(int iD, int accountID, double height, double weight, double bustSize, double waistSize, double hipSize, int skinColor, string name)
         {
             ID = iD;
             AccountID = accountID;
@@ -31,6 +32,7 @@ namespace SOFA_API.ViewModel.Info
             WaistSize = waistSize;
             HipSize = hipSize;
             SkinColor = skinColor;
+            Name = name;
         }
         public InfoModelOut(DTO.Info info)
         {
@@ -42,6 +44,7 @@ namespace SOFA_API.ViewModel.Info
             WaistSize = info.WaistSize;
             HipSize = info.HipSize;
             SkinColor = info.SkinColor;
+            Name = info.Name;
         }
     }
 }

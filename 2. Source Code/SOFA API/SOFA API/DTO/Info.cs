@@ -16,12 +16,13 @@ namespace SOFA_API.DTO
         public double WaistSize { get; set; }
         public double HipSize { get; set; }
         public int SkinColor { get; set; }
+        public string Name { get; set; }
 
         public Info()
         {
         }
 
-        public Info(int iD, int accountID, double height, double weight, double bustSize, double waistSize, double hipSize, int skinColor)
+        public Info(int iD, int accountID, double height, double weight, double bustSize, double waistSize, double hipSize, int skinColor, string name)
         {
             ID = iD;
             AccountID = accountID;
@@ -31,6 +32,7 @@ namespace SOFA_API.DTO
             WaistSize = waistSize;
             HipSize = hipSize;
             SkinColor = skinColor;
+            Name = name;
         }
 
         public Info(DataRow row)
@@ -43,6 +45,7 @@ namespace SOFA_API.DTO
             WaistSize = (double)row["WaistSize"];
             HipSize = (double)row["HipSize"];
             SkinColor = (int)row["SkinColor"];
+            Name = row["Name"].ToString();
         }
 
     }
