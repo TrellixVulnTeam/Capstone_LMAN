@@ -4,7 +4,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 
 import Newsfeed from '../component/newsfeed';
-import Comment from '../component/comment'
+import Comment from '../component/comment';
+import CreateInfo from '../component/createInfo';
+
 
 const Stack = createStackNavigator();
 

@@ -151,6 +151,71 @@ namespace SOFA_API.Service
             }
             return postViewModelOut;
         }
+        /// <summary>
+        /// Compare two post model out by rate point average
+        /// </summary>
+        /// <param name="o1"></param>
+        /// <param name="o2"></param>
+        /// <returns></returns>
+        private int comparePostModelOutByRateAve(PostModelOut o1, PostModelOut o2)
+        {
+            if (o1.RateAverage > o2.RateAverage)
+            {
+                return -1;
+            }
+            if (o1.RateAverage < o2.RateAverage)
+            {
+                return 1;
+
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Get list post that recommend for user of body measurements 
+        /// </summary>
+        /// <param name="infoID">ID of Info (body measurements)</param>
+        /// <param name="userID">ID of user</param>
+        /// <returns>Post View Model Out</returns>
+        public PostViewModelOut GetListPostRecommend(int userID, int infoID, int page, int rowsOfPage)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
+            try
+            {
+                List<Post> listAllPost = PostDAO.Instance.GetAllPostByInfoID(infoID, page, rowsOfPage);
+                listAllPost.RemoveAll(post => post.AccountPost == userID);
+                foreach (Post item in listAllPost)
+                {
+                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
+                    PostModelOut postModelOut = new PostModelOut();
+                    postModelOut.SetPostDetail(item);
+                    postModelOut.SetAccountPost(profile);
+                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
+                    postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
+                    postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
+                    postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                    if (userID != 0)
+                    {
+                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
+                        Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
+                        postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                    }
+                    if (postModelOut.RateAverage > 3.5)
+                    {
+                        postViewModelOut.ListPost.Add(postModelOut);
+                    }
+                }
+                postViewModelOut.ListPost.Sort(comparePostModelOutByRateAve);
+                postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
+            }
+            return postViewModelOut;
+        }
 
         /// <summary>
         /// Service of get list comment of post

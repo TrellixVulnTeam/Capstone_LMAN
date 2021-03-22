@@ -49,7 +49,32 @@ namespace SOFA_API.DAO
             }
             return listAllPost;
         }
+        /// <summary>
+        /// Get all post in database
+        /// </summary>
+        /// <returns>A list post</returns>
+        public List<Post> GetAllPostByInfoID(int infoID, int page, int rowsOfPage)
+        {
+            List<Post> listAllPost = new List<Post>();
 
+            String sql = "EXEC dbo.GetPostByInfoID @infoID , @page , @rowsOfPage";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { infoID, page, rowsOfPage });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        listAllPost.Add(new Post(row));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+            }
+            return listAllPost;
+        }
         /// <summary>
         /// Create post in database
         /// </summary>

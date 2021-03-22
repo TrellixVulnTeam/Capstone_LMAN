@@ -15,6 +15,20 @@ BEGIN
 END
 GO
 
+DROP PROC IF EXISTS GetPostByInfoID
+GO
+CREATE PROC GetPostByInfoID
+@infoID INT, @page INT, @rowsOfPage INT
+AS
+BEGIN
+	SELECT * FROM Post
+	WHERE BodyInfoID = @infoID AND PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public')
+	ORDER BY [Time] DESC
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
+END
+GO
+
 DROP PROC IF EXISTS GetAllPostOfUser
 GO
 CREATE PROC GetAllPostOfUser

@@ -22,6 +22,7 @@ import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import { AVATAR, ADD_PRIMARY_IMAGE, BACKGROUND } from '../../image/index';
 import InfoField from './infoField';
+import { Item } from 'native-base';
 export default class CreateInfo extends Component {
     constructor(props) {
         super(props);
@@ -31,14 +32,6 @@ export default class CreateInfo extends Component {
                 firstName: '',
                 lastName: '',
             },
-            content: '',
-            privacy: 3,
-            listPrimaryImage: [],
-            listShirtImage: [],
-            listTrousersImage: [],
-            listAccessoriesImage: [],
-            isLoading: false,
-            isPrePosting: false,
             info: {
                 id: 0,
                 accountID: 0,
@@ -47,9 +40,10 @@ export default class CreateInfo extends Component {
                 bustSize: 0,
                 waistSize: 0,
                 hipSize: 0,
-                skinColor: 0
+                skinColor: 0,
+                name: ''
             },
-            listInfo: []
+            isLoading: false,
         }
     }
     getData = async (key) => {
@@ -72,8 +66,6 @@ export default class CreateInfo extends Component {
             console.log(e);
         }
     }
-    imageHeight = 1200;
-    imageWidth = 900;
 
     checkLoginToken = async () => {
         this.setState({ isLoading: true });
@@ -162,143 +154,39 @@ export default class CreateInfo extends Component {
             })
     }
 
-    getListInfo = () => {
-        const { token } = this.state;
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json',
-            "Authorization": 'Bearer ' + token,
-        };
-        var uri = Const.domain + 'api/info';
-        Request.Get(uri, header)
-            .then(response => {
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    let listItem = [];
-                    let listTemp = response.listInfo;
-                    for (let i = 0; i < listTemp.length; i++) {
-                        let info = listTemp[i];
-                        let item = {
-                            value: info.id,
-                            label: info.name + '',
-                            icon: () => null,
-                            data: info
-                        }
-                        listItem.push(item);
-                    }
-                    this.setState({ listInfo: listItem });
-                }
+
+
+    componentDidMount() {
+        this.checkLoginToken();
+        this._screenFocus = this.props.navigation.addListener('focus', () => {
+            this.checkLoginToken();
+        });
+        this._screenFocus = this.props.navigation.addListener('blur', () => {
+            this.setState({
+                token: '',
+                account: {
+                    firstName: '',
+                    lastName: '',
+                },
+                info: {
+                    id: 0,
+                    accountID: 0,
+                    height: 0,
+                    weight: 0,
+                    bustSize: 0,
+                    waistSize: 0,
+                    hipSize: 0,
+                    skinColor: 0,
+                    name: ''
+                },
+                isLoading: false,
             })
-            .catch(reason => {
-                console.log(reason);
-                Alert.alert('Lỗi rồi', 'Có lỗi xảy ra');
-            })
+        });
     }
 
-    editImage = (image, index, imageType) => {
-        this.props.navigation.navigate('EditImage', {
-            'image': image,
-            onGoBack: (result) => {
-                if (imageType == 'primary') {
-                    let images = this.state.listPrimaryImage;
-                    images[index] = { 'data': result.data, 'path': result.path };
-                    this.setState({ listPrimaryImage: images });
-                } else if (imageType == 'shirt') {
-                    let images = this.state.listShirtImage;
-                    images[index] = { 'data': result.data, 'path': result.path };
-                    this.setState({ listShirtImage: images });
-                }
-                else if (imageType == 'trousers') {
-                    let images = this.state.listTrousersImage;
-                    images[index] = { 'data': result.data, 'path': result.path };
-                    this.setState({ listTrousersImage: images });
-                }
-                else if (imageType == 'accessories') {
-                    let images = this.state.listAccessoriesImage;
-                    images[index] = { 'data': result.data, 'path': result.path };
-                    this.setState({ listAccessoriesImage: images });
-                }
-            }
-        })
-    }
-
-    removeIndex = (index, list = []) => {
-        let listTemp = list;
-        for (let i = index; i < listTemp.length; i++) {
-            listTemp[i] = listTemp[i + 1];
-        }
-        listTemp.pop();
-        return listTemp;
-    }
-
-    deleteImage = (imageType, index) => {
-        if (imageType == 'primary') {
-            this.setState({ listPrimaryImage: this.removeIndex(index, this.state.listPrimaryImage) });
-        } else if (imageType == 'shirt') {
-            this.setState({ listShirtImage: this.removeIndex(index, this.state.listShirtImage, index) });
-        }
-        else if (imageType == 'trousers') {
-            this.setState({ listTrousersImage: this.removeIndex(this.state.listTrousersImage, index) });
-        }
-        else if (imageType == 'accessories') {
-            this.setState({ listAccessoriesImage: this.removeIndex(this.state.listAccessoriesImage, index) });
-        }
-    }
-
-    selectImage = (imageType) => {
-        ImagePicker.openPicker({
-            width: this.imageWidth,
-            height: this.imageHeight,
-            compressImageMaxHeight: this.imageHeight,
-            compressImageMaxWidth: this.imageWidth,
-            includeBase64: true,
-            cropping: true
-        })
-            .then(result => {
-                if (imageType == 'primary') {
-                    this.setState({ listPrimaryImage: [...this.state.listPrimaryImage, { 'data': result.data, 'path': result.path }] });
-                } else if (imageType == 'shirt') {
-                    this.setState({ listShirtImage: [...this.state.listShirtImage, { 'data': result.data, 'path': result.path }] });
-                }
-                else if (imageType == 'trousers') {
-                    this.setState({ listTrousersImage: [...this.state.listTrousersImage, { 'data': result.data, 'path': result.path }] });
-                }
-                else if (imageType == 'accessories') {
-                    this.setState({ listAccessoriesImage: [...this.state.listAccessoriesImage, { 'data': result.data, 'path': result.path }] });
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-            })
-    }
-    takePicture = (imageType) => {
-        ImagePicker.openCamera({
-            width: this.imageWidth,
-            height: this.imageHeight,
-            compressImageMaxHeight: this.imageHeight,
-            compressImageMaxWidth: this.imageWidth,
-            includeBase64: true,
-            cropping: true
-        })
-            .then(result => {
-                if (imageType == 'primary') {
-                    this.setState({ listPrimaryImage: [...this.state.listPrimaryImage, { 'data': result.data, 'path': result.path }] });
-                } else if (imageType == 'shirt') {
-                    this.setState({ listPrimaryImage: [...this.state.listShirtImage, { 'data': result.data, 'path': result.path }] });
-                }
-                else if (imageType == 'trousers') {
-                    this.setState({ listTrousersImage: [...this.state.listTrousersImage, { 'data': result.data, 'path': result.path }] });
-                }
-                else if (imageType == 'accessories') {
-                    this.setState({ listAccessoriesImage: [...this.state.listAccessoriesImage, { 'data': result.data, 'path': result.path }] });
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-            })
-    }
-
-    postStatus = () => {
-        const { token, content, privacy, listPrimaryImage, listShirtImage, listTrousersImage, listAccessoriesImage } = this.state;
+    createNewInfo = () => {
+        console.log(this.state.info);
+        const { token, info, isLoading } = this.state;
         this.setState({ isLoading: true });
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
@@ -307,86 +195,38 @@ export default class CreateInfo extends Component {
             "Authorization": 'Bearer ' + token,
         };
         let data = new FormData();
-        data.append('content', content);
-        data.append('PrivacyID', privacy);
-        let count = 0;
-        for (let i = 0; i < listPrimaryImage.length; i++) {
-            data.append('ListImage[' + count + '].Image', listPrimaryImage[i].data);
-            data.append('ListImage[' + count + '].ImageType', 1);
-            count++;
-        }
-        for (let i = 0; i < listShirtImage.length; i++) {
-            data.append('ListImage[' + count + '].Image', listShirtImage[i].data);
-            data.append('ListImage[' + count + '].ImageType', 1);
-            count++;
-        }
-        for (let i = 0; i < listTrousersImage.length; i++) {
-            data.append('ListImage[' + count + '].Image', listTrousersImage[i].data);
-            data.append('ListImage[' + count + '].ImageType', 1);
-            count++;
-        }
-        for (let i = 0; i < listAccessoriesImage.length; i++) {
-            data.append('ListImage[' + count + '].Image', listAccessoriesImage[i].data);
-            data.append('ListImage[' + count + '].ImageType', 1);
-            count++;
-        }
-        data.append('BodyInfoID', this.state.info.id);
-        let uri = Const.domain + 'api/post/createpost';
+        data.append('Name', info.name);
+        data.append('Height', info.height);
+        data.append('Weight', info.weight);
+        data.append('BustSize', info.bustSize);
+        data.append('WaistSize', info.waistSize);
+        data.append('HipSize', info.hipSize);
+        data.append('SkinColor', info.skinColor);
+        let uri = Const.domain + 'api/info';
         Request.Post(uri, header, data)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({ isLoading: false });
-                    if (response.listPost && response.listPost.length > 0) {
-                        this.props.navigation.dangerouslyGetParent().setOptions({
-                            tabBarVisible: true
-                        });
-                        this.setState({
-                            token: '',
-                            account: {},
-                            content: '',
-                            privacy: 3,
-                            listPrimaryImage: [],
-                            listShirtImage: [],
-                            listTrousersImage: [],
-                            listAccessoriesImage: []
-                        })
-                        this.props.navigation.navigate('Newsfeed');
+                    let newInfo = {
+                        value: response.listInfo[0].id,
+                        label: response.listInfo[0].name + '',
+                        icon: () => null,
+                        data: response.listInfo[0]
                     }
-                } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
-                    this.setState({ isLoading: true });
-                    console.log(response.errorMessage);
-                    Alert.alert('Thông báo', 'Đăng bài không thành công');
+                    this.setState({ isLoading: false });
+                    this.props.navigation.goBack();
+                } else {
+                    this.setState({ isLoading: false });
+                    Alert.alert('Lỗi', 'Tạo số đo không thành công, hãy thử lại hoặc chọn bộ có sẵn để đăng bài viết!');
                 }
             })
             .catch(reason => {
-                this.setState({ isLoading: true });
                 console.log(reason);
-                Alert.alert('Thông báo', 'Đăng bài không thành công');
+                this.setState({ isLoading: false });
             })
     }
 
-    onPressPostButton() {
-        this.getListInfo();
-        this.setState({ isPrePosting: true });
-    }
-
-    componentDidMount() {
-        this.checkLoginToken();
-        this._screenFocus = this.props.navigation.addListener('focus', () => {
-            this.checkLoginToken();
-            this.props.navigation.dangerouslyGetParent().setOptions({
-                tabBarVisible: false
-            });
-        });
-        this._screenFocus = this.props.navigation.addListener('blur', () => {
-            this.props.navigation.dangerouslyGetParent().setOptions({
-                tabBarVisible: false
-            });
-        });
-    }
-
     render() {
-        const { account, listPrimaryImage, listAccessoriesImage, listShirtImage, listTrousersImage, content, privacy, isLoading, isPrePosting, info, listInfo } = this.state;
+        const { account, info, isLoading } = this.state;
         const privacies = [
             {
                 value: 1,
@@ -407,12 +247,13 @@ export default class CreateInfo extends Component {
             }
         ]
         const infoFields = [
-            { id: 'height', name: 'Chiều cao', unit: 'cm' },
-            { id: 'weight', name: 'Cân nặng', unit: 'kg' },
-            { id: 'bustSize', name: 'Vòng 1', unit: 'cm' },
-            { id: 'waistSize', name: 'Vòng 2', unit: 'cm' },
-            { id: 'hipSize', name: 'Vòng 3', unit: 'cm' },
-            { id: 'skinColor', name: 'Màu da', unit: '' },
+            { id: 'name', name: 'Tiêu đề', unit: '', keyboardType: 'default', onChange: (value) => this.setState({ info: { ...this.state.info, name: value.length > 0 ? value : '' } }) },
+            { id: 'height', name: 'Chiều cao', unit: 'cm', keyboardType: 'decimal-pad', onChange: (value) => this.setState({ info: { ...this.state.info, height: parseFloat(value.trim().length > 0 ? value.trim() : 0) } }) },
+            { id: 'weight', name: 'Cân nặng', unit: 'kg', keyboardType: 'decimal-pad', onChange: (value) => this.setState({ info: { ...this.state.info, weight: parseFloat(value.trim().length > 0 ? value.trim() : 0) } }) },
+            { id: 'bustSize', name: 'Vòng 1', unit: 'cm', keyboardType: 'decimal-pad', onChange: (value) => this.setState({ info: { ...this.state.info, bustSize: parseFloat(value.trim().length > 0 ? value.trim() : 0) } }) },
+            { id: 'waistSize', name: 'Vòng 2', unit: 'cm', keyboardType: 'decimal-pad', onChange: (value) => this.setState({ info: { ...this.state.info, waistSize: parseFloat(value.trim().length > 0 ? value.trim() : 0) } }) },
+            { id: 'hipSize', name: 'Vòng 3', unit: 'cm', keyboardType: 'decimal-pad', onChange: (value) => this.setState({ info: { ...this.state.info, hipSize: parseFloat(value.trim().length > 0 ? value.trim() : 0) } }) },
+            { id: 'skinColor', name: 'Màu da', unit: '', keyboardType: 'decimal-pad', onChange: (value) => this.setState({ info: { ...this.state.info, skinColor: parseInt(value.trim().length > 0 ? value.trim() : 0) } }) },
         ]
         return (
             <View style={styles().Container}>
@@ -422,20 +263,26 @@ export default class CreateInfo extends Component {
                         onPress={() => this.props.navigation.goBack()}
                         style={styles().IconClose}
                         name='close' size={40} color={'black'} />
-                    <Text style={styles().HeaderText}>Tạo bài viết</Text>
-                    <TouchableHighlight
-                        style={[
-                            styles().ButtonPost,
-                            listPrimaryImage.length > 0 && content.length > 0 ? styles().ButtonPostActiveColor : styles().ButtonPostInactiveColor
-                        ]}
-                        underlayColor={'#0000FF'}
-                        disabled={isLoading || listPrimaryImage.length == 0 || content.length == 0}
-                        onPress={() => this.onPressPostButton()}>
-                        <View>
-
-                            <Text style={styles().ButtonPostText}>Đăng</Text>
-                        </View>
-                    </TouchableHighlight>
+                    <Text style={styles().HeaderText}>Tạo bộ chỉ số</Text>
+                    <TouchableOpacity
+                        style={{ marginLeft: 'auto', marginRight: scale(20, Horizontal), }}
+                        onPress={() => this.createNewInfo()}
+                    >
+                        <LinearGradient
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            colors={['#fbb897', '#ff8683']}
+                            style={{
+                                height: scale(30, Vertical),
+                                width: scale(60, Horizontal),
+                                paddingVertical: scale(5, Vertical),
+                                paddingHorizontal: scale(5, Horizontal),
+                                borderRadius: 5,
+                                alignItems: 'center'
+                            }}>
+                            <Text style={styles().ButtonPostText}>Tạo</Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles().ArticleHeader}>
                     <TouchableWithoutFeedback
@@ -450,182 +297,43 @@ export default class CreateInfo extends Component {
                         <Text
                             onPress={() => this.navigateProfile(account.accountID)}
                             style={Style.newsfeed.ArticleAuthor}>{account.firstName + ' ' + account.lastName}</Text>
-                        <DropDownPicker
-                            defaultValue={3}
-                            containerStyle={{ width: scale(150, Horizontal), height: scale(30, Vertical) }}
-                            items={privacies}
-                            style={styles().ArticlePrivacy}
-                            onChangeItem={(item) => this.setState({ privacy: item.id })}
-                        />
                     </View>
                 </View>
-                <FlatList
-                    data={listPrimaryImage}
-                    contentContainerStyle={{ alignSelf: 'flex-start' }}
-                    numColumns={2}
-                    keyExtractor={(item, index) => index + ''}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <View style={styles().ArticleImageBounder}>
-                                <Image
-                                    style={styles().ArticleImage}
-                                    source={{ uri: 'data:image/png;base64,' + item.data }} />
-                                <TouchableWithoutFeedback
-                                    onPress={() => this.editImage(item, index, 'primary')}
-                                >
-                                    <View
-                                        style={styles().ArticleEditImage}>
-                                        <FontAwesome5 name='edit' color='#5E5E5E' size={20} />
-                                        <Text style={styles().ArticleEditImageText}>Chỉnh sửa</Text>
-                                    </View>
-                                </TouchableWithoutFeedback>
-                                <TouchableWithoutFeedback
-                                    onPress={() => this.deleteImage('primary', index)}
-                                >
-                                    <View
-                                        style={styles().ArticleDeleteImage}>
-                                        <Ionicons name='close-circle' color='#5E5E5E' size={30} />
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            </View>
-                        )
-                    }}
-                    ListHeaderComponent={(
-                        <View >
-                            <TextInput
-                                multiline={true}
-                                onChangeText={(text) => this.setState({ content: text })}
-                                placeholder={'Hãy nói gì đó về phong cách này...'}
-                                value={content}
-                                style={styles().ArticleCaption}
-                            />
-                        </View>
-                    )}
-                />
-                <View style={styles().ToolArea}>
-                    <TouchableWithoutFeedback onPress={() => this.selectImage('primary')}>
-                        <MaskedView
-                            style={{ flex: 1 }}
-                            maskElement={
-                                <FontAwesome5 style={styles().IconTool} name='file-image' size={30} color={'black'} />
-                            }
-                        >
-                            <Image style={styles().ToolAreaBackground} source={BACKGROUND} />
-                        </MaskedView>
-                    </TouchableWithoutFeedback>
-                    <TouchableWithoutFeedback onPress={() => this.takePicture('primary')}>
-                        <MaskedView
-                            style={{ flex: 1 }}
-                            maskElement={
-                                <Entypo style={styles().IconTool} name='camera' size={30} color={'black'} />
-                            }
-                        >
-                            <Image style={styles().ToolAreaBackground} source={BACKGROUND} />
-                        </MaskedView>
-                    </TouchableWithoutFeedback>
+                <View style={{
+                    height: scale(585, Vertical),
+                    width: scale(400, Horizontal),
+                    backgroundColor: 'white',
+                    borderWidth: 0.5,
+                    borderRadius: 10,
+                    alignSelf: 'center',
+                    marginTop: scale(20, Vertical)
+                }}>
+                    <View style={{
+                        paddingHorizontal: scale(10, Horizontal),
+                        paddingVertical: scale(10, Vertical)
+                    }}>
+                        <ScrollView>
+                            {infoFields.map(item => (
+                                <InfoField
+                                    key={item.id}
+                                    name={item.name}
+                                    id={item.id}
+                                    value={info[item.id]}
+                                    unit={item.unit}
+                                    keyboardType={item.keyboardType}
+                                    onChange={(value) => item.onChange(value)}
+
+                                />
+                            ))}
+                        </ScrollView>
+                    </View>
+
                 </View>
                 {isLoading ? (
                     <View style={styles().PostingIndicator}>
                         <ActivityIndicator size="large" color="#00ff00" />
                     </View>) :
                     (<View></View>)}
-                <Modal
-                    animationType='slide'
-                    transparent={true}
-                    visible={isPrePosting}
-                    onRequestClose={() => {
-                        this.setState({ isPrePosting: false });
-                    }}
-                >
-                    <View style={{
-                        height: scale(420, Vertical),
-                        width: scale(300, Horizontal),
-                        backgroundColor: 'white',
-                        borderWidth: 0.5,
-                        borderRadius: 10,
-                        alignSelf: 'center',
-                        marginTop: scale(150, Vertical)
-                    }}>
-                        <View style={{
-                            paddingHorizontal: scale(10, Horizontal),
-                            paddingVertical: scale(10, Vertical)
-                        }}>
-                            <Text>Bộ số đo người mẫu trong bài</Text>
-                            <DropDownPicker
-                                defaultValue={listInfo[0] ? listInfo[0].id : null}
-                                containerStyle={{ width: scale(150, Horizontal), height: scale(30, Vertical) }}
-                                items={listInfo}
-                                style={styles().DropdownInfo}
-                                onChangeItem={(item) => {
-                                    this.setState({ info: item.data })
-                                }}
-                                placeholder={'Chọn số đo sẵn có'}
-                            />
-                            <ScrollView>
-                                {infoFields.map(item => (
-                                    <InfoField
-                                        key={item.id}
-                                        name={item.name}
-                                        id={item.id}
-                                        value={info[item.id]}
-                                        unit={item.unit}
-                                        onChange={(value) => {
-                                            let temp = info;
-                                            temp[item.id] = value;
-                                            this.setState({ info: temp })
-                                        }}
-
-                                    />
-                                ))}
-
-                                <View style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    marginTop: scale(10, Vertical)
-                                }}>
-                                    <TouchableOpacity style={{ marginLeft: 'auto', }}>
-                                        <LinearGradient
-                                            start={{ x: 0, y: 0 }}
-                                            end={{ x: 1, y: 0 }}
-                                            colors={['#fbb897', '#ff8683']}
-                                            style={{
-                                                height: scale(30, Vertical),
-                                                width: scale(60, Horizontal),
-                                                paddingVertical: scale(5, Vertical),
-                                                paddingHorizontal: scale(5, Horizontal),
-                                                borderRadius: 5,
-                                                alignItems: 'center'
-                                            }}>
-                                            <Text style={styles().ButtonPostText}>Mới</Text>
-                                        </LinearGradient>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={{ marginLeft: 'auto', marginRight: 'auto', }}
-                                        onPress={() => this.postStatus()}
-                                    >
-                                        <LinearGradient
-                                            start={{ x: 0, y: 0 }}
-                                            end={{ x: 1, y: 0 }}
-                                            colors={['#fbb897', '#ff8683']}
-                                            style={{
-                                                height: scale(30, Vertical),
-                                                width: scale(60, Horizontal),
-                                                paddingVertical: scale(5, Vertical),
-                                                paddingHorizontal: scale(5, Horizontal),
-                                                borderRadius: 5,
-                                                alignItems: 'center'
-                                            }}>
-                                            <Text style={styles().ButtonPostText}>Đăng</Text>
-                                        </LinearGradient>
-                                    </TouchableOpacity>
-
-
-                                </View>
-                            </ScrollView>
-                        </View>
-
-                    </View>
-                </Modal>
             </View >
         )
     }

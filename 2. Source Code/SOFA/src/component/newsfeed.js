@@ -232,7 +232,7 @@ export default class Newsfeed extends Component {
         this.getAllPost(1);
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.checkLoginToken();
-            //this.getAllPost(1);
+            this.getAllPost(1);
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
             this.setState({

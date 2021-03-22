@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, Alert, FlatList, TouchableWithoutFeedback, StyleSheet, TextInput, ActivityIndicator, TouchableHighlight } from 'react-native';
+import { View, Text, StatusBar, Image, Alert, FlatList, TouchableWithoutFeedback, StyleSheet, TextInput, ActivityIndicator, TouchableHighlight, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -9,6 +9,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import DropDownPicker from 'react-native-dropdown-picker';
+import ImagePicker from 'react-native-image-crop-picker';
+import LinearGradient from 'react-native-linear-gradient'
+
 
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,8 +21,7 @@ import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import { AVATAR, ADD_PRIMARY_IMAGE, BACKGROUND } from '../../image/index';
-import ImagePicker from 'react-native-image-crop-picker';
-
+import InfoField from './infoField';
 export default class CreatePost extends Component {
     constructor(props) {
         super(props);
@@ -36,6 +38,19 @@ export default class CreatePost extends Component {
             listTrousersImage: [],
             listAccessoriesImage: [],
             isLoading: false,
+            isPrePosting: false,
+            info: {
+                id: 0,
+                name: '',
+                accountID: 0,
+                height: 0,
+                weight: 0,
+                bustSize: 0,
+                waistSize: 0,
+                hipSize: 0,
+                skinColor: 0
+            },
+            listInfo: []
         }
     }
     getData = async (key) => {
@@ -145,6 +160,38 @@ export default class CreatePost extends Component {
                         }
                     ]
                 )
+            })
+    }
+
+    getListInfo = () => {
+        const { token } = this.state;
+        var header = {
+            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+            "Accept": 'application/json',
+            "Authorization": 'Bearer ' + token,
+        };
+        var uri = Const.domain + 'api/info';
+        Request.Get(uri, header)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    let listItem = [];
+                    let listTemp = response.listInfo;
+                    for (let i = 0; i < listTemp.length; i++) {
+                        let info = listTemp[i];
+                        let item = {
+                            value: info.id,
+                            label: info.name + '',
+                            icon: () => null,
+                            data: info
+                        }
+                        listItem.push(item);
+                    }
+                    this.setState({ listInfo: listItem });
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                Alert.alert('Lỗi rồi', 'Có lỗi xảy ra');
             })
     }
 
@@ -284,6 +331,7 @@ export default class CreatePost extends Component {
             data.append('ListImage[' + count + '].ImageType', 1);
             count++;
         }
+        data.append('BodyInfoID', this.state.info.id);
         let uri = Const.domain + 'api/post/createpost';
         Request.Post(uri, header, data)
             .then(response => {
@@ -301,7 +349,8 @@ export default class CreatePost extends Component {
                             listPrimaryImage: [],
                             listShirtImage: [],
                             listTrousersImage: [],
-                            listAccessoriesImage: []
+                            listAccessoriesImage: [],
+                            isPrePosting: false
                         })
                         this.props.navigation.navigate('Newsfeed');
                     }
@@ -316,6 +365,11 @@ export default class CreatePost extends Component {
                 console.log(reason);
                 Alert.alert('Thông báo', 'Đăng bài không thành công');
             })
+    }
+
+    onPressPostButton() {
+        this.getListInfo();
+        this.setState({ isPrePosting: true });
     }
 
     componentDidMount() {
@@ -334,7 +388,7 @@ export default class CreatePost extends Component {
     }
 
     render() {
-        const { account, listPrimaryImage, listAccessoriesImage, listShirtImage, listTrousersImage, content, privacy, isLoading } = this.state;
+        const { account, listPrimaryImage, listAccessoriesImage, listShirtImage, listTrousersImage, content, privacy, isLoading, isPrePosting, info, listInfo } = this.state;
         const privacies = [
             {
                 value: 1,
@@ -354,6 +408,15 @@ export default class CreatePost extends Component {
 
             }
         ]
+        const infoFields = [
+            { id: 'name', name: 'Tiêu đề', unit: '' },
+            { id: 'height', name: 'Chiều cao', unit: 'cm' },
+            { id: 'weight', name: 'Cân nặng', unit: 'kg' },
+            { id: 'bustSize', name: 'Vòng 1', unit: 'cm' },
+            { id: 'waistSize', name: 'Vòng 2', unit: 'cm' },
+            { id: 'hipSize', name: 'Vòng 3', unit: 'cm' },
+            { id: 'skinColor', name: 'Màu da', unit: '' },
+        ]
         return (
             <View style={styles().Container}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
@@ -370,7 +433,7 @@ export default class CreatePost extends Component {
                         ]}
                         underlayColor={'#0000FF'}
                         disabled={isLoading || listPrimaryImage.length == 0 || content.length == 0}
-                        onPress={() => this.postStatus()}>
+                        onPress={() => this.onPressPostButton()}>
                         <View>
 
                             <Text style={styles().ButtonPostText}>Đăng</Text>
@@ -464,6 +527,110 @@ export default class CreatePost extends Component {
                         </MaskedView>
                     </TouchableWithoutFeedback>
                 </View>
+
+                <Modal
+                    animationType='slide'
+                    transparent={true}
+                    visible={isPrePosting}
+                    onRequestClose={() => {
+                        this.setState({ isPrePosting: false });
+                    }}
+                >
+                    <View style={{
+                        height: scale(460, Vertical),
+                        width: scale(300, Horizontal),
+                        backgroundColor: 'white',
+                        borderWidth: 0.5,
+                        borderRadius: 10,
+                        alignSelf: 'center',
+                        marginTop: scale(150, Vertical)
+                    }}>
+                        <View style={{
+                            paddingHorizontal: scale(10, Horizontal),
+                            paddingVertical: scale(10, Vertical)
+                        }}>
+                            <Text>Bộ số đo người mẫu trong bài</Text>
+                            <DropDownPicker
+                                defaultValue={listInfo[0] ? listInfo[0].id : null}
+                                containerStyle={{ width: scale(150, Horizontal), height: scale(30, Vertical) }}
+                                items={listInfo}
+                                style={styles().DropdownInfo}
+                                onChangeItem={(item) => {
+                                    this.setState({ info: item.data })
+                                }}
+                                placeholder={'Chọn số đo sẵn có'}
+                            />
+                            <ScrollView>
+                                {infoFields.map(item => (
+                                    <InfoField
+                                        key={item.id}
+                                        name={item.name}
+                                        id={item.id}
+                                        value={info[item.id]}
+                                        unit={item.unit}
+                                        onChange={(value) => {
+                                            let temp = info;
+                                            temp[item.id] = value;
+                                            this.setState({ info: temp })
+                                        }}
+
+                                    />
+                                ))}
+
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    marginTop: scale(10, Vertical)
+                                }}>
+                                    <TouchableOpacity
+                                        style={{ marginLeft: 'auto', }}
+                                        onPress={() => {
+                                            this.setState({ isPrePosting: false });
+                                            this.props.navigation.navigate('CreateInfo')
+                                        }}
+                                    >
+                                        <LinearGradient
+                                            start={{ x: 0, y: 0 }}
+                                            end={{ x: 1, y: 0 }}
+                                            colors={['#fbb897', '#ff8683']}
+                                            style={{
+                                                height: scale(30, Vertical),
+                                                width: scale(60, Horizontal),
+                                                paddingVertical: scale(5, Vertical),
+                                                paddingHorizontal: scale(5, Horizontal),
+                                                borderRadius: 5,
+                                                alignItems: 'center'
+                                            }}>
+                                            <Text style={styles().ButtonPostText}>Mới</Text>
+                                        </LinearGradient>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{ marginLeft: 'auto', marginRight: 'auto', }}
+                                        onPress={() => this.postStatus()}
+                                    >
+                                        <LinearGradient
+                                            start={{ x: 0, y: 0 }}
+                                            end={{ x: 1, y: 0 }}
+                                            colors={['#fbb897', '#ff8683']}
+                                            style={{
+                                                height: scale(30, Vertical),
+                                                width: scale(60, Horizontal),
+                                                paddingVertical: scale(5, Vertical),
+                                                paddingHorizontal: scale(5, Horizontal),
+                                                borderRadius: 5,
+                                                alignItems: 'center'
+                                            }}>
+                                            <Text style={styles().ButtonPostText}>Đăng</Text>
+                                        </LinearGradient>
+                                    </TouchableOpacity>
+
+
+                                </View>
+                            </ScrollView>
+                        </View>
+
+                    </View>
+                </Modal>
                 {isLoading ? (
                     <View style={styles().PostingIndicator}>
                         <ActivityIndicator size="large" color="#00ff00" />
@@ -561,5 +728,10 @@ const styles = (props) => StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'rgba(0,0,0,0.5)'
-    }
+    },
+    DropdownInfo: {
+        borderRadius: 5,
+        borderColor: '#9E9E9E',
+        width: scale(200, Horizontal)
+    },
 })

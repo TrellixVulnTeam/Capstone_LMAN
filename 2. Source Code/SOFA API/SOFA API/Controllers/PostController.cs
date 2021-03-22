@@ -118,5 +118,13 @@ namespace SOFA_API.Controllers
             PostViewModelOut postViewModelOut = PostService.Instance.DeletePostByID(postViewModelIn.PostID, id);
             return Ok(postViewModelOut);
         }
+        [HttpGet("Recommend")]
+        [Authorize]
+        public ActionResult GetPostRecommend(int infoID, int page, int rowsOfPage)
+        {
+            int id = Utils.Instance.GetUserID(User.Claims);
+            PostViewModelOut postViewModelOut = PostService.Instance.GetListPostRecommend(id, infoID, page, rowsOfPage);
+            return Ok(postViewModelOut);
+        }
     }
 }

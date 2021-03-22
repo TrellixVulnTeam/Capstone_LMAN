@@ -90,7 +90,7 @@ EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @waistSize = 65.0, -- float
                     @hipSize = 90.0,   -- float
                     @skinColor = 0,    -- int
-					@name = N'Lê Thiện Văn 1'
+					@name = N'Lê Thiện Văn 2'
 
 EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @height = 158,    -- float
@@ -99,7 +99,7 @@ EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @waistSize = 66, -- float
                     @hipSize = 104,   -- float
                     @skinColor = 0,    -- int
-					@name = N'Lê Thiện Văn 1'
+					@name = N'Lê Thiện Văn 3'
 
 
 EXEC dbo.CreateInfo @accountID = 7,   -- int
@@ -109,7 +109,7 @@ EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @waistSize = 81, -- float
                     @hipSize = 90,   -- float
                     @skinColor = 0,    -- int
-					@name = N'Lê Thiện Văn 1'
+					@name = N'Lê Thiện Văn 4'
 
 EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @height = 166,    -- float
@@ -118,4 +118,4 @@ EXEC dbo.CreateInfo @accountID = 7,   -- int
                     @waistSize = 74, -- float
                     @hipSize = 86,   -- float
                     @skinColor = 0,    -- int
-					@name = N'Lê Thiện Văn 1'
+					@name = N'Lê Thiện Văn 5'
