@@ -75,7 +75,7 @@ GO
 DROP PROC IF EXISTS GetPostByBodyInfoID
 GO
 CREATE PROC GetPostByBodyInfoID
-@bodyInfoID INT
+@bodyInfoID INT, @page INT, @rowsOfPage INT
 AS
 BEGIN
 	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID, RatingAvg.Average AS RateAVG
@@ -89,7 +89,9 @@ BEGIN
 		GROUP BY PostId
 	) AS RatingAvg ON RatingAvg.PostId = Post.Id
 	WHERE Post.BodyInfoID = @bodyInfoID AND RatingAvg.Average>=(CAST(3.5 AS FLOAT))
-	ORDER BY RateAVG DESC
+	ORDER BY RateAVG DESC, Time DESC
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
 END
 GO
 
