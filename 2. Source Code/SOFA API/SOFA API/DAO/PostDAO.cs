@@ -57,7 +57,7 @@ namespace SOFA_API.DAO
         {
             List<Post> listAllPost = new List<Post>();
 
-            String sql = "EXEC dbo.GetPostByInfoID @infoID , @page , @rowsOfPage";
+            String sql = "EXEC dbo.GetPostByBodyInfoID @bodyInfoID";
             try
             {
                 DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { infoID, page, rowsOfPage });

@@ -78,11 +78,18 @@ CREATE PROC GetPostByBodyInfoID
 @bodyInfoID INT
 AS
 BEGIN
-	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID
+	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID, RatingAvg.Average AS RateAVG
 	FROM dbo.Post
 	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
 	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
-	WHERE Post.BodyInfoID = @bodyInfoID;
+	INNER JOIN 
+	(
+		SELECT PostId, AVG(CAST(RatePoint AS FLOAT))  AS Average 
+		FROM dbo.Rate 
+		GROUP BY PostId
+	) AS RatingAvg ON RatingAvg.PostId = Post.Id
+	WHERE Post.BodyInfoID = @bodyInfoID AND RatingAvg.Average>=(CAST(3.5 AS FLOAT))
+	ORDER BY RateAVG DESC
 END
 GO
 
