@@ -12,6 +12,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import {LogBox, TouchableOpacity} from 'react-native';
 
 import * as signalR from '@microsoft/signalr';
@@ -97,6 +98,10 @@ export default class Profile extends Component {
 
     onPressBalance() {
         this.props.navigation.navigate('Balance');
+    }
+
+    onPressMessage(){
+        this.props.navigation.navigate('Conversation', { 'cid': 4 });
     }
 
     onPressMarkup() {
@@ -232,6 +237,29 @@ export default class Profile extends Component {
                             borderBottomColor: 'black',
                             borderBottomWidth: 1,
                         }} />
+
+                        <View style={{
+                            marginLeft: Utils.scale(3, Const.Horizontal),
+                        }}>
+                            <TouchableOpacity onPress={() => this.onPressMessage()}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                }}>
+                                    <AntDesign name='message1' size={30} color={'black'} style={{
+                                        marginTop: Utils.scale(15, Const.Horizontal),
+                                        
+                                    }} />
+                                    <Text style={{
+                                        marginLeft: Utils.scale(15, Const.Horizontal),
+                                        marginTop: Utils.scale(15, Const.Vertical),
+                                        alignSelf: 'center',
+                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontWeight: 'bold'
+                                    }}>Demo tin nhắn</Text>
+                                </View>                              
+                            </TouchableOpacity>
+                        </View>
+
                         <View style={{
                             marginLeft: Utils.scale(3, Const.Horizontal),
                         }}>

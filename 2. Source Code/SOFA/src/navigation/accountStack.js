@@ -6,7 +6,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Profile from '../component/profile';
 import Home from "../component/home";
 import UpdateProfile from "../component/updateProfile";
-import Account from '../component/account'
+import Account from '../component/account';
+import Conversation from '../component/conversation';
 
 const Stack = createStackNavigator();
 
@@ -16,6 +17,7 @@ export default function ProfileStack() {
             <Stack.Screen name='Account' component={Account} options={{ headerShown: false }} />
             <Stack.Screen name='Profile' component={Profile} options={{ headerShown: false }} />
             <Stack.Screen name='UpdateProfile' component={UpdateProfile} options={{ headerShown: false }} />
+            <Stack.Screen name='Conversation' component={Conversation} options={{ headerShown: false}} />
         </Stack.Navigator>
     )
 }

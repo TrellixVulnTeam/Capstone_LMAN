@@ -7,4 +7,5 @@ SELECT Message.Id, Message.FromAccountId, Message.ToAccountId, Message.Content, 
   LEFT OUTER JOIN dbo.MessageImage
   ON Message.Id = MessageImage.MessageId
   where Message.ConversationId = @conversationId
+  order by Message.Time ASC
 END

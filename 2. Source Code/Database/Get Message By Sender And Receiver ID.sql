@@ -11,6 +11,7 @@
   LEFT OUTER JOIN dbo.MessageImage
   ON Message.Id = MessageImage.MessageId
   where (Message.FromAccountId = @userId1 and Message.ToAccountId = @userId2) or (Message.FromAccountId = @userId2 and Message.ToAccountId = @userId1)
+  order by Message.Time ASC
   END
 
   EXEC getMessageBySenderAndReceiverID 3,4
