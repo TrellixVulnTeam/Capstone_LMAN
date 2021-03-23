@@ -13,10 +13,17 @@ namespace SOFA_API.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
-        [HttpGet("getmessage")]
+        [HttpGet("getmessagebycid")]
         public ActionResult GetMessageInConversation(int cid)
         {
             ListMessageViewModelOut listMess = MessageService.Instance.GetMessageByConversationId(cid);
+            return Ok(listMess);
+        }
+
+        [HttpGet("getmessagebyuid")]
+        public ActionResult GetMessageByDirectTwoId(int uid1, int uid2)
+        {
+            ListMessageViewModelOut listMess = MessageService.Instance.GetMessageBySenderAndReceiverId(uid1, uid2);
             return Ok(listMess);
         }
     }

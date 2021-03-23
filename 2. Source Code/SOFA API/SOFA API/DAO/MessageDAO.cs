@@ -44,5 +44,29 @@ namespace SOFA_API.DAO
             return listMes;
 
         }
+
+        public ListMessageViewModelOut GetMessageBySenderAndReceiverId(int uid1, int uid2)
+        {
+            ListMessageViewModelOut listMes = new ListMessageViewModelOut();
+            string sql = "EXEC getMessageBySenderAndReceiverID @userId1, @userId2";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { uid1, uid2 });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        listMes.ListMess.Add(new MessageViewModelOut(row));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+            return listMes;
+
+        }
     }
 }

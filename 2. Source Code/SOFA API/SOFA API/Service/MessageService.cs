@@ -53,5 +53,31 @@ namespace SOFA_API.Service
             }
             return listMess;
         }
+
+        public ListMessageViewModelOut GetMessageBySenderAndReceiverId(int uid1, int uid2)
+        {
+            ListMessageViewModelOut listMess = null;
+            try
+            {
+                listMess = MessageDAO.Instance.GetMessageBySenderAndReceiverId(uid1, uid2);
+                if (listMess != null)
+                {
+                    listMess.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                {
+                    listMess.Code = Const.REQUEST_CODE_FAILED;
+                    throw new Exception("Can get conversation");
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                listMess = new ListMessageViewModelOut();
+                listMess.Code = Const.REQUEST_CODE_FAILED;
+                listMess.ErrorMessage = e.Message;
+            }
+            return listMess;
+        }
     }
 }
