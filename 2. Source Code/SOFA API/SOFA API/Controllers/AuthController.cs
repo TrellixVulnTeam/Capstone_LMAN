@@ -28,7 +28,7 @@ namespace SOFA_API.Controllers
         /// This controller process register new user that using SOFA application
         /// </summary>
         /// <param name="accountViewModelIn">
-        /// This param require fields: username, password, email, phone, isApplicationAccess, transactionId and code
+        /// This param require fields: username, password, email, phone, firtname, lastname, isApplicationAccess, transactionId and code
         /// </param>
         /// <returns></returns>
         [HttpPost("register")]
@@ -64,6 +64,20 @@ namespace SOFA_API.Controllers
         public ActionResult ResetPassword([FromForm] AccountViewModelIn data)
         {
             AccountViewModelOut loginViewModelOut = authService.ResetPassword(data);
+            return Ok(loginViewModelOut);
+        }
+
+        /// <summary>
+        /// This controller process login with social account
+        /// </summary>
+        /// <param name="data">
+        /// This param require fields: username, email, phone, firtname, lastname
+        /// </param>
+        /// <returns></returns>
+        [HttpPost("OAuth")]
+        public ActionResult OAuth([FromForm] string tokenId)
+        {
+            AccountViewModelOut loginViewModelOut = authService.GoogleAuthentication(tokenId);
             return Ok(loginViewModelOut);
         }
 

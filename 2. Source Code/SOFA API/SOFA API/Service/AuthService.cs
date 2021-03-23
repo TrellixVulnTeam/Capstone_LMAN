@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -362,6 +363,79 @@ namespace SOFA_API.Service
                 loginViewModelOut.ErrorMessage = e.Message;
                 return loginViewModelOut;
             }
+        }
+
+        public AccountViewModelOut GoogleAuthentication(string tokenId)
+        {
+            AccountViewModelOut accountViewModelOut = new AccountViewModelOut();
+
+            try
+            {
+                if (!string.IsNullOrEmpty(tokenId))
+                {
+                    var googleUser = GoogleJsonWebSignature.ValidateAsync(tokenId, new GoogleJsonWebSignature.ValidationSettings()).Result;
+                    AccountViewModelOut account = AccountDAO.Instance.GetUserWithRoleByEmail(googleUser.Email);
+
+                    if (account == null)
+                    {
+                        AccountViewModelIn accountViewModel = new AccountViewModelIn();
+                        accountViewModel.Username = "google" + DateTime.Now.Ticks.ToString();
+                        accountViewModel.Password = HashPassword("google" + DateTime.Now.Ticks.ToString());
+                        accountViewModel.Firstname = googleUser.GivenName;
+                        accountViewModel.Lastname = googleUser.FamilyName;
+                        accountViewModel.Email = googleUser.Email;
+                        accountViewModel.Phone = "";
+                        accountViewModel.RoleId = Const.USER_ROLE_ID;
+
+                        int result = AccountDAO.Instance.AddAccount(AccountValidation(accountViewModel));
+                        if (result > 0)
+                        {
+                            accountViewModelOut = AccountDAO.Instance.GetUserWithRoleByEmail(googleUser.Email);
+                        }
+                    }
+                    else
+                    {
+                        accountViewModelOut = account;
+                    }
+
+                    // security key
+                    string securityKey = Configuration["JWT:SecretKey"];
+
+                    // symmetric security key
+                    var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
+
+                    // signing credentials
+                    var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
+
+                    //add claims
+                    var claims = new List<Claim>();
+                    claims.Add(new Claim(ClaimTypes.Role, accountViewModelOut.RoleName));
+                    claims.Add(new Claim("ID", accountViewModelOut.Id.ToString()));
+                    claims.Add(new Claim("Username", accountViewModelOut.Username.ToString()));
+
+                    // create token
+                    var token = new JwtSecurityToken(
+                        issuer: Configuration["JWT:Issuser"],
+                        audience: Configuration["JWT:Audience"],
+                        expires: DateTime.Now.AddDays(30),
+                        signingCredentials: signingCredentials,
+                        claims: claims
+                    );
+
+                    // return
+                    accountViewModelOut.Token = new JwtSecurityTokenHandler().WriteToken(token);
+                    accountViewModelOut.Password = null;
+                    accountViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+            }
+            catch (Exception e)
+            {
+                accountViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                accountViewModelOut.ErrorMessage = e.Message;
+                return accountViewModelOut;
+            }
+
+            return accountViewModelOut;
         }
     }
 }
