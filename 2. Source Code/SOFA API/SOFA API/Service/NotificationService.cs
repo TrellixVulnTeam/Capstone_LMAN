@@ -44,7 +44,7 @@ namespace SOFA_API.Service
                 }
             }catch(Exception ex)
             {
-                Utils.Instance.SaveLog(e.ToString());
+                Utils.Instance.SaveLog(ex.ToString());
                 listNotification.Code = Const.REQUEST_CODE_FAILED;
                 listNotification.ErrorMessage = ex.Message;
             }

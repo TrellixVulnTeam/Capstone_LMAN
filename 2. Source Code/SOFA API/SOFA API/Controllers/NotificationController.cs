@@ -13,7 +13,7 @@ namespace SOFA_API.Controllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        [HttpGet("getnotificationbytoaccount")]
+        [HttpGet("getnotibyid")]
         public ActionResult GetNotificationByUserID(int accountID)
         {
             ListNotificationViewModelOut listNoti = NotificationService.Instance.GetNotificationByToAccount(accountID);

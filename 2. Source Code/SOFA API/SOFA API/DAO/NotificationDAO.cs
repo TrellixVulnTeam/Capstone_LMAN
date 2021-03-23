@@ -37,10 +37,10 @@ namespace SOFA_API.DAO
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Utils.Instance.SaveLog(e.ToString());
-                throw e;
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
             }
             return listNotification;
         }
