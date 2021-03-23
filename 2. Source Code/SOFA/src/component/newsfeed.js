@@ -21,6 +21,7 @@ import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import { AVATAR } from '../../image/index';
+import ViewImageModal from './viewImageModel';
 
 export default class Newsfeed extends Component {
     constructor(props) {
@@ -36,6 +37,9 @@ export default class Newsfeed extends Component {
             isShowMenu: false,
             page: 1,
             listPostRefreshing: false,
+            currentShowImagePost: {},
+            currentShowImage: {},
+            isShowImage: false,
         }
     }
     actionArticleNotOwn = [
@@ -232,19 +236,20 @@ export default class Newsfeed extends Component {
         this.getAllPost(1);
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.checkLoginToken();
-            this.getAllPost(1);
+            console.log(this.props.route);
+            if (this.props.route && this.props.route.params && this.props.route.params.preScreen == 'CreatePost') { this.getAllPost(1); }
         });
-        this._screenUnfocus = this.props.navigation.addListener('blur', () => {
-            this.setState({
-                token: '',
-                account: {},
-                isLogin: false,
-                isKeyBoardShow: false,
-                keyboardHeight: 0,
-                isShowMenu: false,
-                currentPostID: 0
-            });
-        })
+        // this._screenUnfocus = this.props.navigation.addListener('blur', () => {
+        //     this.setState({
+        //         token: '',
+        //         account: {},
+        //         isLogin: false,
+        //         isKeyBoardShow: false,
+        //         keyboardHeight: 0,
+        //         isShowMenu: false,
+        //         currentPostID: 0
+        //     });
+        // })
     }
 
     removePost(postID) {
@@ -403,7 +408,9 @@ export default class Newsfeed extends Component {
     }
 
     onPressImage(post, image) {
-        this.props.navigation.navigate('ViewImage', { 'post': post, 'image': image });
+        //this.props.navigation.navigate('ViewImage', { 'post': post, 'image': image });
+        this.setState({ currentShowImage: image, currentShowImagePost: post });
+        this.setState({ isShowImage: true });
     }
 
     Article = ({ data }) => {
@@ -578,7 +585,15 @@ export default class Newsfeed extends Component {
                             }
                         </View>
                     </Modal>
-
+                    <ViewImageModal
+                        image={this.state.currentShowImage}
+                        post={this.state.currentShowImagePost}
+                        visible={this.state.isShowImage}
+                        onRequestClose={() => {
+                            this.setState({ isShowImage: false });
+                            this.setState({ currentShowImage: {}, currentShowImagePost: {} })
+                        }}
+                    />
                 </View>
             </View>
         )

@@ -300,7 +300,7 @@ export default class CreatePost extends Component {
 
     postStatus = () => {
         const { token, content, privacy, listPrimaryImage, listShirtImage, listTrousersImage, listAccessoriesImage } = this.state;
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true, isPrePosting: false });
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             'Content-Type': 'multipart/form-data',
@@ -352,7 +352,7 @@ export default class CreatePost extends Component {
                             listAccessoriesImage: [],
                             isPrePosting: false
                         })
-                        this.props.navigation.navigate('Newsfeed');
+                        this.props.navigation.navigate('Newsfeed', {'preScreen': 'CreatePost'});
                     }
                 } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
                     this.setState({ isLoading: true });
@@ -458,7 +458,7 @@ export default class CreatePost extends Component {
                             containerStyle={{ width: scale(150, Horizontal), height: scale(30, Vertical) }}
                             items={privacies}
                             style={styles().ArticlePrivacy}
-                            onChangeItem={(item) => this.setState({ privacy: item.id })}
+                            onChangeItem={(item) => this.setState({ privacy: item.value })}
                         />
                     </View>
                 </View>

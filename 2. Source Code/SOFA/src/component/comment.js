@@ -16,7 +16,7 @@ import { scale, calculateTime } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { AVATAR } from '../../image/index';
 
-export default class Newsfeed extends Component {
+export default class Comment extends Component {
     constructor(props) {
         super(props);
         this.state = {

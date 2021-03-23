@@ -27,7 +27,7 @@ const Tab = createBottomTabNavigator();
 export default function Navigation() {
   return (
     <Tab.Navigator
-      initialRouteName="Newsfeed"
+      initialRouteName="NewsfeedStack"
       tabBarOptions={{
         showLabel: false,
         activeTintColor: '#d8a027',
@@ -40,7 +40,7 @@ export default function Navigation() {
         }
       }}>
       <Tab.Screen
-        name="Newsfeed"
+        name="NewsfeedStack"
         component={NewsfeedStack}
         options={{
           title: 'Bảng tin',

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableHighlight, Alert, FlatList, TouchableWithoutFeedback, Modal } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, Alert, FlatList, TouchableWithoutFeedback, Modal, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Rating } from 'react-native-ratings';
+import DropDownPicker from 'react-native-dropdown-picker';
+import LinearGradient from 'react-native-linear-gradient'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -10,7 +12,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-
+import InfoField from './infoField';
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,6 +23,7 @@ import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import { AVATAR } from '../../image/index';
+import ViewImageModal from './viewImageModel';
 
 export default class Suggest extends Component {
     constructor(props) {
@@ -30,12 +33,35 @@ export default class Suggest extends Component {
             account: {},
             isLogin: false,
             listPost: [],
-            isKeyBoardShow: false,
             keyboardHeight: 0,
             currentPostSelect: {},
             isShowMenu: false,
             page: 1,
             listPostRefreshing: false,
+            info: {
+                id: 0,
+                name: '',
+                accountID: 0,
+                height: 0,
+                weight: 0,
+                bustSize: 0,
+                waistSize: 0,
+                hipSize: 0,
+                skinColor: 0
+            },
+            fashionType: {
+                id: 0,
+                name: '',
+                description: ''
+            },
+            listFashionType: [],
+            isLoading: false,
+            similarInfoID: [],
+            currentShowImage: {},
+            currentShowImagePost: {},
+            isShowImage: false,
+            isSelectInfo: true,
+            listInfo: [],
         }
     }
     actionArticleNotOwn = [
@@ -149,6 +175,7 @@ export default class Suggest extends Component {
 
 
     checkLoginToken = async () => {
+        this.setState({ isLoading: true });
         await this.getData('token')
             .then(result => {
                 if (result) {
@@ -164,6 +191,8 @@ export default class Suggest extends Component {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
 
                                 this.setState({ account: response, isLogin: true, token: token });
+                                this.setState({ isLoading: false });
+                                this.getListInfo();
                             } else {
                                 this.setState({ account: {}, isLogin: false, token: '' });
                             }
@@ -179,72 +208,112 @@ export default class Suggest extends Component {
             })
     }
 
-    getAllPost = async (page) => {
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    // console.log('Get all post', result);
-                    this.setState({ token: result.toString().substr(1, result.length - 2) });
-                }
-            })
-            .catch(reason => {
-                this.setState({ token: '' });
-                console.log(reason);
-            })
+
+    getAllRecommendPost = async (page, type = 0) => {
+        const { similarInfoID, token } = this.state;
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json',
-            "Authorization": 'Bearer ' + this.state.token,
+            "Authorization": 'Bearer ' + token,
         };
-        var data = {};
-        var uri = Const.domain + 'api/post?page=' + page + '&rowsOfPage=' + Const.NEWSFEED_ROWS_OF_PAGE;
-        Request.Get(uri, header, data)
+        for (let i = 0; i < similarInfoID.length; i++) {
+            console.log('get recommend post', similarInfoID[i])
+            var uri = Const.domain + 'api/post/recommend?infoid=' + similarInfoID[i].itemID + '&page=' + page + '&rowsOfPage=' + Const.NEWSFEED_ROWS_OF_PAGE;
+            Request.Get(uri, header)
+                .then(response => {
+                    if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        let listPostRes = response.listPost;
+                        if (page > 1 || type != 0 || i > 0) {
+                            console.log('load more', listPostRes.length);
+                            if (listPostRes.length > 0) {
+                                this.setState({ listPost: [...this.state.listPost, ...listPostRes], listPostRefreshing: false });
+                            } else {
+                                this.setState({ listPostRefreshing: false });
+                            }
+                        } else {
+                            this.setState({ listPost: [] })
+                            console.log('reload', listPostRes.length);
+                            if (listPostRes.length > 0) {
+                                this.setState({ listPost: listPostRes, listPostRefreshing: false })
+                            } else {
+                                this.setState({ listPostRefreshing: false });
+                            }
+                        }
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                })
+        }
+
+    }
+
+    getSimilarInfo = (infoID, page) => {
+        const { token } = this.state;
+        this.setState({ isLoading: true });
+
+        let header = {
+            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+            "Accept": 'application/json',
+            "Authorization": 'Bearer ' + token,
+        };
+        let uri = 'https://chientranhvietnam.org/Python/recommendation/getsimilar/' + infoID;
+        Request.Get(uri, header)
             .then(response => {
-                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    let listPostRes = response.listPost;
-                    for (let i = 0; i < listPostRes.length; i++) {
-                        listPostRes.isShowComment = false;
-                    }
-                    if (page > 1) {
-                        console.log('load more', listPostRes.length);
-                        if (listPostRes.length > 0) {
-                            this.setState({ listPost: [...this.state.listPost, ...listPostRes], listPostRefreshing: false });
-                        } else {
-                            this.setState({ listPostRefreshing: false });
-                        }
-                    } else {
-                        console.log('reload', listPostRes.length);
-                        if (listPostRes.length > 0) {
-                            this.setState({ listPost: listPostRes, listPostRefreshing: false })
-                        } else {
-                            this.setState({ listPostRefreshing: false });
-                        }
-                    }
+                if (response && response.length > 0) {
+                    this.setState({ similarInfoID: response });
+                    console.log(this.state.similarInfoID);
+                    this.setState({ isLoading: false });
+
+                    this.getAllRecommendPost(1);
                 }
             })
             .catch(reason => {
                 console.log(reason);
+                Alert.alert('Lỗi!!!', 'Có lỗi xảy ra rồi!!!');
+            })
+
+
+    }
+
+    getListInfo = () => {
+        const { token } = this.state;
+        var header = {
+            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+            "Accept": 'application/json',
+            "Authorization": 'Bearer ' + token,
+        };
+        var uri = Const.domain + 'api/info';
+        Request.Get(uri, header)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    let listItem = [];
+                    let listTemp = response.listInfo;
+                    for (let i = 0; i < listTemp.length; i++) {
+                        let info = listTemp[i];
+                        let item = {
+                            value: info.id,
+                            label: info.name + '',
+                            icon: () => null,
+                            data: info
+                        }
+                        listItem.push(item);
+                    }
+                    this.setState({ listInfo: listItem, isSelectInfo: true });
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                Alert.alert('Lỗi rồi', 'Có lỗi xảy ra');
             })
     }
 
     componentDidMount() {
         this.checkLoginToken();
-        this.getAllPost(1);
         this._screenFocus = this.props.navigation.addListener('focus', () => {
-            this.checkLoginToken();
-            // this.getAllPost(1);
+            console.log(this.props.route);
+            if (this.props.route && this.props.route.params && this.props.route.params.isRefresh == true) { this.checkLoginToken() }
         });
-        this._screenUnfocus = this.props.navigation.addListener('blur', () => {
-            this.setState({
-                token: '',
-                account: {},
-                isLogin: false,
-                isKeyBoardShow: false,
-                keyboardHeight: 0,
-                isShowMenu: false,
-                currentPostID: 0
-            });
-        })
     }
 
     updatePostByID(postID, key, value) {
@@ -349,14 +418,23 @@ export default class Suggest extends Component {
     }
 
     onPressImage(post, image) {
-        this.props.navigation.navigate('ViewImage', { 'post': post, 'image': image });
+        // this.props.navigation.navigate('ViewImage', { 'post': post, 'image': image });
+        this.setState({ currentShowImage: image, currentShowImagePost: post });
+        this.setState({ isShowImage: true });
     }
 
     Article = ({ data }) => {
         let post = data;
         return (
             <View
-                style={Style.newsfeed.Article}
+                style={{
+                    backgroundColor: '#f8e5d6',
+                    marginBottom: scale(20, Vertical),
+                    borderTopLeftRadius: 10,
+                    borderBottomLeftRadius: 10,
+                    paddingVertical: scale(10, Vertical),
+                    paddingLeft: scale(5, Horizontal),
+                }}
             >
                 <View style={Style.common.flexRow}>
                     <TouchableWithoutFeedback
@@ -445,18 +523,28 @@ export default class Suggest extends Component {
     }
 
     render() {
-        const { isShowMenu, listPost, account, currentPostSelect, listPostRefreshing } = this.state;
+        const { isShowMenu, listPost, account, currentPostSelect, listPostRefreshing, isLoading, info, listInfo } = this.state;
+        const infoFields = [
+            { id: 'name', name: 'Tiêu đề', unit: '' },
+            { id: 'height', name: 'Chiều cao', unit: 'cm' },
+            { id: 'weight', name: 'Cân nặng', unit: 'kg' },
+            { id: 'bustSize', name: 'Vòng 1', unit: 'cm' },
+            { id: 'waistSize', name: 'Vòng 2', unit: 'cm' },
+            { id: 'hipSize', name: 'Vòng 3', unit: 'cm' },
+            { id: 'skinColor', name: 'Màu da', unit: '' },
+        ]
         return (
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
-                <View style={Style.newsfeed.listArticle}>
+                <View style={{
+                    height: scale(670, Vertical)
+                }}>
                     <FlatList
                         data={listPost}
                         keyExtractor={(item, index) => item.id + ''}
                         renderItem={({ item, index }) => <this.Article data={item} />}
                         onEndReached={() => {
-                            //this.setState({ listPostRefreshing: true });
-                            this.getAllPost(this.state.page + 1);
+                            this.getAllRecommendPost(this.state.page + 1, 1);
                             this.setState({ page: this.state.page + 1 });
 
                         }}
@@ -464,7 +552,7 @@ export default class Suggest extends Component {
                         refreshing={listPostRefreshing}
                         onRefresh={() => {
                             this.setState({ page: 1, listPostRefreshing: true });
-                            this.getAllPost(1);
+                            this.getSimilarInfo(info.id, 1);
                         }}
                     />
                     <Modal
@@ -514,7 +602,230 @@ export default class Suggest extends Component {
                     </Modal>
 
                 </View>
+                <ViewImageModal
+                    image={this.state.currentShowImage}
+                    post={this.state.currentShowImagePost}
+                    visible={this.state.isShowImage}
+                    onRequestClose={() => {
+                        this.setState({ isShowImage: false });
+                        this.setState({ currentShowImage: {}, currentShowImagePost: {} })
+                    }}
+                />
+                <Modal
+                    animationType='fade'
+                    transparent={true}
+                    visible={this.state.isSelectInfo}
+                    onRequestClose={() => {
+                        this.setState({ isSelectInfo: false });
+                        this.props.navigation.goBack();
+                    }}
+                >
+                    <View style={{
+                        height: scale(460, Vertical),
+                        width: scale(300, Horizontal),
+                        backgroundColor: 'white',
+                        borderWidth: 0.5,
+                        borderRadius: 10,
+                        alignSelf: 'center',
+                        marginTop: scale(150, Vertical)
+                    }}>
+                        <View style={{
+                            paddingHorizontal: scale(10, Horizontal),
+                            paddingVertical: scale(10, Vertical)
+                        }}>
+                            <Text>Bộ số đo người mẫu trong bài</Text>
+                            <DropDownPicker
+                                defaultValue={listInfo[0] ? listInfo[0].id : null}
+                                containerStyle={{ width: scale(150, Horizontal), height: scale(30, Vertical) }}
+                                items={listInfo}
+                                style={styles().DropdownInfo}
+                                onChangeItem={(item) => {
+                                    this.setState({ info: item.data })
+                                }}
+                                placeholder={'Chọn số đo sẵn có'}
+                            />
+                            <ScrollView>
+                                {infoFields.map(item => (
+                                    <InfoField
+                                        key={item.id}
+                                        name={item.name}
+                                        id={item.id}
+                                        value={info[item.id]}
+                                        unit={item.unit}
+                                        onChange={(value) => {
+                                            let temp = info;
+                                            temp[item.id] = value;
+                                            this.setState({ info: temp })
+                                        }}
+
+                                    />
+                                ))}
+
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    marginTop: scale(10, Vertical)
+                                }}>
+                                    <TouchableOpacity
+                                        style={{ marginLeft: 'auto', }}
+                                        onPress={() => {
+                                            this.setState({ isSelectInfo: false });
+                                            this.props.navigation.navigate('CreateInfo')
+                                        }}
+                                    >
+                                        <LinearGradient
+                                            start={{ x: 0, y: 0 }}
+                                            end={{ x: 1, y: 0 }}
+                                            colors={['#fbb897', '#ff8683']}
+                                            style={{
+                                                height: scale(30, Vertical),
+                                                width: scale(60, Horizontal),
+                                                paddingVertical: scale(5, Vertical),
+                                                paddingHorizontal: scale(5, Horizontal),
+                                                borderRadius: 5,
+                                                alignItems: 'center'
+                                            }}>
+                                            <Text style={styles().ButtonPostText}>Mới</Text>
+                                        </LinearGradient>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{ marginLeft: 'auto', marginRight: 'auto', }}
+                                        onPress={() => {
+                                            this.setState({ isSelectInfo: false });
+                                            this.getSimilarInfo(info.id, 1);
+                                        }}
+                                    >
+                                        <LinearGradient
+                                            start={{ x: 0, y: 0 }}
+                                            end={{ x: 1, y: 0 }}
+                                            colors={['#fbb897', '#ff8683']}
+                                            style={{
+                                                height: scale(30, Vertical),
+                                                width: scale(60, Horizontal),
+                                                paddingVertical: scale(5, Vertical),
+                                                paddingHorizontal: scale(5, Horizontal),
+                                                borderRadius: 5,
+                                                alignItems: 'center'
+                                            }}>
+                                            <Text style={styles().ButtonPostText}>Chọn</Text>
+                                        </LinearGradient>
+                                    </TouchableOpacity>
+
+
+                                </View>
+                            </ScrollView>
+                        </View>
+
+                    </View>
+                </Modal>
+
+                {isLoading ? (
+                    <View style={{
+                        height: scale(711, Vertical),
+                        width: scale(400, Horizontal),
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'rgba(0,0,0,0.5)'
+                    }}>
+                        <ActivityIndicator size="large" color="#00ff00" />
+                    </View>) :
+                    (<View></View>)}
+
             </View>
         )
     }
 }
+const styles = (props) => StyleSheet.create({
+    Container: {
+        backgroundColor: 'white',
+        flex: 1
+    },
+    Header: {
+        height: scale(50, Vertical),
+        borderBottomWidth: 1,
+        borderBottomColor: '#9E9E9E',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    IconClose: { marginLeft: scale(15, Horizontal) },
+    HeaderText: { marginLeft: 'auto' },
+    ButtonPost: {
+        marginLeft: 'auto',
+        marginRight: scale(15, Horizontal),
+        borderRadius: 5,
+        paddingVertical: scale(3, Vertical),
+        paddingHorizontal: scale(10, Horizontal)
+    },
+    ButtonPostActiveColor: {
+        backgroundColor: '#4489FF'
+    },
+    ButtonPostInactiveColor: {
+        backgroundColor: '#c1c1c1'
+    },
+    ButtonPostText: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        color: 'white'
+    },
+    ArticleHeader: {
+        flexDirection: 'row',
+        marginTop: scale(10, Vertical)
+    },
+    ArticlePrivacy: {
+        borderRadius: 5,
+        borderColor: '#9E9E9E'
+    },
+    ArticleCaption: {
+        backgroundColor: 'white',
+        borderColor: '#9E9E9E',
+        marginHorizontal: scale(10, Horizontal),
+        marginVertical: scale(10, Vertical),
+        borderRadius: 5
+    },
+    ToolArea: {
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginTop: 'auto',
+        marginBottom: 0,
+        height: scale(40, Vertical)
+    },
+    ToolAreaBackground: { height: null, width: null, flex: 1, resizeMode: 'stretch' },
+    IconTool: { marginLeft: 'auto', marginRight: 'auto' },
+    ArticleImageBounder: {
+        marginLeft: scale(10, Horizontal),
+    },
+    ArticleImage: {
+        width: scale(180, Horizontal),
+        height: scale(320, Horizontal),
+        resizeMode: 'cover',
+        borderRadius: 10
+    },
+    ArticleEditImage: {
+        position: 'absolute',
+        backgroundColor: 'rgba(255,255,255,0.6)',
+        borderRadius: 5,
+        top: scale(5, Vertical),
+        left: scale(5, Horizontal),
+        flexDirection: 'row'
+    },
+    ArticleEditImageText: { marginLeft: scale(5, Horizontal) },
+    ArticleDeleteImage: {
+        position: 'absolute',
+        borderRadius: 5,
+        left: scale(150, Horizontal),
+    },
+    PostingIndicator: {
+        height: scale(711, Vertical),
+        width: scale(400, Horizontal),
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)'
+    },
+    DropdownInfo: {
+        borderRadius: 5,
+        borderColor: '#9E9E9E',
+        width: scale(200, Horizontal)
+    },
+})
