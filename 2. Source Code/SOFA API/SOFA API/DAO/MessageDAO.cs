@@ -48,7 +48,7 @@ namespace SOFA_API.DAO
         public ListMessageViewModelOut GetMessageBySenderAndReceiverId(int uid1, int uid2)
         {
             ListMessageViewModelOut listMes = new ListMessageViewModelOut();
-            string sql = "EXEC getMessageBySenderAndReceiverID @userId1, @userId2";
+            string sql = "EXEC getMessageBySenderAndReceiverID @userId1 , @userId2";
             try
             {
                 DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { uid1, uid2 });
