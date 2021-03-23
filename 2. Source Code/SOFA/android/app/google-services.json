@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "149927872517",
+    "firebase_url": "https://login-with-gg-fdb99.firebaseio.com",
+    "project_id": "login-with-gg-fdb99",
+    "storage_bucket": "login-with-gg-fdb99.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149927872517:android:cb95cc21985c2bc1a6b46c",
+        "android_client_info": {
+          "package_name": "com.sofa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "149927872517-von2g1ah2qfk4e19u6g80s7p6pfgisi3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sofa",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "149927872517-hmt3thsbq7e400b1fl0f48bq1oct8ovn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJF4CRQkc4hIDPAgte-SiJsKqvkvGKIlc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "149927872517-hmt3thsbq7e400b1fl0f48bq1oct8ovn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
