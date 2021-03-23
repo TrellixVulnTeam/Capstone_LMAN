@@ -7,6 +7,8 @@ BEGIN
 	WHERE ToAccount = @accountID
 END
 
+USE[CapstonesNoRelation]
+GO
 EXEC getNotificationByToAccount 2
 
 
