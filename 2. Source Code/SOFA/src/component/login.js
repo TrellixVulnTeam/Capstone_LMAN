@@ -7,6 +7,7 @@ import * as Request from '../common/request';
 import { LOGO_ICON, GOOGLE_ICON, FACEBOOK_ICON } from '../../image/index';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
+import { GoogleSignin } from '@react-native-community/google-signin'
 
 export default class Login extends Component {
     constructor(props) {
@@ -22,6 +23,11 @@ export default class Login extends Component {
     }
 
     componentDidMount() {
+        GoogleSignin.configure({
+            webClientId: '149927872517-hmt3thsbq7e400b1fl0f48bq1oct8ovn.apps.googleusercontent.com',
+            offlineAccess: true, 
+            forceCodeForRefreshToken: true,
+          });
         this.handleSession();
     }
 
@@ -96,6 +102,47 @@ export default class Login extends Component {
         }
     }
 
+    googleSignin = async () => {
+        try {
+            await GoogleSignin.hasPlayServices();
+            await GoogleSignin.signIn().then(user => {
+                console.log(user.idToken);
+                let header = {
+                    "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                    "Content-Type": "multipart/form-data",
+                    "Host": "chientranhvietnam.org"
+                };
+                let data = new FormData();
+                data.append('tokenId', user.idToken);
+                let url = Const.domain + 'api/auth/oauth';
+                Request.Post(url, header, data)
+                    .then(response => {
+                        if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                            const user = { username: response.username, role: response.roleName, email: response.email, phone: response.phone };
+                            this.storeData('token', response.token)
+                                .then(res => {
+                                    this.storeData('user', user)
+                                        .then(res => {
+                                            this.setState({ isLoading: false });
+                                            this.props.navigation.navigate('BottomNav');
+                                            this.props.navigation.goBack();
+                                        });
+                                });
+                        } else {
+                            if (response.code == Const.REQUEST_CODE_FAILED) {
+                                this.setState({ isValidUser: false, errMsg: response.errorMessage })
+                            }
+                        }
+                    })
+                    .catch(reason => {
+                        console.log(reason);
+                    });
+            });
+          } catch (error) {
+            console.log(error);
+          }
+    }
+
     render() {
         const { navigate } = this.props.navigation;
         if (this.state.isLoading) {
@@ -154,7 +201,7 @@ export default class Login extends Component {
                                     </LinearGradient>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity style={[styles.iconContainer, { marginLeft: '25%' }]}>
+                                <TouchableOpacity style={[styles.iconContainer, { marginLeft: '25%' }]} onPress={this.googleSignin}>
                                     <Image style={styles.iconGoogle}
                                         source={GOOGLE_ICON}
                                     />
