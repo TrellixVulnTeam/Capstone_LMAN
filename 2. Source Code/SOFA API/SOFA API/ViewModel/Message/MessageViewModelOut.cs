@@ -17,12 +17,12 @@ namespace SOFA_API.ViewModel.Message
         public bool ReceiverDeleted { get; set; }
         public bool IsRead { get; set; }
         public int ConversationId { get; set; }
-        public DateTime Time { get; set; }
+        public string Time { get; set; }
         public string ImageUrl { get; set; }
 
         public MessageViewModelOut() : base() { }
 
-        public MessageViewModelOut(int iD, int fromAccountId, int toAccountId, string content, bool senderDeleted, bool receiverDeleted, bool isRead, int conversationId, DateTime time, string imageUrl) : base()
+        public MessageViewModelOut(int iD, int fromAccountId, int toAccountId, string content, bool senderDeleted, bool receiverDeleted, bool isRead, int conversationId, string time, string imageUrl) : base()
         {
             this.ID = iD;
             this.FromAccountId = fromAccountId;
@@ -46,7 +46,7 @@ namespace SOFA_API.ViewModel.Message
             this.ReceiverDeleted = (bool)row["ReceiverDeleted"];
             this.IsRead = (bool)row["IsRead"];
             this.ConversationId = (int)row["ConversationId"];
-            this.Time = (DateTime)row["Time"];
+            this.Time = row["Time"].ToString();
             this.ImageUrl = Convert.IsDBNull(row["Url"]) ? "" : row["url"].ToString();
         }
     }

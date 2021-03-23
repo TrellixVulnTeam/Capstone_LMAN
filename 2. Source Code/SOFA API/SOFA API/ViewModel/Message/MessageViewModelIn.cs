@@ -17,12 +17,14 @@ namespace SOFA_API.ViewModel.Message
         public bool ReceiverDeleted { get; set; }
         public bool IsRead { get; set; }
         public int ConversationId { get; set; }
-        public DateTime Time { get; set; }
+        public string Time { get; set; }
         public string ImageUrl { get; set; }
+
+        public string ImageBase64 { get; set; }
 
         public MessageViewModelIn() : base() { }
 
-        public MessageViewModelIn(int iD, int fromAccountId, int toAccountId, string content, bool senderDeleted, bool receiverDeleted, bool isRead, int conversationId, DateTime time, string imageUrl) : base()
+        public MessageViewModelIn(int iD, int fromAccountId, int toAccountId, string content, bool senderDeleted, bool receiverDeleted, bool isRead, int conversationId, string time, string imageUrl, string imageBase64) : base()
         {
             this.ID = iD;
             this.FromAccountId = fromAccountId;
@@ -34,6 +36,7 @@ namespace SOFA_API.ViewModel.Message
             this.ConversationId = conversationId;
             this.Time = time;
             this.ImageUrl = imageUrl;
+            this.ImageBase64 = imageBase64;
         }
 
         public MessageViewModelIn(DataRow row) : base()
@@ -46,8 +49,9 @@ namespace SOFA_API.ViewModel.Message
             this.ReceiverDeleted = (bool)row["ReceiverDeleted"];
             this.IsRead = (bool)row["IsRead"];
             this.ConversationId = (int)row["ConversationId"];
-            this.Time = (DateTime)row["Time"];
+            this.Time = row["Time"].ToString();
             this.ImageUrl = Convert.IsDBNull(row["Url"]) ? "" : row["url"].ToString();
+            this.ImageBase64 = "";
         }
     }
 }
