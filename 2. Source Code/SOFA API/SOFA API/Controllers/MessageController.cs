@@ -32,7 +32,7 @@ namespace SOFA_API.Controllers
         {
             DateTime myDateTime = DateTime.Now;
             string sqlFormattedDate = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            string imageUrl = "message/" + newMessage.ConversationId + "/" + DateTime.Now.ToString("yyyy-MM-dd-HH:mm:ss.fff") + ".png";
+            string imageUrl = "message/" + newMessage.ConversationId + "/" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".png";
             newMessage.ImageUrl = imageUrl;
             newMessage.Time = sqlFormattedDate;
             MessageViewModelOut message = MessageService.Instance.InsertNewMessage(newMessage);
