@@ -599,3 +599,42 @@ export const voucherDetail = StyleSheet.create({
 export const account = StyleSheet.create({
 
 });
+
+export const noti = StyleSheet.create({
+  header:{
+    fontSize: Utils.scale(30, Const.Horizontal),
+    marginTop:Utils.scale(10,Const.Vertical),
+    marginLeft:Utils.scale(10,Const.Vertical),
+    fontWeight: 'bold'
+  },
+  headerText :{
+    fontSize: Utils.scale(20, Const.Horizontal),
+    marginTop:Utils.scale(20,Const.Vertical),
+    marginLeft:Utils.scale(10,Const.Vertical),
+    fontWeight: 'bold'
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
+  Article: {
+    paddingVertical: scale(20, Vertical),
+    paddingLeft: scale(5, Horizontal),
+  },
+  ArticleContent:{
+    marginLeft:Utils.scale(20,Const.Vertical),
+    fontSize: 17,
+    width: scale(300,Const.Horizontal)
+  },
+  flexRow: {
+    flexDirection: 'row',
+  },
+  ArticleAvatar: {
+    height: scale(60, Vertical),
+    width: scale(60, Vertical),
+    borderRadius: 50,
+    marginLeft: scale(10, Horizontal)
+  },
+
+
+});
