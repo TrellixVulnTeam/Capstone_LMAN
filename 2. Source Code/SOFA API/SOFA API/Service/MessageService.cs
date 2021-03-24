@@ -3,6 +3,7 @@ using SOFA_API.DAO;
 using SOFA_API.ViewModel.Message;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -104,7 +105,7 @@ namespace SOFA_API.Service
                 //Image path
                 String path = Const.ASSETS_PATH + @"message\" + message.ConversationId + @"\";
                 //save image
-                Utils.Instance.SaveImageFromBase64String(message.ImageBase64, path,(DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".png"));
+                Utils.Instance.SaveImageFromBase64String(message.ImageBase64, path,Path.GetFileName(message.ImageUrl));
 
                 int result = MessageDAO.Instance.createNewMessage(message);
                 if (result == 1)
