@@ -84,8 +84,8 @@ namespace SOFA_API.DAO
         {
             Post res = null;
 
-            string sql = "EXEC dbo.AddNewPost @content , @privacyID , @accountPost , @bodyInfoID";
-            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { post.Content, post.PrivacyID, post.AccountPost, post.BodyInfoID });
+            string sql = "EXEC dbo.AddNewPost @content , @privacyID , @accountPost , @bodyInfoID , @isVerified";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { post.Content, post.PrivacyID, post.AccountPost, post.BodyInfoID, post.IsVerified });
 
             if (data.Rows.Count > 0)
             {
@@ -164,6 +164,25 @@ namespace SOFA_API.DAO
             string sql = "EXEC dbo.DeletePost @postID";
 
             result = (int)DataProvider.Instance.ExecuteNonQuery(sql, new object[] { postID });
+
+            return result;
+        }
+        /// <summary>
+        /// Update data of the post
+        /// </summary>
+        /// <param name="id">ID of the post that you want to update</param>
+        /// <param name="content">New content</param>
+        /// <param name="privacyID">new Privacy ID</param>
+        /// <param name="time">new time</param>
+        /// <param name="bodyInfoID">ID of the body info</param>
+        /// <param name="isVerified">Status that post is valid or not</param>
+        /// <returns>number of the change</returns>
+        public int UpdatePost(int id, string content, int privacyID, DateTime time, int bodyInfoID, bool isVerified)
+        {
+            int result = 0;
+            string sql = "EXEC dbo.UpdatePost @postID , @content , @privacyID , @time , @bodyInfoID , @isVerified";
+
+            result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { id, content, privacyID, time, bodyInfoID, isVerified });
 
             return result;
         }

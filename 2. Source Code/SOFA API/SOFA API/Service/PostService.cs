@@ -1,4 +1,6 @@
-﻿using SOFA_API.Common;
+﻿using Clarifai.Api;
+using Google.Protobuf.Collections;
+using SOFA_API.Common;
 using SOFA_API.DAO;
 using SOFA_API.DTO;
 using SOFA_API.ViewModel.Newsfeed;
@@ -151,6 +153,9 @@ namespace SOFA_API.Service
             }
             return postViewModelOut;
         }
+
+
+
         /// <summary>
         /// Compare two post model out by rate point average
         /// </summary>
@@ -504,7 +509,7 @@ namespace SOFA_API.Service
             PostViewModelOut postViewModelOut = new PostViewModelOut();
             try
             {
-                Post post = new Post(0, postViewModelIn.Content, postViewModelIn.PrivacyID, postViewModelIn.Time, postViewModelIn.AccountPost, postViewModelIn.BodyInfoID);
+                Post post = new Post(0, postViewModelIn.Content, postViewModelIn.PrivacyID, postViewModelIn.Time, postViewModelIn.AccountPost, postViewModelIn.BodyInfoID, false);
                 post = PostDAO.Instance.CreatePost(post);
                 if (post != null && post.ID != 0)
                 {
@@ -515,7 +520,7 @@ namespace SOFA_API.Service
                     {
                         foreach (ImageModelIn imageModelIn in postViewModelIn.ListImage)
                         {
-                            Image image = new Image(post.ID, "");
+                            DTO.Image image = new DTO.Image(post.ID, "");
                             image = PostImageDAO.Instance.AddImagePost(image);
                             if (image.ID > 0)
                             {
@@ -531,6 +536,7 @@ namespace SOFA_API.Service
                     }
                     postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                     postViewModelOut.ListPost.Add(postModelOut);
+                    ValidatePost(postModelOut);
                 }
                 else
                 {
@@ -545,6 +551,36 @@ namespace SOFA_API.Service
             }
             return postViewModelOut;
 
+        }
+        /// <summary>
+        /// Verify that image have or not invalid content
+        /// </summary>
+        /// <param name="Data of the post"></param>
+        /// <returns></returns>
+        public object ValidatePost(PostModelOut postModelOut)
+        {
+
+            ClarifaiUtils clarifaiUtils = new ClarifaiUtils();
+            for (int i = 0; i < postModelOut.ListImage.Count; i++)
+            {
+                RepeatedField<Concept> listConcept = clarifaiUtils.ModeratationImage("https://chientranhvietnam.org/assets/" + postModelOut.ListImage[i].Url);
+                if (listConcept[0].Name != "safe")
+                {
+                    return listConcept;
+                }
+            }
+            int res = PostDAO.Instance.UpdatePost(postModelOut.ID, postModelOut.Content, postModelOut.PrivacyID, postModelOut.Time, postModelOut.BodyInfoID, true);
+            return true;
+        }
+        public object Verify(int postID)
+        {
+            Post post = PostDAO.Instance.GetPostByID(postID);
+            PostModelOut postModelOut = new PostModelOut();
+            postModelOut.SetPostDetail(post);
+            Profile profile = ProfileDAO.Instance.GetProfileByAccountID(post.AccountPost);
+            postModelOut.SetAccountPost(profile);
+            postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(postID);
+            return ValidatePost(postModelOut);
         }
 
     }

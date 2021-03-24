@@ -4,6 +4,7 @@ using SOFA_API.Common;
 using SOFA_API.Service;
 using SOFA_API.ViewModel.Newsfeed;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SOFA_API.Controllers
@@ -125,6 +126,13 @@ namespace SOFA_API.Controllers
             int id = Utils.Instance.GetUserID(User.Claims);
             PostViewModelOut postViewModelOut = PostService.Instance.GetListPostRecommend(id, infoID, page, rowsOfPage);
             return Ok(postViewModelOut);
+        }
+
+        [HttpGet("Verify")]
+        public ActionResult Verify(int postID)
+        {
+            object obj = PostService.Instance.Verify(postID);
+            return Ok(obj);
         }
     }
 }

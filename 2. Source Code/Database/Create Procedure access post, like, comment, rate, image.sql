@@ -8,7 +8,7 @@ CREATE PROC GetAllPublicPost
 AS
 BEGIN
 	SELECT * FROM dbo.Post
-	WHERE PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public')
+	WHERE PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public') AND IsVerified = 1
 	ORDER BY [Time] DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
 	FETCH NEXT @rowsOfPage ROWS ONLY
@@ -22,7 +22,7 @@ CREATE PROC GetPostByInfoID
 AS
 BEGIN
 	SELECT * FROM Post
-	WHERE BodyInfoID = @infoID AND PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public')
+	WHERE BodyInfoID = @infoID AND PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public') AND IsVerified = 1
 	ORDER BY [Time] DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
 	FETCH NEXT @rowsOfPage ROWS ONLY
@@ -51,7 +51,7 @@ AS
 BEGIN
 	SELECT * FROM dbo.Post
 	WHERE AccountPost = @accountPost 
-	AND PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public')
+	AND PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public') AND IsVerified = 1
 	ORDER BY [Time] DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
 	FETCH NEXT @rowsOfPage ROWS ONLY
@@ -64,7 +64,7 @@ CREATE PROC GetPostByID
 @postID INT
 AS
 BEGIN
-	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID
+	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID, IsVerified
 	FROM dbo.Post
 	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
 	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
@@ -78,7 +78,7 @@ CREATE PROC GetPostByBodyInfoID
 @bodyInfoID INT, @page INT, @rowsOfPage INT
 AS
 BEGIN
-	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID, RatingAvg.Average AS RateAVG
+	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID, RatingAvg.Average AS RateAVG, IsVerified
 	FROM dbo.Post
 	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
 	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
@@ -88,7 +88,7 @@ BEGIN
 		FROM dbo.Rate 
 		GROUP BY PostId
 	) AS RatingAvg ON RatingAvg.PostId = Post.Id
-	WHERE Post.BodyInfoID = @bodyInfoID AND RatingAvg.Average>=(CAST(3.5 AS FLOAT))
+	WHERE Post.BodyInfoID = @bodyInfoID AND RatingAvg.Average>=(CAST(3.5 AS FLOAT)) AND IsVerified = 1
 	ORDER BY RateAVG DESC, Time DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
 	FETCH NEXT @rowsOfPage ROWS ONLY
@@ -98,7 +98,7 @@ GO
 DROP PROC IF EXISTS AddNewPost
 GO
 CREATE PROC AddNewPost
-@content NVARCHAR(MAX), @privacyID INT, @accountPost INT, @bodyInfoID INT
+@content NVARCHAR(MAX), @privacyID INT, @accountPost INT, @bodyInfoID INT, @isVerified BIT
 AS
 BEGIN
 	INSERT INTO dbo.Post
@@ -107,7 +107,8 @@ BEGIN
 	    PrivacyID,
 	    Time,
 	    AccountPost,
-		BodyInfoID
+		BodyInfoID,
+		IsVerified
 	)
 	OUTPUT Inserted.*
 	VALUES
@@ -115,7 +116,8 @@ BEGIN
 	    @privacyID,         -- PrivacyID - int
 	    GETDATE(), -- Time - datetime
 	    @accountPost ,         -- AccountPost - int
-		@bodyInfoID
+		@bodyInfoID,
+		@isVerified
 	    )
 END
 GO
@@ -123,11 +125,11 @@ GO
 DROP PROC IF EXISTS UpdatePost
 GO
 CREATE PROC UpdatePost
-@postId INT, @content NVARCHAR(MAX), @privacyID INT, @time DATETIME, @bodyInfoID INT
+@postId INT, @content NVARCHAR(MAX), @privacyID INT, @time DATETIME, @bodyInfoID INT, @isVerified BIT
 AS
 BEGIN
 	UPDATE dbo.Post 
-	SET Content = @content, PrivacyID = @privacyID, Time = GETDATE()
+	SET Content = @content, PrivacyID = @privacyID, Time = GETDATE(), IsVerified = @isVerified, BodyInfoID = @bodyInfoID
 	WHERE Id = @postId
 END
 GO
@@ -364,3 +366,5 @@ BEGIN
 	END
 END
 GO
+
+SELECT * FROM Post
