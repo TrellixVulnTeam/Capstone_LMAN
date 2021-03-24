@@ -355,7 +355,7 @@ export default class Message extends Component {
                                 marginRight: (item.fromAccountId != myProfile.accountID ? 'auto' : 10),
                               }]}>
         
-                                {/* <Image style={{
+                                <Image style={{
                                   borderRadius: 20,
                                   flex: 1,
                                   width: null,
@@ -363,8 +363,7 @@ export default class Message extends Component {
                                   resizeMode: 'contain'
                                 }}
                                   source={{ uri: Const.assets_domain + item.imageUrl }}
-                                /> */}
-                                <Text style={{ alignItems: 'center' }}>{Const.assets_domain + item.imageUrl}</Text>
+                                />                              
                               </View>
                             ) : (<View></View>)}
                           </View>
