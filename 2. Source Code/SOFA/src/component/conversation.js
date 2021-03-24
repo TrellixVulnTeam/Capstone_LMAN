@@ -25,6 +25,7 @@ export default class Message extends Component {
             friendId: 0,
             onEmojiKeyboard: false,
             messageText: '',
+            message: {},
         }
     }
 
@@ -72,28 +73,6 @@ export default class Message extends Component {
                 alert(response.customButton);
             } else {
                 let source = response;
-                this.setState({ avatarUri: source.uri });
-                if (source.base64) {
-                    var header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                    };
-                    console.log(header);
-                    let data = new FormData();
-                    data.append('Avatar', source.base64);
-                    data.append('username', account.userName);
-                    let url = Const.domain + 'api/account';
-                    Request.Post(url, header, data)
-                        .then(response => {
-                            if (response && response.code && response.code == 'SUCCESSFULY') {
-                                Alert.alert('Avatar', 'Đổi ảnh đại diện thành công!!!');
-
-                            }
-                        })
-                        .catch(reason => {
-                            console.log(reason);
-                        });
-                }
                 callback(source);
 
             }
@@ -134,36 +113,13 @@ export default class Message extends Component {
         this.requestCameraPermission()
             .then(response => {
                 launchCamera(options, (response) => {
-                    console.log(response);
                     if (response.didCancel) {
                         console.log('User cancelled image picker');
                     } else if (response.error) {
                         console.log('ImagePicker Error: ', response.error);
                     } else {
                         let source = response;
-                        this.setState({ avatarUri: source.uri });
-                        if (source.base64) {
-                            var header = {
-                                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                                "Accept": 'application/json',
-                            };
-                            console.log(header);
-                            let data = new FormData();
-                            data.append('Avatar', source.base64);
-                            data.append('username', account.userName);
-                            let url = Const.domain + 'api/account';
-                            Request.Post(url, header, data)
-                                .then(response => {
-                                    if (response && response.code && response.code == 'SUCCESSFULY') {
-                                        Alert.alert('Avatar', 'Đổi ảnh đại diện thành công!!!');
-                                    }
-                                })
-                                .catch(reason => {
-                                    console.log(reason);
-                                });
-                        }
                         callback(source);
-
                     }
                 });
             });
@@ -173,6 +129,7 @@ export default class Message extends Component {
     getProfile = async () => {
         console.log('Get my profile');
         const { uid1, uid2 } = this.props.route.params;
+        var { message } = this.state;
         await this.getData('token')
             .then(result => {
                 if (result) {
@@ -186,8 +143,16 @@ export default class Message extends Component {
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                 this.setState({ myProfile: response });
-                                //this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
-                                var friendId = response.accountID == uid1 ? uid2 : uid1;
+                                var friendId = uid1;
+                                if (response.accountID == uid1) {
+                                    friendId = uid2;
+                                    message.fromAccountId = uid1;
+                                    message.toAccountId = uid2;
+                                } else {
+                                    message.fromAccountId = uid2;
+                                    message.toAccountId = uid1;
+                                }
+                                this.setState({ message: message });
                                 this.setState({ friendId: friendId });
                                 this.getFriendProfile();
                             } else {
@@ -259,6 +224,52 @@ export default class Message extends Component {
 
     }
 
+    onPressSend() {
+        var { message, messageText } = this.state;
+        const { cid } = this.props.route.params;
+        message.senderDeleted = false;
+        message.receiverDeleted = false;
+        message.isRead = false;
+        message.conversationId = cid;
+
+        var header = {
+            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+            "Content-Type": "multipart/form-data",
+            "Host": "chientranhvietnam.org",
+            "Accept": 'application/json',
+        };
+        let data = new FormData();
+        data.append('fromAccountId', message.fromAccountId);
+        data.append('toAccountId', message.toAccountId);
+        data.append('content', message.content);
+        data.append('senderDeleted', message.senderDeleted);
+        data.append('receiverDeleted', message.receiverDeleted);
+        data.append('isRead', message.isRead);
+        data.append('conversationId', message.conversationId);
+        data.append('imageBase64', message.imageBase64);
+        let url = Const.domain + 'api/message/sendmessage';
+        Request.Post(url, header, data)
+            .then(response => {
+                console.log(response);
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    Alert.alert('Send message Successfully', 'Gửi tin nhắn thành công!');
+                    console.log(response);
+                } else {
+                    if (response.code == Const.REQUEST_CODE_FAILED) {
+                        Alert.alert('Send Failed', 'Gửi tin nhắn không thành công! Vui lòng kiểm tra lại');
+                        console.log(response);
+                    }
+                }
+            })
+            .catch(reason => {
+                console.log('Lỗi rồi!');
+                console.log(reason);
+            });
+
+        console.log(message);
+        this.setState({ messageText: '' });
+    }
+
     getItemLayout = (data, index) => (
         { length: Utils.scale(40, Const.Vertical), offset: (Utils.scale(40, Const.Vertical) + 5) * index, index }
     )
@@ -266,18 +277,18 @@ export default class Message extends Component {
     componentDidMount() {
         this.setState({});
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
-            this.setState({});
+            //this.setState({});
             this.getProfile();
             this.getMessage();
         });
         this._unfocus = this.props.navigation.addListener('blur', () => {
-            this.setState({});
+            //this.setState({});
         });
     }
 
     render() {
         const { cid, uid1, uid2 } = this.props.route.params;
-        var { listMessage, myProfile, friendProfile, messageText, onEmojiKeyboard } = this.state;
+        var { listMessage, myProfile, friendProfile, messageText, onEmojiKeyboard, message } = this.state;
         return (
             <View>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
@@ -321,6 +332,8 @@ export default class Message extends Component {
                 }}>
                     <FlatList
                         data={listMessage}
+                        //initialScrollIndex={listMessage.length-2}
+                        //inverted = {true}
                         getItemLayout={this.getItemLayout}
                         keyExtractor={(item, index) => index + ''}
                         onScroll={e => {
@@ -356,8 +369,8 @@ export default class Message extends Component {
                                         <View style={[Style.common.flexRow, {
                                             width: Utils.scale(200, Const.Horizontal),
                                             height: Utils.scale(200, Const.Vertical),
-                                            marginLeft: (item.fromAccountId != myProfile.accountID ? 10 : 'auto'),
-                                            marginRight: (item.fromAccountId != myProfile.accountID ? 'auto' : 10),
+                                            marginLeft: (item.fromAccountId != myProfile.accountID ? 0 : 'auto'),
+                                            marginRight: (item.fromAccountId != myProfile.accountID ? 'auto' : 0),
                                         }]}>
 
                                             <Image style={{
@@ -384,13 +397,17 @@ export default class Message extends Component {
                     <View
                         style={[Style.common.flexRow, { marginBottom: Utils.scale(5, Const.Vertical), marginTop: Utils.scale(20, Const.Horizontal), justifyContent: 'center', alignItems: 'center' }]}>
                         <TextInput
-                            value={messageText}
-                            onChangeText={text => this.setState({ messageText: text })}
+                            defaultValue={messageText}
+                            onChangeText={text => {
+                                message.content = text;
+                                this.setState({ message: message });
+                                this.setState({ messageText: text });
+                            }}
                             style={
                                 {
                                     backgroundColor: 'white',
                                     height: Utils.scale(40, Const.Vertical),
-                                    width: Utils.scale(300, Const.Horizontal),
+                                    width: Utils.scale(260, Const.Horizontal),
                                     borderColor: 'gray',
                                     borderWidth: 1,
                                     borderRadius: 20,
@@ -401,14 +418,26 @@ export default class Message extends Component {
                             name="image"
                             size={35}
                             color="black"
-                            style={{ marginLeft: Utils.scale(5, Const.Horizontal) }}
-                            onPress={() => this.chooseFile((source) => console.log('select image'))} />
+                            style={{ marginLeft: Utils.scale(8, Const.Horizontal) }}
+                            onPress={() => this.chooseFile((source) => {
+                                message.imageBase64 = source.base64;
+                                this.setState({ message: message });
+                            })} />
+                        <TouchableOpacity onPress={() => this.takePicture((source) => {
+                            message.imageBase64 = source.base64;
+                            this.setState({ message: message });
+                        })}>
+                            <Entypo name='camera' size={32} color={'black'} style={{
+                                marginLeft: Utils.scale(8, Const.Horizontal),
+                            }} />
+                        </TouchableOpacity>
+
                         <Icon
                             name='send'
                             size={35}
                             color="black"
                             onPress={() => this.onPressSend()}
-                            style={{ marginLeft: Utils.scale(5, Const.Horizontal), marginRight: Utils.scale(10, Const.Horizontal) }} />
+                            style={{ marginLeft: Utils.scale(8, Const.Horizontal), marginRight: Utils.scale(10, Const.Horizontal) }} />
                     </View>
                 </View>
             </View >
