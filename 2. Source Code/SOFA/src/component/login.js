@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
@@ -92,7 +92,7 @@ export default class Login extends Component {
                             });
                     } else {
                         if (response.code == Const.REQUEST_CODE_FAILED) {
-                            this.setState({ isValidUser: false, errMsg: response.errorMessage })
+                            Alert.alert('Đăng nhập không thành công', 'Hãy đăng ký tài khoản mới với email của bạn!');
                         }
                     }
                 })
