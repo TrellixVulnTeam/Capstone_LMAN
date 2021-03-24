@@ -378,20 +378,7 @@ namespace SOFA_API.Service
 
                     if (account == null)
                     {
-                        AccountViewModelIn accountViewModel = new AccountViewModelIn();
-                        accountViewModel.Username = "google" + DateTime.Now.Ticks.ToString();
-                        accountViewModel.Password = HashPassword("google" + DateTime.Now.Ticks.ToString());
-                        accountViewModel.Firstname = googleUser.GivenName;
-                        accountViewModel.Lastname = googleUser.FamilyName;
-                        accountViewModel.Email = googleUser.Email;
-                        accountViewModel.Phone = "";
-                        accountViewModel.RoleId = Const.USER_ROLE_ID;
-
-                        int result = AccountDAO.Instance.AddAccount(AccountValidation(accountViewModel));
-                        if (result > 0)
-                        {
-                            accountViewModelOut = AccountDAO.Instance.GetUserWithRoleByEmail(googleUser.Email);
-                        }
+                        throw new Exception("Email chưa được đăng ký");
                     }
                     else
                     {
