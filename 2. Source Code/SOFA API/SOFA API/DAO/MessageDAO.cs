@@ -95,7 +95,7 @@ namespace SOFA_API.DAO
                 record = DataProvider.Instance.ExecuteNonQuery(sql1, new object[] {mess.FromAccountId, mess.ToAccountId,
                                                                                   mess.Content, mess.SenderDeleted, mess.ReceiverDeleted,
                                                                                   mess.IsRead, mess.ConversationId, mess.Time});
-                if (!String.IsNullOrEmpty(mess.ImageUrl))
+                if (!String.IsNullOrEmpty(mess.ImageBase64))
                 {
                     int insertImage = DataProvider.Instance.ExecuteNonQuery(sql2, new object[] { mess.Time, mess.ImageUrl });
                 }

@@ -102,11 +102,14 @@ namespace SOFA_API.Service
             MessageViewModelOut newMessage = new MessageViewModelOut();
             try
             {
-                //Image path
-                String path = Const.ASSETS_PATH + @"message\" + message.ConversationId + @"\";
-                //save image
-                Utils.Instance.SaveImageFromBase64String(message.ImageBase64, path,Path.GetFileName(message.ImageUrl));
-
+                if (String.IsNullOrEmpty(message.ImageBase64))
+                {
+                    //Image path
+                    String path = Const.ASSETS_PATH + @"message\" + message.ConversationId + @"\";
+                    //save image
+                    Utils.Instance.SaveImageFromBase64String(message.ImageBase64, path, Path.GetFileName(message.ImageUrl));
+                }
+                
                 int result = MessageDAO.Instance.createNewMessage(message);
                 if (result == 1)
                 {

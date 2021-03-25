@@ -26,6 +26,7 @@ export default class Message extends Component {
             onEmojiKeyboard: false,
             messageText: '',
             message: {},
+            imageBase64: '',          
         }
     }
 
@@ -225,12 +226,16 @@ export default class Message extends Component {
     }
 
     onPressSend() {
-        var { message, messageText } = this.state;
+        var { message, messageText, imageBase64 } = this.state;
         const { cid } = this.props.route.params;
         message.senderDeleted = false;
         message.receiverDeleted = false;
         message.isRead = false;
         message.conversationId = cid;
+        message.imageBase64 = imageBase64;
+        message.content = messageText;
+        
+        console.log(message);
 
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
@@ -288,7 +293,7 @@ export default class Message extends Component {
 
     render() {
         const { cid, uid1, uid2 } = this.props.route.params;
-        var { listMessage, myProfile, friendProfile, messageText, onEmojiKeyboard, message } = this.state;
+        var { listMessage, myProfile, friendProfile, messageText, onEmojiKeyboard, message, imageBase64 } = this.state;
         return (
             <View>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
@@ -399,8 +404,6 @@ export default class Message extends Component {
                         <TextInput
                             defaultValue={messageText}
                             onChangeText={text => {
-                                message.content = text;
-                                this.setState({ message: message });
                                 this.setState({ messageText: text });
                             }}
                             style={
@@ -420,12 +423,10 @@ export default class Message extends Component {
                             color="black"
                             style={{ marginLeft: Utils.scale(8, Const.Horizontal) }}
                             onPress={() => this.chooseFile((source) => {
-                                message.imageBase64 = source.base64;
-                                this.setState({ message: message });
+                                this.setState({imageBase64 : source.base64});
                             })} />
                         <TouchableOpacity onPress={() => this.takePicture((source) => {
-                            message.imageBase64 = source.base64;
-                            this.setState({ message: message });
+                            this.setState({imageBase64 : source.base64});
                         })}>
                             <Entypo name='camera' size={32} color={'black'} style={{
                                 marginLeft: Utils.scale(8, Const.Horizontal),
