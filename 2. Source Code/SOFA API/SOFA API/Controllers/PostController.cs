@@ -134,5 +134,17 @@ namespace SOFA_API.Controllers
             object obj = PostService.Instance.Verify(postID);
             return Ok(obj);
         }
+        [HttpGet("Search")]
+        public ActionResult Search(string url)
+        {
+            object obj = new ClarifaiUtils().SearchImageTemp(url);
+            return Ok(obj);
+        }
+        [HttpGet("AddImage")]
+        public ActionResult AddImage(string url, string name)
+        {
+            object obj = new ClarifaiUtils().AddImage(url, name);
+            return Ok(obj);
+        }
     }
 }
