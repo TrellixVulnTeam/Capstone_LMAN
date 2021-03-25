@@ -51,10 +51,10 @@ namespace SOFA_API
                         {
                             var accessToken = context.Request.Query["access_token"];
                             var path = context.HttpContext.Request.Path;
-                            //if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/message")))
-                            //{
-                            //    context.Token = accessToken;
-                            //}
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/message")))
+                            {
+                                context.Token = accessToken;
+                            }
                             if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/notification")))
                             {
                                 context.Token = accessToken;
@@ -87,11 +87,8 @@ namespace SOFA_API
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapHub<MessageHub>("/message");
-                endpoints.MapHub<NotificationHub>("/notification", option =>
-                {
-                    option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
-                });
+                endpoints.MapHub<MessageHub>("/message");
+                endpoints.MapHub<NotificationHub>("/notification");
                 endpoints.MapControllers();
             });
         }
