@@ -30,7 +30,7 @@ namespace SOFA_API.DAO
 
         public DataProvider() { }
 
-        private string connectionSTR = "Data Source=139.180.158.47,1433;Initial Catalog=CapstonesNoRelation;Persist Security Info=True;User ID=sa;Password=@Codera3k48";
+        private string connectionSTR = "Data Source=198.13.50.243,1433;Initial Catalog=CapstonesNoRelation;Persist Security Info=True;User ID=sa;Password=@Codera3k48";
 
         public DataTable ExecuteQuery(string query, object[] parameter = null)
         {
