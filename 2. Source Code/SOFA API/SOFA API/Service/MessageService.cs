@@ -102,7 +102,7 @@ namespace SOFA_API.Service
             MessageViewModelOut newMessage = new MessageViewModelOut();
             try
             {
-                if (String.IsNullOrEmpty(message.ImageBase64))
+                if (!String.IsNullOrEmpty(message.ImageBase64))
                 {
                     //Image path
                     String path = Const.ASSETS_PATH + @"message\" + message.ConversationId + @"\";
