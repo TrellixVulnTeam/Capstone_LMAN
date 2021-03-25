@@ -55,6 +55,10 @@ namespace SOFA_API
                             {
                                 context.Token = accessToken;
                             }
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/notification")))
+                            {
+                                context.Token = accessToken;
+                            }
                             return Task.CompletedTask;
                         }
                     };
