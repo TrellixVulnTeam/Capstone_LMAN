@@ -84,6 +84,7 @@ namespace SOFA_API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<MessageHub>("/message");
+                endpoints.MapHub<NotificationHub>("/notification");
                 endpoints.MapControllers();
             });
         }
