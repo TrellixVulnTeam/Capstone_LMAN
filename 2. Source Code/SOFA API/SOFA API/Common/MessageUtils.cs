@@ -22,7 +22,7 @@ namespace SOFA_API.Common
         public const string ERROR_VERIFICATION_ACCOUNT_NOT_FOUND = "Account not found";
         public const string ERROR_REGISTER_PHONE_NUMBER_EXISTED = "Phone number have existed";
         public const string ERROR_DONT_HAVE_PERMISSION = "You don't have permission";
-        public const string ERROR_ADD_NEW_MESSAGE_FAILED = "Seed new message failed";
+        public const string ERROR_ADD_NEW_MESSAGE_FAILED = "Send new message failed";
     }
 
 

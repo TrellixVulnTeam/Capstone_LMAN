@@ -92,6 +92,7 @@ namespace SOFA_API.DAO
             string sql2 = "EXEC AddNewMessageImage @time , @Url";
             try
             {
+                if (mess.Content == null) mess.Content = "";
                 record = DataProvider.Instance.ExecuteNonQuery(sql1, new object[] {mess.FromAccountId, mess.ToAccountId,
                                                                                   mess.Content, mess.SenderDeleted, mess.ReceiverDeleted,
                                                                                   mess.IsRead, mess.ConversationId, mess.Time});
