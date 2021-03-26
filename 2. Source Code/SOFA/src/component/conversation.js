@@ -31,7 +31,7 @@ export default class Message extends Component {
         }
     }
 
-    flatList = createRef<FlatList<any>>();
+    flatList = createRef();
 
     getData = async (key) => {
         try {
