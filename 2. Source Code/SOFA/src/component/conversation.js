@@ -237,13 +237,36 @@ export default class Message extends Component {
     getMessage() {
         console.log('Get message')
         var { listMessage } = this.state;
-        const { cid } = this.props.route.params;
+        const { cid, uid1, uid2 } = this.props.route.params;
         if (cid) {
             var header = {
                 "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
                 "Accept": 'application/json',
             };
             let url = Const.domain + 'api/message/getmessagebycid?cid=' + cid;
+            Request.Get(url, header)
+                .then(response => {
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        let listMessage = response.listMess;
+                        this.setState({ listMessage: listMessage });
+                        setTimeout(() => {
+                            console.log('Vào rồi, đmm');
+                            this.flatList.current.scrollToEnd()
+                        }, 0);
+                    } else {
+                        this.props.navigation.navigate('Login')
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                    this.props.navigation.navigate('Login')
+                });
+        }else{
+            var header = {
+                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                "Accept": 'application/json',
+            };
+            let url = Const.domain + 'api/message/getmessagebyuid?uid1=' + uid1+'&uid2='+uid2;
             Request.Get(url, header)
                 .then(response => {
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -271,7 +294,12 @@ export default class Message extends Component {
         message.senderDeleted = false;
         message.receiverDeleted = false;
         message.isRead = false;
-        message.conversationId = cid;
+        if(cid){
+            message.conversationId = cid;
+        }else{
+            message.conversationId = 0;
+        }
+        
         message.imageBase64 = imageBase64;
         message.content = messageText;
 

@@ -101,7 +101,7 @@ export default class Profile extends Component {
     }
 
     onPressMessage(){
-        this.props.navigation.navigate('Conversation', { 'cid': 4, 'uid1': 13, 'uid2': 12 });
+        this.props.navigation.navigate('Conversation', { 'cid': 4, 'uid1': 13, 'uid2': 18 });
     }
 
     onPressMarkup() {

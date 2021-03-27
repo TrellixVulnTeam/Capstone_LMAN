@@ -32,7 +32,8 @@ export default class Profile extends Component {
             account: {},
             avatarUri: '',
             token: '',
-            listImageAll: []
+            listImageAll: [],
+            myId: 0,
 
         }
     }
@@ -93,7 +94,7 @@ export default class Profile extends Component {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json',
         };
-        let url = Const.domain + 'api/post/getuserpublicpost?accountPost=' + AccountID.accountID+'&page=' + pageNumber + '&rowsofpage=' + Const.PROFILE_ROW_OF_PAGE;
+        let url = Const.domain + 'api/post/getuserpublicpost?accountPost=' + AccountID.accountID + '&page=' + pageNumber + '&rowsofpage=' + Const.PROFILE_ROW_OF_PAGE;
         Request.Get(url, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -137,8 +138,38 @@ export default class Profile extends Component {
     onPressBlock() {
         console.log('Press Block');
     }
-    onPressMessage() {
-        console.log('Press Message');
+    onPressMessage = async () =>  {
+        const accountID = this.props.route.params.accountID;
+
+        await this.getData('token')
+            .then(result => {
+                if (result) {
+                    var header = {
+                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                        "Accept": 'application/json',
+                        "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
+                    };
+                    let url = Const.domain + 'api/profile';
+                    Request.Get(url, header)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.props.navigation.navigate('Conversation', { 'uid1': accountID, 'uid2': response.accountID });
+                            } else {
+                                this.props.navigation.navigate('Login')
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            this.props.navigation.navigate('Login')
+                        });
+                } else {
+                    this.props.navigation.navigate('Login')
+                }
+            })
+            .catch(reason => {
+                console.log('failed');
+                this.props.navigation.navigate('Login')
+            })
     }
 
     logout() {
@@ -199,7 +230,7 @@ export default class Profile extends Component {
                                                 source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
                                                 resizeMode={"cover"}
                                                 style={Style.profile.image} />
-                                            <TouchableOpacity onPress={() => this.onPressUpdateProfile()} style={{
+                                            <TouchableOpacity onPress={() => alert('Click more')} style={{
                                                 marginRight: Utils.scale(15, Const.Horizontal),
                                                 marginLeft: 'auto'
                                             }}>
@@ -216,7 +247,7 @@ export default class Profile extends Component {
                                             <Text style={Style.profile.basicSmallInfo}>{account.postNumber}{"\n"}Posts</Text>
                                             <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
                                         </View>
-                                        
+
                                         <View style={Style.profile.button}>
                                             <Button style={Style.profile.singleButton} color='#ff7878' onPress={() => this.onPressFollow()} title="Follow" />
                                             <View style={{ flex: 0.2 }}></View>

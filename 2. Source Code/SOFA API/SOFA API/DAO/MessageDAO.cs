@@ -90,8 +90,17 @@ namespace SOFA_API.DAO
             MessageViewModelOut message = new MessageViewModelOut();
             string sql1 = "EXEC AddNewMessage @FromAccountId , @ToAccountId , @Content , @SenderDeleted , @ReceiverDeleted , @IsRead , @ConversationId , @Time";
             string sql2 = "EXEC AddNewMessageImage @time , @Url";
+            string sql3 = "EXEC CreateNewConversation @TimeCreate , @TimeUpdate , @AccountId1 , @AccountId2 , @Account1Delete , @Account2Delete";
             try
             {
+                if (mess.ConversationId == 0)
+                {
+                    DataTable dataTable2 = DataProvider.Instance.ExecuteQuery(sql3, new object[] { mess.Time, mess.Time, mess.ToAccountId, mess.FromAccountId, false, false });
+                    if (dataTable2.Rows.Count > 0)
+                    {
+                        mess.ConversationId = (int)dataTable2.Rows[0]["Id"];
+                    }
+                }
                 if (mess.Content == null) mess.Content = "";
                 DataTable dataTable = DataProvider.Instance.ExecuteQuery(sql1, new object[] {mess.FromAccountId, mess.ToAccountId,
                                                                                   mess.Content, mess.SenderDeleted, mess.ReceiverDeleted,
