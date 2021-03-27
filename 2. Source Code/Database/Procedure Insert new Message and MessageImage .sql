@@ -13,6 +13,7 @@ INSERT INTO [dbo].[Message]
            ,[IsRead]
            ,[ConversationId]
            ,[Time])
+		   OUTPUT inserted.*
      VALUES
            (@FromAccountId
            ,@ToAccountId
@@ -32,6 +33,7 @@ BEGIN
 INSERT INTO [dbo].[MessageImage]
            ([MessageId]
            ,[Url])
+			OUTPUT inserted.*
      VALUES
            ((select Id from Message where Time = @time)
            ,@Url)

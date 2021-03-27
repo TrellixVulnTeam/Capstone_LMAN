@@ -47,7 +47,7 @@ namespace SOFA_API.ViewModel.Message
             this.IsRead = (bool)row["IsRead"];
             this.ConversationId = (int)row["ConversationId"];
             this.Time = row["Time"].ToString();
-            this.ImageUrl = Convert.IsDBNull(row["Url"]) ? "" : row["url"].ToString();
+            this.ImageUrl = null;
         }
     }
 }

@@ -110,12 +110,8 @@ namespace SOFA_API.Service
                     Utils.Instance.SaveImageFromBase64String(message.ImageBase64, path, Path.GetFileName(message.ImageUrl));
                 }
                 
-                int result = MessageDAO.Instance.createNewMessage(message);
-                if (result == 1)
-                {
-                    newMessage.Code = Const.REQUEST_CODE_SUCCESSFULLY;
-                }
-                else
+                newMessage = MessageDAO.Instance.createNewMessage(message);
+                if (newMessage.Code != Const.REQUEST_CODE_SUCCESSFULLY)
                 {
                     newMessage.Code = Const.REQUEST_CODE_FAILED;
                     newMessage.ErrorMessage = MessageUtils.ERROR_ADD_NEW_MESSAGE_FAILED;

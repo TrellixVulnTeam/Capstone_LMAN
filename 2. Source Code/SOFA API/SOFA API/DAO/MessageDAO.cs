@@ -85,28 +85,39 @@ namespace SOFA_API.DAO
         /// </summary>
         /// <param name="mess"></param>
         /// <returns>number of created image</returns>
-        public int createNewMessage(MessageViewModelIn mess)
+        public MessageViewModelOut createNewMessage(MessageViewModelIn mess)
         {
-            int record = 0;
+            MessageViewModelOut message = new MessageViewModelOut();
             string sql1 = "EXEC AddNewMessage @FromAccountId , @ToAccountId , @Content , @SenderDeleted , @ReceiverDeleted , @IsRead , @ConversationId , @Time";
             string sql2 = "EXEC AddNewMessageImage @time , @Url";
             try
             {
                 if (mess.Content == null) mess.Content = "";
-                record = DataProvider.Instance.ExecuteNonQuery(sql1, new object[] {mess.FromAccountId, mess.ToAccountId,
+                DataTable dataTable = DataProvider.Instance.ExecuteQuery(sql1, new object[] {mess.FromAccountId, mess.ToAccountId,
                                                                                   mess.Content, mess.SenderDeleted, mess.ReceiverDeleted,
                                                                                   mess.IsRead, mess.ConversationId, mess.Time});
+                if(dataTable.Rows.Count > 0)
+                {
+                    message = new MessageViewModelOut(dataTable.Rows[0]);
+                }
                 if (!String.IsNullOrEmpty(mess.ImageBase64))
                 {
-                    int insertImage = DataProvider.Instance.ExecuteNonQuery(sql2, new object[] { mess.Time, mess.ImageUrl });
+                    DataTable dataTable1 = DataProvider.Instance.ExecuteQuery(sql2, new object[] { mess.Time, mess.ImageUrl });
+                    if(dataTable1.Rows.Count > 0)
+                    {
+                        message.ImageUrl = dataTable1.Rows[0]["Url"].ToString();
+                    }
+                    
                 }
+                message.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
             catch (Exception e)
             {
+                message.Code = Const.REQUEST_CODE_FAILED;
                 Utils.Instance.SaveLog(e.ToString());
                 throw e;
             }
-            return record;
+            return message;
         }
     }
 }
