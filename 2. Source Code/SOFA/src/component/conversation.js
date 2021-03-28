@@ -29,6 +29,7 @@ export default class Conversation extends Component {
             imageBase64: '',
             token: '',
             chatHeight: 605,
+            conversationId : 0,
         }
 
     }
@@ -290,7 +291,7 @@ export default class Conversation extends Component {
     }
 
     onPressSend() {
-        var { message, messageText, imageBase64 } = this.state;
+        var { message, messageText, imageBase64, conversationId } = this.state;
         const { cid } = this.props.route.params;
         message.senderDeleted = false;
         message.receiverDeleted = false;
@@ -298,7 +299,7 @@ export default class Conversation extends Component {
         if(cid){
             message.conversationId = cid;
         }else{
-            message.conversationId = 0;
+            message.conversationId = conversationId;
         }
         
         message.imageBase64 = imageBase64;
@@ -331,6 +332,7 @@ export default class Conversation extends Component {
                     let item = response;
                     temp.push(item);
                     this.setState({ listMessage: temp });
+                    this.setState({ conversationId: item.conversationId});
                     setTimeout(() => this.flatList.current.scrollToEnd(), 0);
                     console.log('add sent message');
                 } else {

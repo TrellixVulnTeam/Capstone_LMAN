@@ -91,15 +91,24 @@ namespace SOFA_API.DAO
             string sql1 = "EXEC AddNewMessage @FromAccountId , @ToAccountId , @Content , @SenderDeleted , @ReceiverDeleted , @IsRead , @ConversationId , @Time";
             string sql2 = "EXEC AddNewMessageImage @time , @Url";
             string sql3 = "EXEC CreateNewConversation @TimeCreate , @TimeUpdate , @AccountId1 , @AccountId2 , @Account1Delete , @Account2Delete";
+            string sql4 = "EXEC GetConversationBy2AccountId @AccountId1 , @AccountId2";
             try
             {
                 if (mess.ConversationId == 0)
                 {
-                    DataTable dataTable2 = DataProvider.Instance.ExecuteQuery(sql3, new object[] { mess.Time, mess.Time, mess.ToAccountId, mess.FromAccountId, false, false });
-                    if (dataTable2.Rows.Count > 0)
+                    DataTable dataTable3 = DataProvider.Instance.ExecuteQuery(sql4, new object[] { mess.FromAccountId, mess.ToAccountId });
+                    if (dataTable3.Rows.Count > 0)
                     {
-                        mess.ConversationId = (int)dataTable2.Rows[0]["Id"];
+                        mess.ConversationId = (int)dataTable3.Rows[0]["Id"];
                     }
+                    else
+                    {
+                        DataTable dataTable2 = DataProvider.Instance.ExecuteQuery(sql3, new object[] { mess.Time, mess.Time, mess.ToAccountId, mess.FromAccountId, false, false });
+                        if (dataTable2.Rows.Count > 0)
+                        {
+                            mess.ConversationId = (int)dataTable2.Rows[0]["Id"];
+                        }
+                    }                
                 }
                 if (mess.Content == null) mess.Content = "";
                 DataTable dataTable = DataProvider.Instance.ExecuteQuery(sql1, new object[] {mess.FromAccountId, mess.ToAccountId,
