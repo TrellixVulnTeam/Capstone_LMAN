@@ -50,7 +50,7 @@ namespace SOFA_API.DAO
         public List<Info> GetInfoOfAccount(int accountID)
         {
             List<Info> infos = new List<Info>();
-            string sql = "EXEC dbo.EXEC dbo.GetInfoByAccountID @accountID";
+            string sql = "EXEC dbo.GetInfoByAccountID @accountID";
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID });
             if (data.Rows.Count > 0)
             {
