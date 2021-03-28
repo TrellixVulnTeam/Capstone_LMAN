@@ -154,7 +154,9 @@ export default class Message extends Component {
                 let item = data;
                 temp.push(item);
                 this.setState({ listMessage: temp });
-                setTimeout(() => this.flatList.current.scrollToEnd(), 0);
+                setTimeout(() => {
+                    console.log('Có tin nhắn');
+                    this.flatList.current.scrollToEnd()}, 0);
                 console.log('add message');
             }
             );
@@ -251,7 +253,6 @@ export default class Message extends Component {
                         let listMessage = response.listMess;
                         this.setState({ listMessage: listMessage });
                         setTimeout(() => {
-                            console.log('Vào rồi, đmm');
                             this.flatList.current.scrollToEnd()
                         }, 0);
                     } else {
@@ -274,7 +275,6 @@ export default class Message extends Component {
                         let listMessage = response.listMess;
                         this.setState({ listMessage: listMessage });
                         setTimeout(() => {
-                            console.log('Vào rồi, đmm');
                             this.flatList.current.scrollToEnd()
                         }, 0);
                     } else {
