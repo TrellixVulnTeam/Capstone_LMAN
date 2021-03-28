@@ -44,7 +44,34 @@ namespace SOFA_API.Service
                     listNotification.Code = Const.REQUEST_CODE_FAILED;
                     throw new Exception("Can't get Notification");
                 }
-            }catch(Exception ex)
+                NotificationDAO.Instance.SetReadNotificationByAccountId(accountID);
+            }
+            catch(Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                listNotification.Code = Const.REQUEST_CODE_FAILED;
+                listNotification.ErrorMessage = ex.Message;
+            }
+            return listNotification;
+        }
+
+        public ListNotificationViewModelOut GetUnreadNotificationByToAccount(int accountID)
+        {
+            ListNotificationViewModelOut listNotification = new ListNotificationViewModelOut();
+            try
+            {
+                listNotification = NotificationDAO.Instance.GetUnreadNotificationByToAccount(accountID);
+                if (listNotification != null)
+                {
+                    listNotification.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                {
+                    listNotification.Code = Const.REQUEST_CODE_FAILED;
+                    throw new Exception("Can't get Notification");
+                }
+            }
+            catch (Exception ex)
             {
                 Utils.Instance.SaveLog(ex.ToString());
                 listNotification.Code = Const.REQUEST_CODE_FAILED;

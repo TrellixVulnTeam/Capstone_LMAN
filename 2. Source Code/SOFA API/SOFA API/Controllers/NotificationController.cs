@@ -31,11 +31,11 @@ namespace SOFA_API.Controllers
             return Ok(listNoti);
         }
 
-        [HttpGet("getnoti")]
-        public async Task<ActionResult> GetNotiAsync()
+        [HttpGet("getUnreadNotification")]
+        public ActionResult GetUnreadNotification(int accountId)
         {
-            await notificationHub.Clients.All.SendAsync("NewNotification", "OK");
-            return Ok();
+            ListNotificationViewModelOut listUnreadNotification = NotificationService.Instance.GetUnreadNotificationByToAccount(accountId);
+            return Ok(listUnreadNotification);
         }
     }
 }

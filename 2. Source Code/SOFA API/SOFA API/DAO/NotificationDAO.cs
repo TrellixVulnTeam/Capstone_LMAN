@@ -45,6 +45,46 @@ namespace SOFA_API.DAO
             return listNotification;
         }
 
+        public void SetReadNotificationByAccountId(int accountID)
+        {
+            string sql = "EXEC setReadNotificationByAccountId @accountID";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID });
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+        }
+
+        public ListNotificationViewModelOut GetUnreadNotificationByToAccount(int accountID)
+        {
+            ListNotificationViewModelOut listNotification = new ListNotificationViewModelOut();
+            string sql = "EXEC getNotificationByToAccount @accountID";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        if ((bool)row["IsRead"] == false)
+                        {
+                            listNotification.ListNoti.Add(new NotificationViewModelOut(row));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+            return listNotification;
+        }
+
         public int CreateNotification(NotificationViewModelIn modelIn)
         {
             string query = "EXEC AddNewNotification @TypeNotification , @PostId , @Content , @FromAccount , @ToAccount , @DateCreated";
