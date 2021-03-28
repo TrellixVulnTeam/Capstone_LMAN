@@ -29,7 +29,7 @@ export default class Conversation extends Component {
             imageBase64: '',
             token: '',
             chatHeight: 605,
-            conversationId : 0,
+            conversationId: 0,
         }
 
     }
@@ -157,7 +157,8 @@ export default class Conversation extends Component {
                 this.setState({ listMessage: temp });
                 setTimeout(() => {
                     console.log('Có tin nhắn');
-                    this.flatList.current.scrollToEnd()}, 0);
+                    this.flatList.current.scrollToEnd()
+                }, 0);
                 console.log('add message');
             }
             );
@@ -195,6 +196,7 @@ export default class Conversation extends Component {
                                 this.setState({ message: message });
                                 this.setState({ friendId: friendId });
                                 this.getFriendProfile();
+                                this.getMessage();
                                 this.onlineChat();
                             } else {
                                 this.props.navigation.navigate('Login')
@@ -240,53 +242,31 @@ export default class Conversation extends Component {
     }
     getMessage() {
         console.log('Get message')
-        var { listMessage } = this.state;
-        const { cid, uid1, uid2 } = this.props.route.params;
-        if (cid) {
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                "Accept": 'application/json',
-            };
-            let url = Const.domain + 'api/message/getmessagebycid?cid=' + cid;
-            Request.Get(url, header)
-                .then(response => {
-                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        let listMessage = response.listMess;
-                        this.setState({ listMessage: listMessage });
-                        setTimeout(() => {
-                            this.flatList.current.scrollToEnd()
-                        }, 0);
-                    } else {
-                        this.props.navigation.navigate('Login')
-                    }
-                })
-                .catch(reason => {
-                    console.log(reason);
+        var { listMessage, myProfile, friendId } = this.state;
+        // console.log(myProfile);
+        // console.log(friendId);
+        var header = {
+            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+            "Accept": 'application/json',
+        };
+        let url = Const.domain + 'api/message/getmessagebyuid?uid1=' + myProfile.accountID + '&uid2=' + friendId;
+        console.log('url: '+url);
+        Request.Get(url, header)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    let listMessage = response.listMess;
+                    this.setState({ listMessage: listMessage });
+                    setTimeout(() => {
+                        this.flatList.current.scrollToEnd()
+                    }, 0);
+                } else {
                     this.props.navigation.navigate('Login')
-                });
-        }else{
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                "Accept": 'application/json',
-            };
-            let url = Const.domain + 'api/message/getmessagebyuid?uid1=' + uid1+'&uid2='+uid2;
-            Request.Get(url, header)
-                .then(response => {
-                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        let listMessage = response.listMess;
-                        this.setState({ listMessage: listMessage });
-                        setTimeout(() => {
-                            this.flatList.current.scrollToEnd()
-                        }, 0);
-                    } else {
-                        this.props.navigation.navigate('Login')
-                    }
-                })
-                .catch(reason => {
-                    console.log(reason);
-                    this.props.navigation.navigate('Login')
-                });
-        }
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                this.props.navigation.navigate('Login')
+            });
 
     }
 
@@ -296,12 +276,12 @@ export default class Conversation extends Component {
         message.senderDeleted = false;
         message.receiverDeleted = false;
         message.isRead = false;
-        if(cid){
+        if (cid) {
             message.conversationId = cid;
-        }else{
+        } else {
             message.conversationId = conversationId;
         }
-        
+
         message.imageBase64 = imageBase64;
         message.content = messageText;
 
@@ -331,7 +311,7 @@ export default class Conversation extends Component {
                     let item = response;
                     temp.push(item);
                     this.setState({ listMessage: temp });
-                    this.setState({ conversationId: item.conversationId});
+                    this.setState({ conversationId: item.conversationId });
                     setTimeout(() => this.flatList.current.scrollToEnd(), 0);
                     console.log('add sent message');
                 } else {
@@ -353,38 +333,40 @@ export default class Conversation extends Component {
         { length: Utils.scale(200, Const.Vertical), offset: (Utils.scale(200, Const.Vertical) + 5) * index, index }
     )
 
+    removeMessageFromList(messageId){
+        
+    }
+
     componentDidMount() {
-        this.setState({listMessage: [], myProfile: {}});
+        this.setState({ listMessage: [], myProfile: {} });
         this.getProfile();
-        this.getMessage();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
             this.setState({ listMessage: [], myProfile: {} });
             this.getProfile();
-            this.getMessage();
         });
         this._unfocus = this.props.navigation.addListener('blur', () => {
             this.setState({ listMessage: [], myProfile: {} });
         });
         this.keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow', (event) => {
-              this.setState({ chatHeight: 605 - event.endCoordinates.height });
-              setTimeout(() => this.flatList.current.scrollToEnd(), 0);
+                this.setState({ chatHeight: 605 - event.endCoordinates.height });
+                setTimeout(() => this.flatList.current.scrollToEnd(), 0);
             }
-          );
-          this.keyboardDidHideListener = Keyboard.addListener(
+        );
+        this.keyboardDidHideListener = Keyboard.addListener(
             'keyboardDidHide',
-            () => {  
+            () => {
                 this.setState({ chatHeight: 605 });
                 setTimeout(() => this.flatList.current.scrollToEnd(), 0);
             },
-          );
+        );
     }
 
     componentWillUnmount() {
         console.log('unmount');
         Keyboard.removeAllListeners('keyboardDidShow');
         Keyboard.removeAllListeners('keyboardDidHide');
-      }
+    }
 
     render() {
         const { cid, uid1, uid2 } = this.props.route.params;

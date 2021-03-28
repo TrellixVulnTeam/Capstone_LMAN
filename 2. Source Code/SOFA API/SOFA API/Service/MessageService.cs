@@ -92,6 +92,29 @@ namespace SOFA_API.Service
             return listMess;
         }
 
+        public MessageViewModelOut SetDeleteFlagForMessage(int messageId, bool isSenderDelete)
+        {
+            MessageViewModelOut newMessage = new MessageViewModelOut();
+            try
+            {
+                int result = MessageDAO.Instance.SetDeleteFlagForMessage(messageId, isSenderDelete);
+                if (result == 0)
+                {
+                    newMessage.Code = Const.REQUEST_CODE_FAILED;
+                    newMessage.ErrorMessage = MessageUtils.ERROR_DELETE_MESSAGE_FAILED;
+                }
+                else
+                {
+                    newMessage.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+            }catch(Exception e)
+            {
+                newMessage.ErrorMessage = e.ToString();
+                newMessage.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return newMessage;
+        }
+
         /// <summary>
         /// InsertNewMessage
         /// </summary>

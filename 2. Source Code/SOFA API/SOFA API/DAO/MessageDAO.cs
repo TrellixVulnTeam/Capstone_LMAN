@@ -81,6 +81,19 @@ namespace SOFA_API.DAO
         }
 
         /// <summary>
+        /// Funtion to set delete flag for message
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <param name="isSenderDelete"></param>
+        /// <returns></returns>
+        public int SetDeleteFlagForMessage(int messageId, bool isSenderDelete)
+        {
+            string sql = "EXEC SetDeleteFlagForMessage @messageId , @isDeletedBySender ";
+            int result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { messageId, isSenderDelete });
+            return result;
+        }
+
+        /// <summary>
         /// Function create new Message
         /// </summary>
         /// <param name="mess"></param>

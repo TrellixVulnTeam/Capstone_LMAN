@@ -49,5 +49,12 @@ namespace SOFA_API.Controllers
             await messageHub.Clients.User(message.ToAccountId.ToString()).SendAsync("NewMessage", message);
             return Ok(message);
         }
+
+        [HttpPost("deletemessage")]
+        public ActionResult DeleteMessage(int messageId, bool isSenderDelete)
+        {
+            MessageViewModelOut message = MessageService.Instance.SetDeleteFlagForMessage(messageId, isSenderDelete);
+            return Ok(message);
+        }
     }
 }
