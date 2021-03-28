@@ -50,6 +50,33 @@ namespace SOFA_API.Service
             return infoViewModelOut;
         }
         /// <summary>
+        /// Service of get info of user
+        /// </summary>
+        /// <param name="userID">ID of the user</param>
+        /// <returns>Info view model out</returns>
+        public InfoViewModelOut GetUserInfo(int userID)
+        {
+            InfoViewModelOut infoViewModelOut = new InfoViewModelOut();
+            try
+            {
+                List<Info> infos = InfoDAO.Instance.GetInfoOfAccount(userID);
+                foreach (Info item in infos)
+                {
+                    infoViewModelOut.ListInfo.Add(new InfoModelOut(item));
+                }
+                infoViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                infoViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                infoViewModelOut.ErrorMessage = e.ToString();
+            }
+
+            return infoViewModelOut;
+        }
+
+        /// <summary>
         /// Service of create info service
         /// </summary>
         /// <param name="infoViewModelIn"></param>

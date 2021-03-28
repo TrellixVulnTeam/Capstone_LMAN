@@ -283,7 +283,7 @@ export default class Suggest extends Component {
             "Accept": 'application/json',
             "Authorization": 'Bearer ' + token,
         };
-        var uri = Const.domain + 'api/info';
+        var uri = Const.domain + 'api/info/userinfo';
         Request.Get(uri, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {

@@ -22,6 +22,13 @@ namespace SOFA_API.Controllers
             InfoViewModelOut infoViewModelOut = InfoService.Instance.GetAllInfo();
             return Ok(infoViewModelOut);
         }
+        [HttpGet("UserInfo")]
+        public ActionResult GetUserInfo()
+        {
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            InfoViewModelOut infoViewModelOut = InfoService.Instance.GetUserInfo(userID);
+            return Ok(infoViewModelOut);
+        }
         [HttpPost]
         public ActionResult CreateInfo([FromForm] InfoViewModelIn infoViewModelIn)
         {
