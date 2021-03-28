@@ -56,7 +56,7 @@ namespace SOFA_API.Controllers
 
         [HttpPost("LikePost")]
         [Authorize]
-        public async Task<ActionResult> LikePostAsync([FromForm] PostViewModelIn postViewModelIn)
+        public ActionResult LikePost([FromForm] PostViewModelIn postViewModelIn)
         {
             int id = Utils.Instance.GetUserID(User.Claims);
             PostViewModelOut result = PostService.Instance.LikePost(postViewModelIn.PostID, id);
@@ -65,8 +65,7 @@ namespace SOFA_API.Controllers
             NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_LIKE,
                 postViewModelIn.PostID, id);
             NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
-
-            await notificationHub.Clients.All.SendAsync("NewNotification", modelOut);
+            notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
 
             return Ok(result);
         }
@@ -82,7 +81,7 @@ namespace SOFA_API.Controllers
 
         [HttpPost("RatePost")]
         [Authorize]
-        public async Task<ActionResult> RatePostAsync([FromForm] PostViewModelIn postViewModelIn)
+        public ActionResult RatePost([FromForm] PostViewModelIn postViewModelIn)
         {
             int id = Utils.Instance.GetUserID(User.Claims);
             PostViewModelOut result = PostService.Instance.RatePost(postViewModelIn.PostID, id, postViewModelIn.RatePoint);
@@ -91,15 +90,14 @@ namespace SOFA_API.Controllers
             NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_RATE,
                 postViewModelIn.PostID, id);
             NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
-
-            await notificationHub.Clients.All.SendAsync("NewNotification", modelOut);
+            notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
 
             return Ok(result);
         }
 
         [HttpPost("CommentPost")]
         [Authorize]
-        public async Task<ActionResult> CommentPostAsync([FromForm] PostViewModelIn postViewModelIn)
+        public ActionResult CommentPost([FromForm] PostViewModelIn postViewModelIn)
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             int id = Int32.Parse(idClaim.Value.Trim());
@@ -109,8 +107,8 @@ namespace SOFA_API.Controllers
             NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_COMMENT,
                 postViewModelIn.PostID, id);
             NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
+            notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
 
-            await notificationHub.Clients.All.SendAsync("NewNotification", modelOut);
             return Ok(result);
         }
         /// <summary>
