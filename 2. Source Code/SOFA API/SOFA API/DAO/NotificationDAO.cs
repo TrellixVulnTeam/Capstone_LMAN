@@ -45,6 +45,14 @@ namespace SOFA_API.DAO
             return listNotification;
         }
 
+        public int CreateNotification(NotificationViewModelIn modelIn)
+        {
+            string query = "EXEC AddNewNotification @TypeNotification , @PostId , @Content , @FromAccount , @ToAccount , @DateCreated";
+            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { modelIn.TypeNotification, modelIn.PostId,
+                 modelIn.Content, modelIn.FromAccount, modelIn.ToAccount, modelIn.DateCreated});
+            return result;
+        }
+
 
     }
 }

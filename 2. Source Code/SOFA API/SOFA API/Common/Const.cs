@@ -40,5 +40,15 @@ namespace SOFA_API.Common
         public const string ASSETS_PATH_AVATAR = @"@username\avatar\";
         public const string ASSETS_PATH_POST_IMAGE = @"@username\post_image\";
         public const string ASSETS_PATH_MESSAGE_IMAGE = @"@username\message_image\";
+
+        public const int NOTIFICATION_TYPE_LIKE = 1;
+        public const int NOTIFICATION_TYPE_COMMENT = 2;
+        public const int NOTIFICATION_TYPE_RATE = 3;
+        public const int NOTIFICATION_TYPE_FOLLOW = 4;
+
+        public const string NOTIFICATION_CONTENT_LIKE = "đã thích bài đăng của bạn";
+        public const string NOTIFICATION_CONTENT_COMMENT = "đã bình luận về bài đăng của bạn";
+        public const string NOTIFICATION_CONTENT_RATE = "đã đánh giá bài đăng của bạn";
+        public const string NOTIFICATION_CONTENT_FOLLOW = "đã theo dõi bạn";
     }
 }

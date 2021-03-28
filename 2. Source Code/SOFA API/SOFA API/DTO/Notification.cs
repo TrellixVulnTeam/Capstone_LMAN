@@ -16,11 +16,12 @@ namespace SOFA_API.DTO
         public string Content { get; set; }
         public int FromAccount { get; set; }
         public int ToAccount { get; set; }
+        public DateTime DateCreated { get; set; }
 
         public Notification() { }
 
         public Notification(int id, int typeNotification, int typeAction, bool isRead, int postId, string content,
-            int fromAccount, int toAccount)
+            int fromAccount, int toAccount, DateTime dateCreated)
         {
             Id = id;
             TypeNotification = typeNotification;
@@ -30,6 +31,7 @@ namespace SOFA_API.DTO
             Content = content;
             FromAccount = fromAccount;
             ToAccount = toAccount;
+            DateCreated = dateCreated;
         }
 
         public Notification (DataRow row)

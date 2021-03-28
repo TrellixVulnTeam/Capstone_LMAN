@@ -34,7 +34,7 @@ namespace SOFA_API.Controllers
         [HttpGet("getnoti")]
         public async Task<ActionResult> GetNotiAsync()
         {
-            await notificationHub.Clients.User("Test123".ToString()).SendAsync("NewNotification", "OK");
+            await notificationHub.Clients.All.SendAsync("NewNotification", "OK");
             return Ok();
         }
     }

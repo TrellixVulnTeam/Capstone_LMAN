@@ -17,11 +17,12 @@ namespace SOFA_API.ViewModel.Notification
         public string Content { get; set; }
         public int FromAccount { get; set; }
         public int ToAccount { get; set; }
+        public DateTime DateCreated { get; set; }
 
         public NotificationViewModelIn() { }
 
         public NotificationViewModelIn(int id, int typeNotification, int typeAction, bool isRead, int postId, string content,
-            int fromAccount, int toAccount)
+            int fromAccount, int toAccount, DateTime dateCreated)
         {
             Id = id;
             TypeNotification = typeNotification;
@@ -31,6 +32,15 @@ namespace SOFA_API.ViewModel.Notification
             Content = content;
             FromAccount = fromAccount;
             ToAccount = toAccount;
+            DateCreated = dateCreated;
+        }
+
+        public NotificationViewModelIn(int typeNotification, int postId,
+            int fromAccount)
+        {
+            TypeNotification = typeNotification;
+            PostId = postId;
+            FromAccount = fromAccount;
         }
 
         public NotificationViewModelIn(DataRow row)

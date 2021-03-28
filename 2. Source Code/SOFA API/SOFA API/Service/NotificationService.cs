@@ -1,6 +1,8 @@
 ﻿using SOFA_API.Common;
 using SOFA_API.DAO;
+using SOFA_API.DTO;
 using SOFA_API.ViewModel.Notification;
+using SOFA_API.ViewModel.Profile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +51,61 @@ namespace SOFA_API.Service
                 listNotification.ErrorMessage = ex.Message;
             }
             return listNotification;
+        }
+
+        public NotificationViewModelOut CreatedNotification(NotificationViewModelIn modelIn)
+        {
+            NotificationViewModelOut notificationViewModelOut = new NotificationViewModelOut();
+            try
+            {
+                Post post = PostDAO.Instance.GetPostByID(modelIn.PostId);
+
+                switch (modelIn.TypeNotification)
+                {
+                    case Const.NOTIFICATION_TYPE_LIKE:
+                        modelIn.Content = Const.NOTIFICATION_CONTENT_LIKE;
+                        modelIn.ToAccount = post.AccountPost;
+                        break;
+                    case Const.NOTIFICATION_TYPE_COMMENT:
+                        modelIn.Content = Const.NOTIFICATION_CONTENT_COMMENT;
+                        modelIn.ToAccount = post.AccountPost;
+                        break;
+                    case Const.NOTIFICATION_TYPE_RATE:
+                        modelIn.Content = Const.NOTIFICATION_CONTENT_RATE;
+                        modelIn.ToAccount = post.AccountPost;
+                        break;
+                    case Const.NOTIFICATION_TYPE_FOLLOW:
+                        modelIn.Content = Const.NOTIFICATION_CONTENT_FOLLOW;
+                        break;
+                    default:
+                        break;
+                }
+
+                modelIn.DateCreated = DateTime.Now;
+
+                int result = NotificationDAO.Instance.CreateNotification(modelIn);
+                if (result > 0)
+                {
+                    notificationViewModelOut.TypeNotification = modelIn.TypeNotification;
+                    notificationViewModelOut.IsRead = false;
+                    notificationViewModelOut.PostId = modelIn.PostId;
+                    notificationViewModelOut.Content = modelIn.Content;
+                    notificationViewModelOut.FromAccount = modelIn.FromAccount;
+                    notificationViewModelOut.ToAccount = modelIn.ToAccount;
+                    notificationViewModelOut.DateCreated = modelIn.DateCreated;
+                    notificationViewModelOut.FromAccountName = "";
+
+                    ProfileViewModelOut profile = ProfileDAO.Instance.GetProfileModelByAccountID(modelIn.FromAccount);
+
+                    if (profile != null)
+                    {
+                        notificationViewModelOut.FromAccountName = profile.LastName + " " + profile.FirstName;
+                    }
+                }
+            }
+            catch (Exception){}
+
+            return notificationViewModelOut;
         }
     }
 }
