@@ -259,6 +259,7 @@ export default class Conversation extends Component {
                     setTimeout(() => {
                         this.flatList.current.scrollToEnd()
                     }, 0);
+                    console.log(this.state.listMessage);
                 } else {
                     this.props.navigation.navigate('Login')
                 }

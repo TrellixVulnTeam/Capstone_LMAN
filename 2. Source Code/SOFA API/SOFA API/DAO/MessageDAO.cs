@@ -67,7 +67,9 @@ namespace SOFA_API.DAO
                 {
                     foreach (DataRow row in data.Rows)
                     {
-                        listMes.ListMess.Add(new MessageViewModelOut(row));
+                        MessageViewModelOut mess = new MessageViewModelOut(row);
+                        mess.ImageUrl = row["Url"].ToString();
+                        listMes.ListMess.Add(mess);
                     }
                 }
             }
