@@ -327,7 +327,6 @@ export default class Conversation extends Component {
             .then(response => {
                 console.log(response);
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    Alert.alert('Send message Successfully', 'Gửi tin nhắn thành công!');
                     let temp = this.state.listMessage;
                     let item = response;
                     temp.push(item);
@@ -337,7 +336,6 @@ export default class Conversation extends Component {
                     console.log('add sent message');
                 } else {
                     if (response.code == Const.REQUEST_CODE_FAILED) {
-                        Alert.alert('Send Failed', 'Gửi tin nhắn không thành công! Vui lòng kiểm tra lại');
                         console.log(response);
                     }
                 }
