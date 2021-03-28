@@ -49,7 +49,7 @@ namespace ChatAPI
                         {
                             var accessToken = context.Request.Query["access_token"];
                             var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/message")) )
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/message")))
                             {
                                 context.Token = accessToken;
                             }
@@ -63,7 +63,11 @@ namespace ChatAPI
             });
             services.AddControllers();
 
-            services.AddSignalR();
+            services.AddSignalR(option =>
+            {
+                option.EnableDetailedErrors = true;
+                
+            });
             services.AddSingleton<IUserIdProvider, UserProvider>();
         }
 
@@ -74,7 +78,7 @@ namespace ChatAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("AllowOrigin");
             app.UseAuthentication();

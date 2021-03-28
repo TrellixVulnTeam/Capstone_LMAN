@@ -27,7 +27,7 @@ namespace ChatAPI.Common
         }
         public void SaveLog(string text)
         {
-            string path = @"E:\Log.txt";
+            string path = @"C:\inetpub\wwwroot\assets\Log.txt";
             if(!File.Exists(path))
             {
                 using (StreamWriter sw = File.CreateText(path))

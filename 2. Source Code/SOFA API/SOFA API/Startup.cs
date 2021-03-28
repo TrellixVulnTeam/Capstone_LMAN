@@ -71,7 +71,10 @@ namespace SOFA_API
             });
             services.AddControllers();
 
-            services.AddSignalR();
+            services.AddSignalR(options=>
+            {
+                options.EnableDetailedErrors = true;
+            });
             services.AddSingleton<IUserIdProvider, UserProvider>();
         }
 
