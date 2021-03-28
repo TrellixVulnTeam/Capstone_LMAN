@@ -273,74 +273,80 @@ export default class Conversation extends Component {
     onPressSend() {
         var { message, messageText, imageBase64, conversationId } = this.state;
         const { cid } = this.props.route.params;
-        message.senderDeleted = false;
-        message.receiverDeleted = false;
-        message.isRead = false;
-        if (cid) {
-            message.conversationId = cid;
-        } else {
-            message.conversationId = conversationId;
-        }
+        console.log(messageText);
+        console.log(imageBase64);
+        if (messageText != '' || imageBase64 != '') {
+            message.senderDeleted = false;
+            message.receiverDeleted = false;
+            message.isRead = false;
+            if (cid) {
+                message.conversationId = cid;
+            } else {
+                message.conversationId = conversationId;
+            }
 
-        message.imageBase64 = imageBase64;
-        message.content = messageText;
+            message.imageBase64 = imageBase64;
+            message.content = messageText;
 
-        console.log(message);
+            console.log(message);
 
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Content-Type": "multipart/form-data",
-            "Host": "chientranhvietnam.org",
-            "Accept": 'application/json',
-        };
-        let data = new FormData();
-        data.append('fromAccountId', message.fromAccountId);
-        data.append('toAccountId', message.toAccountId);
-        data.append('content', message.content);
-        data.append('senderDeleted', message.senderDeleted);
-        data.append('receiverDeleted', message.receiverDeleted);
-        data.append('isRead', message.isRead);
-        data.append('conversationId', message.conversationId);
-        data.append('imageBase64', message.imageBase64);
-        let url = Const.domain + 'api/message/sendmessage';
-        Request.Post(url, header, data)
-            .then(response => {
-                console.log(response);
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    let temp = this.state.listMessage;
-                    let item = response;
-                    temp.push(item);
-                    this.setState({ listMessage: temp });
-                    this.setState({ conversationId: item.conversationId });
-                    setTimeout(() => this.flatList.current.scrollToEnd(), 0);
-                    console.log('add sent message');
-                } else {
-                    if (response.code == Const.REQUEST_CODE_FAILED) {
-                        console.log(response);
+            var header = {
+                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                "Content-Type": "multipart/form-data",
+                "Host": "chientranhvietnam.org",
+                "Accept": 'application/json',
+            };
+            let data = new FormData();
+            data.append('fromAccountId', message.fromAccountId);
+            data.append('toAccountId', message.toAccountId);
+            data.append('content', message.content);
+            data.append('senderDeleted', message.senderDeleted);
+            data.append('receiverDeleted', message.receiverDeleted);
+            data.append('isRead', message.isRead);
+            data.append('conversationId', message.conversationId);
+            data.append('imageBase64', message.imageBase64);
+            let url = Const.domain + 'api/message/sendmessage';
+            Request.Post(url, header, data)
+                .then(response => {
+                    console.log(response);
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        let temp = this.state.listMessage;
+                        let item = response;
+                        temp.push(item);
+                        this.setState({ listMessage: temp });
+                        this.setState({ conversationId: item.conversationId });
+                        this.setState({ imageBase64: '' });
+                        this.setState({ messageText: '' });
+                        setTimeout(() => this.flatList.current.scrollToEnd(), 0);
+                        console.log('add sent message');
+                    } else {
+                        if (response.code == Const.REQUEST_CODE_FAILED) {
+                            console.log(response);
+                        }
                     }
-                }
-            })
-            .catch(reason => {
-                console.log('Lỗi rồi!');
-                console.log(reason);
-            });
+                })
+                .catch(reason => {
+                    console.log('Lỗi rồi!');
+                    console.log(reason);
+                });
 
-        console.log(message);
-        this.setState({ messageText: '' });
+            console.log(message);
+            this.setState({ messageText: '' });
+        }
     }
 
     getItemLayout = (data, index) => (
         { length: Utils.scale(200, Const.Vertical), offset: (Utils.scale(200, Const.Vertical) + 5) * index, index }
     )
 
-    removeMessageFromList(messageId){
+    removeMessageFromList(messageId) {
 
     }
 
     onDeleteMessage(message) {
-        var {friendId, listMessage} = this.state;
+        var { friendId, listMessage } = this.state;
         let isSenderDelete = false;
-        if(friendId != message.fromAccountId){
+        if (friendId != message.fromAccountId) {
             isSenderDelete = true;
         }
         var header = {
@@ -355,8 +361,8 @@ export default class Conversation extends Component {
                     var index = array.indexOf(message)
                     if (index !== -1) {
                         array.splice(index, 1);
-                        this.setState({listMessage : array});
-                      }
+                        this.setState({ listMessage: array });
+                    }
                     setTimeout(() => {
                         this.flatList.current.scrollToEnd()
                     }, 0);
