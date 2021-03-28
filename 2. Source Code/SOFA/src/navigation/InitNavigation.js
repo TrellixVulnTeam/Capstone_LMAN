@@ -15,6 +15,8 @@ import Voucher from '../component/voucher';
 import VoucherDetail from '../component/voucherDetail';
 import ViewImage from '../component/viewImage';
 import CreateInfo from '../component/createInfo';
+import Conversation from '../component/conversation';
+
 
 
 const Stack = createStackNavigator();
@@ -36,6 +38,8 @@ export default function Navigation() {
                 <Stack.Screen name="VoucherDetail" component={VoucherDetail} options={{ headerShown: false }} />
                 <Stack.Screen name="ViewImage" component={ViewImage} options={{ headerShown: false }} />
                 <Stack.Screen name="CreateInfo" component={CreateInfo} options={{ headerShown: false }} />
+                <Stack.Screen name='Conversation' component={Conversation} options={{ headerShown: false }} />
+
             </Stack.Navigator>
         </NavigationContainer>
     )

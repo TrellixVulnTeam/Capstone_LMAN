@@ -15,7 +15,7 @@ import * as Style from '../style/style';
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
 
-export default class Message extends Component {
+export default class Conversation extends Component {
     constructor(props) {
         super(props);
         this.state = {
