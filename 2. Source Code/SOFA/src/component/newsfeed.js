@@ -10,7 +10,6 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -22,6 +21,7 @@ import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import { AVATAR } from '../../image/index';
 import ViewImageModal from './viewImageModel';
+import PushNotification from "react-native-push-notification";
 
 export default class Newsfeed extends Component {
     constructor(props) {
@@ -151,12 +151,39 @@ export default class Newsfeed extends Component {
         }
     }
 
+    notificationConnection() {
+        if (typeof this.connection === 'undefined') {
+            this.connection = new signalR.HubConnectionBuilder()
+                .withUrl(Const.domain + 'notification', {
+                    accessTokenFactory: () => this.state.token,
+                    skipNegotiation: true,
+                    transport: signalR.HttpTransportType.WebSockets
+                })
+                .build();
+            this.connection.start().then(() => {
+                console.log('Connected');
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+            this.connection.on("NewNotification", data => {
+                console.log(data.fromAccountName + ' ' + data.content);
+                if (data) {
+                    PushNotification.localNotification({
+                        title: "Thông báo",
+                        message: data.fromAccountName + ' ' + data.content,
+                    });
+                }
+            });
+        }
+    }
+
 
     checkLoginToken = async () => {
         await this.getData('token')
             .then(result => {
                 if (result) {
                     let token = result.toString().substr(1, result.length - 2);
+                    this.notificationConnection();
                     var header = {
                         "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
                         "Accept": 'application/json',
@@ -251,6 +278,8 @@ export default class Newsfeed extends Component {
         //     });
         // })
     }
+
+
 
     removePost(postID) {
         let { listPost } = this.state;
@@ -517,7 +546,8 @@ export default class Newsfeed extends Component {
                         name={'search-outline'} color={'#fef4ca'} size={30} />
                     <Ionicons
                         style={Style.newsfeed.notificationIcon}
-                        name={'notifications'} color={'#fef4ca'} size={30} />
+                        name={'notifications'} color={'#fef4ca'} size={30}
+                        onPress={() => this.props.navigation.navigate('Notification')} />
                     <MaterialCommunityIcons
                         style={Style.newsfeed.notificationIcon}
                         name={'message-text-outline'} color={'#fef4ca'} size={30} />
