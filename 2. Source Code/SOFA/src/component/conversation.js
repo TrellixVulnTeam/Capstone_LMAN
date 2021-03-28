@@ -250,7 +250,7 @@ export default class Conversation extends Component {
             "Accept": 'application/json',
         };
         let url = Const.domain + 'api/message/getmessagebyuid?uid1=' + myProfile.accountID + '&uid2=' + friendId;
-        console.log('url: '+url);
+        console.log('url: ' + url);
         Request.Get(url, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -334,7 +334,42 @@ export default class Conversation extends Component {
     )
 
     removeMessageFromList(messageId){
-        
+
+    }
+
+    onDeleteMessage(message) {
+        var {friendId, listMessage} = this.state;
+        let isSenderDelete = false;
+        if(friendId != message.fromAccountId){
+            isSenderDelete = true;
+        }
+        var header = {
+            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+            "Accept": 'application/json',
+        };
+        let url = Const.domain + 'api/message/deletemessage?messageId=' + message.id + '&isSenderDelete=' + isSenderDelete;
+        Request.Post(url, header)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    var array = [...listMessage];
+                    var index = array.indexOf(message)
+                    if (index !== -1) {
+                        array.splice(index, 1);
+                        this.setState({listMessage : array});
+                      }
+                    setTimeout(() => {
+                        this.flatList.current.scrollToEnd()
+                    }, 0);
+                    alert('delete success!');
+                } else {
+                    this.props.navigation.navigate('Login')
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                this.props.navigation.navigate('Login')
+            });
+
     }
 
     componentDidMount() {
@@ -428,47 +463,48 @@ export default class Conversation extends Component {
                         scrollEventThrottle={16}
                         renderItem={({ item, index }) => {
                             return (
-                                <View>
-                                    {item.content && item.content.length > 0 ? (
-                                        <View style={[Style.common.flexRow, {
-                                            paddingLeft: 20,
-                                            paddingRight: 20,
-                                            alignItems: 'center',
-                                            alignContent: 'center',
-                                            backgroundColor: 'white',
-                                            borderRadius: 40,
-                                            height: Utils.scale(40, Const.Vertical),
-                                            marginLeft: (item.fromAccountId != myProfile.accountID ? 10 : 'auto'),
-                                            marginRight: (item.fromAccountId != myProfile.accountID ? 'auto' : 10),
-                                            marginTop: 5,
-                                        }]}>
-                                            <Text style={{ alignItems: 'center' }}>{item.content}</Text>
-                                        </View>
-                                    ) : (
-                                        <View></View>
-                                    )}
+                                <TouchableOpacity onLongPress={() => this.onDeleteMessage(item)}>
+                                    <View>
+                                        {item.content && item.content.length > 0 ? (
+                                            <View style={[Style.common.flexRow, {
+                                                paddingLeft: 20,
+                                                paddingRight: 20,
+                                                alignItems: 'center',
+                                                alignContent: 'center',
+                                                backgroundColor: 'white',
+                                                borderRadius: 40,
+                                                height: Utils.scale(40, Const.Vertical),
+                                                marginLeft: (item.fromAccountId != myProfile.accountID ? 10 : 'auto'),
+                                                marginRight: (item.fromAccountId != myProfile.accountID ? 'auto' : 10),
+                                                marginTop: 5,
+                                            }]}>
+                                                <Text style={{ alignItems: 'center' }}>{item.content}</Text>
+                                            </View>
+                                        ) : (
+                                            <View></View>
+                                        )}
 
-                                    {item.imageUrl && item.imageUrl.length > 0 ? (
-                                        <View style={[Style.common.flexRow, {
-                                            height: Utils.scale(200, Const.Vertical),
-                                            width: Utils.scale(200, Const.Horizontal),
-                                            marginLeft: (item.fromAccountId != myProfile.accountID ? 0 : 'auto'),
-                                            marginRight: (item.fromAccountId != myProfile.accountID ? 'auto' : 0),
-                                        }]}>
+                                        {item.imageUrl && item.imageUrl.length > 0 ? (
+                                            <View style={[Style.common.flexRow, {
+                                                height: Utils.scale(200, Const.Vertical),
+                                                width: Utils.scale(200, Const.Horizontal),
+                                                marginLeft: (item.fromAccountId != myProfile.accountID ? 0 : 'auto'),
+                                                marginRight: (item.fromAccountId != myProfile.accountID ? 'auto' : 0),
+                                            }]}>
 
-                                            <Image style={{
-                                                borderRadius: 20,
-                                                flex: 1,
-                                                width: null,
-                                                height: null,
-                                                resizeMode: 'contain'
-                                            }}
-                                                source={{ uri: Const.assets_domain + item.imageUrl }}
-                                            />
-                                        </View>
-                                    ) : (<View></View>)}
-                                </View>
-
+                                                <Image style={{
+                                                    borderRadius: 20,
+                                                    flex: 1,
+                                                    width: null,
+                                                    height: null,
+                                                    resizeMode: 'contain'
+                                                }}
+                                                    source={{ uri: Const.assets_domain + item.imageUrl }}
+                                                />
+                                            </View>
+                                        ) : (<View></View>)}
+                                    </View>
+                                </TouchableOpacity>
                             )
                         }}
                     />
