@@ -41,7 +41,6 @@ namespace SOFA_API.ViewModel.Notification
         {
             Id = (int)row["Id"];
             TypeNotification = (int)row["TypeNotification"];
-            TypeAction = (int)row["TypeAction"];
             PostId = (int)row["PostId"];
             FromAccount = (int)row["FromAccount"];
             ToAccount = (int)row["ToAccount"];
