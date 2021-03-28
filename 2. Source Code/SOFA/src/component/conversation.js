@@ -1,5 +1,5 @@
 import React, { Component, createRef, useRef } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableOpacity, TextInput, Keyboard } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -28,6 +28,7 @@ export default class Message extends Component {
             message: {},
             imageBase64: '',
             token: '',
+            chatHeight: 620,
         }
 
     }
@@ -364,11 +365,30 @@ export default class Message extends Component {
         this._unfocus = this.props.navigation.addListener('blur', () => {
             this.setState({ listMessage: [], myProfile: {} });
         });
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow', (event) => {
+              this.setState({ chatHeight: 605 - event.endCoordinates.height });
+              setTimeout(() => this.flatList.current.scrollToEnd(), 0);
+            }
+          );
+          this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {  
+                this.setState({ chatHeight: 620 });
+                setTimeout(() => this.flatList.current.scrollToEnd(), 0);
+            },
+          );
     }
+
+    componentWillUnmount() {
+        console.log('unmount');
+        Keyboard.removeAllListeners('keyboardDidShow');
+        Keyboard.removeAllListeners('keyboardDidHide');
+      }
 
     render() {
         const { cid, uid1, uid2 } = this.props.route.params;
-        var { listMessage, myProfile, friendProfile, messageText, onEmojiKeyboard, message, imageBase64 } = this.state;
+        var { listMessage, myProfile, friendProfile, messageText, onEmojiKeyboard, message, imageBase64, chatHeight } = this.state;
         return (
             <View>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
@@ -408,7 +428,7 @@ export default class Message extends Component {
                 </LinearGradient>
                 <View style={{
                     width: Utils.scale(400, Const.Horizontal),
-                    height: Utils.scale(620, Const.Horizontal),
+                    height: Utils.scale(chatHeight, Const.Horizontal),
                 }}>
                     <FlatList
                         ref={this.flatList}
