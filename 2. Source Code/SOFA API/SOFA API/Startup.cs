@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -85,6 +87,12 @@ namespace SOFA_API
             app.UseCors("AllowOrigin");
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(@"C:/inetpub/wwwroot/assets/")),
+                RequestPath = "/assets"
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<MessageHub>("/message");
