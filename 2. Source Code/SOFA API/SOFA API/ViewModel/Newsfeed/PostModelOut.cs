@@ -19,7 +19,7 @@ namespace SOFA_API.ViewModel.Newsfeed
         public string Avatar { get; set; }
         public bool Gender { get; set; }
         public List<Image> ListImage { get; set; }
-        public List<Like> ListLike { get; set; }
+        public List<LikeModelOut> ListLike { get; set; }
         public List<CommentModelOut> ListComment { get; set; }
         public List<Rate> ListRate { get; set; }
         public int NumberOfLike { get; set; }
@@ -31,7 +31,7 @@ namespace SOFA_API.ViewModel.Newsfeed
         public PostModelOut()
         {
             ListImage = new List<Image>();
-            ListLike = new List<Like>();
+            ListLike = new List<LikeModelOut>();
             ListComment = new List<CommentModelOut>();
             ListRate = new List<Rate>();
             BodyInfoID = 0;
@@ -43,7 +43,7 @@ namespace SOFA_API.ViewModel.Newsfeed
             IsVerified = false;
         }
 
-        public PostModelOut(int iD, string content, int privacyID, DateTime time, int bodyInfoID, int accountPost, string firstName, string lastName, string avatar, bool gender, List<Image> listImage, List<Like> listLike, List<CommentModelOut> listComment, List<Rate> listRate, int numberOfLike, int numberOfComment, double rateAverage, bool isLiked, int myRatePoint, bool isVerified)
+        public PostModelOut(int iD, string content, int privacyID, DateTime time, int bodyInfoID, int accountPost, string firstName, string lastName, string avatar, bool gender, List<Image> listImage, List<LikeModelOut> listLike, List<CommentModelOut> listComment, List<Rate> listRate, int numberOfLike, int numberOfComment, double rateAverage, bool isLiked, int myRatePoint, bool isVerified)
         {
             ID = iD;
             Content = content;

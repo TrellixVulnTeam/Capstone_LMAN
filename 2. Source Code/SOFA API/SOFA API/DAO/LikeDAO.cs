@@ -1,5 +1,6 @@
 ﻿using SOFA_API.Common;
 using SOFA_API.DTO;
+using SOFA_API.ViewModel.Newsfeed;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -59,19 +60,24 @@ namespace SOFA_API.DAO
         /// </summary>
         /// <param name="postID">Id of the post</param>
         /// <returns>A list of like</returns>
-        public List<Like> GetAllLikeOfPost(int postID)
+        public List<LikeModelOut> GetAllLikeOfPost(int postID)
         {
-            List<Like> likes = new List<Like>();
+            List<LikeModelOut> likeModelOuts = new List<LikeModelOut>();
             string sql = "EXEC dbo.GetAllLikeOfPost @postID";
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID });
             if (data.Rows.Count > 0)
             {
                 foreach (DataRow row in data.Rows)
                 {
-                    likes.Add(new Like(row));
+                    Like like = new Like(row);
+                    LikeModelOut likeModelOut = new LikeModelOut();
+                    likeModelOut.SetLikeInfo(like);
+                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(like.AccountLike);
+                    likeModelOut.SetAccountLike(profile);
+                    likeModelOuts.Add(likeModelOut);
                 }
             }
-            return likes;
+            return likeModelOuts;
         }
         /// <summary>
         /// Get like of user for a post
