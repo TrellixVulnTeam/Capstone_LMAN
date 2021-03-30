@@ -33,6 +33,7 @@
     "react-native-datepicker": "^1.7.2",
     "react-native-device-info": "^8.0.1",
     "react-native-dropdown-picker": "^4.0.2",
+    "react-native-elements": "^3.3.2",
     "react-native-gesture-handler": "^1.9.0",
     "react-native-gl-image-filters": "^0.4.0",
     "react-native-image-crop-picker": "^0.36.0",

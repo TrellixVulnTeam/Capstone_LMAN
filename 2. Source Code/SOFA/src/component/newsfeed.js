@@ -9,6 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { Badge, Icon, withBadge } from 'react-native-elements';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -24,6 +25,9 @@ import ViewImageModal from './viewImageModel';
 import PushNotification from "react-native-push-notification";
 import * as PostService from '../service/postService';
 import * as AuthService from '../service/authService';
+import * as NotificationService from '../service/notificationService';
+
+const BadgedIcon = withBadge(1)(Icon)
 
 export default class Newsfeed extends Component {
     constructor(props) {
@@ -41,6 +45,7 @@ export default class Newsfeed extends Component {
             currentShowImagePost: {},
             currentShowImage: {},
             isShowImage: false,
+            numberUnreadNotification: 0,
         }
     }
     actionArticleNotOwn = [
@@ -152,30 +157,54 @@ export default class Newsfeed extends Component {
         }
     }
 
+    loadUnreadNotification() {
+        NotificationService.getUnreadNotification(this.state.account.accountID)
+            .then(response => {
+                console.log('Unread notfication', response.listNoti.length);
+                this.setState({ numberUnreadNotification: response.listNoti.length });
+                this.notificationConnection();
+            })
+            .catch(reason => {
+                console.log(reason);
+            });
+    }
+
     notificationConnection() {
-        if (typeof this.connection === 'undefined') {
-            this.connection = new signalR.HubConnectionBuilder()
-                .withUrl(Const.domain + 'notification', {
-                    accessTokenFactory: () => this.state.token,
-                    skipNegotiation: true,
-                    transport: signalR.HttpTransportType.WebSockets
-                })
-                .build();
-            this.connection.start().then(() => {
-                console.log('Connected');
-            }).catch(function (err) {
-                return console.error(err.toString());
-            });
-            this.connection.on("NewNotification", data => {
-                console.log(data.fromAccountName + ' ' + data.content);
-                if (data) {
-                    PushNotification.localNotification({
-                        title: "Thông báo",
-                        message: data.fromAccountName + ' ' + data.content,
-                    });
+        this.getData('token')
+            .then(result => {
+                if (result) {
+                    let token = result.toString().substr(1, result.length - 2);
+                    if (typeof this.connection === 'undefined') {
+                        this.connection = new signalR.HubConnectionBuilder()
+                            .withUrl(Const.domain + 'notification', {
+                                accessTokenFactory: () => token,
+                                skipNegotiation: true,
+                                transport: signalR.HttpTransportType.WebSockets
+                            })
+                            .build();
+                        this.connection.start().then(() => {
+                            console.log('Connected');
+                        }).catch(function (err) {
+                            return console.error(err.toString());
+                        });
+                        this.connection.on("NewNotification", data => {
+                            console.log(data.fromAccountName + ' ' + data.content);
+                            this.setState({ numberUnreadNotification: this.state.numberUnreadNotification + 1 })
+                            if (data) {
+                                PushNotification.localNotification({
+                                    channelId: 'Thông báo',
+                                    title: "Thông báo",
+                                    message: data.fromAccountName + ' ' + data.content,
+                                });
+                            }
+                        });
+                    }
                 }
-            });
-        }
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
+
     }
 
 
@@ -185,6 +214,8 @@ export default class Newsfeed extends Component {
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.setState({ account: response, isLogin: true });
+                    this.loadUnreadNotification()
+
                 } else {
                     this.setState({ account: {}, isLogin: false });
                 }
@@ -500,10 +531,21 @@ export default class Newsfeed extends Component {
                     <Ionicons
                         style={Style.newsfeed.searchIcon}
                         name={'search-outline'} color={'#fef4ca'} size={30} />
-                    <Ionicons
+                    <View
                         style={Style.newsfeed.notificationIcon}
-                        name={'notifications'} color={'#fef4ca'} size={30}
-                        onPress={() => this.props.navigation.navigate('Notification')} />
+                    >
+                        <Ionicons
+                            name={'notifications'} color={'#fef4ca'} size={30}
+                            onPress={() => this.props.navigation.navigate('Notification')} />
+                        {this.state.numberUnreadNotification > 0 ? (
+                            <Badge
+                                value={this.state.numberUnreadNotification}
+                                status="error"
+                                containerStyle={{ position: 'absolute', top: -4, right: -4 }}
+                            />
+                        ) : (<View></View>)}
+
+                    </View>
                     <MaterialCommunityIcons
                         style={Style.newsfeed.notificationIcon}
                         name={'message-text-outline'} color={'#fef4ca'} size={30} />
@@ -581,7 +623,7 @@ export default class Newsfeed extends Component {
                         }}
                     />
                 </View>
-            </View>
+            </View >
         )
     }
 }
