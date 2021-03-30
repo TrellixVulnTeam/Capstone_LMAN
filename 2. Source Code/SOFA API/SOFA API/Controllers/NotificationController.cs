@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using SOFA_API.Common;
 using SOFA_API.Hubs;
 using SOFA_API.Service;
 using SOFA_API.ViewModel.Notification;
@@ -32,9 +34,11 @@ namespace SOFA_API.Controllers
         }
 
         [HttpGet("getUnreadNotification")]
-        public ActionResult GetUnreadNotification(int accountId)
+        [Authorize]
+        public ActionResult GetUnreadNotification()
         {
-            ListNotificationViewModelOut listUnreadNotification = NotificationService.Instance.GetUnreadNotificationByToAccount(accountId);
+            int id = Utils.Instance.GetUserID(User.Claims);
+            ListNotificationViewModelOut listUnreadNotification = NotificationService.Instance.GetUnreadNotificationByToAccount(id);
             return Ok(listUnreadNotification);
         }
     }
