@@ -226,7 +226,7 @@ export default class PostDetail extends Component {
             })
             .catch(reason => {
                 console.log(reason);
-                if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                     Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
                 } else {
                     Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
@@ -250,8 +250,10 @@ export default class PostDetail extends Component {
                 console.log(reason);
                 this.setState({ commentText: '' });
 
-                if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                     Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                } else {
+                    Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
                 }
             })
     }
@@ -265,7 +267,8 @@ export default class PostDetail extends Component {
             PostService.likePost(post.id)
                 .then(response => {
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        this.updatePost('listLike', [...this.state.post.listLike, response.listPost[0].listLike[0]])
+                        let listLike = response.listPost[0].listLike;
+                        this.updatePost('listLike', listLike)
                         this.updatePost('numberOfLike', response.listPost[0].numberOfLike);
                         this.updatePost('isLiked', response.listPost[0].isLiked);
                     } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
@@ -274,14 +277,18 @@ export default class PostDetail extends Component {
                 })
                 .catch(reason => {
                     console.log(reason);
-                    if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                    if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                         Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    } else {
+                        Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
                     }
                 })
         } else {
             PostService.unlikePost(post.id)
                 .then(response => {
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        let listLike = response.listPost[0].listLike;
+                        this.updatePost('listLike', listLike)
                         this.updatePost('numberOfLike', response.listPost[0].numberOfLike);
                         this.updatePost('isLiked', response.listPost[0].isLiked);
                     } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
@@ -290,8 +297,10 @@ export default class PostDetail extends Component {
                 })
                 .catch(reason => {
                     console.log(reason);
-                    if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                    if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                         Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    } else {
+                        Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
                     }
                 })
         }
@@ -314,8 +323,10 @@ export default class PostDetail extends Component {
             })
             .catch(reason => {
                 console.log(reason);
-                if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                     Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                } else {
+                    Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
                 }
             })
     }
@@ -488,14 +499,14 @@ export default class PostDetail extends Component {
                                             <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.rateAverage + '/5'}</Text>
                                         </View>
                                         <View>
-                                            {post.numberOfLike > 0 ? (
+                                            {post.listLike.length > 0 ? (
                                                 <View style={{ flexDirection: 'row' }}>
                                                     <MaterialCommunityIcons
                                                         name={'heart'}
                                                         size={16}
                                                         color={'#dc3f1c'} />
                                                     <Text>{post.listLike[0].firstName + ' ' + post.listLike[0].lastName}</Text>
-                                                    {post.numberOfLike > 1 ? (
+                                                    {post.listLike.length > 1 ? (
                                                         <View>
                                                             <Text>{' và ' + (post.numberOfLike - 1) + ' Người khác '}</Text>
                                                         </View>
