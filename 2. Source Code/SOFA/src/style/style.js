@@ -217,9 +217,9 @@ export const newsfeed = StyleSheet.create({
     // borderBottomLeftRadius: 5,
   },
   ArtileMore: {
-    paddingLeft: scale(20, Horizontal),
+    paddingHorizontal: scale(10, Horizontal),
     paddingTop: scale(10, Vertical),
-    width: scale(300, Horizontal)
+    width: scale(400, Horizontal)
   },
   ArticleAction: {
     flexDirection: 'row',

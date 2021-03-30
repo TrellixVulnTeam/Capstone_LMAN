@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableHighlight, Alert, FlatList, TouchableWithoutFeedback, Modal } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, Alert, FlatList, TouchableWithoutFeedback, Modal, TouchableOpacity } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -22,12 +22,13 @@ import { color } from 'react-native-reanimated';
 import { AVATAR } from '../../image/index';
 import ViewImageModal from './viewImageModel';
 import PushNotification from "react-native-push-notification";
+import * as PostService from '../service/postService';
+import * as AuthService from '../service/authService';
 
 export default class Newsfeed extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            token: '',
             account: {},
             isLogin: false,
             listPost: [],
@@ -179,57 +180,23 @@ export default class Newsfeed extends Component {
 
 
     checkLoginToken = async () => {
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    let token = result.toString().substr(1, result.length - 2);
-                    this.notificationConnection();
-                    var header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                        "Authorization": 'Bearer ' + token,
-                    };
-                    var uri = Const.domain + 'api/profile';
-                    Request.Get(uri, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
 
-                                this.setState({ account: response, isLogin: true, token: token });
-                            } else {
-                                this.setState({ account: {}, isLogin: false, token: '' });
-                            }
-                        })
-                        .catch(reason => {
-                            this.setState({ account: {}, isLogin: false, token: '' });
-                        })
+        AuthService.getProfile()
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.setState({ account: response, isLogin: true });
+                } else {
+                    this.setState({ account: {}, isLogin: false });
                 }
             })
             .catch(reason => {
-                this.setState({ token: '' });
                 console.log(reason);
+                this.setState({ account: {}, isLogin: false });
             })
     }
 
     getAllPost = async (page) => {
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    // console.log('Get all post', result);
-                    this.setState({ token: result.toString().substr(1, result.length - 2) });
-                }
-            })
-            .catch(reason => {
-                this.setState({ token: '' });
-                console.log(reason);
-            })
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json',
-            "Authorization": 'Bearer ' + this.state.token,
-        };
-        var data = {};
-        var uri = Const.domain + 'api/post?page=' + page + '&rowsOfPage=' + Const.NEWSFEED_ROWS_OF_PAGE;
-        Request.Get(uri, header, data)
+        PostService.getAllPublicPost(page)
             .then(response => {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     let listPostRes = response.listPost;
@@ -317,33 +284,21 @@ export default class Newsfeed extends Component {
         return null;
     }
 
-
     deletePost(postID) {
-        const { token } = this.state;
-        if (token && token.length > 0) {
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                'Content-Type': 'multipart/form-data',
-                "Accept": 'application/json',
-                "Authorization": 'Bearer ' + token,
-            };
-            let data = new FormData();
-            data.append('PostID', postID);
-            let uri = Const.domain + 'api/post/deletepost';
-            Request.Post(uri, header, data)
-                .then(response => {
-                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        this.removePost(response.listPost[0].id);
-                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
-                        console.log(response.errorMessage);
-                    }
-                })
-                .catch(reason => {
-                    console.log(reason);
-                })
-        } else {
-            Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
-        }
+        PostService.deletePost(postID)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.removePost(response.listPost[0].id);
+                } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                    console.log(response.errorMessage);
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                }
+            })
     }
 
     /**
@@ -359,23 +314,8 @@ export default class Newsfeed extends Component {
      * @param {Data of a post} post 
      */
     onPressLikePost(post) {
-        const { token } = this.state;
-        if (token && token.length > 0) {
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                'Content-Type': 'multipart/form-data',
-                "Accept": 'application/json',
-                "Authorization": 'Bearer ' + token,
-            };
-            let data = new FormData();
-            data.append('PostID', post.id);
-            let uri = '';
-            if (!post.isLiked) {
-                uri = Const.domain + 'api/post/likepost';
-            } else {
-                uri = Const.domain + 'api/post/unlikepost';
-            }
-            Request.Post(uri, header, data)
+        if (!post.isLiked) {
+            PostService.likePost(post.id)
                 .then(response => {
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                         this.updatePostByID(response.listPost[0].id, 'numberOfLike', response.listPost[0].numberOfLike);
@@ -386,9 +326,26 @@ export default class Newsfeed extends Component {
                 })
                 .catch(reason => {
                     console.log(reason);
+                    if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                        Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    }
                 })
         } else {
-            Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+            PostService.unlikePost(post.id)
+                .then(response => {
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        this.updatePostByID(response.listPost[0].id, 'numberOfLike', response.listPost[0].numberOfLike);
+                        this.updatePostByID(response.listPost[0].id, 'isLiked', response.listPost[0].isLiked);
+                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                        console.log(response.errorMessage);
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                    if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                        Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    }
+                })
         }
     }
     /**
@@ -397,34 +354,21 @@ export default class Newsfeed extends Component {
      * @param {Rate point} rating 
      */
     ratingCompleted(post, rating) {
-        console.log("Rating is: " + rating);
-        const { token } = this.state;
-        if (token && token.length > 0) {
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                'Content-Type': 'multipart/form-data',
-                "Accept": 'application/json',
-                "Authorization": 'Bearer ' + token,
-            };
-            let data = new FormData();
-            data.append('PostID', post.id);
-            data.append('RatePoint', rating);
-            let uri = Const.domain + 'api/post/ratepost';
-            Request.Post(uri, header, data)
-                .then(response => {
-                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        this.updatePostByID(response.listPost[0].id, 'myRatePoint', response.listPost[0].myRatePoint);
-                        this.updatePostByID(response.listPost[0].id, 'rateAverage', response.listPost[0].rateAverage);
-                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
-                        console.log(response.errorMessage);
-                    }
-                })
-                .catch(reason => {
-                    console.log(reason);
-                })
-        } else {
-            Alert.alert('Thông báo', 'Hãy đăng nhập để đánh giá bài viết này');
-        }
+        PostService.ratePost(post.id, rating)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.updatePostByID(response.listPost[0].id, 'myRatePoint', response.listPost[0].myRatePoint);
+                    this.updatePostByID(response.listPost[0].id, 'rateAverage', response.listPost[0].rateAverage);
+                } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                    console.log(response.errorMessage);
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                    Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                }
+            })
     }
 
     navigateProfile(accountID) {
@@ -457,12 +401,16 @@ export default class Newsfeed extends Component {
                                 { uri: Const.assets_domain + post.avatar } : AVATAR}
                             style={Style.newsfeed.ArticleAvatar} />
                     </TouchableWithoutFeedback>
-                    <View style={Style.newsfeed.ArticleHeader}>
-                        <Text
-                            onPress={() => this.navigateProfile(post.accountPost)}
-                            style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
-                        <Text style={Style.newsfeed.ArticleTime}>{Utils.calculateTime(post.time)}</Text>
-                    </View>
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.navigate('PostDetail', { postID: post.id })}
+                    >
+                        <View style={Style.newsfeed.ArticleHeader}>
+                            <Text
+                                onPress={() => this.navigateProfile(post.accountPost)}
+                                style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
+                            <Text style={Style.newsfeed.ArticleTime}>{Utils.calculateTime(post.time)}</Text>
+                        </View>
+                    </TouchableOpacity>
                     <MaterialCommunityIcons
                         onPress={() => {
                             this.setState({ currentPostSelect: post });
@@ -503,17 +451,25 @@ export default class Newsfeed extends Component {
                 </View>
                 <View style={Style.newsfeed.ArtileMore}>
                     <View style={Style.newsfeed.ArticleAction}>
-                        <MaterialCommunityIcons
+                        <TouchableOpacity
                             onPress={() => this.onPressLikePost(post)}
-                            name={post.isLiked ? 'heart' : 'heart-outline'}
-                            size={30}
-                            color={post.isLiked ? '#dc3f1c' : '#232323'} />
+                        >
+
+                            <MaterialCommunityIcons
+                                name={post.isLiked ? 'heart' : 'heart-outline'}
+                                size={30}
+                                color={post.isLiked ? '#dc3f1c' : '#232323'} />
+                        </TouchableOpacity>
+
                         <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.numberOfLike}</Text>
-                        <FontAwesome5
+                        <TouchableOpacity
                             onPress={() => this.onPressCommentIcon(post)}
-                            style={Style.newsfeed.ArticleIconOfReact}
-                            name='comment-dots' size={30}
-                            color={'#232323'} />
+                        >
+                            <FontAwesome5
+                                style={Style.newsfeed.ArticleIconOfReact}
+                                name='comment-dots' size={30}
+                                color={'#232323'} />
+                        </TouchableOpacity>
                         <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.numberOfComment}</Text>
                         <Rating
                             style={Style.newsfeed.ArticleIconOfReact}
@@ -522,7 +478,7 @@ export default class Newsfeed extends Component {
                             type='custom'
                             ratingColor='#dc3f1c'
                             tintColor='#f8e5d6'
-                            readonly={!(this.state.token && this.state.token.length > 0)}
+                            readonly={!this.state.isLogin}
                             //ratingBackgroundColor='#FFF2D1'
                             onFinishRating={(rating) => this.ratingCompleted(post, rating)}
                             startingValue={post.myRatePoint}

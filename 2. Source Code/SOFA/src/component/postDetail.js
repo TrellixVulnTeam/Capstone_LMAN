@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableHighlight, Alert, FlatList, TouchableWithoutFeedback, Modal } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, TouchableOpacity, Alert, FlatList, TouchableWithoutFeedback, Modal, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -14,28 +14,65 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
 import * as Style from '../style/style';
-import { scale } from '../common/utils';
+import { scale, calculateTime } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { AVATAR } from '../../image/index';
 import ViewImageModal from './viewImageModel';
+import * as PostService from '../service/postService';
+import * as AuthService from '../service/authService';
 
 export default class PostDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            token: '',
-            account: {},
             isLogin: false,
-            listPost: [],
-            isKeyBoardShow: false,
-            keyboardHeight: 0,
-            currentPostSelect: {},
-            isShowMenu: false,
-            page: 1,
-            listPostRefreshing: false,
-            currentShowImagePost: {},
+            account: {
+                accountID: 0,
+                username: '',
+                AccountID: 0,
+                FirstName: '',
+                LastName: '',
+                Gender: true,
+                DOB: '',
+                Email: '',
+                Phone: '',
+                Address: '',
+                AvatarUri: '',
+                Avatar: '',
+                followerNumber: 0,
+                postNumber: 0,
+                UserName: 0,
+                Role: '',
+            },
+            post: {
+                id: 0,
+                content: '',
+                privacyID: 0,
+                time: '',
+                bodyInfoID: 0,
+                accountPost: 0,
+                firstName: '',
+                lastName: '',
+                avatar: '',
+                gender: true,
+                listImage: [],
+                listLike: [],
+                listComment: [],
+                listRate: [],
+                numberOfLike: 0,
+                numberOfComment: 0,
+                rateAverage: 0,
+                isLiked: false,
+                myRatePoint: 0,
+                isVerified: true
+            },
             currentShowImage: {},
+            currentShowImagePost: {},
             isShowImage: false,
+            isShowMenu: false,
+            commentPage: 1,
+            isRefresing: false,
+            commentText: '',
         }
     }
     actionArticleNotOwn = [
@@ -45,7 +82,7 @@ export default class PostDetail extends Component {
             title: () => 'Lưu bài viết',
             detail: () => 'Thêm vào danh sách các mục đã lưu',
             onPress: () => {
-                console.log('save post', this.state.currentPostSelect.id);
+                console.log('save post', this.state.post.id);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -55,7 +92,7 @@ export default class PostDetail extends Component {
             title: () => 'Ẩn bài viết',
             detail: () => 'Ẩn bài viết này khỏi newsfeed của bạn',
             onPress: () => {
-                console.log('hide post', this.state.currentPostSelect.id);
+                console.log('hide post', this.state.post.id);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -65,27 +102,27 @@ export default class PostDetail extends Component {
             title: () => 'Báo cáo bài viết này',
             detail: () => 'Tôi lo ngại về bài viết này',
             onPress: () => {
-                console.log('report post', this.state.currentPostSelect.id);
+                console.log('report post', this.state.post.id);
                 this.setState({ isShowMenu: false });
             }
         },
         {
             key: 'followuserpost',
             icon: () => <SimpleLineIcons name='user-follow' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => 'Theo dõi ' + this.state.currentPostSelect.lastName,
+            title: () => 'Theo dõi ' + this.state.post.lastName,
             detail: () => 'Xem những bài viết từ người này',
             onPress: () => {
-                console.log('follow user', this.state.currentPostSelect.id);
+                console.log('follow user', this.state.post.id);
                 this.setState({ isShowMenu: false });
             }
         },
         {
             key: 'reportuser',
             icon: () => <MaterialIcons name='report' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => 'Báo cáo ' + this.state.currentPostSelect.lastName,
+            title: () => 'Báo cáo ' + this.state.post.lastName,
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
-                console.log('report user', this.state.currentPostSelect.id);
+                console.log('report user', this.state.post.id);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -99,7 +136,7 @@ export default class PostDetail extends Component {
             title: () => 'Lưu bài viết',
             detail: () => 'Thêm vào danh sách các mục đã lưu',
             onPress: () => {
-                console.log('save post', this.state.currentPostSelect.id);
+                console.log('save post', this.state.post.id);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -109,9 +146,9 @@ export default class PostDetail extends Component {
             title: () => 'Xóa bài viết',
             detail: () => 'Xóa bài viết này khỏi danh sách bài viết của bạn',
             onPress: () => {
-                console.log('delete post', this.state.currentPostSelect.id);
+                console.log('delete post', this.state.post.id);
                 this.setState({ isShowMenu: false });
-                this.deletePost(this.state.currentPostSelect.id);
+                this.deletePost(this.state.post.id);
             }
         },
         {
@@ -120,7 +157,7 @@ export default class PostDetail extends Component {
             title: () => 'Chỉnh sửa bài viết',
             detail: () => 'Chỉnh sửa nội dung của bài viết',
             onPress: () => {
-                console.log('edit post', this.state.currentPostSelect.id);
+                console.log('edit post', this.state.post.id);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -148,103 +185,75 @@ export default class PostDetail extends Component {
     }
 
 
-    checkLoginToken = async () => {
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    let token = result.toString().substr(1, result.length - 2);
-                    var header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                        "Authorization": 'Bearer ' + token,
-                    };
-                    var uri = Const.domain + 'api/profile';
-                    Request.Get(uri, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-
-                                this.setState({ account: response, isLogin: true, token: token });
-                            } else {
-                                this.setState({ account: {}, isLogin: false, token: '' });
-                            }
-                        })
-                        .catch(reason => {
-                            this.setState({ account: {}, isLogin: false, token: '' });
-                        })
+    checkLoginToken = () => {
+        AuthService.getProfile()
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.setState({ account: response, isLogin: true });
                 }
             })
             .catch(reason => {
-                this.setState({ token: '' });
+                this.setState({ account: response, isLogin: false });
                 console.log(reason);
+            });
+    }
+
+    getPostDetail(postID) {
+        PostService.getPostDetail(postID)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.setState({ post: response.listPost[0] });
+                }
             })
+            .catch(reason => {
+                console.log(reason);
+                Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
+            });
     }
 
-    componentDidMount() {
-        this.checkLoginToken();
-        this._screenFocus = this.props.navigation.addListener('focus', () => {
-            this.checkLoginToken();
-            console.log(this.props.route);
-            if (this.props.route && this.props.route.params && this.props.route.params.preScreen == 'CreatePost') { this.getAllPost(1); }
-        });
+    updatePost(key, value) {
+        let postTemp = this.state.post;
+        postTemp[key] = value;
+        this.setState({ post: postTemp });
     }
-
-
-    updatePostByID(postID, key, value) {
-        let listPostTemp = this.state.listPost;
-        for (let i = 0; i < listPostTemp.length; i++) {
-            if (listPostTemp[i].id == postID) {
-                listPostTemp[i][key] = value;
-                break;
-            }
-        }
-        this.setState({ listPost: listPostTemp });
-    }
-
-    getFieldPostByID(postID, key) {
-        let listPostTemp = this.state.listPost;
-        for (let i = 0; i < listPostTemp.length; i++) {
-            if (listPostTemp[i].id == postID) {
-                return listPostTemp[i][key];
-            }
-        }
-        return null;
-    }
-
 
     deletePost(postID) {
-        const { token } = this.state;
-        if (token && token.length > 0) {
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                'Content-Type': 'multipart/form-data',
-                "Accept": 'application/json',
-                "Authorization": 'Bearer ' + token,
-            };
-            let data = new FormData();
-            data.append('PostID', postID);
-            let uri = Const.domain + 'api/post/deletepost';
-            Request.Post(uri, header, data)
-                .then(response => {
-                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        this.removePost(response.listPost[0].id);
-                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
-                        console.log(response.errorMessage);
-                    }
-                })
-                .catch(reason => {
-                    console.log(reason);
-                })
-        } else {
-            Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
-        }
+        PostService.deletePost(postID)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.props.navigation.goBack();
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                    Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                } else {
+                    Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
+                }
+            });
     }
 
-    /**
-     * Navigate to list comment of this post
-     * @param {Data of the post} post 
-     */
-    onPressCommentIcon(post) {
-        this.props.navigation.navigate('Comment', { 'post': post });
+    onPressComment(postID, comment) {
+        PostService.commentPost(postID, comment)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    let commentRes = response.listPost[0].listComment[0];
+                    let listComment = this.state.post.listComment;
+                    listComment.push(commentRes);
+                    this.setState({ post: { ...this.state.post, listComment: listComment }, commentText: '' });
+                } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                    console.log(response.errorMessage);
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                this.setState({ commentText: '' });
+
+                if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                    Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                }
+            })
     }
 
     /**
@@ -252,37 +261,41 @@ export default class PostDetail extends Component {
      * @param {Data of a post} post 
      */
     onPressLikePost(post) {
-        const { token } = this.state;
-        if (token && token.length > 0) {
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                'Content-Type': 'multipart/form-data',
-                "Accept": 'application/json',
-                "Authorization": 'Bearer ' + token,
-            };
-            let data = new FormData();
-            data.append('PostID', post.id);
-            let uri = '';
-            if (!post.isLiked) {
-                uri = Const.domain + 'api/post/likepost';
-            } else {
-                uri = Const.domain + 'api/post/unlikepost';
-            }
-            Request.Post(uri, header, data)
+        if (!post.isLiked) {
+            PostService.likePost(post.id)
                 .then(response => {
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        this.updatePostByID(response.listPost[0].id, 'numberOfLike', response.listPost[0].numberOfLike);
-                        this.updatePostByID(response.listPost[0].id, 'isLiked', response.listPost[0].isLiked);
+                        this.updatePost('listLike', [...this.state.post.listLike, response.listPost[0].listLike[0]])
+                        this.updatePost('numberOfLike', response.listPost[0].numberOfLike);
+                        this.updatePost('isLiked', response.listPost[0].isLiked);
                     } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
                         console.log(response.errorMessage);
                     }
                 })
                 .catch(reason => {
                     console.log(reason);
+                    if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                        Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    }
                 })
         } else {
-            Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+            PostService.unlikePost(post.id)
+                .then(response => {
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        this.updatePost('numberOfLike', response.listPost[0].numberOfLike);
+                        this.updatePost('isLiked', response.listPost[0].isLiked);
+                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                        console.log(response.errorMessage);
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                    if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                        Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    }
+                })
         }
+
     }
     /**
      * Process when user rate a post
@@ -290,34 +303,21 @@ export default class PostDetail extends Component {
      * @param {Rate point} rating 
      */
     ratingCompleted(post, rating) {
-        console.log("Rating is: " + rating);
-        const { token } = this.state;
-        if (token && token.length > 0) {
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                'Content-Type': 'multipart/form-data',
-                "Accept": 'application/json',
-                "Authorization": 'Bearer ' + token,
-            };
-            let data = new FormData();
-            data.append('PostID', post.id);
-            data.append('RatePoint', rating);
-            let uri = Const.domain + 'api/post/ratepost';
-            Request.Post(uri, header, data)
-                .then(response => {
-                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        this.updatePostByID(response.listPost[0].id, 'myRatePoint', response.listPost[0].myRatePoint);
-                        this.updatePostByID(response.listPost[0].id, 'rateAverage', response.listPost[0].rateAverage);
-                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
-                        console.log(response.errorMessage);
-                    }
-                })
-                .catch(reason => {
-                    console.log(reason);
-                })
-        } else {
-            Alert.alert('Thông báo', 'Hãy đăng nhập để đánh giá bài viết này');
-        }
+        PostService.ratePost(post.id, rating)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.updatePost('myRatePoint', response.listPost[0].myRatePoint);
+                    this.updatePost('rateAverage', response.listPost[0].rateAverage);
+                } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                    console.log(response.errorMessage);
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
+                    Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                }
+            })
     }
 
     navigateProfile(accountID) {
@@ -330,31 +330,354 @@ export default class PostDetail extends Component {
     }
 
     onPressImage(post, image) {
-        //this.props.navigation.navigate('ViewImage', { 'post': post, 'image': image });
-        this.setState({ currentShowImage: image, currentShowImagePost: post });
-        this.setState({ isShowImage: true });
+        this.setState({ currentShowImage: image, isShowImage: true });
     }
 
+    GetAllComment(post, page) {
+        PostService.getCommentOfPost(post.id, page)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    if (response.listPost.length > 0) {
+                        let listComment = response.listPost[0].listComment;
+                        if (page == 1) {
+                            if (listComment.length > 0) {
+                                this.setState({ listComment: listComment, isRefresing: false });
+                            } else {
+                                this.setState({ isRefresing: false });
+                            }
+                        } else {
+                            if (listComment.length > 0) {
+                                this.setState({ listComment: [...this.state.listComment, ...listComment], isRefresing: false })
+                            } else {
+                                this.setState({ isRefresing: false });
+                            }
+                        }
+                    }
+                } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                    console.log(response.errorMessage);
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+            });
+
+    }
+
+    componentDidMount() {
+        this.checkLoginToken();
+        this._screenFocus = this.props.navigation.addListener('focus', () => {
+            this.checkLoginToken()
+            let { postID } = this.props.route.params;
+            this.setState({ post: { ...this.state.post, id: postID } });
+            this.getPostDetail(postID);
+        });
+    }
 
     render() {
-        const { isShowMenu, listPost, account, currentPostSelect, listPostRefreshing } = this.state;
+        const { isShowMenu, post, account, listPostRefreshing, isShowImage, currentShowImage, commentText } = this.state;
         return (
-            <View style={Style.common.container}>
+
+            <View style={{
+                flex: 1,
+                backgroundColor: 'white'
+            }}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
-                <View style={[Style.newsfeed.Header]}>
-                    <Text style={Style.newsfeed.SofaTitle}>SOFA</Text>
-                    <Ionicons
-                        style={Style.newsfeed.searchIcon}
-                        name={'search-outline'} color={'#fef4ca'} size={30} />
-                    <Ionicons
-                        style={Style.newsfeed.notificationIcon}
-                        name={'notifications'} color={'#fef4ca'} size={30} />
-                    <MaterialCommunityIcons
-                        style={Style.newsfeed.notificationIcon}
-                        name={'message-text-outline'} color={'#fef4ca'} size={30} />
-                </View>
-                
-            </View>
+                {post.accountPost && post.accountPost != 0 ? (
+                    <View>
+                        <FlatList
+                            ListHeaderComponent={(
+                                <View
+                                    style={{
+                                        backgroundColor: 'white',
+                                        // marginTop: scale(20, Vertical),
+                                        borderTopLeftRadius: 10,
+                                        borderBottomLeftRadius: 10,
+                                        paddingVertical: scale(10, Vertical),
+                                        height: scale(711, Vertical)
+                                    }}
+                                >
+                                    <View style={Style.common.flexRow}>
+                                        <TouchableWithoutFeedback
+                                            onPress={() => this.navigateProfile(post.accountPost)}
+                                        >
+                                            <Image
+                                                source={post.avatar && post.avatar.length > 0 ?
+                                                    { uri: Const.assets_domain + post.avatar } : AVATAR}
+                                                style={Style.newsfeed.ArticleAvatar} />
+                                        </TouchableWithoutFeedback>
+                                        <TouchableOpacity
+                                            onPress={() => this.props.navigation.navigate('PostDetail', { postID: post.id })}
+                                        >
+                                            <View style={Style.newsfeed.ArticleHeader}>
+                                                <Text
+                                                    onPress={() => this.navigateProfile(post.accountPost)}
+                                                    style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
+                                                <Text style={Style.newsfeed.ArticleTime}>{Utils.calculateTime(post.time)}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <MaterialCommunityIcons
+                                            onPress={() => {
+                                                this.setState({ isShowMenu: true });
+                                            }}
+                                            style={Style.newsfeed.ArticleMenu}
+                                            name='dots-horizontal' size={30} color={'black'} />
+
+                                    </View>
+                                    <View style={Style.newsfeed.ArticleCaption}>
+                                        <Text style={Style.newsfeed.ArticleCaptionContent}>{post.content}</Text>
+                                    </View>
+                                    <View style={[Style.newsfeed.ArticleImageList, {
+                                        height: scale(534, Vertical)
+                                    }]}>
+                                        <FlatList
+                                            showsVerticalScrollIndicator={false}
+                                            showsHorizontalScrollIndicator={false}
+                                            horizontal
+                                            data={post.listImage}
+                                            keyExtractor={item => item.id + ''}
+                                            pagingEnabled={true}
+                                            renderItem={({ item }) => {
+                                                console.log(item);
+                                                return (
+                                                    <TouchableWithoutFeedback
+                                                        onPress={() => this.onPressImage(post, item)}
+                                                    >
+                                                        <View style={Style.newsfeed.ArticleImageStyle}>
+                                                            <Image
+                                                                style={Style.newsfeed.ArticleImage}
+                                                                source={{ uri: Const.assets_domain + item.url }} />
+                                                        </View>
+                                                    </TouchableWithoutFeedback>
+                                                )
+                                            }}
+                                        />
+
+                                    </View>
+                                    <View style={[Style.newsfeed.ArtileMore]}>
+                                        <View style={[Style.newsfeed.ArticleAction,
+                                        {
+                                            borderTopWidth: 0.5,
+                                            borderBottomWidth: 0.5,
+                                            marginTop: scale(5, Vertical),
+                                            paddingVertical: scale(5, Vertical)
+                                        }]}>
+                                            <TouchableOpacity
+                                                style={{ flexDirection: 'row' }}
+                                                activeOpacity={0.2}
+                                                onPress={() => this.onPressLikePost(post)}
+                                            >
+                                                <MaterialCommunityIcons
+                                                    name={post.isLiked ? 'heart' : 'heart-outline'}
+                                                    size={30}
+                                                    color={post.isLiked ? '#dc3f1c' : '#232323'} />
+                                                <Text style={Style.newsfeed.ArticleNumberOfReact}>Yêu thích</Text>
+                                            </TouchableOpacity>
+
+                                            <Rating
+                                                style={Style.newsfeed.ArticleIconOfReact}
+                                                ratingCount={5}
+                                                imageSize={30}
+                                                type='custom'
+                                                ratingColor='#dc3f1c'
+                                                tintColor='white'
+                                                readonly={!this.state.isLogin}
+                                                ratingBackgroundColor='#FFF2D1'
+                                                onFinishRating={(rating) => this.ratingCompleted(post, rating)}
+                                                startingValue={post.myRatePoint}
+                                            />
+                                            <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.rateAverage + '/5'}</Text>
+                                        </View>
+                                        <View>
+                                            {post.numberOfLike > 0 ? (
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <MaterialCommunityIcons
+                                                        name={'heart'}
+                                                        size={16}
+                                                        color={'#dc3f1c'} />
+                                                    <Text>{post.listLike[0].firstName + ' ' + post.listLike[0].lastName}</Text>
+                                                    {post.numberOfLike > 1 ? (
+                                                        <View>
+                                                            <Text>{' và ' + (post.numberOfLike - 1) + ' Người khác '}</Text>
+                                                        </View>
+                                                    ) : (<View></View>)}
+                                                </View>
+                                            ) : (<View></View>)}
+                                        </View>
+                                    </View>
+
+                                </View>
+
+                            )}
+                            ListFooterComponent={(
+                                <View>
+                                    <Text style={[{
+                                        color: '#787878'
+                                    }, styles.CommentItemBounder]}>Xem thêm bình luần</Text>
+                                </View>
+
+                            )}
+                            data={post.listComment}
+                            keyExtractor={(item, index) => item.id + ''}
+                            renderItem={({ item }) => {
+                                return (
+                                    <View style={styles.CommentItemBounder}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <TouchableWithoutFeedback
+                                                onPress={() => this.navigateProfile(item.accountID)}
+                                            >
+                                                <Image
+                                                    style={styles.CommentAvatar}
+                                                    source={item.avatar && item.avatar.length > 0 ? { uri: Const.assets_domain + item.avatar } : { AVATAR }} />
+                                            </TouchableWithoutFeedback>
+                                            <View style={styles.CommentItem}>
+                                                <Text
+                                                    style={styles.CommentAuthor}
+                                                    onPress={() => this.navigateProfile(item.accountID)}>{item.firstName + " " + item.lastName}
+                                                </Text>
+                                                <Text style={styles.CommentContent}>{item.content}</Text>
+
+                                            </View>
+                                        </View>
+                                        <View style={styles.CommentAction}>
+                                            <Text style={{ fontSize: 13 }}>{calculateTime(item.time)}</Text>
+                                            <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Thích</Text>
+                                            <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Trả lời</Text>
+
+                                        </View>
+                                    </View>
+                                )
+                            }}
+                            refreshing={this.state.isRefresing}
+                        />
+                        <View
+                            style={{
+                                paddingVertical: scale(5, Vertical),
+                                width: scale(400, Horizontal),
+                                height: scale(50, Vertical),
+                                backgroundColor: 'white',
+                                shadowColor: "black",
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 0.6
+                                },
+                                shadowOpacity: 1,
+                                shadowRadius: 0.6,
+                                elevation: 5
+                            }}
+                        >
+                            <TextInput
+                                placeholder={'Viết bình luận'}
+                                returnKeyLabel={'Gửi'}
+                                returnKeyType={'send'}
+                                value={commentText}
+                                onChangeText={text => this.setState({ commentText: text })}
+                                onSubmitEditing={() => this.onPressComment(post.id, commentText)}
+                                style={{
+                                    marginLeft: scale(10, Horizontal),
+                                    height: scale(40, Vertical),
+                                    width: scale(360, Horizontal),
+                                    backgroundColor: '#E2E2E2',
+                                    borderRadius: 20,
+                                    paddingLeft: scale(15, Horizontal),
+                                }}
+                            />
+                        </View>
+                        <Modal
+                            animationType='slide'
+                            transparent={true}
+                            visible={isShowMenu}
+                            onRequestClose={() => {
+                                this.setState({ isShowMenu: false });
+                            }}
+                        >
+                            <View style={Style.newsfeed.articleMenu}>
+                                {account.accountID != post.accountPost ?
+                                    this.actionArticleNotOwn.map(item =>
+                                        <TouchableHighlight
+                                            key={item.key}
+                                            onPress={() => item.onPress()}
+                                            underlayColor={'#9E9E9E'}
+                                        >
+                                            <View
+                                                style={Style.newsfeed.articleMenuItem}>
+                                                {item.icon()}
+                                                <View style={Style.newsfeed.articleMenuItemText} >
+                                                    <Text>{item.title()}</Text>
+                                                    <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
+                                                </View>
+                                            </View>
+                                        </TouchableHighlight>
+                                    ) :
+                                    this.actionArticleOwn.map(item =>
+                                        <TouchableHighlight
+                                            key={item.key}
+                                            onPress={() => item.onPress()}
+                                            underlayColor={'#9E9E9E'}
+                                        >
+                                            <View
+                                                style={Style.newsfeed.articleMenuItem}>
+                                                {item.icon()}
+                                                <View style={Style.newsfeed.articleMenuItemText} >
+                                                    <Text>{item.title()}</Text>
+                                                    <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
+                                                </View>
+                                            </View>
+                                        </TouchableHighlight>
+                                    )
+                                }
+                            </View>
+                        </Modal>
+                        <ViewImageModal
+                            image={currentShowImage}
+                            post={post}
+                            visible={isShowImage}
+                            onRequestClose={() => {
+                                this.setState({ isShowImage: false });
+                                this.setState({ currentShowImage: {} })
+                            }}
+                        />
+                    </View>) : (
+                    <View style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: scale(711, Vertical),
+                        width: scale(400, Horizontal)
+                    }}>
+                        <Text>Nội dung này không tồn tại hoặc đã bị xóa!</Text>
+                    </View>)}
+
+            </View >
         )
     }
 }
+const styles = StyleSheet.create({
+    CommentItemBounder: {
+        marginLeft: scale(10, Horizontal),
+        marginTop: scale(10, Vertical),
+    },
+    CommentItem: {
+        width: scale(300, Horizontal),
+        minHeight: scale(50, Vertical),
+        borderRadius: 10,
+        backgroundColor: '#E6E6E6'
+    },
+    CommentAvatar: {
+        width: scale(40, Horizontal),
+        height: scale(40, Horizontal),
+        borderRadius: 50
+    },
+    CommentAuthor: {
+        fontWeight: 'bold',
+        marginLeft: scale(10, Horizontal)
+    },
+    CommentContent: { marginLeft: scale(10, Horizontal) },
+    CommentTextBox: {
+        backgroundColor: 'white',
+        borderRadius: 10
+    },
+    CommentAction: {
+        marginTop: scale(5, Vertical),
+        flexDirection: 'row',
+        marginLeft: scale(50, Horizontal)
+    }
+})

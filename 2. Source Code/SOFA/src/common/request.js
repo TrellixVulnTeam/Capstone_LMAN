@@ -29,7 +29,7 @@ const Post = (uri, header, data) => {
             body: data
         })
             .then((response) => { 
-                console.log(response); 
+                // console.log(response); 
                 return response.json(); 
             })
             .then((json) => {
