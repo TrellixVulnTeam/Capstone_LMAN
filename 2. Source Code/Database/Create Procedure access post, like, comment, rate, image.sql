@@ -367,4 +367,60 @@ BEGIN
 END
 GO
 
-SELECT * FROM Post
+DROP PROC IF EXISTS AddMarkupPost
+GO
+CREATE PROC AddMarkupPost
+@postID INT, @accountID INT
+AS
+BEGIN
+	INSERT INTO MarkupPost(PostID, AccountID)
+	OUTPUT Inserted.*
+	VALUES(@postID, @accountID)
+END
+GO
+
+DROP PROC IF EXISTS GetAllMarkupPost
+GO
+CREATE PROC GetAllMarkupPost
+@page INT, @rowsOfPage INT
+AS
+BEGIN
+	SELECT * FROM MarkupPost
+	ORDER BY ID ASC
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
+END
+GO
+
+DROP PROC IF EXISTS GetMarkupPostOfUser
+GO
+CREATE PROC GetMarkupPostOfUser
+@accountID INT, @page INT, @rowsOfPage INT
+AS
+BEGIN
+	SELECT * FROM MarkupPost WHERE AccountID = @accountID
+	ORDER BY ID ASC
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
+END
+GO
+
+DROP PROC IF EXISTS DeleteMarkupPost
+GO
+CREATE PROC DeleteMarkupPost
+@id INT
+AS
+BEGIN
+	DELETE FROM MarkupPost WHERE ID = @id
+END
+GO
+
+DROP PROC IF EXISTS IsMarkedPost
+GO
+CREATE PROC IsMarkedPost
+@postID INT, @accountID INT
+AS
+BEGIN
+	SELECT * FROM MarkupPost WHERE PostID = @postID AND accountID = @accountID
+END
+GO
