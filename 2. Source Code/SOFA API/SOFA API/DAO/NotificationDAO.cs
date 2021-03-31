@@ -45,12 +45,13 @@ namespace SOFA_API.DAO
             return listNotification;
         }
 
-        public void SetReadNotificationByAccountId(int accountID)
+        public int SetReadNotificationById(int ID)
         {
-            string sql = "EXEC setReadNotificationByAccountId @accountID";
+            string sql = "EXEC setReadNotificationById @ID";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID });
+                int result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { ID});
+                return result;
             }
             catch (Exception ex)
             {

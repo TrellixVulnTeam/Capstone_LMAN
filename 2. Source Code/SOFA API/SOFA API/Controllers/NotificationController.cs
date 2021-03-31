@@ -41,5 +41,13 @@ namespace SOFA_API.Controllers
             ListNotificationViewModelOut listUnreadNotification = NotificationService.Instance.GetUnreadNotificationByToAccount(id);
             return Ok(listUnreadNotification);
         }
+
+        [HttpGet("setreadnotibyid")]
+        public ActionResult SetReadNotificationById(int ID)
+        {
+            NotificationViewModelOut noti = NotificationService.Instance.SetReadNotificationById(ID);
+            return Ok(noti);
+        }
+
     }
 }
