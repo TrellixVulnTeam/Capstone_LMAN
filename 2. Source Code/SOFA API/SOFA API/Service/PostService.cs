@@ -314,12 +314,12 @@ namespace SOFA_API.Service
         /// <returns></returns>
         public PostViewModelOut LikePost(int postID, int accountLike)
         {
-            int ID = 0;
-            ID = LikeDAO.Instance.LikePost(postID, accountLike);
+            int res = 0;
+            res = LikeDAO.Instance.LikePost(postID, accountLike);
             PostViewModelOut result = new PostViewModelOut();
             try
             {
-                if (ID != 0)
+                if (res != 0)
                 {
                     PostModelOut postModelOut = new PostModelOut();
                     postModelOut.ID = postID;
@@ -350,12 +350,12 @@ namespace SOFA_API.Service
         /// <returns></returns>
         public PostViewModelOut UnLikePost(int postID, int accountLike)
         {
-            int ID = 0;
-            ID = LikeDAO.Instance.UnLikePost(postID, accountLike);
+            int res = 0;
+            res = LikeDAO.Instance.UnLikePost(postID, accountLike);
             PostViewModelOut result = new PostViewModelOut();
             try
             {
-                if (ID != 0)
+                if (res != 0)
                 {
                     PostModelOut postModelOut = new PostModelOut();
                     postModelOut.ID = postID;

@@ -183,15 +183,25 @@ CREATE PROC LikePost
 @postID INT, @accountLike INT
 AS
 BEGIN
-	INSERT INTO dbo.[Like]
-	(
-	    PostId,
-	    AccountLike
-	)
-	VALUES
-	(   @postID, -- PostId - int
-	    @accountLike  -- AcountLike - int
-	    )
+	DECLARE @likeID INT
+	SET @likeID = (SELECT ID FROM [Like] WHERE PostID = @postID AND AccountLike = @accountLike)
+	IF @likeID = 0
+	BEGIN
+		INSERT INTO dbo.[Like]
+		(
+			PostId,
+			AccountLike
+		)
+		OUTPUT Inserted.ID
+		VALUES
+		(   @postID, -- PostId - int
+			@accountLike  -- AcountLike - int
+			)
+	END
+	ELSE
+	BEGIN
+		SELECT 0
+	END
 END
 GO
 DROP PROC IF EXISTS UnlikePost
@@ -424,3 +434,9 @@ BEGIN
 	SELECT * FROM MarkupPost WHERE PostID = @postID AND accountID = @accountID
 END
 GO
+
+SELECT * FROM Post
+SELECT * FROM [Like]
+ORDER BY PostID, AccountLike
+
+EXEC LikePost 58, 7

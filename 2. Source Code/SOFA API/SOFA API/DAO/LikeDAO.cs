@@ -45,7 +45,7 @@ namespace SOFA_API.DAO
         {
             int result = 0;
             string sql = "EXEC dbo.LikePost @postID , @accountLike";
-            result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { postID, accountLike });
+            result = (int)DataProvider.Instance.ExecuteScalar(sql, new object[] { postID, accountLike });
             return result;
         }
         public int UnLikePost(int postID, int accountLike)
