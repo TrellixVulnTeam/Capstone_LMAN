@@ -67,7 +67,7 @@ namespace SOFA_API.ViewModel.Newsfeed
             IsLiked = isLiked;
             MyRatePoint = myRatePoint;
             IsVerified = isVerified;
-            IsMarked
+            IsMarked = false;
         }
 
         public void SetPostDetail(Post post)
