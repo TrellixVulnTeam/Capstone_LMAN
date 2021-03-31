@@ -35,9 +35,17 @@ namespace SOFA_API.Service
             try
             {
                 MarkupPost markedPost = MarkupPostDAO.Instance.AddMarkupPost(postID, accountID);
-                MarkupModelOut markupModelOut = new MarkupModelOut();
-                markupModelOut.SetMarkupPost(markedPost);
-                markupViewModelOut.ListMarkup.Add(markupModelOut);
+                if (markedPost.ID > 0)
+                {
+                    MarkupModelOut markupModelOut = new MarkupModelOut();
+                    markupModelOut.SetMarkupPost(markedPost);
+                    markupViewModelOut.ListMarkup.Add(markupModelOut);
+                    markupViewModelOut.ListMarkup.Add(markupModelOut);
+                }
+                else
+                {
+                    markupViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                }
                 markupViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
             catch (Exception e)
