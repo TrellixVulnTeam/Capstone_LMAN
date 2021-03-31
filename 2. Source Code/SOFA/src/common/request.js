@@ -33,7 +33,6 @@ const Post = (uri, header, data) => {
                 return response.json(); 
             })
             .then((json) => {
-                console.log(json);
                 if (json && json.code) {
                     resolve(json);
                 }
