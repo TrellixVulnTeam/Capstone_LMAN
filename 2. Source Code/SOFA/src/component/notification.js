@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableOpacity } from 'react-native';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -140,7 +140,10 @@ export default class Notification extends Component {
     }
 
     onPressNotification(noti) {
-        console.log('Hi');
+        //console.log(noti);
+        //console.log(noti.postId);
+        this.setIsRead(noti)
+        this.props.navigation.navigate('PostDetail', { postID: noti.postId});
     }
 
     setIsRead(noti) {
@@ -177,19 +180,18 @@ export default class Notification extends Component {
         }
     }
 
-    NotiItem = ({ data }) => {
+    NotiItem = ( {data} ) => {
         let noti = data;
         //console.log(noti);
         return (
-            <View style={[Style.noti.Article, {
-                backgroundColor: (noti.isRead == true ? 'white' : '#d6faff'),
-            }
-            ]} onPress={() => this.onPressNotification(noti)}>
-                <View style={Style.noti.flexRow}>
-                    <Image source={HOANG} style={Style.noti.ArticleAvatar} />
-                    <Text style={Style.noti.ArticleContent}>{noti.content}</Text>
+            <TouchableOpacity onPress={() => this.onPressNotification(noti)}>
+                <View style={[Style.noti.Article, {backgroundColor: (noti.isRead == true ? 'white' : '#d6faff'),}]} >
+                    <View style={Style.noti.flexRow}>
+                        <Image source={HOANG} style={Style.noti.ArticleAvatar} />
+                        <Text style={Style.noti.ArticleContent}>{noti.content}</Text>
+                    </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -205,7 +207,7 @@ export default class Notification extends Component {
                 <View style={{ height: scale(625, Vertical) }}>
                     <FlatList
                         data={listNotification}
-                        eyExtractor={(item, index) => item.id + ''}
+                        keyExtractor={(item, index) => item.id + ''}
                         renderItem={({ item, index }) => {
                             //console.log(item)
                             return (<this.NotiItem data={item} />)

@@ -5,11 +5,12 @@ BEGIN
 	SELECT *
 	FROM dbo.[Notification]
 	WHERE ToAccount = @accountID
+	ORDER BY DateCreated desc
 END
 
 USE[CapstonesNoRelation]
 GO
-EXEC getNotificationByToAccount 2
+EXEC getNotificationByToAccount 7
 
 
 
