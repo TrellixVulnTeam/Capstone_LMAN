@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SOFA_API.Common;
 using SOFA_API.Service;
 using SOFA_API.ViewModel.Follow;
 using System;
@@ -28,23 +30,29 @@ namespace SOFA_API.Controllers
         }
 
         [HttpPost("followsomeone")]
-        public ActionResult FollowSomeone(int followerId, int userGetFollowId)
+        [Authorize]
+        public ActionResult FollowSomeone(int userGetFollowId)
         {
-            FollowViewModelOut follow = FollowService.Instance.FollowSomeone(followerId, userGetFollowId);
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            FollowViewModelOut follow = FollowService.Instance.FollowSomeone(userID, userGetFollowId);
             return Ok(follow);
         }
 
         [HttpPost("unfollowsomeone")]
-        public ActionResult UnfollowSomeone(int followerId, int userGetFollowId)
+        [Authorize]
+        public ActionResult UnfollowSomeone(int userGetFollowId)
         {
-            FollowViewModelOut unfollow = FollowService.Instance.UnfollowSomeone(followerId, userGetFollowId);
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            FollowViewModelOut unfollow = FollowService.Instance.UnfollowSomeone(userID, userGetFollowId);
             return Ok(unfollow);
         }
 
         [HttpGet("checkfollowed")]
-        public ActionResult CheckFollowed(int followerId, int userGetFollowId)
+        [Authorize]
+        public ActionResult CheckFollowed(int userGetFollowId)
         {
-            FollowViewModelOut follow = FollowService.Instance.CheckFollowed(followerId, userGetFollowId);
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            FollowViewModelOut follow = FollowService.Instance.CheckFollowed(userID, userGetFollowId);
             return Ok(follow);
         }
     }
