@@ -71,7 +71,7 @@ namespace SOFA_API.DAO
         {
             List<MarkupPost> markupPosts = new List<MarkupPost>();
 
-            string sql = "EXEC dbo.GetAllMarkupPost @accountID , @page , @rowsOfPage";
+            string sql = "EXEC dbo.GetMarkupPostOfUser @accountID , @page , @rowsOfPage";
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID, page, rowsOfPage });
             if (data.Rows.Count > 0)
             {
@@ -87,7 +87,7 @@ namespace SOFA_API.DAO
         {
             int res = 0;
             string sql = "EXEC dbo.DeleteMarkupPost @postID , @accountID";
-            res = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountID, postID });
+            res = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { postID, accountID });
             return res;
         }
         public MarkupPost GetMarkupPostByPostIDAndAccountID(int postID, int accountID)
