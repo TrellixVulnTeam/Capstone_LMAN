@@ -37,6 +37,7 @@ export const getUnreadNotification = () => {
                     var uri = Const.domain + 'api/notification/getUnreadNotification';
                     Request.Get(uri, header)
                         .then(response => {
+                            // console.log('Service', response.listNoti.length);
                             resolve(response);
                         })
                         .catch(reason => {
