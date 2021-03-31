@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableHighlight, TouchableOpacity, FlatList, TouchableWithoutFeedback, Modal, ScrollView, StyleSheet, TextInput, ToastAndroid } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, TouchableOpacity, FlatList, TouchableWithoutFeedback, Modal, StyleSheet, TextInput, ToastAndroid } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
@@ -473,7 +471,7 @@ export default class PostDetail extends Component {
     }
 
     render() {
-        const { isShowMenu, post, account, listPostRefreshing, isShowImage, currentShowImage, commentText } = this.state;
+        const { isShowMenu, post, account, isShowImage, currentShowImage, commentText } = this.state;
         return (
 
             <View style={{

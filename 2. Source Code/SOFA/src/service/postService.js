@@ -1,7 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Request from "../common/request";
 import * as Const from "../common/const";
-import {getData, storeData} from '../common/utils';
+import {getData} from '../common/utils';
 
 
 export const getAllPublicPost = (page) => {

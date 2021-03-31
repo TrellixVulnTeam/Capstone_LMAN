@@ -7,27 +7,23 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Badge, Icon, withBadge } from 'react-native-elements';
 
 import * as signalR from '@microsoft/signalr';
-import * as Request from '../common/request';
 import * as Style from '../style/style';
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
-import { scale, getData, storeData } from '../common/utils';
+import { scale, getData } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import { AVATAR } from '../../image/index';
 import ViewImageModal from './viewImageModel';
-import PushNotification from "react-native-push-notification";
 import * as PostService from '../service/postService';
 import * as AuthService from '../service/authService';
 import * as MarkupPostService from '../service/markupPostService';
 import * as NotificationService from '../service/notificationService';
-import NotificationWSS from '../service/NotificationWSS';
-
+import * as FollowService from '../service/followService';
 
 const BadgedIcon = withBadge(1)(Icon)
 
@@ -132,7 +128,23 @@ export default class Newsfeed extends Component {
             detail: () => 'Xem những bài viết từ người này',
             onPress: () => {
                 console.log('follow user', this.state.currentPostSelect.id);
-                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
+                FollowService.followSomeone(this.state.currentPostSelect.accountPost)
+                    .then(response => {
+                        if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                            ToastAndroid.show("Đã thêm " + this.state.currentPostSelect.lastName + ' vào danh sách follow', ToastAndroid.LONG);
+                        } else {
+                            console.log(response.errorMessage);
+                            ToastAndroid.show("Thêm " + this.state.currentPostSelect.lastName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
+                        }
+                    })
+                    .catch(reason => {
+                        console.log(reason);
+                        if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                            ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                        } else {
+                            ToastAndroid.show("Thêm " + this.state.currentPostSelect.lastName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
+                        }
+                    })
                 this.setState({ isShowMenu: false });
             }
         },

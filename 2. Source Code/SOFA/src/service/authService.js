@@ -1,26 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Request from "../common/request";
 import * as Const from "../common/const";
-const getData = async (key) => {
-    try {
-        const value = await AsyncStorage.getItem(key);
-        if (value !== null) {
-            return value;
-        }
-    } catch (e) {
-        console.log(e);
-        return null;
-    }
-};
-const storeData = async (key, value) => {
-    try {
-        const jsonValue = JSON.stringify(value);
-        await AsyncStorage.setItem(key, jsonValue);
-    }
-    catch (e) {
-        console.log(e);
-    }
-}
+import {getData} from "../common/utils";
 
 
 export const getProfile = () => {
