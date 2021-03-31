@@ -56,6 +56,7 @@ namespace SOFA_API.Service
             }
             catch (Exception e)
             {
+                profile = new ProfileViewModelOut();
                 profile.ErrorMessage = e.ToString();
                 profile.Code = Const.REQUEST_CODE_FAILED;
             }

@@ -90,7 +90,7 @@ namespace SOFA_API.DAO
         /// <returns></returns>
         public FollowViewModelOut FollowSomeone(int followerId, int userGetFollowId)
         {
-            FollowViewModelOut fl = new FollowViewModelOut();
+            FollowViewModelOut fl = null;
             string sql = "EXEC FollowUser @followerId , @userGetFollowId";
             try
             {
