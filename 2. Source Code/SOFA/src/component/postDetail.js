@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableHighlight, TouchableOpacity, Alert, FlatList, TouchableWithoutFeedback, Modal, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, TouchableOpacity, FlatList, TouchableWithoutFeedback, Modal, ScrollView, StyleSheet, TextInput, ToastAndroid } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -20,6 +20,7 @@ import { AVATAR } from '../../image/index';
 import ViewImageModal from './viewImageModel';
 import * as PostService from '../service/postService';
 import * as AuthService from '../service/authService';
+import * as MarkupPostService from '../service/markupPostService';
 
 export default class PostDetail extends Component {
     constructor(props) {
@@ -64,7 +65,8 @@ export default class PostDetail extends Component {
                 rateAverage: 0,
                 isLiked: false,
                 myRatePoint: 0,
-                isVerified: true
+                isVerified: true,
+                isMarked: false
             },
             currentShowImage: {},
             currentShowImagePost: {},
@@ -75,14 +77,55 @@ export default class PostDetail extends Component {
             commentText: '',
         }
     }
+
     actionArticleNotOwn = [
         {
             key: 'savepost',
             icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => 'Lưu bài viết',
-            detail: () => 'Thêm vào danh sách các mục đã lưu',
+            title: () => !this.state.post.isMarked ? 'Lưu bài viết' : 'Bỏ lưu bài viết',
+            detail: () => !this.state.post.isMarked ? 'Thêm vào danh sách các mục đã lưu' : 'Xóa khỏi danh sách các mục đã lưu',
             onPress: () => {
-                console.log('save post', this.state.post.id);
+                console.log(this.state.post);
+                if (!this.state.post.isMarked) {
+                    console.log('save post', this.state.post.id);
+                    MarkupPostService.markupPost(this.state.post.id)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.updatePost('isMarked', true);
+                                ToastAndroid.show("Đã lưu bài viết này. Bạn có thể tim trong danh sách bài viết đã lưu.", ToastAndroid.LONG);
+                            } else {
+                                console.log(response.errorMessage);
+                                ToastAndroid.show("Lưu bài viết không thành công!", ToastAndroid.SHORT);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                            } else {
+                                ToastAndroid.show("Lưu bài viết không thành công!", ToastAndroid.SHORT);
+                            }
+                        })
+                } else {
+                    MarkupPostService.unmarkupPost(this.state.post.id)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.updatePost('isMarked', false);
+                                ToastAndroid.show("Đã xóa bài viết khỏi danh sách.", ToastAndroid.LONG);
+                            } else {
+                                console.log(response.errorMessage);
+                                ToastAndroid.show("Xóa bài viết khỏi danh sách không thành công! Hãy thử lại!", ToastAndroid.LONG);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                            } else {
+                                ToastAndroid.show("Xóa bài viết khỏi danh sách không thành công! Hãy thử lại!", ToastAndroid.LONG);
+                            }
+                        })
+                }
                 this.setState({ isShowMenu: false });
             }
         },
@@ -93,7 +136,7 @@ export default class PostDetail extends Component {
             detail: () => 'Ẩn bài viết này khỏi newsfeed của bạn',
             onPress: () => {
                 console.log('hide post', this.state.post.id);
-                this.setState({ isShowMenu: false });
+                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
             }
         },
         {
@@ -103,6 +146,7 @@ export default class PostDetail extends Component {
             detail: () => 'Tôi lo ngại về bài viết này',
             onPress: () => {
                 console.log('report post', this.state.post.id);
+                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -113,6 +157,7 @@ export default class PostDetail extends Component {
             detail: () => 'Xem những bài viết từ người này',
             onPress: () => {
                 console.log('follow user', this.state.post.id);
+                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -123,6 +168,7 @@ export default class PostDetail extends Component {
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
                 console.log('report user', this.state.post.id);
+                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -133,10 +179,50 @@ export default class PostDetail extends Component {
         {
             key: 'savepost',
             icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => 'Lưu bài viết',
-            detail: () => 'Thêm vào danh sách các mục đã lưu',
+            title: () => !this.state.post.isMarked ? 'Lưu bài viết' : 'Bỏ lưu bài viết',
+            detail: () => !this.state.post.isMarked ? 'Thêm vào danh sách các mục đã lưu' : 'Xóa khỏi danh sách các mục đã lưu',
             onPress: () => {
-                console.log('save post', this.state.post.id);
+                console.log(this.state.post);
+                if (!this.state.post.isMarked) {
+                    console.log('save post', this.state.post.id);
+                    MarkupPostService.markupPost(this.state.post.id)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.updatePost(response.listMarkup[0].postID, 'isMarked', true);
+                                ToastAndroid.show("Đã lưu bài viết này. Bạn có thể tim trong danh sách bài viết đã lưu.", ToastAndroid.LONG);
+                            } else {
+                                console.log(response.errorMessage);
+                                ToastAndroid.show("Lưu bài viết không thành công!", ToastAndroid.SHORT);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                            } else {
+                                ToastAndroid.show("Lưu bài viết không thành công!", ToastAndroid.SHORT);
+                            }
+                        })
+                } else {
+                    MarkupPostService.unmarkupPost(this.state.post.id)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.updatePost(response.listMarkup[0].postID, 'isMarked', false);
+                                ToastAndroid.show("Đã xóa bài viết khỏi danh sách.", ToastAndroid.LONG);
+                            } else {
+                                console.log(response.errorMessage);
+                                ToastAndroid.show("Xóa bài viết khỏi danh sách không thành công! Hãy thử lại!", ToastAndroid.LONG);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                            } else {
+                                ToastAndroid.show("Đã xóa bài viết khỏi danh sách.", ToastAndroid.LONG);
+                            }
+                        })
+                }
                 this.setState({ isShowMenu: false });
             }
         },
@@ -158,11 +244,13 @@ export default class PostDetail extends Component {
             detail: () => 'Chỉnh sửa nội dung của bài viết',
             onPress: () => {
                 console.log('edit post', this.state.post.id);
+                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
         },
 
     ]
+
     getData = async (key) => {
         try {
             const value = await AsyncStorage.getItem(key);
@@ -207,7 +295,7 @@ export default class PostDetail extends Component {
             })
             .catch(reason => {
                 console.log(reason);
-                Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
+                ToastAndroid.show("Tải bài viết không thành công! Hãy thử lại!", ToastAndroid.LONG);
             });
     }
 
@@ -227,9 +315,9 @@ export default class PostDetail extends Component {
             .catch(reason => {
                 console.log(reason);
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                    Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                 } else {
-                    Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
+                    ToastAndroid.show("Xóa không thành công! Hãy thử lại!", ToastAndroid.LONG);
                 }
             });
     }
@@ -251,9 +339,9 @@ export default class PostDetail extends Component {
                 this.setState({ commentText: '' });
 
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                    Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                 } else {
-                    Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
+                    ToastAndroid.show("Bình luận bài viết không thành công! Hãy thử lại!", ToastAndroid.LONG);
                 }
             })
     }
@@ -278,9 +366,9 @@ export default class PostDetail extends Component {
                 .catch(reason => {
                     console.log(reason);
                     if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                        Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                        ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                     } else {
-                        Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
+                        ToastAndroid.show("Yêu thích bài viết không thành công! Hãy thử lại!", ToastAndroid.LONG);
                     }
                 })
         } else {
@@ -298,9 +386,9 @@ export default class PostDetail extends Component {
                 .catch(reason => {
                     console.log(reason);
                     if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                        Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                        ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                     } else {
-                        Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
+                        ToastAndroid.show("Bỏ yêu thích không thành công! Hãy thử lại!", ToastAndroid.LONG);
                     }
                 })
         }
@@ -324,9 +412,9 @@ export default class PostDetail extends Component {
             .catch(reason => {
                 console.log(reason);
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                    Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                 } else {
-                    Alert.alert("Lỗi rồi!!!", "Opps!!! có lỗi rồi! Thử lại nhé <3");
+                    ToastAndroid.show("Đánh giá bài viết không thành công! Hãy thử lại!", ToastAndroid.LONG);
                 }
             })
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableHighlight, Alert, FlatList, TouchableWithoutFeedback, Modal, TouchableOpacity , ToastAndroid} from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, FlatList, TouchableWithoutFeedback, Modal, TouchableOpacity, ToastAndroid } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -76,9 +76,9 @@ export default class Newsfeed extends Component {
                         .catch(reason => {
                             console.log(reason);
                             if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                                Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                             } else {
-                                Alert.alert('Thông báo', 'Thao tác không thành công');
+                                ToastAndroid.show("Lưu bài viết không thành công!", ToastAndroid.SHORT);
                             }
                         })
                 } else {
@@ -95,9 +95,9 @@ export default class Newsfeed extends Component {
                         .catch(reason => {
                             console.log(reason);
                             if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                                Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                             } else {
-                                Alert.alert('Thông báo', 'Thao tác không thành công');
+                                ToastAndroid.show("Xóa bài viết không thành công!", ToastAndroid.SHORT);
                             }
                         })
                 }
@@ -111,7 +111,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Ẩn bài viết này khỏi newsfeed của bạn',
             onPress: () => {
                 console.log('hide post', this.state.currentPostSelect.id);
-                this.setState({ isShowMenu: false });
+                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
             }
         },
         {
@@ -121,6 +121,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Tôi lo ngại về bài viết này',
             onPress: () => {
                 console.log('report post', this.state.currentPostSelect.id);
+                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -131,6 +132,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Xem những bài viết từ người này',
             onPress: () => {
                 console.log('follow user', this.state.currentPostSelect.id);
+                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -141,6 +143,7 @@ export default class Newsfeed extends Component {
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
                 console.log('report user', this.state.currentPostSelect.id);
+                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
         },
@@ -151,10 +154,50 @@ export default class Newsfeed extends Component {
         {
             key: 'savepost',
             icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => 'Lưu bài viết',
-            detail: () => 'Thêm vào danh sách các mục đã lưu',
+            title: () => !this.state.currentPostSelect.isMarked ? 'Lưu bài viết' : 'Bỏ lưu bài viết',
+            detail: () => !this.state.currentPostSelect.isMarked ? 'Thêm vào danh sách các mục đã lưu' : 'Xóa khỏi danh sách các mục đã lưu',
             onPress: () => {
-                console.log('save post', this.state.currentPostSelect.id);
+                console.log(this.state.currentPostSelect);
+                if (!this.state.currentPostSelect.isMarked) {
+                    console.log('save post', this.state.currentPostSelect.id);
+                    MarkupPostService.markupPost(this.state.currentPostSelect.id)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.updatePostByID(response.listMarkup[0].postID, 'isMarked', true);
+                                ToastAndroid.show("Đã lưu bài viết này. Bạn có thể tim trong danh sách bài viết đã lưu.", ToastAndroid.LONG);
+                            } else {
+                                console.log(response.errorMessage);
+                                ToastAndroid.show("Lưu bài viết không thành công!", ToastAndroid.SHORT);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                            } else {
+                                ToastAndroid.show("Lưu bài viết không thành công!", ToastAndroid.SHORT);
+                            }
+                        })
+                } else {
+                    MarkupPostService.unmarkupPost(this.state.currentPostSelect.id)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.updatePostByID(response.listMarkup[0].postID, 'isMarked', false);
+                                ToastAndroid.show("Đã xóa bài viết khỏi danh sách.", ToastAndroid.LONG);
+                            } else {
+                                console.log(response.errorMessage);
+                                ToastAndroid.show("Xóa bài viết khỏi danh sách không thành công! Hãy thử lại!", ToastAndroid.LONG);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                            } else {
+                                ToastAndroid.show("Xóa bài viết khỏi danh sách không thành công! Hãy thử lại!", ToastAndroid.LONG);
+                            }
+                        })
+                }
                 this.setState({ isShowMenu: false });
             }
         },
@@ -345,6 +388,7 @@ export default class Newsfeed extends Component {
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.removePost(response.listPost[0].id);
+                    ToastAndroid.show("Đã xóa bài viết này tài khoản của bạn! Mọi người sẽ không thể tìm thấy cũng như xem lại bài viết này!", ToastAndroid.LONG);
                 } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
                     console.log(response.errorMessage);
                 }
@@ -352,7 +396,7 @@ export default class Newsfeed extends Component {
             .catch(reason => {
                 console.log(reason);
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                    Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                 }
             })
     }
@@ -383,7 +427,7 @@ export default class Newsfeed extends Component {
                 .catch(reason => {
                     console.log(reason);
                     if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
-                        Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                        ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                     }
                 })
         } else {
@@ -399,7 +443,7 @@ export default class Newsfeed extends Component {
                 .catch(reason => {
                     console.log(reason);
                     if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
-                        Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                        ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                     }
                 })
         }
@@ -422,7 +466,7 @@ export default class Newsfeed extends Component {
             .catch(reason => {
                 console.log(reason);
                 if (reason.code = Const.REQUEST_CODE_NOT_LOGIN) {
-                    Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                 }
             })
     }
