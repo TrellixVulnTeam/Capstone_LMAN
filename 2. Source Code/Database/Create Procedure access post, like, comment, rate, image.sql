@@ -384,9 +384,18 @@ CREATE PROC AddMarkupPost
 @postID INT, @accountID INT
 AS
 BEGIN
-	INSERT INTO MarkupPost(PostID, AccountID)
-	OUTPUT Inserted.*
-	VALUES(@postID, @accountID)
+	DECLARE @markupID INT
+	SET @markupID = (SELECT Id FROM dbo.MarkUpPost WHERE PostId = @postID AND AccountId = @accountID)
+	IF @markupID IS NULL
+	BEGIN
+		INSERT INTO MarkupPost(PostID, AccountID)
+		OUTPUT Inserted.*
+		VALUES(@postID, @accountID)
+	END
+	ELSE
+	BEGIN
+		SELECT 0 AS ID, 0 AS PostID, 0 AS AccountID
+	END
 END
 GO
 
@@ -436,8 +445,3 @@ BEGIN
 END
 GO
 
-SELECT * FROM Post
-SELECT * FROM [Like]
-ORDER BY PostID, AccountLike
-
-EXEC LikePost 60, 7
