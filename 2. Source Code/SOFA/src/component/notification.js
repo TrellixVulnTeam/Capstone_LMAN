@@ -12,6 +12,7 @@ import { Horizontal, Vertical } from '../common/const';
 import NotificationViewModel from "../Model/notificationViewModel";
 import { HOANG } from '../../image/index';
 import PushNotification from "react-native-push-notification";
+import * as NotificationService from '../service/notificationService';
 
 
 export default class Notification extends Component {
@@ -90,6 +91,7 @@ export default class Notification extends Component {
 
         Request.Get(uri, header, data)
             .then(response => {
+                console.log(response);
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     //console.log(Const.REQUEST_CODE_SUCCESSFULLY);
                     let listNotiRes = response.listNoti;
@@ -155,28 +157,23 @@ export default class Notification extends Component {
                 "Accept": 'application/json',
                 "Authorization": 'Bearer ' + token,
             };
-            let data = new FormData();
-            data.append('PostID', post.id);
-            let uri = '';
-            if (!post.isLiked) {
-                uri = Const.domain + 'api/post/likepost';
-            } else {
-                uri = Const.domain + 'api/post/unlikepost';
-            }
-            Request.Post(uri, header, data)
-                .then(response => {
-                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        this.updatePostByID(response.listPost[0].id, 'numberOfLike', response.listPost[0].numberOfLike);
-                        this.updatePostByID(response.listPost[0].id, 'isLiked', response.listPost[0].isLiked);
-                    } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
-                        console.log(response.errorMessage);
+        var uri = Const.domain + 'api/notification/setreadnotibyid?ID='+noti.id;
+        Request.Post(uri, header)
+            .then(response => {
+                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    console.log(Const.REQUEST_CODE_SUCCESSFULLY);
+                    let listNotiTemp = this.state.listNotification;
+                    for (let i = 0; i < listNotiTemp.length; i++) {
+                        if (noti.id == listNotiTemp[i].id){
+                            listNotiTemp[i].isRead = true; 
+                        }
                     }
-                })
-                .catch(reason => {
-                    console.log(reason);
-                })
-        } else {
-            Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                    this.setState({ listNotification: listNotiTemp });
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
         }
     }
 
