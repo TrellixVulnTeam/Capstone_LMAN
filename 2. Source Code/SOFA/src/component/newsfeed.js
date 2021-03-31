@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableHighlight, Alert, FlatList, TouchableWithoutFeedback, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, Alert, FlatList, TouchableWithoutFeedback, Modal, TouchableOpacity , ToastAndroid} from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -13,11 +13,10 @@ import { Badge, Icon, withBadge } from 'react-native-elements';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
-import { scale } from '../common/utils';
+import { scale, getData, storeData } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import { AVATAR } from '../../image/index';
@@ -25,7 +24,10 @@ import ViewImageModal from './viewImageModel';
 import PushNotification from "react-native-push-notification";
 import * as PostService from '../service/postService';
 import * as AuthService from '../service/authService';
+import * as MarkupPostService from '../service/markupPostService';
 import * as NotificationService from '../service/notificationService';
+import NotificationWSS from '../service/NotificationWSS';
+
 
 const BadgedIcon = withBadge(1)(Icon)
 
@@ -48,14 +50,57 @@ export default class Newsfeed extends Component {
             numberUnreadNotification: 0,
         }
     }
+
+    // notificationWSS = NotificationWSS.getInstance();
+
     actionArticleNotOwn = [
         {
             key: 'savepost',
             icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => 'Lưu bài viết',
-            detail: () => 'Thêm vào danh sách các mục đã lưu',
+            title: () => !this.state.currentPostSelect.isMarked ? 'Lưu bài viết' : 'Bỏ lưu bài viết',
+            detail: () => !this.state.currentPostSelect.isMarked ? 'Thêm vào danh sách các mục đã lưu' : 'Xóa khỏi danh sách các mục đã lưu',
             onPress: () => {
-                console.log('save post', this.state.currentPostSelect.id);
+                console.log(this.state.currentPostSelect);
+                if (!this.state.currentPostSelect.isMarked) {
+                    console.log('save post', this.state.currentPostSelect.id);
+                    MarkupPostService.markupPost(this.state.currentPostSelect.id)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.updatePostByID(response.listMarkup[0].postID, 'isMarked', true);
+                                ToastAndroid.show("Đã lưu bài viết này. Bạn có thể tim trong danh sách bài viết đã lưu.", ToastAndroid.LONG);
+                            } else {
+                                console.log(response.errorMessage);
+                                ToastAndroid.show("Lưu bài viết không thành công!", ToastAndroid.SHORT);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                                Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                            } else {
+                                Alert.alert('Thông báo', 'Thao tác không thành công');
+                            }
+                        })
+                } else {
+                    MarkupPostService.unmarkupPost(this.state.currentPostSelect.id)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.updatePostByID(response.listMarkup[0].postID, 'isMarked', false);
+                                ToastAndroid.show("Đã xóa bài viết khỏi danh sách.", ToastAndroid.LONG);
+                            } else {
+                                console.log(response.errorMessage);
+                                ToastAndroid.show("Xóa bài viết khỏi danh sách không thành công! Hãy thử lại!", ToastAndroid.LONG);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                                Alert.alert('Thông báo', 'Hãy đăng nhập để thực hiện việc này');
+                            } else {
+                                Alert.alert('Thông báo', 'Thao tác không thành công');
+                            }
+                        })
+                }
                 this.setState({ isShowMenu: false });
             }
         },
@@ -136,31 +181,12 @@ export default class Newsfeed extends Component {
         },
 
     ]
-    getData = async (key) => {
-        try {
-            const value = await AsyncStorage.getItem(key);
-            if (value !== null) {
-                return value;
-            }
-        } catch (e) {
-            console.log(e);
-            return null;
-        }
-    };
-    storeData = async (key, value) => {
-        try {
-            const jsonValue = JSON.stringify(value);
-            await AsyncStorage.setItem(key, jsonValue);
-        }
-        catch (e) {
-            console.log(e);
-        }
-    }
+
 
     loadUnreadNotification() {
         NotificationService.getUnreadNotification(this.state.account.accountID)
             .then(response => {
-                console.log('Unread notfication', response.listNoti.length);
+                // console.log('Unread notfication', response.listNoti.length);
                 this.setState({ numberUnreadNotification: response.listNoti.length });
                 this.notificationConnection();
             })
@@ -170,10 +196,11 @@ export default class Newsfeed extends Component {
     }
 
     notificationConnection() {
-        this.getData('token')
+        getData('token')
             .then(result => {
                 if (result) {
                     let token = result.toString().substr(1, result.length - 2);
+                    console.log(this.connection);
                     if (typeof this.connection === 'undefined') {
                         this.connection = new signalR.HubConnectionBuilder()
                             .withUrl(Const.domain + 'notification', {
@@ -189,13 +216,8 @@ export default class Newsfeed extends Component {
                         });
                         this.connection.on("NewNotification", data => {
                             console.log(data.fromAccountName + ' ' + data.content);
-                            this.setState({ numberUnreadNotification: this.state.numberUnreadNotification + 1 })
                             if (data) {
-                                PushNotification.localNotification({
-                                    channelId: 'Thông báo',
-                                    title: "Thông báo",
-                                    message: data.fromAccountName + ' ' + data.content,
-                                });
+                                this.setState({ numberUnreadNotification: this.state.numberUnreadNotification + 1 })
                             }
                         });
                     }
@@ -204,7 +226,6 @@ export default class Newsfeed extends Component {
             .catch(reason => {
                 console.log(reason);
             })
-
     }
 
 
@@ -214,8 +235,6 @@ export default class Newsfeed extends Component {
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.setState({ account: response, isLogin: true });
-                    this.loadUnreadNotification()
-
                 } else {
                     this.setState({ account: {}, isLogin: false });
                 }
@@ -259,9 +278,10 @@ export default class Newsfeed extends Component {
     componentDidMount() {
         this.checkLoginToken();
         this.getAllPost(1);
+        this.loadUnreadNotification()
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.checkLoginToken();
-            console.log(this.props.route);
+            // console.log(this.props.route);
             if (this.props.route && this.props.route.params && this.props.route.params.preScreen == 'CreatePost') { this.getAllPost(1); }
         });
         // this._screenUnfocus = this.props.navigation.addListener('blur', () => {
@@ -275,6 +295,11 @@ export default class Newsfeed extends Component {
         //         currentPostID: 0
         //     });
         // })
+    }
+
+    componentWillUnmount() {
+        console.log('Will Unmount newsfeed');
+        this.connection.stop();
     }
 
 
