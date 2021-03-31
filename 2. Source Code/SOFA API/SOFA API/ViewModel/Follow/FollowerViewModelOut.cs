@@ -5,21 +5,21 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SOFA_API.ViewModel.Profile
+namespace SOFA_API.ViewModel.Follow
 {
-    public class ProfileFollowerViewModelOut: BaseModelOut
+    public class FollowerViewModelOut : BaseModelOut
     {
         public int AccountId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string AvatarUri { get; set; }
 
-        public ProfileFollowerViewModelOut() : base()
+        public FollowerViewModelOut() : base()
         {
 
         }
 
-        public ProfileFollowerViewModelOut(int accountId, string firstname, string lastname, string avatarUri) : base()
+        public FollowerViewModelOut(int accountId, string firstname, string lastname, string avatarUri) : base()
         {
             this.AccountId = accountId;
             this.FirstName = firstname;
@@ -27,7 +27,7 @@ namespace SOFA_API.ViewModel.Profile
             this.AvatarUri = avatarUri;
         }
 
-        public ProfileFollowerViewModelOut(DataRow row) : base()
+        public FollowerViewModelOut(DataRow row) : base()
         {
             this.AccountId = (int)row["AccountId"];
             this.FirstName = row["FirstName"].ToString();
