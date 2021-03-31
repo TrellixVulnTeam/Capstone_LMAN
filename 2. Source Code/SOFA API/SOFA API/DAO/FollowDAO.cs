@@ -26,8 +26,12 @@ namespace SOFA_API.DAO
         {
 
         }
-
-        public int CountFollower(int userId)
+        /// <summary>
+        /// Function to get follower number
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Number of follower</returns>
+        public int GetFollowerNumber(int userId)
         {
             int followCount = 0;
             string sql = "EXEC GetFollowerCount @userId";
@@ -43,6 +47,11 @@ namespace SOFA_API.DAO
             return followCount;
         }
 
+        /// <summary>
+        /// Function to get list follower
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>List of Follower</returns>
         public List<FollowerViewModelOut> GetListFollower(int userId)
         {
             List<FollowerViewModelOut> listFollower = new List<FollowerViewModelOut>();
@@ -73,17 +82,78 @@ namespace SOFA_API.DAO
             return listFollower;
         }
 
-        public Follow FollowSomeone(int userId)
+        /// <summary>
+        /// Function to follow someone
+        /// </summary>
+        /// <param name="followerId"></param>
+        /// <param name="userGetFollowId"></param>
+        /// <returns></returns>
+        public FollowViewModelOut FollowSomeone(int followerId, int userGetFollowId)
         {
-            Follow fl = new Follow();
-            string sql = "";
+            FollowViewModelOut fl = new FollowViewModelOut();
+            string sql = "EXEC FollowUser @followerId , @userGetFollowId";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { followerId, userGetFollowId });
+                if(data.Rows.Count > 0)
+                {
+                    fl = new FollowViewModelOut(data.Rows[0]);
+                }
+            }
+            catch(Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
             return fl; 
         }
-
-        public int UnfollowSomeone(int userId)
+        
+        /// <summary>
+        /// Function to unfollow someone
+        /// </summary>
+        /// <param name="followerId"></param>
+        /// <param name="userGetFollowId"></param>
+        /// <returns></returns>
+        public int UnfollowSomeone(int followerId, int userGetFollowId)
         {
             int result = 0;
+            string sql = "EXEC UnfollowUser @followerId , @userGetFollowId";
+            try
+            {
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { followerId, userGetFollowId });
+            }
+            catch(Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
             return result;
+        }
+
+        /// <summary>
+        /// Function to check if someone followed
+        /// </summary>
+        /// <param name="followerId"></param>
+        /// <param name="userGetFollowId"></param>
+        /// <returns>Return follwed result</returns>
+        public bool CheckFollowed(int followerId, int userGetFollowId)
+        {
+            bool isFollowed = false;
+            string sql = "EXEC CheckFollowed @followerId , @userGetFollowId";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { followerId, userGetFollowId });
+                if(data.Rows.Count > 0)
+                {
+                    isFollowed = true;
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+            return isFollowed;
         }
     }
 }
