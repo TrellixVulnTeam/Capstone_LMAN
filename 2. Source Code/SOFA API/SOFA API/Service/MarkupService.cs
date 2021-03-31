@@ -32,9 +32,20 @@ namespace SOFA_API.Service
         public MarkupViewModelOut AddMarkedPost(int postID, int accountID)
         {
             MarkupViewModelOut markupViewModelOut = new MarkupViewModelOut();
-            MarkupPost markedPost = MarkupPostDAO.Instance.AddMarkupPost(postID, accountID);
-            MarkupModelOut markupModelOut = new MarkupModelOut();
-            markupModelOut.SetMarkupPost(markedPost);
+            try
+            {
+                MarkupPost markedPost = MarkupPostDAO.Instance.AddMarkupPost(postID, accountID);
+                MarkupModelOut markupModelOut = new MarkupModelOut();
+                markupModelOut.SetMarkupPost(markedPost);
+                markupViewModelOut.ListMarkup.Add(markupModelOut);
+                markupViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                markupViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                markupViewModelOut.ErrorMessage = e.ToString();
+            }
             return markupViewModelOut;
         }
 
@@ -74,7 +85,7 @@ namespace SOFA_API.Service
             try
             {
                 List<MarkupPost> markupPosts = MarkupPostDAO.Instance.GetMarkupPostOfUser(userID, page, rowsOfPage);
-                foreach(MarkupPost markupPost in markupPosts)
+                foreach (MarkupPost markupPost in markupPosts)
                 {
                     MarkupModelOut markupModelOut = new MarkupModelOut();
                     markupModelOut.SetMarkupPost(markupPost);
