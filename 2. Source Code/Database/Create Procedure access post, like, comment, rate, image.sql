@@ -185,7 +185,8 @@ AS
 BEGIN
 	DECLARE @likeID INT
 	SET @likeID = (SELECT ID FROM [Like] WHERE PostID = @postID AND AccountLike = @accountLike)
-	IF @likeID = 0
+	PRINT @likeID
+	IF @likeID IS NULL
 	BEGIN
 		INSERT INTO dbo.[Like]
 		(
@@ -439,4 +440,4 @@ SELECT * FROM Post
 SELECT * FROM [Like]
 ORDER BY PostID, AccountLike
 
-EXEC LikePost 58, 7
+EXEC LikePost 60, 7

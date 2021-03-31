@@ -60,13 +60,14 @@ namespace SOFA_API.Controllers
         {
             int id = Utils.Instance.GetUserID(User.Claims);
             PostViewModelOut result = PostService.Instance.LikePost(postViewModelIn.PostID, id);
-
-            //notification
-            NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_LIKE,
-                postViewModelIn.PostID, id);
-            NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
-            notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
-
+            if (result.Code.Equals(Const.REQUEST_CODE_SUCCESSFULLY))
+            {
+                //notification
+                NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_LIKE,
+                    postViewModelIn.PostID, id);
+                NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
+                notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+            }
             return Ok(result);
         }
 
@@ -85,13 +86,14 @@ namespace SOFA_API.Controllers
         {
             int id = Utils.Instance.GetUserID(User.Claims);
             PostViewModelOut result = PostService.Instance.RatePost(postViewModelIn.PostID, id, postViewModelIn.RatePoint);
-
-            //notification
-            NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_RATE,
+            if (result.Code.Equals(Const.REQUEST_CODE_SUCCESSFULLY))
+            {
+                //notification
+                NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_RATE,
                 postViewModelIn.PostID, id);
-            NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
-            notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
-
+                NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
+                notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+            }
             return Ok(result);
         }
 
@@ -102,13 +104,14 @@ namespace SOFA_API.Controllers
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             int id = Int32.Parse(idClaim.Value.Trim());
             PostViewModelOut result = PostService.Instance.CommentPost(id, postViewModelIn.PostID, postViewModelIn.Comment);
-
-            //notification
-            NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_COMMENT,
+            if (result.Code.Equals(Const.REQUEST_CODE_SUCCESSFULLY))
+            {
+                //notification
+                NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_COMMENT,
                 postViewModelIn.PostID, id);
-            NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
-            notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
-
+                NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
+                notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+            }
             return Ok(result);
         }
         /// <summary>
