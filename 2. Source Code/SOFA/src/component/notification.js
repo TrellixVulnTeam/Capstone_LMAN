@@ -50,7 +50,6 @@ export default class Notification extends Component {
             .then(result => {
                 if (result) {
                     this.setState({ token: result.toString().substr(1, result.length - 2) });
-                    this.notificationConnection();
                 }
             })
             .catch(reason => {
@@ -108,32 +107,6 @@ export default class Notification extends Component {
                 console.log(reason);
             })
 
-    }
-
-    notificationConnection() {
-        if (typeof this.connection === 'undefined') {
-            this.connection = new signalR.HubConnectionBuilder()
-                .withUrl(Const.domain + 'notification', {
-                    accessTokenFactory: () => this.state.token,
-                    skipNegotiation: true,
-                    transport: signalR.HttpTransportType.WebSockets
-                })
-                .build();
-            this.connection.start().then(() => {
-                console.log('Connected');
-            }).catch(function (err) {
-                return console.error(err.toString());
-            });
-            this.connection.on("NewNotification", data => {
-                console.log(data.fromAccountName + ' ' + data.content);
-                if (data) {
-                    PushNotification.localNotification({
-                        title: "Thông báo",
-                        message: data.fromAccountName + ' ' + data.content,
-                    });
-                }
-            });
-        }
     }
 
     componentDidMount() {

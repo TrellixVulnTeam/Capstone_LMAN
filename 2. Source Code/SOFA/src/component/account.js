@@ -24,6 +24,7 @@ import * as Utils from "../common/utils";
 import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON, MORE_ICON } from '../../image/index';
 import { TextInput } from 'react-native-gesture-handler';
 import { acc, color } from 'react-native-reanimated';
+import NotificationWSS from '../service/NotificationWSS';
 
 export default class Profile extends Component {
     constructor(props) {
@@ -93,6 +94,10 @@ export default class Profile extends Component {
     logout() {
         AsyncStorage.removeItem('token');
         AsyncStorage.removeItem('user');
+        let notificationWSS = NotificationWSS.getInstance(false);
+        if(notificationWSS.getConnection()){
+            notificationWSS.getConnection().stop();
+        }
         this.props.navigation.navigate('Login');
     }
 

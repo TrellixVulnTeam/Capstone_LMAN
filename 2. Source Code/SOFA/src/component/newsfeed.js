@@ -274,6 +274,14 @@ export default class Newsfeed extends Component {
                             if (data) {
                                 this.setState({ numberUnreadNotification: this.state.numberUnreadNotification + 1 })
                             }
+                            this.setState({ numberUnreadNotification: this.state.numberUnreadNotification + 1 })
+                            // if (data) {
+                            //     PushNotification.localNotification({
+                            //         channelId: 'Thông báo',
+                            //         title: "Thông báo",
+                            //         message: data.fromAccountName + ' ' + data.content,
+                            //     });
+                            // }
                         });
                     }
                 }

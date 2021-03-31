@@ -8,6 +8,7 @@ import Navigation from './src/navigation/InitNavigation';
 import { name as appName } from './app.json';
 import { typography } from './utils/typography';
 import PushNotification from "react-native-push-notification";
+import NotificationWSS from './src/service/NotificationWSS';
 
 typography();
 
@@ -56,5 +57,8 @@ PushNotification.channelExists('Thông báo', function (exists) {
     console.log('Channel existed!');
   }
 });
+
+NotificationWSS.getInstance(false);
+
 
 AppRegistry.registerComponent(appName, () => Navigation);

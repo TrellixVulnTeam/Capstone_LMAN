@@ -8,6 +8,8 @@ import { LOGO_ICON, GOOGLE_ICON, FACEBOOK_ICON } from '../../image/index';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import { GoogleSignin } from '@react-native-community/google-signin'
+import NotificationWSS from '../service/NotificationWSS';
+import * as signalR from '@microsoft/signalr';
 
 export default class Login extends Component {
     constructor(props) {
@@ -25,9 +27,9 @@ export default class Login extends Component {
     componentDidMount() {
         GoogleSignin.configure({
             webClientId: '149927872517-hmt3thsbq7e400b1fl0f48bq1oct8ovn.apps.googleusercontent.com',
-            offlineAccess: true, 
+            offlineAccess: true,
             forceCodeForRefreshToken: true,
-          });
+        });
         this.handleSession();
     }
 
@@ -86,6 +88,17 @@ export default class Login extends Component {
                                 this.storeData('user', user)
                                     .then(res => {
                                         this.setState({ isLoading: false });
+
+                                        let instance = NotificationWSS.getInstance(false);
+                                            instance.setConnection(new signalR.HubConnectionBuilder()
+                                                .withUrl(Const.domain + 'notification', {
+                                                    accessTokenFactory: () => response.token,
+                                                    skipNegotiation: true,
+                                                    transport: signalR.HttpTransportType.WebSockets
+                                                })
+                                                .build());
+                                            instance.pushNotification();
+
                                         this.props.navigation.navigate('BottomNav');
                                         this.props.navigation.goBack();
                                     });
@@ -138,9 +151,9 @@ export default class Login extends Component {
                         console.log(reason);
                     });
             });
-          } catch (error) {
+        } catch (error) {
             console.log(error);
-          }
+        }
     }
 
     render() {
