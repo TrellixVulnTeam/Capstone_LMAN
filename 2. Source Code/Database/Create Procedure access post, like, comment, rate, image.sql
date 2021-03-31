@@ -408,16 +408,16 @@ GO
 DROP PROC IF EXISTS DeleteMarkupPost
 GO
 CREATE PROC DeleteMarkupPost
-@id INT
+@postID INT, @accountID INT
 AS
 BEGIN
-	DELETE FROM MarkupPost WHERE ID = @id
+	DELETE FROM MarkupPost WHERE PostID = @postID AND AccountID = @accountID
 END
 GO
 
-DROP PROC IF EXISTS IsMarkedPost
+DROP PROC IF EXISTS GetMarkupPostByPostIDAndAccountID
 GO
-CREATE PROC IsMarkedPost
+CREATE PROC GetMarkupPostByPostIDAndAccountID
 @postID INT, @accountID INT
 AS
 BEGIN

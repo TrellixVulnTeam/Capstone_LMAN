@@ -42,7 +42,6 @@ namespace SOFA_API.Service
             try
             {
                 List<Post> listAllPost = PostDAO.Instance.GetAllPost(page, rowsOfPage);
-
                 foreach (Post item in listAllPost)
                 {
                     Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
@@ -58,6 +57,8 @@ namespace SOFA_API.Service
                         postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
                         Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
                         postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                        MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
+                        postModelOut.IsMarked = markupPost != null ? true : false;
                     }
                     postViewModelOut.ListPost.Add(postModelOut);
                 }
@@ -99,6 +100,8 @@ namespace SOFA_API.Service
                         postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
                         Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
                         postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                        MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
+                        postModelOut.IsMarked = markupPost != null ? true : false;
                     }
                     postViewModelOut.ListPost.Add(postModelOut);
                 }
@@ -204,6 +207,8 @@ namespace SOFA_API.Service
                         postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
                         Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
                         postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                        MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
+                        postModelOut.IsMarked = markupPost != null ? true : false;
                     }
                     if (postModelOut.RateAverage > 3.5)
                     {
@@ -285,6 +290,8 @@ namespace SOFA_API.Service
                         postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
                         Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
                         postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                        MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
+                        postModelOut.IsMarked = markupPost != null ? true : false;
                     }
                     postViewModelOut.ListPost.Add(postModelOut);
                 }
@@ -445,6 +452,8 @@ namespace SOFA_API.Service
                     postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(post.ID, userID) != null;
                     Rate rateTemp = RateDAO.Instance.GetRatingOfUser(post.ID, userID);
                     postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                    MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(post.ID, userID);
+                    postModelOut.IsMarked = markupPost != null ? true : false;
                 }
                 postViewModelOut.ListPost.Add(postModelOut);
                 postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
