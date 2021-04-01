@@ -54,13 +54,13 @@ export default class Profile extends Component {
         }
     }
 
-    getListFollower(){
-        const {userId} = this.props.route.params;
+    getListFollower() {
+        const { userId } = this.props.route.params;
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json',
         };
-        let url = Const.domain + 'api/follow/getfollowerlist?userId='+userId;
+        let url = Const.domain + 'api/follow/getfollowerlist?userId=' + userId;
         Request.Get(url, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -94,10 +94,26 @@ export default class Profile extends Component {
     }
 
     render() {
-        const {userId, numberFollower} = this.props.route.params;
-        const { account, avatarUri } = this.state;
+        const { userId, numberFollower} = this.props.route.params;
+        const { listFollower  } = this.state;
         return (
-            <Text>List follower of id {userId}, numberFollower {numberFollower}</Text>           
+            <View>
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
+                <FlatList
+                    data={listFollower}
+                    keyExtractor={(item, index) => index + ''}
+                    renderItem={({ item, index }) => {
+                        return (
+                            <View>
+                                <Text>{item.accountId}</Text>
+                                <Text>{item.avatarUri}</Text>
+                                <Text>{item.firstName}</Text>
+                                <Text>{item.lastName}</Text>
+                            </View>
+                        )
+                    }}
+                />
+            </View>
         )
     }
 }
