@@ -37,7 +37,7 @@ namespace SOFA_API.Service
             try
             {
                 List<int> listChatwith = ConversationDAO.Instance.GetListAccountChat(accountId);
-                listConversation = ConversationDAO.Instance.getListConversation(accountId, listChatwith);
+                listConversation = ConversationDAO.Instance.GetListConversation(accountId, listChatwith);
                 listConversation.Code= Const.REQUEST_CODE_SUCCESSFULLY;
             }
             catch(Exception ex)
@@ -47,6 +47,29 @@ namespace SOFA_API.Service
                 listConversation.ErrorMessage = ex.Message;
             }
             return listConversation;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="keySearch"></param>
+        /// <returns></returns>
+        public ListSearchConversationViewModelOut SearchConversation(int accountId, string keySearch)
+        {
+            ListSearchConversationViewModelOut listSearch = new ListSearchConversationViewModelOut();
+            try
+            {
+                listSearch = ConversationDAO.Instance.SearchConversation(accountId, keySearch);
+                listSearch.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                listSearch.Code = Const.REQUEST_CODE_FAILED;
+                listSearch.ErrorMessage = ex.Message;
+
+            }
+            return listSearch;
         }
     }
 }

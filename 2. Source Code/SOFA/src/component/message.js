@@ -7,37 +7,27 @@ import {
   StatusBar,
   Button,
   Image,
-  TouchableHighlight,
-  Alert,
-  PermissionsAndroid,
   FlatList,
 } from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {MenuProvider} from 'react-native-popup-menu';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
-import LinearGradient from 'react-native-linear-gradient';
-
-import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Style from '../style/style';
 import * as Const from '../common/const';
 import * as Utils from '../common/utils';
-import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON, MORE_ICON } from '../../image/index';
+import {AVATAR} from '../../image/index';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { scale } from '../common/utils';
-import { Horizontal, Vertical } from '../common/const';
+import {scale} from '../common/utils';
+import {Horizontal, Vertical} from '../common/const';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Swipeout from 'react-native-swipeout';
+import {SearchBar} from 'react-native-elements';
 
 export default class Message extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      activeRowkey: null,
+    };
   }
   getData = async (key) => {
     try {
@@ -79,7 +69,7 @@ export default class Message extends Component {
               ) {
                 console.log(response);
                 this.setState({
-                    accountId: response.accountId,
+                  accountId: response.accountId,
                   firstName: response.firstName,
                   lastName: response.lastName,
                   avatarUri: response.avatarUri,
@@ -88,7 +78,7 @@ export default class Message extends Component {
                 let tempArray = [];
                 response.listConversation.forEach((item) => {
                   let listdata = {
-                      accountId:item.accountId,
+                    accountId: item.accountId,
                     chatWithAccountId: item.chatWithAccountId,
                     timeUpdate: item.timeUpdate,
                     lastMessage: item.lastMessage,
@@ -126,38 +116,55 @@ export default class Message extends Component {
   componentDidMount() {
     this.getListCoversation();
   }
+  searchConversation() {
+
+  }
 
   render() {
-    const {accountId,firstName, lastName, avatarUri, listConversations} = this.state;
+    const {
+      accountId,
+      firstName,
+      lastName,
+      avatarUri,
+      listConversations,
+    } = this.state;
     return (
-        
       <SafeAreaView>
-          <StatusBar hidden={false} backgroundColor={'#300808'} />
-                <View style={[Style.newsfeed.Header]}>
-                    <Text style={{ fontFamily: '20db', fontSize: 30, color: '#fef4ca' }}>SOFA</Text>
-                    <Ionicons
-                        style={{
-                            marginLeft: 'auto',
-                            marginRight: scale(5, Horizontal)
-                        }}
-                        name={'search-outline'} color={'#fef4ca'} size={30} />
-                    <Ionicons
-                        style={{
-                            marginRight: scale(5, Horizontal)
-                        }}
-                        name={'notifications'} color={'#fef4ca'} size={30} />
-                    <MaterialCommunityIcons
-                        style={{
-                            marginRight: scale(5, Horizontal)
-                        }}
-                        name={'message-text-outline'} color={'#fef4ca'} size={30} />
-                </View>
-                <View
+        <StatusBar hidden={false} backgroundColor={'#300808'} />
+        <View style={[Style.newsfeed.Header]}>
+          <Text style={{fontFamily: '20db', fontSize: 30, color: '#fef4ca'}}>
+            SOFA
+          </Text>
+          <Ionicons
+            style={{
+              marginLeft: 'auto',
+              marginRight: scale(5, Horizontal),
+            }}
+            name={'search-outline'}
+            color={'#fef4ca'}
+            size={30}
+          />
+          <Ionicons
+            style={{
+              marginRight: scale(5, Horizontal),
+            }}
+            name={'notifications'}
+            color={'#fef4ca'}
+            size={30}
+          />
+          <MaterialCommunityIcons
+            style={{
+              marginRight: scale(5, Horizontal),
+            }}
+            name={'message-text-outline'}
+            color={'#fef4ca'}
+            size={30}
+          />
+        </View>
+        <View
           style={{
             flexDirection: 'row',
-          }}>
-
-        </View>
+          }}></View>
         <View style={Style.voucher.mainContainer}>
           <View style={Style.voucher.card}>
             <View
@@ -167,6 +174,14 @@ export default class Message extends Component {
               }}
             />
             <SafeAreaView>
+              <SearchBar
+                placeholder="Tìm kiếm..."
+                lightTheme
+                round
+                onFocus={() => this.searchConversation()}
+                autoCorrect={false}
+              />
+              
               <FlatList
                 data={listConversations}
                 renderItem={({item, index}) => {
@@ -210,50 +225,68 @@ class MyLisConversation extends Component {
     });
   };
   render() {
+    const swipeSetting = {
+      autoClose: true,
+      onClose: (secId, rowId, direction) => {},
+      onOpen: (secId, rowId, direction) => {},
+      right: [
+        {
+          onPress: () => {
+            alert('Swipe');
+          },
+          text: 'Delete',
+          type: 'delete',
+        },
+      ],
+      rowId: this.props.index,
+      SelectionId: 1,
+    };
     return (
-      <TouchableOpacity onPress={this.ConversationDetail}>
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
-          <View>
-            <Image
-              source={
-                this.props.chatWithAvatarUri && this.props.chatWithAvatarUri > 0
-                  ? {uri: avatarUri}
-                  : AVATAR
-              }
-              resizeMode={'cover'}
-              style={{
-                height: Utils.scale(50, Const.Horizontal),
-                width: Utils.scale(50, Const.Horizontal),
-                borderRadius: Utils.scale(20, Const.Horizontal),
-                borderWidth: 1,
-                overflow: 'hidden',
-                
-              }}
-            />
-          </View>
+      <Swipeout {...swipeSetting}>
+        <TouchableOpacity onPress={this.ConversationDetail}>
           <View
             style={{
-              marginLeft: Utils.scale(10, Const.Horizontal),
+              flexDirection: 'row',
             }}>
-            <Text
+            <View>
+              <Image
+                source={
+                  this.props.chatWithAvatarUri &&
+                  this.props.chatWithAvatarUri > 0
+                    ? {uri: avatarUri}
+                    : AVATAR
+                }
+                resizeMode={'cover'}
+                style={{
+                  height: Utils.scale(50, Const.Horizontal),
+                  width: Utils.scale(50, Const.Horizontal),
+                  borderRadius: Utils.scale(20, Const.Horizontal),
+                  borderWidth: 1,
+                  overflow: 'hidden',
+                }}
+              />
+            </View>
+            <View
               style={{
-                fontSize: Utils.scale(19, Const.Horizontal),
-                fontWeight: 'bold',
+                marginLeft: Utils.scale(10, Const.Horizontal),
               }}>
-              {this.props.chatWithFirstName} {this.props.chatWithLastName}
-            </Text>
-            <Text
-              style={{
-                fontSize: Utils.scale(20, Const.Horizontal),
-              }}>
-              {this.props.lastMessage}
-            </Text>
+              <Text
+                style={{
+                  fontSize: Utils.scale(19, Const.Horizontal),
+                  fontWeight: 'bold',
+                }}>
+                {this.props.chatWithFirstName} {this.props.chatWithLastName}
+              </Text>
+              <Text
+                style={{
+                  fontSize: Utils.scale(20, Const.Horizontal),
+                }}>
+                {this.props.lastMessage}
+              </Text>
+            </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </Swipeout>
     );
   }
 }
