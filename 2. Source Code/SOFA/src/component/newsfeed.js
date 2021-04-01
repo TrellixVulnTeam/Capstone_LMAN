@@ -7,8 +7,11 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Badge, Icon, withBadge } from 'react-native-elements';
+import LinearGradient from 'react-native-linear-gradient';
+import { BoxShadow } from 'react-native-shadow'
 
 import * as signalR from '@microsoft/signalr';
 import * as Style from '../style/style';
@@ -17,7 +20,7 @@ import * as Utils from "../common/utils";
 import { scale, getData } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
-import { AVATAR } from '../../image/index';
+import { AVATAR, WHITE_BACKGROUND } from '../../image/index';
 import ViewImageModal from './viewImageModel';
 import * as PostService from '../service/postService';
 import * as AuthService from '../service/authService';
@@ -266,6 +269,7 @@ export default class Newsfeed extends Component {
                                 skipNegotiation: true,
                                 transport: signalR.HttpTransportType.WebSockets
                             })
+                            .withAutomaticReconnect()
                             .build();
                         this.connection.start().then(() => {
                             console.log('Connected');
@@ -350,22 +354,13 @@ export default class Newsfeed extends Component {
             // console.log(this.props.route);
             if (this.props.route && this.props.route.params && this.props.route.params.preScreen == 'CreatePost') { this.getAllPost(1); }
         });
-        // this._screenUnfocus = this.props.navigation.addListener('blur', () => {
-        //     this.setState({
-        //         token: '',
-        //         account: {},
-        //         isLogin: false,
-        //         isKeyBoardShow: false,
-        //         keyboardHeight: 0,
-        //         isShowMenu: false,
-        //         currentPostID: 0
-        //     });
-        // })
     }
 
     componentWillUnmount() {
         console.log('Will Unmount newsfeed');
-        this.connection.stop();
+        if (this.connection) {
+            this.connection.stop();
+        }
     }
 
 
@@ -510,6 +505,17 @@ export default class Newsfeed extends Component {
     }
 
     Article = ({ data }) => {
+        const shadowOpt = {
+            width: scale(380, Horizontal),
+            height: scale(380, Horizontal),
+            color: "#000",
+            border: 2,
+            radius: 3,
+            opacity: 0.5,
+            x: -10,
+            y: -10,
+            style: { marginVertical: 5 }
+        }
         let post = data;
         return (
             <View
@@ -541,14 +547,17 @@ export default class Newsfeed extends Component {
                             this.postMenu.onPrepare();
                         }}
                         style={Style.newsfeed.ArticleMenu}
-                        name='dots-horizontal' size={30} color={'black'} />
+                        name='dots-horizontal' size={30} color={'white'} />
 
                 </View>
                 <View style={Style.newsfeed.ArticleCaption}>
                     <Text style={Style.newsfeed.ArticleCaptionContent}>{post.content}</Text>
                 </View>
                 <View style={Style.newsfeed.ArticleImageList}>
-
+                    <Image
+                        style={[{ position: 'absolute', left: scale(10, Horizontal), top: scale(-10, Vertical) }, Style.newsfeed.ArticleImage]}
+                        source={WHITE_BACKGROUND}
+                    />
                     <FlatList
                         contentContainerStyle={{ alignSelf: 'flex-start' }}
                         showsVerticalScrollIndicator={false}
@@ -562,16 +571,17 @@ export default class Newsfeed extends Component {
                                 <TouchableWithoutFeedback
                                     onPress={() => this.onPressImage(post, item)}
                                 >
+
                                     <View style={Style.newsfeed.ArticleImageStyle}>
                                         <Image
                                             style={Style.newsfeed.ArticleImage}
                                             source={{ uri: Const.assets_domain + item.url }} />
+
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
                         }}
                     />
-
                 </View>
                 <View style={Style.newsfeed.ArtileMore}>
                     <View style={Style.newsfeed.ArticleAction}>
@@ -582,17 +592,17 @@ export default class Newsfeed extends Component {
                             <MaterialCommunityIcons
                                 name={post.isLiked ? 'heart' : 'heart-outline'}
                                 size={30}
-                                color={post.isLiked ? '#dc3f1c' : '#232323'} />
+                                color={post.isLiked ? '#308099' : '#232323'} />
                         </TouchableOpacity>
 
                         <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.numberOfLike}</Text>
                         <TouchableOpacity
                             onPress={() => this.onPressCommentIcon(post)}
                         >
-                            <FontAwesome5
+                            <FontAwesome
                                 style={Style.newsfeed.ArticleIconOfReact}
-                                name='comment-dots' size={30}
-                                color={'#232323'} />
+                                name='comments' size={30}
+                                color={'#308099'} />
                         </TouchableOpacity>
                         <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.numberOfComment}</Text>
                         <Rating
@@ -600,8 +610,8 @@ export default class Newsfeed extends Component {
                             ratingCount={5}
                             imageSize={30}
                             type='custom'
-                            ratingColor='#dc3f1c'
-                            tintColor='#f8e5d6'
+                            ratingColor='rgba(48,128,153,1)'
+                            tintColor='#E6F3FC'
                             readonly={!this.state.isLogin}
                             //ratingBackgroundColor='#FFF2D1'
                             onFinishRating={(rating) => this.ratingCompleted(post, rating)}
@@ -617,18 +627,20 @@ export default class Newsfeed extends Component {
     render() {
         const { isShowMenu, listPost, account, currentPostSelect, listPostRefreshing } = this.state;
         return (
-            <View style={Style.common.container}>
+            <LinearGradient
+                colors={['#308099', '#fefefe']}
+                style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <View style={[Style.newsfeed.Header]}>
-                    <Text style={Style.newsfeed.SofaTitle}>SOFA</Text>
+                    <Text style={Style.newsfeed.SofaTitle}>SoFa</Text>
                     <Ionicons
                         style={Style.newsfeed.searchIcon}
-                        name={'search-outline'} color={'#fef4ca'} size={30} />
+                        name={'search-outline'} color={'white'} size={30} />
                     <View
                         style={Style.newsfeed.notificationIcon}
                     >
                         <Ionicons
-                            name={'notifications'} color={'#fef4ca'} size={30}
+                            name={'notifications'} color={'white'} size={30}
                             onPress={() => this.props.navigation.navigate('Notification')} />
                         {this.state.numberUnreadNotification > 0 ? (
                             <Badge
@@ -641,10 +653,11 @@ export default class Newsfeed extends Component {
                     </View>
                     <MaterialCommunityIcons
                         style={Style.newsfeed.notificationIcon}
-                        name={'message-text-outline'} color={'#fef4ca'} size={30} />
+                        name={'message-text-outline'} color={'white'} size={30} />
                 </View>
                 <View style={Style.newsfeed.listArticle}>
                     <FlatList
+                        showsVerticalScrollIndicator={false}
                         data={listPost}
                         keyExtractor={(item, index) => item.id + ''}
                         renderItem={({ item, index }) => <this.Article data={item} />}
@@ -688,7 +701,7 @@ export default class Newsfeed extends Component {
                         }}
                     />
                 </View>
-            </View >
+            </LinearGradient>
         )
     }
 }

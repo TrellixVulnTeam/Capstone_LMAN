@@ -251,6 +251,12 @@
 		<string>SanFranciscoText-SemiboldItalic.otf</string>
 		<string>SanFranciscoText-Thin.otf</string>
 		<string>SanFranciscoText-ThinItalic.otf</string>
+		<string>FS Playlist Caps.otf</string>
+		<string>FS Playlist Caps.ttf</string>
+		<string>FS Playlist Ornament.otf</string>
+		<string>FS Playlist Ornament.ttf</string>
+		<string>FS Playlist Script.otf</string>
+		<string>FS Playlist Script.ttf</string>
 	</array>
 </dict>
 </plist>

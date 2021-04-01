@@ -3,11 +3,10 @@ import { scale } from '../common/utils';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
 import { Vertical, Horizontal } from '../common/const';
-export const statusBarColor = '#4F053B'
+export const statusBarColor = '#308099'
 export const common = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#5D1049'
   },
   flexRow: {
     flexDirection: 'row',
@@ -121,14 +120,14 @@ export const newsfeed = StyleSheet.create({
   Header: {
     paddingTop: scale(10, Vertical),
     flexDirection: 'row',
-    backgroundColor: '#4F053B',
+    //backgroundColor: '#00a7aa',
     alignContent: 'center',
     alignItems: 'center'
   },
   SofaTitle: {
-    fontFamily: '20db',
-    fontSize: 30,
-    color: '#fef4ca'
+    fontFamily: 'FS Playlist Script',
+    fontSize: 60,
+    marginLeft: scale(15, Horizontal)
   },
   searchIcon: {
     marginLeft: 'auto',
@@ -174,12 +173,12 @@ export const newsfeed = StyleSheet.create({
     color: '#4E4E4E',
   },
   Article: {
-    backgroundColor: 'white',
+    // backgroundColor: '#c0e9ea',
     marginTop: scale(20, Vertical),
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
     paddingVertical: scale(10, Vertical),
-    paddingLeft: scale(5, Horizontal),
+    // paddingLeft: scale(5, Horizontal),
   },
   ArticleAvatar: {
     height: scale(45, Vertical),
@@ -191,39 +190,43 @@ export const newsfeed = StyleSheet.create({
     marginLeft: scale(25, Horizontal)
   },
   ArticleAuthor: {
-    fontFamily: 'SanFranciscoText-Bold'
+    fontFamily: 'SanFranciscoText-Bold',
+    color: 'white'
   },
-  ArticleTime: { fontFamily: 'SanFranciscoText-Regular' },
+  ArticleTime: {
+    fontFamily: 'SanFranciscoText-Regular',
+    color: 'white'
+  },
   ArticleMenu: {
     marginLeft: 'auto',
     marginRight: scale(10, Horizontal),
     marginTop: scale(5, Vertical)
   },
   ArticleImageList: {
-    marginTop: scale(10, Vertical),
-    width: scale(400, Horizontal),
-
+    marginTop: scale(20, Vertical),
+    marginLeft: scale(5, Horizontal),
+    marginRight: 'auto',
   },
   ArticleImageStyle: {
-
   },
   ArticleImage: {
     flex: 1,
-    // height: null,
-    // width: null,
-    height: scale(534, Vertical),
-    width: scale(400, Horizontal),
+    height: scale(380, Horizontal),
+    width: scale(380, Horizontal),
     resizeMode: 'cover',
-    // borderTopLeftRadius: 5,
-    // borderBottomLeftRadius: 5,
+    borderRadius: 20,
   },
   ArtileMore: {
-    paddingHorizontal: scale(10, Horizontal),
-    paddingTop: scale(10, Vertical),
-    width: scale(400, Horizontal)
+    width: scale(400, Horizontal),
+    marginTop: scale(5, Vertical)
   },
   ArticleAction: {
+    paddingVertical: scale(5, Vertical),
     flexDirection: 'row',
+    backgroundColor: '#E6F3FC',
+    width: scale(380, Horizontal),
+    marginLeft: scale(10, Horizontal),
+    borderRadius: 10
   },
   ArticleNumberOfReact: {
     marginLeft: scale(5, Horizontal),
@@ -232,10 +235,12 @@ export const newsfeed = StyleSheet.create({
   ArticleIconOfReact: { marginLeft: scale(10, Horizontal) },
   ArticleCaption: { flexDirection: 'row', marginTop: scale(5, Vertical) },
   ArticleCaptionContent: {
-    fontSize: 14,
+    fontSize: 16,
     textAlignVertical: 'center',
-    marginLeft: scale(5, Horizontal),
-    marginRight: scale(10, Horizontal)
+    marginLeft: scale(20, Horizontal),
+    marginRight: scale(10, Horizontal),
+    marginTop: scale(10, Horizontal),
+    color: 'white'
   },
 });
 export const balance = StyleSheet.create({
