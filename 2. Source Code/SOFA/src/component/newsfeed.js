@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { View, Text, StatusBar, Image, TouchableHighlight, FlatList, TouchableWithoutFeedback, Modal, TouchableOpacity, ToastAndroid } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -24,6 +24,7 @@ import * as AuthService from '../service/authService';
 import * as MarkupPostService from '../service/markupPostService';
 import * as NotificationService from '../service/notificationService';
 import * as FollowService from '../service/followService';
+import PostMenu from './postMenu';
 
 const BadgedIcon = withBadge(1)(Icon)
 
@@ -47,6 +48,8 @@ export default class Newsfeed extends Component {
         }
     }
 
+
+    postMenu = createRef();
     // notificationWSS = NotificationWSS.getInstance();
 
     actionArticleNotOwn = [
@@ -535,6 +538,7 @@ export default class Newsfeed extends Component {
                         onPress={() => {
                             this.setState({ currentPostSelect: post });
                             this.setState({ isShowMenu: true });
+                            this.postMenu.onPrepare();
                         }}
                         style={Style.newsfeed.ArticleMenu}
                         name='dots-horizontal' size={30} color={'black'} />
@@ -657,7 +661,7 @@ export default class Newsfeed extends Component {
                             this.getAllPost(1);
                         }}
                     />
-                    <Modal
+                    {/* <Modal
                         animationType='slide'
                         transparent={true}
                         visible={isShowMenu}
@@ -701,7 +705,29 @@ export default class Newsfeed extends Component {
                                 )
                             }
                         </View>
-                    </Modal>
+                    </Modal> */}
+                    <PostMenu
+                        ref={child => { this.postMenu = child }}
+                        post={this.state.currentPostSelect}
+                        visible={this.state.isShowMenu}
+                        onRequestClose={() => {
+                            this.setState({ isShowMenu: false });
+                        }}
+                        onMarkupPost={response => {
+                            this.updatePostByID(response.listMarkup[0].postID, 'isMarked', true);
+                        }}
+                        onUnmarkupPost={response => {
+                            this.updatePostByID(response.listMarkup[0].postID, 'isMarked', false);
+                        }}
+                        onPressDeletePost={response => {
+                            this.deletePost(this.state.currentPostSelect.id);
+                        }}
+                        onFollowUser={response => {
+
+                        }}
+
+
+                    />
                     <ViewImageModal
                         image={this.state.currentShowImage}
                         post={this.state.currentShowImagePost}
