@@ -104,7 +104,7 @@ export const unfollowSomeone = (userID) => {
                         "Accept": 'application/json',
                         "Authorization": 'Bearer ' + token,
                     };
-                    var uri = Const.domain + 'api/follow/followsomeone?userGetFollowId=' + userID;
+                    var uri = Const.domain + 'api/follow/unfollowsomeone?userGetFollowId=' + userID;
                     Request.Post(uri, header)
                         .then(response => {
                             resolve(response);

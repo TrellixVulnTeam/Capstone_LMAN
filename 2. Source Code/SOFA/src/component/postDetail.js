@@ -16,9 +16,11 @@ import { scale, calculateTime } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { AVATAR } from '../../image/index';
 import ViewImageModal from './viewImageModel';
+import PostMenu from '../component/postMenu';
 import * as PostService from '../service/postService';
 import * as AuthService from '../service/authService';
 import * as MarkupPostService from '../service/markupPostService';
+
 
 export default class PostDetail extends Component {
     constructor(props) {
@@ -515,6 +517,7 @@ export default class PostDetail extends Component {
                                         <MaterialCommunityIcons
                                             onPress={() => {
                                                 this.setState({ isShowMenu: true });
+                                                this.postMenu.onPrepare();
                                             }}
                                             style={Style.newsfeed.ArticleMenu}
                                             name='dots-horizontal' size={30} color={'black'} />
@@ -679,51 +682,32 @@ export default class PostDetail extends Component {
                                 }}
                             />
                         </View>
-                        <Modal
-                            animationType='slide'
-                            transparent={true}
-                            visible={isShowMenu}
+                        <PostMenu
+                            ref={child => { this.postMenu = child }}
+                            post={post}
+                            visible={this.state.isShowMenu}
                             onRequestClose={() => {
                                 this.setState({ isShowMenu: false });
                             }}
-                        >
-                            <View style={Style.newsfeed.articleMenu}>
-                                {account.accountID != post.accountPost ?
-                                    this.actionArticleNotOwn.map(item =>
-                                        <TouchableHighlight
-                                            key={item.key}
-                                            onPress={() => item.onPress()}
-                                            underlayColor={'#9E9E9E'}
-                                        >
-                                            <View
-                                                style={Style.newsfeed.articleMenuItem}>
-                                                {item.icon()}
-                                                <View style={Style.newsfeed.articleMenuItemText} >
-                                                    <Text>{item.title()}</Text>
-                                                    <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
-                                                </View>
-                                            </View>
-                                        </TouchableHighlight>
-                                    ) :
-                                    this.actionArticleOwn.map(item =>
-                                        <TouchableHighlight
-                                            key={item.key}
-                                            onPress={() => item.onPress()}
-                                            underlayColor={'#9E9E9E'}
-                                        >
-                                            <View
-                                                style={Style.newsfeed.articleMenuItem}>
-                                                {item.icon()}
-                                                <View style={Style.newsfeed.articleMenuItemText} >
-                                                    <Text>{item.title()}</Text>
-                                                    <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
-                                                </View>
-                                            </View>
-                                        </TouchableHighlight>
-                                    )
-                                }
-                            </View>
-                        </Modal>
+                            onMarkupPost={response => {
+                                this.updatePost('isMarked', true);
+                            }}
+                            onUnmarkupPost={response => {
+                                this.updatePost('isMarked', false);
+                            }}
+                            onPressDeletePost={response => {
+                                this.deletePost(post.id);
+                            }}
+                        />
+                        <ViewImageModal
+                            image={this.state.currentShowImage}
+                            post={this.state.currentShowImagePost}
+                            visible={this.state.isShowImage}
+                            onRequestClose={() => {
+                                this.setState({ isShowImage: false });
+                                this.setState({ currentShowImage: {}, currentShowImagePost: {} })
+                            }}
+                        />
                         <ViewImageModal
                             image={currentShowImage}
                             post={post}

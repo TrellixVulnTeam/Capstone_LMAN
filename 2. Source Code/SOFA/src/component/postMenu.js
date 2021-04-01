@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, TouchableHighlight, Alert, TouchableWithoutFeedback, Modal, Image, ScrollView, ToastAndroid } from 'react-native';
-import { createImageProgress } from 'react-native-image-progress';
-import ProgressCircle from 'react-native-progress/Circle';
+import { View, Text, TouchableHighlight, Modal, ActivityIndicator, ToastAndroid } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -11,13 +9,8 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-
-import * as signalR from '@microsoft/signalr';
-import * as Request from '../common/request';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
-import * as Utils from "../common/utils";
 import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 
@@ -34,12 +27,23 @@ export default class PostMenu extends Component {
         this.state = {
             token: '',
             account: {},
-            isLogin: false
+            isLogin: false,
+            isReady: false,
+            isFollowed: false,
         }
     }
 
 
     actionArticleNotOwn = [
+        {
+            key: 'buyplace',
+            icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
+            title: () => 'Tìm shop',
+            detail: () => 'Tìm shop có bán sản phẩm này',
+            onPress: () => {
+
+            }
+        },
         {
             key: 'savepost',
             icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
@@ -114,28 +118,46 @@ export default class PostMenu extends Component {
         {
             key: 'followuserpost',
             icon: () => <SimpleLineIcons name='user-follow' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => 'Theo dõi ' + this.props.post.lastName,
-            detail: () => 'Xem những bài viết từ người này',
+            title: () => !this.state.isFollowed ? 'Theo dõi ' : 'Bỏ theo dõi' + this.props.post.lastName,
+            detail: () => !this.state.isFollowed ? 'Thêm người này vào danh sách theo dõi' : 'Xóa người này khỏi danh sách theo dõi',
             onPress: () => {
-                console.log('follow user', this.props.post.id);
-                FollowService.followSomeone(this.props.post.accountPost)
-                    .then(response => {
-                        if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                            this.props.onFollowUser(response);
-                            ToastAndroid.show("Đã thêm " + this.props.post.lastName + ' vào danh sách follow', ToastAndroid.LONG);
-                        } else {
-                            console.log(response.errorMessage);
-                            ToastAndroid.show("Thêm " + this.props.post.lastName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
-                        }
-                    })
-                    .catch(reason => {
-                        console.log(reason);
-                        if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                            ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
-                        } else {
-                            ToastAndroid.show("Thêm " + this.props.post.lastName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
-                        }
-                    })
+                if (!this.state.isFollowed) {
+                    FollowService.followSomeone(this.props.post.accountPost)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                ToastAndroid.show("Đã thêm " + this.props.post.lastName + ' vào danh sách follow', ToastAndroid.LONG);
+                            } else {
+                                console.log(response.errorMessage);
+                                ToastAndroid.show("Thêm " + this.props.post.lastName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                            } else {
+                                ToastAndroid.show("Thêm " + this.props.post.lastName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
+                            }
+                        })
+                } else {
+                    FollowService.unfollowSomeone(this.props.post.accountPost)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                ToastAndroid.show("Đã xóa " + this.props.post.lastName + ' khỏi danh sách follow', ToastAndroid.LONG);
+                            } else {
+                                console.log(response.errorMessage);
+                                ToastAndroid.show("Xóa " + this.props.post.lastName + ' khỏi danh sách follow Không thành công', ToastAndroid.LONG);
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                            } else {
+                                ToastAndroid.show("Xóa " + this.props.post.lastName + ' khỏi danh sách follow Không thành công', ToastAndroid.LONG);
+                            }
+                        })
+                }
                 this.props.onRequestClose()
             }
         },
@@ -228,11 +250,27 @@ export default class PostMenu extends Component {
 
     ]
 
+    checkFollow() {
+        FollowService.checkFollowed(this.props.post.accountPost)
+            .then(response => {
+                this.setState({ isReady: true });
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.setState({ isFollowed: response.isFollowed });
+                }
+            })
+            .catch(reason => {
+                this.setState({ isReady: true });
+                console.log(reason);
+            })
+    }
+
     onPrepare() {
+        this.setState({ isReady: false });
         AuthService.getProfile()
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.setState({ account: response, isLogin: true });
+                    this.checkFollow();
                 } else {
                     this.setState({ account: {}, isLogin: false });
                 }
@@ -244,7 +282,7 @@ export default class PostMenu extends Component {
     }
 
     render() {
-        const { account } = this.state;
+        const { account, isReady } = this.state;
         const { visible, onRequestClose, post } = this.props;
 
         return (
@@ -257,44 +295,62 @@ export default class PostMenu extends Component {
                         onRequestClose();
                     }}
                 >
-                    <View style={Style.newsfeed.articleMenu}>
-                        {account.accountID != post.accountPost ?
-                            this.actionArticleNotOwn.map(item =>
-                                <TouchableHighlight
-                                    key={item.key}
-                                    onPress={() => item.onPress()}
-                                    underlayColor={'#9E9E9E'}
-                                >
-                                    <View
-                                        style={Style.newsfeed.articleMenuItem}>
-                                        {item.icon()}
-                                        <View style={Style.newsfeed.articleMenuItemText} >
-                                            <Text>{item.title()}</Text>
-                                            <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
+                    {isReady ? (
+                        <View style={Style.newsfeed.articleMenu}>
+                            {account.accountID != post.accountPost ?
+                                this.actionArticleNotOwn.map(item =>
+                                    <TouchableHighlight
+                                        key={item.key}
+                                        onPress={() => item.onPress()}
+                                        underlayColor={'#9E9E9E'}
+                                    >
+                                        <View
+                                            style={Style.newsfeed.articleMenuItem}>
+                                            {item.icon()}
+                                            <View style={Style.newsfeed.articleMenuItemText} >
+                                                <Text>{item.title()}</Text>
+                                                <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
+                                            </View>
                                         </View>
-                                    </View>
-                                </TouchableHighlight>
-                            ) :
-                            this.actionArticleOwn.map(item =>
-                                <TouchableHighlight
-                                    key={item.key}
-                                    onPress={() => item.onPress()}
-                                    underlayColor={'#9E9E9E'}
-                                >
-                                    <View
-                                        style={Style.newsfeed.articleMenuItem}>
-                                        {item.icon()}
-                                        <View style={Style.newsfeed.articleMenuItemText} >
-                                            <Text>{item.title()}</Text>
-                                            <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
+                                    </TouchableHighlight>
+                                ) :
+                                this.actionArticleOwn.map(item =>
+                                    <TouchableHighlight
+                                        key={item.key}
+                                        onPress={() => item.onPress()}
+                                        underlayColor={'#9E9E9E'}
+                                    >
+                                        <View
+                                            style={Style.newsfeed.articleMenuItem}>
+                                            {item.icon()}
+                                            <View style={Style.newsfeed.articleMenuItemText} >
+                                                <Text>{item.title()}</Text>
+                                                <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
+                                            </View>
                                         </View>
-                                    </View>
-                                </TouchableHighlight>
-                            )
-                        }
-                    </View>
+                                    </TouchableHighlight>
+                                )
+                            }
+                        </View>
+                    ) :
+                        (<View style={{
+                            width: scale(400, Horizontal),
+                            height: scale(300, Vertical),
+                            position: 'absolute',
+                            backgroundColor: 'white',
+                            borderTopLeftRadius: 20,
+                            borderTopRightRadius: 20,
+                            bottom: scale(0, Vertical),
+                            elevation: 5,
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <ActivityIndicator size="large" color="#00ff00" />
+                        </View>)}
+
+
                 </Modal>
-            </View>
+            </View >
         )
     }
 }

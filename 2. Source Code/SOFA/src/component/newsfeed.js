@@ -661,51 +661,6 @@ export default class Newsfeed extends Component {
                             this.getAllPost(1);
                         }}
                     />
-                    {/* <Modal
-                        animationType='slide'
-                        transparent={true}
-                        visible={isShowMenu}
-                        onRequestClose={() => {
-                            this.setState({ isShowMenu: false });
-                        }}
-                    >
-                        <View style={Style.newsfeed.articleMenu}>
-                            {account.accountID != currentPostSelect.accountPost ?
-                                this.actionArticleNotOwn.map(item =>
-                                    <TouchableHighlight
-                                        key={item.key}
-                                        onPress={() => item.onPress()}
-                                        underlayColor={'#9E9E9E'}
-                                    >
-                                        <View
-                                            style={Style.newsfeed.articleMenuItem}>
-                                            {item.icon()}
-                                            <View style={Style.newsfeed.articleMenuItemText} >
-                                                <Text>{item.title()}</Text>
-                                                <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
-                                            </View>
-                                        </View>
-                                    </TouchableHighlight>
-                                ) :
-                                this.actionArticleOwn.map(item =>
-                                    <TouchableHighlight
-                                        key={item.key}
-                                        onPress={() => item.onPress()}
-                                        underlayColor={'#9E9E9E'}
-                                    >
-                                        <View
-                                            style={Style.newsfeed.articleMenuItem}>
-                                            {item.icon()}
-                                            <View style={Style.newsfeed.articleMenuItemText} >
-                                                <Text>{item.title()}</Text>
-                                                <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
-                                            </View>
-                                        </View>
-                                    </TouchableHighlight>
-                                )
-                            }
-                        </View>
-                    </Modal> */}
                     <PostMenu
                         ref={child => { this.postMenu = child }}
                         post={this.state.currentPostSelect}
@@ -722,11 +677,6 @@ export default class Newsfeed extends Component {
                         onPressDeletePost={response => {
                             this.deletePost(this.state.currentPostSelect.id);
                         }}
-                        onFollowUser={response => {
-
-                        }}
-
-
                     />
                     <ViewImageModal
                         image={this.state.currentShowImage}
