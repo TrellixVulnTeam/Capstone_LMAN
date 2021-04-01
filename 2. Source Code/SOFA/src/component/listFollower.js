@@ -110,7 +110,7 @@ export default class Profile extends Component {
                                     resizeMode={"cover"}
                                     style={{
                                         height: Utils.scale(45, Const.Horizontal),
-                                        width: Utils.scale(45 Const.Horizontal),
+                                        width: Utils.scale(45, Const.Horizontal),
                                         borderRadius: Utils.scale(22.5, Const.Horizontal),
                                         borderWidth: 0.2,
                                         overflow: 'hidden',
