@@ -94,8 +94,8 @@ export default class Profile extends Component {
     }
 
     render() {
-        const { userId, numberFollower} = this.props.route.params;
-        const { listFollower  } = this.state;
+        const { userId, numberFollower } = this.props.route.params;
+        const { listFollower } = this.state;
         return (
             <View>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
@@ -105,6 +105,17 @@ export default class Profile extends Component {
                     renderItem={({ item, index }) => {
                         return (
                             <View>
+                                <Image
+                                    source={(item.avatarUri && item.avatarUri.length > 0) ? { uri: Const.assets_domain + item.avatarUri + '?time=' + new Date() } : AVATAR}
+                                    resizeMode={"cover"}
+                                    style={{
+                                        height: Utils.scale(45, Const.Horizontal),
+                                        width: Utils.scale(45 Const.Horizontal),
+                                        borderRadius: Utils.scale(22.5, Const.Horizontal),
+                                        borderWidth: 0.2,
+                                        overflow: 'hidden',
+                                        marginLeft: Utils.scale(10, Const.Horizontal),
+                                    }} />
                                 <Text>{item.accountId}</Text>
                                 <Text>{item.avatarUri}</Text>
                                 <Text>{item.firstName}</Text>
