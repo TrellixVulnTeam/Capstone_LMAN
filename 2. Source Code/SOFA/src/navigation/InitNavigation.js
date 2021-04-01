@@ -19,6 +19,7 @@ import Conversation from '../component/conversation';
 import Notification from '../component/notification';
 import PostDetail from '../component/postDetail';
 import Message from '../component/message';
+import ListFollower from '../component/listFollower';
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,7 @@ export default function Navigation() {
                 <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }} />
                 <Stack.Screen name='PostDetail' component={PostDetail} options={{ headerShown: false }} />
                 <Stack.Screen name='Message' component={Message} options={{ headerShown: false }} />
+                <Stack.Screen name='ListFollower' component={ListFollower} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

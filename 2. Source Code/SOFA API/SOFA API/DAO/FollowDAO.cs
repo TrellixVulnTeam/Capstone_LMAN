@@ -94,10 +94,18 @@ namespace SOFA_API.DAO
             string sql = "EXEC FollowUser @followerId , @userGetFollowId";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { followerId, userGetFollowId });
-                if(data.Rows.Count > 0)
+                bool checkFollower = CheckFollowed(followerId, userGetFollowId);
+                if (!checkFollower)
                 {
-                    fl = new FollowViewModelOut(data.Rows[0]);
+                    DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { followerId, userGetFollowId });
+                    if (data.Rows.Count > 0)
+                    {
+                        fl = new FollowViewModelOut(data.Rows[0]);
+                    }
+                }
+                else
+                {
+                    throw new Exception("Have already followed  before!");
                 }
             }
             catch(Exception e)

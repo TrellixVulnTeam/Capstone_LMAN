@@ -159,6 +159,14 @@ export default class Profile extends Component {
         });
     }
 
+    onClickFollowNumber() {
+        const { account } = this.state;
+        this.props.navigation.navigate('ListFollower', {
+            userId: account.accountID,
+            numberFollower: account.followerNumber,
+        });
+    }
+
     logout() {
         AsyncStorage.removeItem('token');
         AsyncStorage.removeItem('user');
@@ -226,7 +234,9 @@ export default class Profile extends Component {
                                         <Text style={Style.profile.email}>{account.email}</Text>
                                         <View style={Style.profile.basicInfo}>
                                             <Text style={Style.profile.basicSmallInfo}>{account.postNumber}{"\n"}Posts</Text>
-                                            <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
+                                            <TouchableOpacity onPress={() => this.onClickFollowNumber()}>
+                                                <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
+                                            </TouchableOpacity>
                                         </View>
 
                                     </View>
