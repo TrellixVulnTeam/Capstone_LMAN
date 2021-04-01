@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native';
+import { Dimensions, StatusBar } from 'react-native';
 import * as Const from './const';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -52,22 +52,22 @@ const calculateTime = (time) => {
 
 const getData = async (key) => {
   try {
-      const value = await AsyncStorage.getItem(key);
-      if (value !== null) {
-          return value;
-      }
+    const value = await AsyncStorage.getItem(key);
+    if (value !== null) {
+      return value;
+    }
   } catch (e) {
-      console.log(e);
-      return null;
+    console.log(e);
+    return null;
   }
 };
 const storeData = async (key, value) => {
   try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem(key, jsonValue);
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(key, jsonValue);
   }
   catch (e) {
-      console.log(e);
+    console.log(e);
   }
 }
 

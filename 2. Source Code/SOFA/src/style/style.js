@@ -3,11 +3,11 @@ import { scale } from '../common/utils';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
 import { Vertical, Horizontal } from '../common/const';
-export const statusBarColor = '#300808'
+export const statusBarColor = '#4F053B'
 export const common = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e1b878'
+    backgroundColor: '#5D1049'
   },
   flexRow: {
     flexDirection: 'row',
@@ -121,7 +121,7 @@ export const newsfeed = StyleSheet.create({
   Header: {
     paddingTop: scale(10, Vertical),
     flexDirection: 'row',
-    backgroundColor: '#300808',
+    backgroundColor: '#4F053B',
     alignContent: 'center',
     alignItems: 'center'
   },
@@ -139,7 +139,8 @@ export const newsfeed = StyleSheet.create({
     marginRight: scale(5, Horizontal)
   },
   listArticle: {
-    height: scale(625, Vertical)
+    // height: scale(661, Vertical)
+    flex: 1
   },
   articleMenu: {
     width: scale(400, Horizontal),
@@ -173,7 +174,7 @@ export const newsfeed = StyleSheet.create({
     color: '#4E4E4E',
   },
   Article: {
-    backgroundColor: '#f8e5d6',
+    backgroundColor: 'white',
     marginTop: scale(20, Vertical),
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
@@ -542,7 +543,7 @@ export const voucherDetail = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
   },
-   container: {},
+  container: {},
   overlay: {
     backgroundColor: `rgba(251, 184, 151, 1)`,
   },
@@ -554,7 +555,7 @@ export const voucherDetail = StyleSheet.create({
     alignSelf: 'center',
   },
   textContent: {
-    marginVertical:20,
+    marginVertical: 20,
     fontSize: 18,
     alignSelf: 'center',
   },
@@ -565,34 +566,34 @@ export const voucherDetail = StyleSheet.create({
     marginBottom: 0,
     backgroundColor: `rgba(0, 0, 0, 0.03)`,
   },
-  card:{
-    position:'relative',
-    display:'flex',
-    backgroundColor:`rgba(255, 255, 255, 1)`,
-    marginLeft:10,
-    marginTop:10,
-    marginBottom:10,
-    marginRight:10,
+  card: {
+    position: 'relative',
+    display: 'flex',
+    backgroundColor: `rgba(255, 255, 255, 1)`,
+    marginLeft: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 10,
     borderRadius: 20,
   },
 
   textSuccess: {
     color: '#28a745',
-    textAlign:'right'
+    textAlign: 'right'
   },
   textDanger: {
     color: '#dc3545',
-    textAlign:'right'
+    textAlign: 'right'
   },
-  textTitle:{
-      fontWeight: 'bold',
-      fontSize: 20,
-      color: 'black',
-      marginHorizontal: 10,
-      marginTop: 10,
-      marginBottom: 10,
-      alignContent: 'center',
-}
+  textTitle: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'black',
+    marginHorizontal: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    alignContent: 'center',
+  }
 });
 
 
@@ -601,16 +602,16 @@ export const account = StyleSheet.create({
 });
 
 export const noti = StyleSheet.create({
-  header:{
+  header: {
     fontSize: Utils.scale(30, Const.Horizontal),
-    marginTop:Utils.scale(10,Const.Vertical),
-    marginLeft:Utils.scale(10,Const.Vertical),
+    marginTop: Utils.scale(10, Const.Vertical),
+    marginLeft: Utils.scale(10, Const.Vertical),
     fontWeight: 'bold'
   },
-  headerText :{
+  headerText: {
     fontSize: Utils.scale(20, Const.Horizontal),
-    marginTop:Utils.scale(20,Const.Vertical),
-    marginLeft:Utils.scale(10,Const.Vertical),
+    marginTop: Utils.scale(20, Const.Vertical),
+    marginLeft: Utils.scale(10, Const.Vertical),
     fontWeight: 'bold'
   },
   container: {
@@ -621,10 +622,10 @@ export const noti = StyleSheet.create({
     paddingVertical: scale(20, Vertical),
     paddingLeft: scale(5, Horizontal),
   },
-  ArticleContent:{
-    marginLeft:Utils.scale(20,Const.Vertical),
+  ArticleContent: {
+    marginLeft: Utils.scale(20, Const.Vertical),
     fontSize: 17,
-    width: scale(300,Const.Horizontal)
+    width: scale(300, Const.Horizontal)
   },
   flexRow: {
     flexDirection: 'row',

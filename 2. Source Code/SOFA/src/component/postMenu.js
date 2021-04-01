@@ -19,6 +19,8 @@ import * as AuthService from '../service/authService';
 import * as MarkupPostService from '../service/markupPostService';
 import * as NotificationService from '../service/notificationService';
 import * as FollowService from '../service/followService';
+import { TouchableWithoutFeedback } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 
 export default class PostMenu extends Component {
@@ -286,7 +288,7 @@ export default class PostMenu extends Component {
         const { visible, onRequestClose, post } = this.props;
 
         return (
-            <View>
+            <View            >
                 <Modal
                     animationType='slide'
                     transparent={true}
@@ -295,60 +297,72 @@ export default class PostMenu extends Component {
                         onRequestClose();
                     }}
                 >
-                    {isReady ? (
-                        <View style={Style.newsfeed.articleMenu}>
-                            {account.accountID != post.accountPost ?
-                                this.actionArticleNotOwn.map(item =>
-                                    <TouchableHighlight
-                                        key={item.key}
-                                        onPress={() => item.onPress()}
-                                        underlayColor={'#9E9E9E'}
-                                    >
-                                        <View
-                                            style={Style.newsfeed.articleMenuItem}>
-                                            {item.icon()}
-                                            <View style={Style.newsfeed.articleMenuItemText} >
-                                                <Text>{item.title()}</Text>
-                                                <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
-                                            </View>
-                                        </View>
-                                    </TouchableHighlight>
-                                ) :
-                                this.actionArticleOwn.map(item =>
-                                    <TouchableHighlight
-                                        key={item.key}
-                                        onPress={() => item.onPress()}
-                                        underlayColor={'#9E9E9E'}
-                                    >
-                                        <View
-                                            style={Style.newsfeed.articleMenuItem}>
-                                            {item.icon()}
-                                            <View style={Style.newsfeed.articleMenuItemText} >
-                                                <Text>{item.title()}</Text>
-                                                <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
-                                            </View>
-                                        </View>
-                                    </TouchableHighlight>
-                                )
-                            }
-                        </View>
-                    ) :
-                        (<View style={{
-                            width: scale(400, Horizontal),
-                            height: scale(300, Vertical),
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPressOut={() => onRequestClose()}
+                        style={{
                             position: 'absolute',
-                            backgroundColor: 'white',
-                            borderTopLeftRadius: 20,
-                            borderTopRightRadius: 20,
-                            bottom: scale(0, Vertical),
-                            elevation: 5,
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
-                            <ActivityIndicator size="large" color="#00ff00" />
-                        </View>)}
+                            bottom: 0,
+                            height: scale(661, Vertical),
+                            width: scale(400, Horizontal),
+                            backgroundColor: 'transparent',
+                        }}
+                    >
+                        {isReady ? (
+                            <View
+                                style={Style.newsfeed.articleMenu}>
+                                {account.accountID != post.accountPost ?
+                                    this.actionArticleNotOwn.map(item =>
+                                        <TouchableHighlight
+                                            key={item.key}
+                                            onPress={() => item.onPress()}
+                                            underlayColor={'#9E9E9E'}
+                                        >
+                                            <View
+                                                style={Style.newsfeed.articleMenuItem}>
+                                                {item.icon()}
+                                                <View style={Style.newsfeed.articleMenuItemText} >
+                                                    <Text>{item.title()}</Text>
+                                                    <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
+                                                </View>
+                                            </View>
+                                        </TouchableHighlight>
+                                    ) :
+                                    this.actionArticleOwn.map(item =>
+                                        <TouchableHighlight
+                                            key={item.key}
+                                            onPress={() => item.onPress()}
+                                            underlayColor={'#9E9E9E'}
+                                        >
+                                            <View
+                                                style={Style.newsfeed.articleMenuItem}>
+                                                {item.icon()}
+                                                <View style={Style.newsfeed.articleMenuItemText} >
+                                                    <Text>{item.title()}</Text>
+                                                    <Text style={Style.newsfeed.articleMenuItemTextDetail}>{item.detail()}</Text>
+                                                </View>
+                                            </View>
+                                        </TouchableHighlight>
+                                    )
+                                }
+                            </View>
+                        ) :
+                            (<View style={{
+                                width: scale(400, Horizontal),
+                                height: scale(300, Vertical),
+                                position: 'absolute',
+                                backgroundColor: 'white',
+                                borderTopLeftRadius: 20,
+                                borderTopRightRadius: 20,
+                                bottom: scale(0, Vertical),
+                                elevation: 5,
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <ActivityIndicator size="large" color="#00ff00" />
+                            </View>)}
 
-
+                    </TouchableOpacity>
                 </Modal>
             </View >
         )

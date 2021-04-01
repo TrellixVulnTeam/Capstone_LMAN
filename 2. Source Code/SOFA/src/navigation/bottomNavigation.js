@@ -31,12 +31,12 @@ export default function Navigation() {
       tabBarOptions={{
         showLabel: false,
         activeTintColor: '#d8a027',
-        inactiveTintColor: '#f8e5d7',
+        inactiveTintColor: 'white',
         activeBackgroundColor: 'transparent',
         inactiveBackgroundColor: 'transparent',
         height: scale(50, Vertical),
         style: {
-          backgroundColor: '#300808'
+          backgroundColor: '#4F053B'
         }
       }}>
       <Tab.Screen
