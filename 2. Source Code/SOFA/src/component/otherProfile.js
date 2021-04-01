@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, ToastAndroid, PermissionsAndroid, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -14,6 +14,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { LogBox } from 'react-native';
 
+import * as FollowService from '../service/followService';
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,7 +35,9 @@ export default class Profile extends Component {
             token: '',
             listImageAll: [],
             myId: 0,
-
+            numberFollower: 0,
+            isFollowed: false,
+            followText: 'FOLLOW',
         }
     }
     getData = async (key) => {
@@ -58,6 +61,7 @@ export default class Profile extends Component {
         }
     }
 
+    
     getProfile() {
         const AccountID = this.props.route.params;
         console.log('Get Profile');
@@ -70,9 +74,10 @@ export default class Profile extends Component {
         Request.Get(url, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    console.log(response);
                     this.setState({ account: response });
+                    this.setState({ numberFollower: response.followerNumber });
                     this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
+                    this.checkFollow();
                 } else {
                     this.props.navigation.navigate('Login')
                 }
@@ -133,12 +138,81 @@ export default class Profile extends Component {
     }
 
     onPressFollow() {
-        console.log('Press Follow');
+        const accountID = this.props.route.params.accountID;
+        FollowService.followSomeone(accountID)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.setState({numberFollower : this.state.numberFollower + 1});
+                    this.setState({followText : 'UNFOLLOW'});
+                    this.checkFollow();
+                } else {
+                    console.log(response.errorMessage);
+                    ToastAndroid.show("Thêm " + accountID + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                } else {
+                    ToastAndroid.show("Thêm " + this.state.currentPostSelect.lastName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
+                }
+            })
+    }
+
+    onPressUnfollow() {
+        const accountID = this.props.route.params.accountID;
+        FollowService.unfollowSomeone(accountID)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.setState({numberFollower : this.state.numberFollower - 1});
+                    this.setState({followText : 'FOLLOW'});
+                    this.checkFollow();
+                } else {
+                    console.log(response.errorMessage);
+                    ToastAndroid.show("Xóa " + accountID + ' khỏi danh sách follow KHÔNG thành công', ToastAndroid.LONG);
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                } else {
+                    ToastAndroid.show("Xóa " + this.state.currentPostSelect.lastName + ' khỏi danh sách follow KHÔNG thành công', ToastAndroid.LONG);
+                }
+            })
+    }
+
+    checkFollow(){
+        const accountID = this.props.route.params.accountID;
+        FollowService.checkFollowed(accountID)
+        .then(response => {
+            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                this.setState({isFollowed : response.isFollowed});
+                if(response.isFollowed == true){
+                    this.setState({followText : 'UNFOLLOW'});
+                }else{
+                    this.setState({followText : 'FOLLOW'});
+                }
+                
+            } else {
+                console.log(response.errorMessage);
+                ToastAndroid.show("Check follow không thành công", ToastAndroid.LONG);
+            }
+        })
+        .catch(reason => {
+            console.log(reason);
+            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+            } else {
+                ToastAndroid.show("Check follow không thành công", ToastAndroid.LONG);
+            }
+        })
     }
     onPressBlock() {
         console.log('Press Block');
     }
-    onPressMessage = async () =>  {
+    onPressMessage = async () => {
         const accountID = this.props.route.params.accountID;
 
         await this.getData('token')
@@ -177,21 +251,19 @@ export default class Profile extends Component {
         this.props.navigation.navigate('Login');
     }
 
+    onClickFollowNumber() {
+        const { account } = this.state;
+        this.props.navigation.navigate('ListFollower', {
+            userId: account.accountID,
+            numberFollower: this.state.numberFollower,
+        });
+    }
+
     componentWillUnmount() {
         //this._unsubcribe();
     }
 
     componentDidMount() {
-        // LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-
-        // this._unsubcribe = this.props.navigation.addListener('focus', () => {
-        //     const AccountID = this.props.route.params;
-        //     console.log(AccountID.accountID);
-
-        //     this.getProfile();
-        //     this.getListImage();
-        // });
-
         console.log('Other Profile');
         this.setState({ account: {}, avatarUri: '', pageNumber: 1, listImageAll: [] });
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -245,11 +317,19 @@ export default class Profile extends Component {
                                         <Text style={Style.profile.email}>{account.email}</Text>
                                         <View style={Style.profile.basicInfo}>
                                             <Text style={Style.profile.basicSmallInfo}>{account.postNumber}{"\n"}Posts</Text>
-                                            <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
+                                            <TouchableOpacity onPress={() => this.onClickFollowNumber()}>
+                                                <Text style={Style.profile.basicSmallInfo}>{this.state.numberFollower}{"\n"}Followers</Text>
+                                            </TouchableOpacity>
                                         </View>
 
                                         <View style={Style.profile.button}>
-                                            <Button style={Style.profile.singleButton} color='#ff7878' onPress={() => this.onPressFollow()} title="Follow" />
+                                            <Button style={Style.profile.singleButton} color='#ff7878' onPress={() => {
+                                                if(this.state.isFollowed == true){
+                                                    this.onPressUnfollow();
+                                                }else{
+                                                    this.onPressFollow();
+                                                }
+                                            }} title={this.state.followText} />
                                             <View style={{ flex: 0.2 }}></View>
                                             <Button style={Style.profile.singleButton} color='#ff7878' title="Message" onPress={() => this.onPressMessage()} />
                                         </View>

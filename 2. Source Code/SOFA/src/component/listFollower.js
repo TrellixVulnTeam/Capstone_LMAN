@@ -31,6 +31,7 @@ export default class Profile extends Component {
             token: '',
             pageNumber: 1,
             listFollower: [],
+            myAccount:{},
         }
     }
     getData = async (key) => {
@@ -65,7 +66,6 @@ export default class Profile extends Component {
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.setState({ listFollower: response.listFollower });
-                    console.log(this.state.listFollower);
                 } else {
                     this.props.navigation.navigate('Login')
                 }
@@ -81,12 +81,58 @@ export default class Profile extends Component {
         //this.setState({ account: {}, avatarUri: '', pageNumber: 1, listImageAll: [] });
     }
 
+    getProfile = async () => {
+        const { account } = this.state;
+        console.log('Access profile');
+        await this.getData('token')
+            .then(result => {
+                if (result) {
+                    var header = {
+                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                        "Accept": 'application/json',
+                        "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
+                    };
+                    let url = Const.domain + 'api/profile';
+                    Request.Get(url, header)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.setState({ myAccount: response });   
+                                console.log(this.state.myAccount);        
+                            } else {
+                                this.props.navigation.navigate('Login')
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            this.props.navigation.navigate('Login')
 
+                        });
+                } else {
+                    this.props.navigation.navigate('Login')
+                }
+            })
+            .catch(reason => {
+                console.log('failed');
+                this.props.navigation.navigate('Login')
+            })
+    }
+
+
+    onClickItem(userId){
+        const {myAccount} = this.state;
+        if(myAccount && myAccount.accountID && myAccount.accountID == userId){
+            this.props.navigation.navigate('Profile');
+        }else{
+            this.props.navigation.navigate('OtherProfile', { 'accountID': userId });
+        }
+    }
 
     componentDidMount() {
         this.getListFollower();
+        this.getProfile();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
             this.getListFollower();
+            this.getProfile();
         });
         this._unfocus = this.props.navigation.addListener('blur', () => {
             this.setState({ listFollower: [] });
@@ -99,28 +145,63 @@ export default class Profile extends Component {
         return (
             <View>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
+                <LinearGradient colors={['#00bfff', '#99e6ff']}>
+                    <View style={{
+                        alignContent: 'center',
+                        alignItems: 'center',
+                        // paddingTop: Utils.scale(20, Const.Vertical),
+                        // paddingBottom: Utils.scale(20, Const.Vertical),
+                        // borderBottomLeftRadius: 15,
+                        // borderBottomRightRadius: 15,
+                        width: Utils.scale(400, Const.Horizontal),
+                        height: Utils.scale(40, Const.Vertical),
+                    }}>
+                        <Text style={{
+                            fontSize: Utils.scale(15, Const.Horizontal),
+                            marginTop: Utils.scale(9, Const.Vertical),
+                            fontWeight: 'bold',
+                            textAlignVertical: 'center',
+                        }}>Số người theo dõi: {numberFollower}</Text>
+                    </View>
+                </LinearGradient>
+
                 <FlatList
                     data={listFollower}
                     keyExtractor={(item, index) => index + ''}
                     renderItem={({ item, index }) => {
                         return (
-                            <View>
-                                <Image
-                                    source={(item.avatarUri && item.avatarUri.length > 0) ? { uri: Const.assets_domain + item.avatarUri + '?time=' + new Date() } : AVATAR}
-                                    resizeMode={"cover"}
-                                    style={{
-                                        height: Utils.scale(45, Const.Horizontal),
-                                        width: Utils.scale(45, Const.Horizontal),
-                                        borderRadius: Utils.scale(22.5, Const.Horizontal),
-                                        borderWidth: 0.2,
-                                        overflow: 'hidden',
-                                        marginLeft: Utils.scale(10, Const.Horizontal),
-                                    }} />
-                                <Text>{item.accountId}</Text>
-                                <Text>{item.avatarUri}</Text>
-                                <Text>{item.firstName}</Text>
-                                <Text>{item.lastName}</Text>
-                            </View>
+                            <TouchableOpacity onPress={() => {
+                                this.onClickItem(item.accountId);
+                            }}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    width: Utils.scale(400, Const.Horizontal),
+                                    height: Utils.scale(50, Const.Vertical),
+                                    borderColor: 'black',
+                                    borderBottomWidth: 2,
+                                    textAlignVertical: 'center',
+                                }}>
+                                    <Image
+                                        source={(item.avatarUri && item.avatarUri.length > 0) ? { uri: Const.assets_domain + item.avatarUri + '?time=' + new Date() } : AVATAR}
+                                        resizeMode={"cover"}
+                                        style={{
+                                            height: Utils.scale(45, Const.Horizontal),
+                                            width: Utils.scale(45, Const.Horizontal),
+                                            borderRadius: Utils.scale(22.5, Const.Horizontal),
+                                            borderWidth: 0.2,
+                                            overflow: 'hidden',
+                                            marginLeft: Utils.scale(7, Const.Horizontal),
+                                            marginTop: Utils.scale(4, Const.Vertical),
+                                        }} />
+                                    <Text style={{
+                                        fontSize: Utils.scale(20, Const.Horizontal),
+                                        fontWeight: 'bold',
+                                        textAlignVertical: 'center',
+                                        marginLeft: Utils.scale(7, Const.Horizontal),
+                                    }}>{item.firstName} {item.lastName}</Text>
+                                </View>
+                            </TouchableOpacity>
+
                         )
                     }}
                 />

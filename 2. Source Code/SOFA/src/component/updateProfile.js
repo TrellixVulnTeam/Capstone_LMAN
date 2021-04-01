@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableOpacity, KeyboardAvoidingView, ScrollView, LogBox } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, ToastAndroid, PermissionsAndroid, FlatList, TouchableOpacity, KeyboardAvoidingView, ScrollView, LogBox } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -67,7 +67,7 @@ export default class UpdateProfile extends Component{
                     'User tapped custom button: ',
                     response.customButton
                 );
-                alert(response.customButton);
+                ToastAndroid.show(response.customButton, ToastAndroid.LONG);
             } else {
                 let source = response;
                 this.setState({ avatarUri: source.uri });
@@ -84,7 +84,7 @@ export default class UpdateProfile extends Component{
                     Request.Post(url, header, data)
                         .then(response => {
                             if (response && response.code && response.code == 'SUCCESSFULY') {
-                                Alert.alert('Avatar', 'Đổi ảnh đại diện thành công!!!');
+                                ToastAndroid.show('Avatar', 'Đổi ảnh đại diện thành công!!!', ToastAndroid.SHORT);
 
                             }
                         })
@@ -153,7 +153,7 @@ export default class UpdateProfile extends Component{
                             Request.Post(url, header, data)
                                 .then(response => {
                                     if (response && response.code && response.code == 'SUCCESSFULY') {
-                                        Alert.alert('Avatar', 'Đổi ảnh đại diện thành công!!!');
+                                        ToastAndroid.show('Avatar', 'Đổi ảnh đại diện thành công!!!', ToastAndroid.SHORT);
                                     }
                                 })
                                 .catch(reason => {
@@ -190,12 +190,12 @@ export default class UpdateProfile extends Component{
                         .then(response => {
                             console.log(response);
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                Alert.alert('Update Successfully', 'Update avatar thành công!');
+                                ToastAndroid.show('Update Successfully', 'Update avatar thành công!', ToastAndroid.SHORT);
                                 console.log(response);
                                 //this.props.navigation.goBack();               
                             } else {
                             if (response.code == Const.REQUEST_CODE_FAILED) {
-                                Alert.alert('Update Failed', 'Update avatar không thành công! Vui lòng kiểm tra lại');
+                                ToastAndroid.show('Update Failed', 'Update avatar không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
                                 console.log(response);
                             }
                             }
@@ -246,12 +246,12 @@ export default class UpdateProfile extends Component{
                         .then(response => {
                             console.log(response);
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                Alert.alert('Update Successfully', 'Update thành công!');
+                                ToastAndroid.show('Update thành công!', ToastAndroid.SHORT);
                                 console.log(response);
                                 this.props.navigation.goBack();               
                             } else {
                             if (response.code == Const.REQUEST_CODE_FAILED) {
-                                Alert.alert('Update Failed', 'Update không thành công! Vui lòng kiểm tra lại');
+                                ToastAndroid.show('Update không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
                                 console.log(response);
                             }
                             }
@@ -426,8 +426,8 @@ export default class UpdateProfile extends Component{
                         </View>    
                         <View style={Style.updateProfile.updateItemSecond}>
                             <Text style={Style.updateProfile.updateLabel}>Email</Text>
-                            <TouchableOpacity onPress={() => Alert.alert(
-                                                                'Bạn có thể thay đổi Email tại Account -> Cập nhật bảo mật'
+                            <TouchableOpacity onPress={() => ToastAndroid.show(
+                                                                'Bạn có thể thay đổi Email tại Account -> Cập nhật bảo mật', ToastAndroid.LONG
                                                             )}>
                             <TextInput defaultValue={account.email}    
                                         editable = {false}                                   
