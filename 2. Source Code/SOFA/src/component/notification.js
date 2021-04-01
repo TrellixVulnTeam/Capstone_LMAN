@@ -146,13 +146,14 @@ export default class Notification extends Component {
     NotiItem = ( {data} ) => {
         let noti = data;
         const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>
+        //console.log(Utils.calculateTime(noti.dateCreated));
         return (
             <TouchableOpacity onPress={() => this.onPressNotification(noti)}>
                 <View style={[Style.noti.Article, {backgroundColor: (noti.isRead == true ? 'white' : '#d6faff'),}]} >
                     <View style={Style.noti.flexRow}>
                         <Image source={HOANG} style={Style.noti.ArticleAvatar} />
                         <Text style={Style.noti.ArticleContent}><B>{noti.fromAccountName}</B>  {noti.content} 
-                         <B> {noti.toAccountName}</B></Text>
+                            <B> {noti.toAccountName}</B> {"\n"}{Utils.calculateTime(noti.dateCreated)} </Text>
                     </View>
                 </View>
             </TouchableOpacity>

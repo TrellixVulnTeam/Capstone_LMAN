@@ -637,5 +637,6 @@ export const noti = StyleSheet.create({
     marginLeft: scale(10, Horizontal)
   },
 
+  ArticleTime: { fontFamily: 'SanFranciscoText-Regular' },
 
 });
