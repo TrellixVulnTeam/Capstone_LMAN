@@ -1,4 +1,5 @@
-﻿using SOFA_API.ViewModel.BaseModel;
+﻿using SOFA_API.DAO;
+using SOFA_API.ViewModel.BaseModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -47,6 +48,10 @@ namespace SOFA_API.ViewModel.Notification
             Content = row["Content"].ToString();
             IsRead = (bool)row["IsRead"];
             DateCreated = (DateTime)row["DateCreated"];
+            FromAccountName = ProfileDAO.Instance.GetProfileByAccountID(FromAccount).FirstName + " " +
+                ProfileDAO.Instance.GetProfileByAccountID(FromAccount).LastName;
+            ToAccountName = ProfileDAO.Instance.GetProfileByAccountID(ToAccount).FirstName + " " +
+                ProfileDAO.Instance.GetProfileByAccountID(ToAccount).LastName;
         }
     }
 }
