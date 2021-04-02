@@ -46,7 +46,7 @@ namespace SOFA_API.Service
                 }
                 //NotificationDAO.Instance.SetReadNotificationByAccountId(accountID);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Utils.Instance.SaveLog(ex.ToString());
                 listNotification.Code = Const.REQUEST_CODE_FAILED;
@@ -110,27 +110,29 @@ namespace SOFA_API.Service
 
                 modelIn.DateCreated = DateTime.Now;
 
-                int result = NotificationDAO.Instance.CreateNotification(modelIn);
-                if (result > 0)
+                int result = 0;
+                if (modelIn.FromAccount != modelIn.ToAccount)
                 {
-                    notificationViewModelOut.TypeNotification = modelIn.TypeNotification;
-                    notificationViewModelOut.IsRead = false;
-                    notificationViewModelOut.PostId = modelIn.PostId;
-                    notificationViewModelOut.Content = modelIn.Content;
-                    notificationViewModelOut.FromAccount = modelIn.FromAccount;
-                    notificationViewModelOut.ToAccount = modelIn.ToAccount;
-                    notificationViewModelOut.DateCreated = modelIn.DateCreated;
-                    notificationViewModelOut.FromAccountName = "";
+                    result = NotificationDAO.Instance.CreateNotification(modelIn);
+                }
 
-                    ProfileViewModelOut profile = ProfileDAO.Instance.GetProfileModelByAccountID(modelIn.FromAccount);
+                notificationViewModelOut.TypeNotification = modelIn.TypeNotification;
+                notificationViewModelOut.IsRead = false;
+                notificationViewModelOut.PostId = modelIn.PostId;
+                notificationViewModelOut.Content = modelIn.Content;
+                notificationViewModelOut.FromAccount = modelIn.FromAccount;
+                notificationViewModelOut.ToAccount = modelIn.ToAccount;
+                notificationViewModelOut.DateCreated = modelIn.DateCreated;
+                notificationViewModelOut.FromAccountName = "";
 
-                    if (profile != null)
-                    {
-                        notificationViewModelOut.FromAccountName = profile.LastName + " " + profile.FirstName;
-                    }
+                ProfileViewModelOut profile = ProfileDAO.Instance.GetProfileModelByAccountID(modelIn.FromAccount);
+
+                if (profile != null)
+                {
+                    notificationViewModelOut.FromAccountName = profile.LastName + " " + profile.FirstName;
                 }
             }
-            catch (Exception){}
+            catch (Exception) { }
 
             return notificationViewModelOut;
         }

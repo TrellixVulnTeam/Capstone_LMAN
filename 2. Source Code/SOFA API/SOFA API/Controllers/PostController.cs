@@ -66,7 +66,10 @@ namespace SOFA_API.Controllers
                 NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_LIKE,
                     postViewModelIn.PostID, id);
                 NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
-                notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+                if (modelOut.FromAccount != modelIn.ToAccount)
+                {
+                    notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+                }
             }
             return Ok(result);
         }
@@ -92,7 +95,10 @@ namespace SOFA_API.Controllers
                 NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_RATE,
                 postViewModelIn.PostID, id);
                 NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
-                notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+                if (modelOut.FromAccount != modelIn.ToAccount)
+                {
+                    notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+                }
             }
             return Ok(result);
         }
@@ -110,7 +116,10 @@ namespace SOFA_API.Controllers
                 NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_COMMENT,
                 postViewModelIn.PostID, id);
                 NotificationViewModelOut modelOut = NotificationService.Instance.CreatedNotification(modelIn);
-                notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+                if (modelOut.FromAccount != modelIn.ToAccount)
+                {
+                    notificationHub.Clients.User(modelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+                }
             }
             return Ok(result);
         }
