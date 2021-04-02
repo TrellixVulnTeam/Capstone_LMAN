@@ -137,6 +137,39 @@ namespace SOFA_API.Service
             return notificationViewModelOut;
         }
 
+        public NotificationViewModelOut CreatedNotificationFollow(NotificationViewModelIn modelIn)
+        {
+            NotificationViewModelOut notificationViewModelOut = new NotificationViewModelOut();
+            try
+            {
+                modelIn.TypeNotification = Const.NOTIFICATION_TYPE_FOLLOW;
+                modelIn.Content = Const.NOTIFICATION_CONTENT_FOLLOW;
+                modelIn.PostId = 0;
+                modelIn.DateCreated = DateTime.Now;
+
+                int result = NotificationDAO.Instance.CreateNotification(modelIn);
+
+                notificationViewModelOut.TypeNotification = modelIn.TypeNotification;
+                notificationViewModelOut.IsRead = false;
+                notificationViewModelOut.PostId = modelIn.PostId;
+                notificationViewModelOut.Content = modelIn.Content;
+                notificationViewModelOut.FromAccount = modelIn.FromAccount;
+                notificationViewModelOut.ToAccount = modelIn.ToAccount;
+                notificationViewModelOut.DateCreated = modelIn.DateCreated;
+                notificationViewModelOut.FromAccountName = "";
+
+                ProfileViewModelOut profile = ProfileDAO.Instance.GetProfileModelByAccountID(modelIn.FromAccount);
+
+                if (profile != null)
+                {
+                    notificationViewModelOut.FromAccountName = profile.LastName + " " + profile.FirstName;
+                }
+            }
+            catch (Exception) { }
+
+            return notificationViewModelOut;
+        }
+
         public NotificationViewModelOut SetReadNotificationById(int ID)
         {
             NotificationViewModelOut notification = new NotificationViewModelOut();

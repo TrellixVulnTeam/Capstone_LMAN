@@ -43,6 +43,12 @@ namespace SOFA_API.ViewModel.Notification
             FromAccount = fromAccount;
         }
 
+        public NotificationViewModelIn(int fromAccount, int toAccount)
+        {
+            FromAccount = fromAccount;
+            ToAccount = toAccount;
+        }
+
         public NotificationViewModelIn(DataRow row)
         {
             Id = (int)row["Id"];
