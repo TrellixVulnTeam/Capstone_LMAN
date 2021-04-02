@@ -1,6 +1,7 @@
 import * as Request from "../common/request";
 import * as Const from "../common/const";
-import {getData} from "../common/utils";
+import { getData } from "../common/utils";
+import Session from "../common/session";
 
 
 export const getProfile = () => {
@@ -17,6 +18,8 @@ export const getProfile = () => {
                     var uri = Const.domain + 'api/profile';
                     Request.Get(uri, header)
                         .then(response => {
+                            Session.getInstance().account = response;
+                            Session.getInstance().token = token;
                             resolve(response);
                         })
                         .catch(reason => {

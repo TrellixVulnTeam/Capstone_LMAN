@@ -71,7 +71,7 @@ export default class Notification extends Component {
         await this.getData('token')
             .then(result => {
                 if (result) {
-                    // console.log('Get all post', result);
+                  
                     this.setState({ token: result.toString().substr(1, result.length - 2) });
                 }
             })
@@ -79,7 +79,7 @@ export default class Notification extends Component {
                 this.setState({ token: '' });
                 console.log(reason);
             })
-        //console.log('Hello');
+        
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json',
@@ -90,17 +90,13 @@ export default class Notification extends Component {
 
         Request.Get(uri, header, data)
             .then(response => {
-                console.log(response);
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    //console.log(Const.REQUEST_CODE_SUCCESSFULLY);
                     let listNotiRes = response.listNoti;
-                    //console.log(listNotiRes.length);
                     let listNotiTemp = this.state.listNotification;
                     for (let i = 0; i < listNotiRes.length; i++) {
                         listNotiTemp.push(new NotificationViewModel(listNotiRes[i]));
                     }
                     this.setState({ listNotification: listNotiRes });
-                    console.log(this.state.listNotification.length);
                 }
             })
             .catch(reason => {
@@ -115,8 +111,6 @@ export default class Notification extends Component {
     }
 
     onPressNotification(noti) {
-        //console.log(noti);
-        //console.log(noti.postId);
         this.setIsRead(noti)
         this.props.navigation.navigate('PostDetail', { postID: noti.postId});
     }
@@ -134,7 +128,6 @@ export default class Notification extends Component {
         Request.Post(uri, header)
             .then(response => {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    console.log(Const.REQUEST_CODE_SUCCESSFULLY);
                     let listNotiTemp = this.state.listNotification;
                     for (let i = 0; i < listNotiTemp.length; i++) {
                         if (noti.id == listNotiTemp[i].id){
@@ -152,13 +145,15 @@ export default class Notification extends Component {
 
     NotiItem = ( {data} ) => {
         let noti = data;
-        //console.log(noti);
+        const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>
+        //console.log(Utils.calculateTime(noti.dateCreated));
         return (
             <TouchableOpacity onPress={() => this.onPressNotification(noti)}>
                 <View style={[Style.noti.Article, {backgroundColor: (noti.isRead == true ? 'white' : '#d6faff'),}]} >
                     <View style={Style.noti.flexRow}>
                         <Image source={HOANG} style={Style.noti.ArticleAvatar} />
-                        <Text style={Style.noti.ArticleContent}>{noti.content}</Text>
+                        <Text style={Style.noti.ArticleContent}><B>{noti.fromAccountName}</B>  {noti.content} 
+                            <B> {noti.toAccountName}</B> {"\n"}{Utils.calculateTime(noti.dateCreated)} </Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -179,7 +174,6 @@ export default class Notification extends Component {
                         data={listNotification}
                         keyExtractor={(item, index) => item.id + ''}
                         renderItem={({ item, index }) => {
-                            //console.log(item)
                             return (<this.NotiItem data={item} />)
                         }}
 

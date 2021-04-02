@@ -105,7 +105,7 @@ export default class Login extends Component {
                             });
                     } else {
                         if (response.code == Const.REQUEST_CODE_FAILED) {
-                            Alert.alert('Đăng nhập không thành công', 'Hãy đăng ký tài khoản mới với email của bạn!');
+                            this.setState({ isValidUser: false, errMsg: 'Tài khoản hoặc Mật khẩu không chính xác' })
                         }
                     }
                 })
@@ -143,7 +143,17 @@ export default class Login extends Component {
                                 });
                         } else {
                             if (response.code == Const.REQUEST_CODE_FAILED) {
-                                this.setState({ isValidUser: false, errMsg: response.errorMessage })
+                                Alert.alert(
+                                    "Thông báo",
+                                    "Hãy đăng ký với địa chỉ email của bạn",
+                                    [
+                                      {
+                                        text: "Hủy",
+                                        style: "cancel"
+                                      },
+                                      { text: "OK", onPress: () => this.props.navigation.navigate('PhoneRegister', { isResetPassword: false }) }
+                                    ]
+                                  );
                             }
                         }
                     })

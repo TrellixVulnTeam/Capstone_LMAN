@@ -52,7 +52,7 @@ namespace SOFA_API.DAO
             }
             return chatWithListAccount;
         }
-        public ListConversationViewModelOut getListConversation(int accountId, List<int> chatWithListAccount)
+        public ListConversationViewModelOut GetListConversation(int accountId, List<int> chatWithListAccount)
         {
             ListConversationViewModelOut listConversationView = new ListConversationViewModelOut();
             List<ConversationViewModelOut> listConversation = null;
@@ -97,6 +97,31 @@ namespace SOFA_API.DAO
                 throw e;
             }
             return listConversationView;
+        }
+        public ListSearchConversationViewModelOut SearchConversation(int accountId, string searchValue)
+        {
+            ListSearchConversationViewModelOut viewModelOut = null;
+            List<SearchCoversationViewModelOut> searchConversation = new List<SearchCoversationViewModelOut>();
+            try
+            {
+                string sql = "exec [dbo].[SearchConversation] @AccountID , @searchValue ";
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId , searchValue });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        searchConversation.Add(new SearchCoversationViewModelOut(row));
+                    }
+                    viewModelOut = new ListSearchConversationViewModelOut(searchConversation);
+                    }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+            return viewModelOut;
+
         }
 
 

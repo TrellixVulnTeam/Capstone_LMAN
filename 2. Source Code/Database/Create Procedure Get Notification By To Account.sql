@@ -1,3 +1,6 @@
+
+DROP PROC IF EXISTS  getNotificationByToAccount
+GO
 CREATE PROCEDURE getNotificationByToAccount
 @accountID int
 AS

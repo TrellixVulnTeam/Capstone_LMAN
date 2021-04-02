@@ -3,6 +3,7 @@ import * as Const from '../common/const';
 import * as Utils from '../common/utils';
 import * as Message from '../common/message';
 import PushNotification from "react-native-push-notification";
+import Session from '../common/session';
 
 export default class NotificationWSS {
     static instance;
@@ -21,7 +22,7 @@ export default class NotificationWSS {
         this.notificationConnection(isNewfeed);
     }
 
-    notificationConnection = async (isNewfeed) =>  {
+    notificationConnection = async (isNewfeed) => {
         Utils.getData('token')
             .then(result => {
                 if (result) {
@@ -32,6 +33,7 @@ export default class NotificationWSS {
                             skipNegotiation: true,
                             transport: signalR.HttpTransportType.WebSockets
                         })
+                        .withAutomaticReconnect()
                         .build();
                     this._connection.start().then(() => {
                         this._started = true;
@@ -39,16 +41,18 @@ export default class NotificationWSS {
                     }).catch(function (err) {
                         return console.error(err.toString());
                     });
-                    if(!isNewfeed){
+                    if (!isNewfeed) {
                         this._connection.on("NewNotification", data => {
                             if (data) {
-                              PushNotification.localNotification({
-                                channelId: 'Thông báo',
-                                title: "Thông báo",
-                                message: data.fromAccountName + ' ' + data.content,
-                              });
+                                if (Session.getInstance().account.accountID != data.fromAccount) {
+                                    PushNotification.localNotification({
+                                        channelId: 'Thông báo',
+                                        title: "Thông báo",
+                                        message: data.fromAccountName + ' ' + data.content,
+                                    });
+                                }
                             }
-                          });
+                        });
                     }
                 }
             })
@@ -71,9 +75,9 @@ export default class NotificationWSS {
         this._started = started;
     }
 
-    pushNotification(){
-        if(this._started){
-            this._connection.stop(); 
+    pushNotification() {
+        if (this._started) {
+            this._connection.stop();
         }
         this._connection.start().then(() => {
             this._started = true;
@@ -83,13 +87,13 @@ export default class NotificationWSS {
         });
         this._connection.on("NewNotification", data => {
             if (data) {
-              PushNotification.localNotification({
-                channelId: 'Thông báo',
-                title: "Thông báo",
-                message: data.fromAccountName + ' ' + data.content,
-              });
+                PushNotification.localNotification({
+                    channelId: 'Thông báo',
+                    title: "Thông báo",
+                    message: data.fromAccountName + ' ' + data.content,
+                });
             }
-          });
+        });
     }
 
 }

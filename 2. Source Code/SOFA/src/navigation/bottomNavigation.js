@@ -10,7 +10,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import LinearGradient from 'react-native-linear-gradient';
 
 
 import NewsfeedStack from './newsfeedStack';
@@ -30,13 +29,13 @@ export default function Navigation() {
       initialRouteName="NewsfeedStack"
       tabBarOptions={{
         showLabel: false,
-        activeTintColor: '#d8a027',
-        inactiveTintColor: '#f8e5d7',
+        activeTintColor: 'white',
+        inactiveTintColor: '#ffd7c0',
         activeBackgroundColor: 'transparent',
         inactiveBackgroundColor: 'transparent',
         height: scale(50, Vertical),
         style: {
-          backgroundColor: '#300808'
+          backgroundColor: '#308099'
         }
       }}>
       <Tab.Screen
