@@ -354,6 +354,9 @@ export default class Newsfeed extends Component {
             // console.log(this.props.route);
             if (this.props.route && this.props.route.params && this.props.route.params.preScreen == 'CreatePost') { this.getAllPost(1); }
         });
+        this._screenUnfocus = this.props.navigation.addListener('blur', () => {
+            console.log('unfocus')
+        });
     }
 
     componentWillUnmount() {
@@ -586,6 +589,7 @@ export default class Newsfeed extends Component {
                 <View style={Style.newsfeed.ArtileMore}>
                     <View style={Style.newsfeed.ArticleAction}>
                         <TouchableOpacity
+                            style={{ marginLeft: 'auto', marginRight: 'auto', flexDirection: 'row' }}
                             onPress={() => this.onPressLikePost(post)}
                         >
 
@@ -597,27 +601,33 @@ export default class Newsfeed extends Component {
 
                         <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.numberOfLike}</Text>
                         <TouchableOpacity
+                            style={{ marginLeft: 'auto', marginRight: 'auto', flexDirection: 'row' }}
                             onPress={() => this.onPressCommentIcon(post)}
                         >
                             <FontAwesome
                                 style={Style.newsfeed.ArticleIconOfReact}
                                 name='comments' size={30}
                                 color={'#308099'} />
+                            <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.numberOfComment}</Text>
+
                         </TouchableOpacity>
-                        <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.numberOfComment}</Text>
-                        <Rating
+                        <View
                             style={Style.newsfeed.ArticleIconOfReact}
-                            ratingCount={5}
-                            imageSize={30}
-                            type='custom'
-                            ratingColor='rgba(48,128,153,1)'
-                            tintColor='#E6F3FC'
-                            readonly={!this.state.isLogin}
-                            //ratingBackgroundColor='#FFF2D1'
-                            onFinishRating={(rating) => this.ratingCompleted(post, rating)}
-                            startingValue={post.myRatePoint}
-                        />
-                        <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.rateAverage + '/5'}</Text>
+                        >
+                            <Rating
+                                ratingCount={5}
+                                imageSize={30}
+                                type='custom'
+                                ratingColor='rgba(48,128,153,1)'
+                                tintColor='#E6F3FC'
+                                readonly={!this.state.isLogin}
+                                //ratingBackgroundColor='#FFF2D1'
+                                onFinishRating={(rating) => this.ratingCompleted(post, rating)}
+                                startingValue={post.myRatePoint}
+                            />
+                            <Text style={Style.newsfeed.ArticleNumberOfReact}>{Utils.isInteger(post.rateAverage)}</Text>
+                            <Text style={Style.newsfeed.ArticleNumberOfReact}>{'/5.0'}</Text>
+                        </View>
                     </View>
                 </View>
             </View>
@@ -651,9 +661,15 @@ export default class Newsfeed extends Component {
                         ) : (<View></View>)}
 
                     </View>
-                    <MaterialCommunityIcons
-                        style={Style.newsfeed.notificationIcon}
-                        name={'message-text-outline'} color={'white'} size={30} />
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.props.navigation.navigate('Message');
+                        }}
+                    >
+                        <MaterialCommunityIcons
+                            style={Style.newsfeed.notificationIcon}
+                            name={'message-text-outline'} color={'white'} size={30} />
+                    </TouchableOpacity>
                 </View>
                 <View style={Style.newsfeed.listArticle}>
                     <FlatList

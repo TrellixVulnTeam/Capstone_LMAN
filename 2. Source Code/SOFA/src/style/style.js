@@ -232,7 +232,12 @@ export const newsfeed = StyleSheet.create({
     marginLeft: scale(5, Horizontal),
     marginTop: scale(5, Horizontal)
   },
-  ArticleIconOfReact: { marginLeft: scale(10, Horizontal) },
+  ArticleIconOfReact: {
+    // marginLeft: scale(10, Horizontal) 
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    flexDirection: 'row'
+  },
   ArticleCaption: { flexDirection: 'row', marginTop: scale(5, Vertical) },
   ArticleCaptionContent: {
     fontSize: 16,
