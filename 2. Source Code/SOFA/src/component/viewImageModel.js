@@ -7,7 +7,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
@@ -72,7 +72,7 @@ export default class ViewImageModal extends Component {
                     <TouchableWithoutFeedback
                         onPress={() => this.setState({ isShowDetail: !isShowDetail, isShowMore: false })}
                     >
-                        <View style={{ backgroundColor: 'rgba(26,26,26,1)' }}>
+                        <View style={{ backgroundColor: 'rgba(26,26,26,1)', flex: 1 }}>
                             <Image
                                 source={{ uri: Const.assets_domain + image.url }}
                                 style={{
@@ -128,29 +128,40 @@ export default class ViewImageModal extends Component {
                                 </View>
                             </TouchableWithoutFeedback>
 
-                            <View style={Style.newsfeed.ArticleAction}>
-                                <MaterialCommunityIcons
-                                    name={post.isLiked ? 'heart' : 'heart-outline'}
-                                    size={30}
-                                    color={post.isLiked ? '#dc3f1c' : 'white'} />
-                                <Text style={
-                                    [Style.newsfeed.ArticleNumberOfReact,
+                            <View style={[Style.newsfeed.ArtileMore]}>
+                                <View style={
                                     {
-                                        color: 'white'
-                                    }
-                                    ]}>{post.numberOfLike}</Text>
-                                <FontAwesome5
-                                    style={Style.newsfeed.ArticleIconOfReact}
-                                    name='comment-dots' size={30}
-                                    color={'white'} />
-                                <Text
-                                    style={
-                                        [Style.newsfeed.ArticleNumberOfReact,
-                                        {
-                                            color: 'white'
-                                        }
-                                        ]}
-                                >{post.numberOfComment}</Text>
+                                        marginTop: scale(5, Vertical),
+                                        paddingVertical: scale(5, Vertical),
+                                        flexDirection: 'row',
+                                        width: scale(400, Horizontal),
+                                        borderRadius: 10
+                                    }}>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            marginLeft: scale(10, Horizontal),
+                                        }}
+                                    >
+                                        <MaterialCommunityIcons
+                                            name={post.isLiked ? 'heart' : 'heart-outline'}
+                                            size={30}
+                                            color={post.isLiked ? '#308099' : '#232323'} />
+                                        <Text style={[Style.newsfeed.ArticleNumberOfReact, { color: 'white' }]}>{post.numberOfLike}</Text>
+                                    </View>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            marginLeft: scale(10, Horizontal),
+                                        }}
+                                    >
+                                        <FontAwesome
+                                            style={Style.newsfeed.ArticleIconOfReact}
+                                            name='comments' size={30}
+                                            color={'#308099'} />
+                                        <Text style={[Style.newsfeed.ArticleNumberOfReact, { color: 'white' }]}>{post.numberOfComment}</Text>
+                                    </View>
+                                </View>
                             </View>
                         </ScrollView>
                     ) : (<View></View>)

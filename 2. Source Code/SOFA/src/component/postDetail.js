@@ -473,7 +473,7 @@ export default class PostDetail extends Component {
     }
 
     render() {
-        const { isShowMenu, post, account, isShowImage, currentShowImage, commentText } = this.state;
+        const { post, isShowImage, currentShowImage, commentText } = this.state;
         return (
 
             <View style={{
@@ -504,16 +504,13 @@ export default class PostDetail extends Component {
                                                     { uri: Const.assets_domain + post.avatar } : AVATAR}
                                                 style={Style.newsfeed.ArticleAvatar} />
                                         </TouchableWithoutFeedback>
-                                        <TouchableOpacity
-                                            onPress={() => this.props.navigation.navigate('PostDetail', { postID: post.id })}
-                                        >
-                                            <View style={Style.newsfeed.ArticleHeader}>
-                                                <Text
-                                                    onPress={() => this.navigateProfile(post.accountPost)}
-                                                    style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
-                                                <Text style={Style.newsfeed.ArticleTime}>{Utils.calculateTime(post.time)}</Text>
-                                            </View>
-                                        </TouchableOpacity>
+
+                                        <View style={Style.newsfeed.ArticleHeader}>
+                                            <Text
+                                                onPress={() => this.navigateProfile(post.accountPost)}
+                                                style={{ fontFamily: 'SanFranciscoText-Bold' }}>{post.firstName + ' ' + post.lastName}</Text>
+                                            <Text style={{ fontFamily: 'SanFranciscoText-Regular' }}>{Utils.calculateTime(post.time)}</Text>
+                                        </View>
                                         <MaterialCommunityIcons
                                             onPress={() => {
                                                 this.setState({ isShowMenu: true });
@@ -524,11 +521,21 @@ export default class PostDetail extends Component {
 
                                     </View>
                                     <View style={Style.newsfeed.ArticleCaption}>
-                                        <Text style={Style.newsfeed.ArticleCaptionContent}>{post.content}</Text>
+                                        <Text style={{
+                                            fontSize: 16,
+                                            textAlignVertical: 'center',
+                                            marginLeft: scale(20, Horizontal),
+                                            marginRight: scale(10, Horizontal),
+                                            marginTop: scale(10, Horizontal),
+                                            color: 'black'
+                                        }}>{post.content}</Text>
                                     </View>
-                                    <View style={[Style.newsfeed.ArticleImageList, {
-                                        height: scale(534, Vertical)
-                                    }]}>
+                                    <View style={{
+                                        height: scale(400, Vertical),
+                                        marginTop: scale(20, Vertical),
+                                        marginLeft: 'auto',
+                                        marginRight: 'auto',
+                                    }}>
                                         <FlatList
                                             showsVerticalScrollIndicator={false}
                                             showsHorizontalScrollIndicator={false}
@@ -554,15 +561,22 @@ export default class PostDetail extends Component {
 
                                     </View>
                                     <View style={[Style.newsfeed.ArtileMore]}>
-                                        <View style={[Style.newsfeed.ArticleAction,
-                                        {
-                                            borderTopWidth: 0.5,
-                                            borderBottomWidth: 0.5,
-                                            marginTop: scale(5, Vertical),
-                                            paddingVertical: scale(5, Vertical)
-                                        }]}>
+                                        <View style={
+                                            {
+                                                borderTopWidth: 0.5,
+                                                borderBottomWidth: 0.5,
+                                                marginTop: scale(5, Vertical),
+                                                paddingVertical: scale(5, Vertical),
+                                                flexDirection: 'row',
+                                                width: scale(400, Horizontal),
+                                                borderRadius: 10
+                                            }}>
                                             <TouchableOpacity
-                                                style={{ flexDirection: 'row' }}
+                                                style={{
+                                                    flexDirection: 'row',
+                                                    marginLeft: 'auto',
+                                                    marginRight: 'auto',
+                                                }}
                                                 activeOpacity={0.2}
                                                 onPress={() => this.onPressLikePost(post)}
                                             >
@@ -572,29 +586,35 @@ export default class PostDetail extends Component {
                                                     color={post.isLiked ? '#dc3f1c' : '#232323'} />
                                                 <Text style={Style.newsfeed.ArticleNumberOfReact}>Yêu thích</Text>
                                             </TouchableOpacity>
-
-                                            <Rating
-                                                style={Style.newsfeed.ArticleIconOfReact}
-                                                ratingCount={5}
-                                                imageSize={30}
-                                                type='custom'
-                                                ratingColor='#dc3f1c'
-                                                tintColor='white'
-                                                readonly={!this.state.isLogin}
-                                                ratingBackgroundColor='#FFF2D1'
-                                                onFinishRating={(rating) => this.ratingCompleted(post, rating)}
-                                                startingValue={post.myRatePoint}
-                                            />
-                                            <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.rateAverage + '/5'}</Text>
+                                            <View
+                                                style={{
+                                                    marginLeft: 'auto',
+                                                    marginRight: 'auto',
+                                                    flexDirection: 'row'
+                                                }}
+                                            >
+                                                <Rating
+                                                    ratingCount={5}
+                                                    imageSize={30}
+                                                    type='custom'
+                                                    ratingColor='#dc3f1c'
+                                                    tintColor='white'
+                                                    readonly={!this.state.isLogin}
+                                                    ratingBackgroundColor='#FFF2D1'
+                                                    onFinishRating={(rating) => this.ratingCompleted(post, rating)}
+                                                    startingValue={post.myRatePoint}
+                                                />
+                                                <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.rateAverage + '/5'}</Text>
+                                            </View>
                                         </View>
                                         <View>
                                             {post.listLike.length > 0 ? (
-                                                <View style={{ flexDirection: 'row' }}>
+                                                <View style={{ flexDirection: 'row', marginLeft: scale(20, Horizontal) }}>
                                                     <MaterialCommunityIcons
                                                         name={'heart'}
                                                         size={16}
                                                         color={'#dc3f1c'} />
-                                                    <Text>{post.listLike[0].firstName + ' ' + post.listLike[0].lastName}</Text>
+                                                    <Text>{post.listLike[post.listLike.length - 1].firstName + ' ' + post.listLike[post.listLike.length - 1].lastName}</Text>
                                                     {post.listLike.length > 1 ? (
                                                         <View>
                                                             <Text>{' và ' + (post.numberOfLike - 1) + ' Người khác '}</Text>

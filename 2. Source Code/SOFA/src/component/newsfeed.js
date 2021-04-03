@@ -533,16 +533,17 @@ export default class Newsfeed extends Component {
                                 { uri: Const.assets_domain + post.avatar } : AVATAR}
                             style={Style.newsfeed.ArticleAvatar} />
                     </TouchableWithoutFeedback>
-                    <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('PostDetail', { postID: post.id })}
-                    >
-                        <View style={Style.newsfeed.ArticleHeader}>
-                            <Text
-                                onPress={() => this.navigateProfile(post.accountPost)}
-                                style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
+
+                    <View style={Style.newsfeed.ArticleHeader}>
+                        <Text
+                            onPress={() => this.navigateProfile(post.accountPost)}
+                            style={Style.newsfeed.ArticleAuthor}>{post.firstName + ' ' + post.lastName}</Text>
+                        <TouchableOpacity
+                            onPress={() => this.props.navigation.navigate('PostDetail', { postID: post.id })}
+                        >
                             <Text style={Style.newsfeed.ArticleTime}>{Utils.calculateTime(post.time)}</Text>
-                        </View>
-                    </TouchableOpacity>
+                        </TouchableOpacity>
+                    </View>
                     <MaterialCommunityIcons
                         onPress={() => {
                             this.setState({ currentPostSelect: post });
