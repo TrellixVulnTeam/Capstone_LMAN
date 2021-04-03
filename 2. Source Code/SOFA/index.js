@@ -3,11 +3,11 @@
  */
 import ReactNativeForegroundService from '@supersami/rn-foreground-service';
 import 'react-native-gesture-handler';
-import { AppRegistry } from 'react-native';
+import {AppRegistry} from 'react-native';
 import Navigation from './src/navigation/InitNavigation';
-import { name as appName } from './app.json';
-import { typography } from './utils/typography';
-import PushNotification from "react-native-push-notification";
+import {name as appName} from './app.json';
+import {typography} from './utils/typography';
+import PushNotification from 'react-native-push-notification';
 import NotificationWSS from './src/service/NotificationWSS';
 import MessageWSS from './src/service/messageWSS';
 
@@ -15,10 +15,10 @@ typography();
 
 PushNotification.configure({
   onRegister: function (token) {
-    console.log("TOKEN:", token);
+    console.log('TOKEN:', token);
   },
   onNotification: function (notification) {
-    console.log("NOTIFICATION:", notification);
+    console.log('NOTIFICATION:', notification);
     //notification.finish(PushNotificationIOS.FetchResult.NoData);
   },
   permissions: {
@@ -43,16 +43,15 @@ PushNotification.channelExists('Thông báo', function (exists) {
   if (!exists) {
     PushNotification.createChannel(
       {
-        channelId: "Thông báo", // (required)
-        channelName: "Thông báo", // (required)
-        channelDescription: "Thông báo các sự kiện của bạn", // (optional) default: undefined.
+        channelId: 'Thông báo', // (required)
+        channelName: 'Thông báo', // (required)
+        channelDescription: 'Thông báo các sự kiện của bạn', // (optional) default: undefined.
         playSound: true, // (optional) default: true
         // soundName: "newmessage", // (optional) See `soundName` parameter of `localNotification` function
         importance: 5, // (optional) default: 4. Int value of the Android notification importance
         vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
-
       },
-      (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+      (created) => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
     );
   } else {
     console.log('Channel existed!');
@@ -62,16 +61,15 @@ PushNotification.channelExists('Tin nhắn', function (exists) {
   if (!exists) {
     PushNotification.createChannel(
       {
-        channelId: "Tin nhắn", // (required)
-        channelName: "Tin nhắn", // (required)
-        channelDescription: "Thông báo tin nhắn đến của bạn", // (optional) default: undefined.
+        channelId: 'Tin nhắn', // (required)
+        channelName: 'Tin nhắn', // (required)
+        channelDescription: 'Thông báo tin nhắn đến của bạn', // (optional) default: undefined.
         playSound: true, // (optional) default: true
         // soundName: "newmessage", // (optional) See `soundName` parameter of `localNotification` function
         importance: 5, // (optional) default: 4. Int value of the Android notification importance
         vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
-
       },
-      (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+      (created) => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
     );
   } else {
     console.log('Channel existed!');

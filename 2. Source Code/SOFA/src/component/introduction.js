@@ -28,6 +28,12 @@ export default class Introduction extends Component {
                             isRefreshing: true
                         })
                     )
+                } else {
+                    this.props.navigation.dispatch(
+                        StackActions.replace('BottomNav', {
+                            isRefreshing: true
+                        })
+                    )
                 }
             })
             .catch(reason => {
@@ -37,9 +43,14 @@ export default class Introduction extends Component {
 
     render() {
         return (
-            <View>
+            <View style={{ flex: 1 }}>
                 <Image
                     source={APP_LOGO}
+                    style={{
+                        flex: 1,
+                        resizeMode: 'cover',
+                        alignSelf: 'center'
+                    }}
                 />
             </View>
         )

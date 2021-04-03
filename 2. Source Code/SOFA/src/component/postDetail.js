@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, TouchableHighlight, TouchableOpacity, FlatList, TouchableWithoutFeedback, Modal, StyleSheet, TextInput, ToastAndroid } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, TouchableOpacity, FlatList, TouchableWithoutFeedback, Modal, StyleSheet, TextInput, ToastAndroid, ActivityIndicator } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -75,6 +75,7 @@ export default class PostDetail extends Component {
             commentPage: 1,
             isRefresing: false,
             commentText: '',
+            isLoading: true
         }
     }
 
@@ -291,11 +292,13 @@ export default class PostDetail extends Component {
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.setState({ post: response.listPost[0] });
+                    this.setState({ isLoading: false });
                 }
             })
             .catch(reason => {
                 console.log(reason);
                 ToastAndroid.show("Tải bài viết không thành công! Hãy thử lại!", ToastAndroid.LONG);
+                this.setState({ isLoading: false });
             });
     }
 
@@ -465,6 +468,7 @@ export default class PostDetail extends Component {
     componentDidMount() {
         this.checkLoginToken();
         this._screenFocus = this.props.navigation.addListener('focus', () => {
+            this.setState({ isLoading: true });
             this.checkLoginToken()
             let { postID } = this.props.route.params;
             this.setState({ post: { ...this.state.post, id: postID } });
@@ -473,9 +477,8 @@ export default class PostDetail extends Component {
     }
 
     render() {
-        const { post, isShowImage, currentShowImage, commentText } = this.state;
+        const { post, isShowImage, currentShowImage, commentText, isLoading } = this.state;
         return (
-
             <View style={{
                 flex: 1,
                 backgroundColor: 'white'
@@ -746,7 +749,11 @@ export default class PostDetail extends Component {
                     }}>
                         <Text>Nội dung này không tồn tại hoặc đã bị xóa!</Text>
                     </View>)}
-
+                {isLoading ? (
+                    <View style={{ flex: 1, backgroundColor:'black' }}>
+                        <ActivityIndicator size="large" color="#00ff00" />
+                    </View>
+                ) : <View></View>}
             </View >
         )
     }
