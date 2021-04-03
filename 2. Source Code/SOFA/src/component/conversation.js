@@ -15,6 +15,8 @@ import * as Style from '../style/style';
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
 
+import Session from "../common/session";
+
 export default class Conversation extends Component {
     constructor(props) {
         super(props);
@@ -169,6 +171,7 @@ export default class Conversation extends Component {
     getProfile = async () => {
         console.log('Get my profile');
         const { uid1, uid2 } = this.props.route.params;
+        Session.getInstance().currentUserChat = uid2;
         var { message } = this.state;
         await this.getData('token')
             .then(result => {
@@ -408,6 +411,10 @@ export default class Conversation extends Component {
         console.log('unmount');
         Keyboard.removeAllListeners('keyboardDidShow');
         Keyboard.removeAllListeners('keyboardDidHide');
+        Session.getInstance().currentUserChat = 0;
+        if (this.connection) {
+            this.connection.stop();
+        }
     }
 
     render() {
