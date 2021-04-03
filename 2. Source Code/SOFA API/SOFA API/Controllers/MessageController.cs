@@ -46,6 +46,7 @@ namespace SOFA_API.Controllers
             newMessage.ImageUrl = imageUrl;
             newMessage.Time = sqlFormattedDate;
             MessageViewModelOut message = MessageService.Instance.InsertNewMessage(newMessage);
+            message.FromAccountId = newMessage.FromAccountId;
             await messageHub.Clients.User(message.ToAccountId.ToString()).SendAsync("NewMessage", message);
             return Ok(message);
         }
