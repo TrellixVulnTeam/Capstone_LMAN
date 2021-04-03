@@ -71,4 +71,13 @@ const storeData = async (key, value) => {
   }
 }
 
-export { scale, calculateTime, getData, storeData };
+const isInteger = (number) => {
+
+  if (number == (parseInt(number, 10))) {
+    return number + '.0';
+  }
+  return number;
+
+}
+
+export { scale, calculateTime, getData, storeData, isInteger };
