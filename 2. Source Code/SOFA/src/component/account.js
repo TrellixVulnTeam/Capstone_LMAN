@@ -241,29 +241,7 @@ export default class Profile extends Component {
                             marginRight: Utils.scale(15, Const.Horizontal),
                             borderBottomColor: 'black',
                             borderBottomWidth: 1,
-                        }} />
-
-                        <View style={{
-                            marginLeft: Utils.scale(3, Const.Horizontal),
-                        }}>
-                            <TouchableOpacity onPress={() => this.onPressMessage()}>
-                                <View style={{
-                                    flexDirection: 'row',
-                                }}>
-                                    <AntDesign name='message1' size={30} color={'black'} style={{
-                                        marginTop: Utils.scale(15, Const.Horizontal),
-                                        
-                                    }} />
-                                    <Text style={{
-                                        marginLeft: Utils.scale(15, Const.Horizontal),
-                                        marginTop: Utils.scale(15, Const.Vertical),
-                                        alignSelf: 'center',
-                                        fontSize: Utils.scale(17, Const.Horizontal), 
-                                        fontWeight: 'bold'
-                                    }}>Demo tin nhắn</Text>
-                                </View>                              
-                            </TouchableOpacity>
-                        </View>
+                        }} />   
 
                         <View style={{
                             marginLeft: Utils.scale(3, Const.Horizontal),

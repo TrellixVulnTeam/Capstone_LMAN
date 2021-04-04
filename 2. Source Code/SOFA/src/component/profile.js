@@ -177,8 +177,6 @@ export default class Profile extends Component {
         //this.setState({ account: {}, avatarUri: '', pageNumber: 1, listImageAll: [] });
     }
 
-
-
     componentDidMount() {
         console.log('My Profile');
         this.setState({ account: {}, avatarUri: '', pageNumber: 1, listImageAll: [] });
@@ -286,16 +284,20 @@ export default class Profile extends Component {
                         numColumns={3}
                         keyExtractor={(item) => item.id + ''}
                         renderItem={({ item, index }) => {
-                            return (<Image
-                                style={{
-                                    marginLeft: index % 3 == 0 ? Utils.scale(33.5, Const.Horizontal) : Utils.scale(0, Const.Horizontal),
-                                    height: Utils.scale(100, Const.Vertical),
-                                    width: Utils.scale(100, Const.Vertical),
-                                    borderWidth: 0.5,
-                                    borderColor: 'black',
-                                }}
-                                source={{ uri: Const.assets_domain + item.url }}
-                            />)
+                            return (
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('PostDetail', { postID: item.postID })}>
+                                    <Image
+                                        style={{
+                                            marginLeft: index % 3 == 0 ? Utils.scale(33.5, Const.Horizontal) : Utils.scale(0, Const.Horizontal),
+                                            height: Utils.scale(100, Const.Vertical),
+                                            width: Utils.scale(100, Const.Vertical),
+                                            borderWidth: 0.5,
+                                            borderColor: 'black',
+                                        }}
+                                        source={{ uri: Const.assets_domain + item.url }}
+                                    />
+                                </TouchableOpacity>
+                            )
                         }
                         }
                     />
