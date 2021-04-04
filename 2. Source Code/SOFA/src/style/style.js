@@ -3,7 +3,7 @@ import { scale } from '../common/utils';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
 import { Vertical, Horizontal } from '../common/const';
-export const statusBarColor = '#308099'
+export const statusBarColor = '#2a7ea0'
 export const common = StyleSheet.create({
   container: {
     flex: 1,

@@ -20,7 +20,7 @@ import * as Const from "../common/const";
 import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
-import { AVATAR, ADD_PRIMARY_IMAGE, BACKGROUND } from '../../image/index';
+import { AVATAR, ADD_PRIMARY_IMAGE, BACKGROUND, OCEAN_BACKGROUND } from '../../image/index';
 import InfoField from './infoField';
 export default class CreatePost extends Component {
     constructor(props) {
@@ -352,7 +352,7 @@ export default class CreatePost extends Component {
                             listAccessoriesImage: [],
                             isPrePosting: false
                         })
-                        this.props.navigation.navigate('Newsfeed', {'preScreen': 'CreatePost'});
+                        this.props.navigation.navigate('Newsfeed', { 'preScreen': 'CreatePost' });
                     }
                 } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
                     this.setState({ isLoading: true });
@@ -452,7 +452,10 @@ export default class CreatePost extends Component {
                     <View style={Style.newsfeed.ArticleHeader}>
                         <Text
                             onPress={() => this.navigateProfile(account.accountID)}
-                            style={Style.newsfeed.ArticleAuthor}>{account.firstName + ' ' + account.lastName}</Text>
+                            style={{
+                                fontFamily: 'SanFranciscoText-Bold',
+                                color: 'black'
+                            }}>{account.firstName + ' ' + account.lastName}</Text>
                         <DropDownPicker
                             defaultValue={3}
                             containerStyle={{ width: scale(150, Horizontal), height: scale(30, Vertical) }}
@@ -513,7 +516,7 @@ export default class CreatePost extends Component {
                                 <FontAwesome5 style={styles().IconTool} name='file-image' size={30} color={'black'} />
                             }
                         >
-                            <Image style={styles().ToolAreaBackground} source={BACKGROUND} />
+                            <Image style={styles().ToolAreaBackground} source={OCEAN_BACKGROUND} />
                         </MaskedView>
                     </TouchableWithoutFeedback>
                     <TouchableWithoutFeedback onPress={() => this.takePicture('primary')}>
@@ -523,7 +526,7 @@ export default class CreatePost extends Component {
                                 <Entypo style={styles().IconTool} name='camera' size={30} color={'black'} />
                             }
                         >
-                            <Image style={styles().ToolAreaBackground} source={BACKGROUND} />
+                            <Image style={styles().ToolAreaBackground} source={OCEAN_BACKGROUND} />
                         </MaskedView>
                     </TouchableWithoutFeedback>
                 </View>

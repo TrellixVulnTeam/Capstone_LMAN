@@ -936,7 +936,11 @@ export default class Newsfeed extends Component {
                     source={OCEAN_BACKGROUND}
                     style={{ flex: 1, resizeMode: 'cover', justifyContent: 'center' }}>
                     <View style={[Style.newsfeed.Header]}>
-                        <Text style={Style.newsfeed.SofaTitle}>SoFa</Text>
+                        <View>
+                            <Text style={[Style.newsfeed.SofaTitle, { color: 'white', position: 'absolute', top: -2, left: -2 }]}>SoFa</Text>
+                            <Text style={Style.newsfeed.SofaTitle}>SoFa</Text>
+
+                        </View>
                         <TouchableOpacity
                             style={Style.newsfeed.searchIcon}
                         >

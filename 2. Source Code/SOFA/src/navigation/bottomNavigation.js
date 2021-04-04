@@ -29,13 +29,14 @@ export default function Navigation() {
       initialRouteName="NewsfeedStack"
       tabBarOptions={{
         showLabel: false,
-        activeTintColor: 'white',
-        inactiveTintColor: '#ffd7c0',
+        activeTintColor: '#308099',
+        inactiveTintColor: '#8EB4BF',
         activeBackgroundColor: 'transparent',
         inactiveBackgroundColor: 'transparent',
         height: scale(50, Vertical),
         style: {
-          backgroundColor: '#308099'
+          backgroundColor: '#d9f2f6'
+          
         }
       }}>
       <Tab.Screen
