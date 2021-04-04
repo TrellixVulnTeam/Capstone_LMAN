@@ -69,7 +69,6 @@ export default class Message extends Component {
                 response.code &&
                 response.code == Const.REQUEST_CODE_SUCCESSFULLY
               ) {
-                console.log(response);
                 this.setState({
                   accountId: response.accountId,
                   firstName: response.firstName,

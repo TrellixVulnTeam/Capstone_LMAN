@@ -1,48 +1,63 @@
 import React, {Component} from 'react';
-import { SafeAreaView, ImageBackground, View, Text, Button, Image, FlatList, TouchableOpacity} from 'react-native';
+import {
+  SafeAreaView,
+  ImageBackground,
+  View,
+  Text,
+  Button,
+  Image,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import * as Request from '../common/request';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Style from '../style/style';
 import * as Const from '../common/const';
 import {AVATAR} from '../../image/index';
 import {ScrollView} from 'react-native-gesture-handler';
+import { SearchBar } from 'react-native-elements';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as Utils from "../common/utils";
+
+
 
 export default class MessageSearch extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        listTransaction: [],
-        avatarUri: '',
-        token: '',
-      };
+  constructor(props) {
+    super(props);
+    this.state = {
+      listTransaction: [],
+      avatarUri: '',
+      token: '',
+    };
+  }
+  getData = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        return value;
+      }
+    } catch (e) {
+      console.log(e);
+      return null;
     }
-    getData = async (key) => {
-      try {
-        const value = await AsyncStorage.getItem(key);
-        if (value !== null) {
-          return value;
-        }
-      } catch (e) {
-        console.log(e);
-        return null;
-      }
-    };
-    storeData = async (key, value) => {
-      try {
-        const jsonValue = JSON.stringify(value);
-        await AsyncStorage.setItem(key, jsonValue);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    
+  };
+  storeData = async (key, value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem(key, jsonValue);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   componentDidMount() {
-    this.searchMessage('Vi');
+    this.searchMessage();
   }
   componentWillUnmount() {}
-  
-  searchMessage(searchValue) {
+
+  searchMessage() {
     this.getData('token')
       .then((result) => {
         if (result) {
@@ -52,33 +67,30 @@ export default class MessageSearch extends Component {
             Accept: 'application/json',
             Authorization:
               'Bearer ' + result.toString().substr(1, result.length - 2),
-
           };
+          let url = Const.domain + 'api/Conversation/SearchConversation';
           let data = new FormData();
-          data.append("searchValue", searchValue);
-          let url = Const.domain + '/api/Conversation/SearchConversation';
-          Request.Post(url , header , data )
+          data.append('searchValue', 'A');
+          Request.Post(url, header, data)
             .then((response) => {
               if (
                 response &&
                 response.code &&
                 response.code == Const.REQUEST_CODE_SUCCESSFULLY
               ) {
+                
                 let tempArray = [];
                 response.listSearch.forEach((item) => {
-                  let list = {
-                    accountId: item.accountId,
-                    firstName: item.firstName,
-                    lastName: item.lastName,
-                    userName: item.userName ,
-                    avatarUri: item.avatarUri,
-                  };
-                  tempArray.push(list);
+                  let listdata = {
+                    accountId : item.accountId,
+                    firstName : item.firstName,
+                    lastName : item.lastName,
+                    userName : item.userName,
+                    avatarUri : item.avatarUri};
+                  tempArray.push(listdata);
                 });
-                this.setState({listSearch: tempArray});
-                this.setState({
-                  token: result.toString().substr(1, result.length - 2),
-                });
+                this.setState({dataSearch: tempArray});
+                
               } else {
                 this.props.navigation.navigate('Login');
               }
@@ -96,12 +108,95 @@ export default class MessageSearch extends Component {
         this.props.navigation.navigate('Login');
       });
   }
+  searchConversation(){
 
+  }
+
+
+
+  render() {
+    const {
+      dataSearch
+    } = this.state;
+    return (
+      <View>
+        <SearchBar
+          placeholder="Tìm kiếm..."
+          lightTheme
+          round
+          onFocus={() => this.searchConversation()}
+          autoCorrect={false}
+        />
+        <FlatList
+          data={dataSearch}
+          renderItem={({item, index}) => {
+            return (
+              <ListMessageSearch
+                navigate={this.props.navigation.navigate}
+                accountId={item.accountId}
+                firstName={item.firstName}
+                lastName={item.lastName}
+                userName={item.userName}
+                avatarUri={item.avatarUri}
+                
+              />
+            );
+          }}
+          keyExtractor={(item, index) => `${item.accountId}`}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                height: 1,
+                backgroundColor: 'steelblue',
+              }}
+            />
+          )}
+        />
+      </View>
+    );
+  }
+}
+class ListMessageSearch extends Component {
+  ConversationDetail = () => {
+    this.props.navigate('Conversation', {
+      uid1: this.props.accountId,
+      uid2: this.props.chatWithAccountId,
+    });
+  };
   render() {
 
     return (
-        <View>
-<Text>ABC</Text>
-        </View>
-    )}
+      <TouchableOpacity onPress={this.ConversationDetail}>
+      <View style={{
+          flexDirection: 'row',
+      }}>
+          <View>
+          <Image 
+              source={(this.props.avatarUri && this.props.avatarUri.length > 0) ? { uri: this.props.avatarUri } : AVATAR}
+              resizeMode={"cover"}
+              style={{
+                  height: Utils.scale(40, Const.Horizontal),
+                  width: Utils.scale(40, Const.Horizontal),
+                  borderRadius: Utils.scale(20, Const.Horizontal),
+                  borderWidth: 1,
+                  overflow: 'hidden',
+                  //alignSelf: 'center',
+                  //marginLeft: Utils.scale(149, Const.Horizontal),
+              }} />
+          </View>
+          <View style={{
+              marginLeft: Utils.scale(10, Const.Horizontal),
+          }}>
+              <Text style={{
+                  fontSize: Utils.scale(19, Const.Horizontal),
+                  fontWeight: 'bold',
+              }}>{this.props.firstName+' '+this.props.lastName}</Text>
+              <Text style={{
+                  fontSize: Utils.scale(13, Const.Horizontal),
+              }}>@{this.props.userName}</Text>
+          </View>
+      </View>
+  </TouchableOpacity>
+    );
+  }
 }

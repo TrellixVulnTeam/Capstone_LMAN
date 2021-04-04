@@ -8,14 +8,16 @@ namespace SOFA_API.ViewModel.Conversation
 {
     public class ListSearchConversationViewModelOut : BaseModelOut
     {
+        public int accountID { get; set; }
         public List<SearchCoversationViewModelOut> listSearch { get; set; }
 
         public ListSearchConversationViewModelOut()
         {
         }
 
-        public ListSearchConversationViewModelOut(List<SearchCoversationViewModelOut> listSearch)
+        public ListSearchConversationViewModelOut(int accountID, List<SearchCoversationViewModelOut> listSearch)
         {
+            this.accountID = accountID;
             this.listSearch = listSearch;
         }
     }

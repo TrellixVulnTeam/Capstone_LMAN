@@ -107,7 +107,7 @@ namespace SOFA_API.DAO
         /// <returns></returns>
         public ListSearchConversationViewModelOut SearchConversation(int accountId, string searchValue)
         {
-            ListSearchConversationViewModelOut viewModelOut = null;
+            ListSearchConversationViewModelOut viewModelOut = new ListSearchConversationViewModelOut();
             List<SearchCoversationViewModelOut> searchConversation = new List<SearchCoversationViewModelOut>();
             try
             {
@@ -119,7 +119,7 @@ namespace SOFA_API.DAO
                     {
                         searchConversation.Add(new SearchCoversationViewModelOut(row));
                     }
-                    viewModelOut = new ListSearchConversationViewModelOut(searchConversation);
+                    viewModelOut = new ListSearchConversationViewModelOut(accountId, searchConversation);
                     }
             }
             catch (Exception e)

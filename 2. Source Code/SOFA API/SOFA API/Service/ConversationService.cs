@@ -33,7 +33,7 @@ namespace SOFA_API.Service
         /// <returns></returns>
         public ListConversationViewModelOut getListConversation(int accountId)
         {
-            ListConversationViewModelOut listConversation = null;
+            ListConversationViewModelOut listConversation = new ListConversationViewModelOut();
             try
             {
                 List<int> listChatwith = ConversationDAO.Instance.GetListAccountChat(accountId);
