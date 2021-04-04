@@ -71,5 +71,28 @@ namespace SOFA_API.Service
             }
             return listSearch;
         }
+        public ConversationViewModelOut DeleteConversation(int accountId, int chatWithAccountId)
+        {
+            ConversationViewModelOut newConversation = new ConversationViewModelOut();
+            try
+            {
+                int result = ConversationDAO.Instance.DeleteConvsersation(accountId, chatWithAccountId);
+                if (result == 0)
+                {
+                    newConversation.Code = Const.REQUEST_CODE_FAILED;
+                    newConversation.ErrorMessage = MessageUtils.ERROR_DELETE_CONVERSATION_FAILED;
+                }
+                else
+                {
+                    newConversation.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+            }
+            catch (Exception e)
+            {
+                newConversation.ErrorMessage = e.ToString();
+                newConversation.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return newConversation;
+        } 
     }
 }

@@ -8,6 +8,7 @@ import {
   Button,
   Image,
   FlatList,
+  Alert,
 } from 'react-native';
 import * as Request from '../common/request';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -117,7 +118,7 @@ export default class Message extends Component {
     this.getListCoversation();
   }
   searchConversation() {
-
+    this.props.navigation.navigate('MessageSearch');
   }
 
   render() {
@@ -181,7 +182,7 @@ export default class Message extends Component {
                 onFocus={() => this.searchConversation()}
                 autoCorrect={false}
               />
-              
+
               <FlatList
                 data={listConversations}
                 renderItem={({item, index}) => {
@@ -227,12 +228,53 @@ class MyLisConversation extends Component {
   render() {
     const swipeSetting = {
       autoClose: true,
-      onClose: (secId, rowId, direction) => {},
-      onOpen: (secId, rowId, direction) => {},
+      onClose: (secId, rowId, direction) => {
+        if (this.state.activeRowkey != null) {
+          this.setState({activeRowkey: null});
+        }
+      },
+      onOpen: (secId, rowId, direction) => {
+        this.setState({activeRowkey: this.props.chatWithAccountId});
+      },
       right: [
         {
           onPress: () => {
-            alert('Swipe');
+            Alert.alert(
+              'Alert',
+              'Bạn có chắc chắn muốn xóa cuộc hội thoại này?',
+              [
+                {
+                  text: 'No',
+                  onPress: () => console.log('Cancel Delete Conversation'),
+                },
+                {
+                  text: 'Yes',
+                  onPress: () => {
+                    var header = {
+                      "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                      "Accept": 'application/json',
+                  };
+                  let url = Const.domain + 'api/Conversation/deleteConversation';
+                  let data = new FormData();
+          data.append("AccountId", this.props.chatWithAccountId);
+                  Request.Post(url, header, data)
+                      .then(response => {
+                          if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                             
+                              alert('delete success!');
+                          } else {
+                              this.props.navigation.navigate('Login')
+                          }
+                      })
+                      .catch(reason => {
+                          console.log(reason);
+                          this.props.navigation.navigate('Login')
+                      });
+
+                  },
+                },
+              ],
+            );
           },
           text: 'Delete',
           type: 'delete',

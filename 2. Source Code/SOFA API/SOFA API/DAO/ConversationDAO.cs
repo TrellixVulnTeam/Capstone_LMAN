@@ -98,6 +98,13 @@ namespace SOFA_API.DAO
             }
             return listConversationView;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="searchValue"></param>
+        /// <returns></returns>
         public ListSearchConversationViewModelOut SearchConversation(int accountId, string searchValue)
         {
             ListSearchConversationViewModelOut viewModelOut = null;
@@ -121,7 +128,20 @@ namespace SOFA_API.DAO
                 throw e;
             }
             return viewModelOut;
-
+        }
+        public int DeleteConvsersation(int accountId, int chatWithAccountId)
+        {
+            int result = 0;
+            try
+            {
+                string sql = "EXEc [dbo].[DeleteCoversation] @AccountID , @ChatWithAccountId";
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountId, chatWithAccountId });
+            }catch(Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+            return result;
         }
 
 

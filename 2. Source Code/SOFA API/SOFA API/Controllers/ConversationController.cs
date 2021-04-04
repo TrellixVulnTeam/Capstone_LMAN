@@ -38,5 +38,13 @@ namespace SOFA_API.Controllers
             ListSearchConversationViewModelOut modelOut = ConversationService.Instance.SearchConversation(accountId, modelIn.searchValue);
             return Ok(modelOut);
         }
+        [HttpPost("deleteConversation")]
+        public ActionResult DeleteMessage([FromForm] ConversationViewModelIn modelIn)
+        {
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int accountId = Int32.Parse(idClaim.Value.Trim());
+            ConversationViewModelOut conversation = ConversationService.Instance.DeleteConversation(accountId,  Int32.Parse(modelIn.AccountId.ToString()));
+            return Ok(conversation);
+        }
     }
 }

@@ -24,6 +24,7 @@ namespace SOFA_API.Common
         public const string ERROR_DONT_HAVE_PERMISSION = "You don't have permission";
         public const string ERROR_ADD_NEW_MESSAGE_FAILED = "Send new message failed";
         public const string ERROR_DELETE_MESSAGE_FAILED = "Delete message failed";
+        public const string ERROR_DELETE_CONVERSATION_FAILED = "Delete conversation failed";
     }
 
 
