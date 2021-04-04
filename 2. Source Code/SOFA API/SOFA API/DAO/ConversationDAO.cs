@@ -117,9 +117,9 @@ namespace SOFA_API.DAO
                 {
                     foreach (DataRow row in data.Rows)
                     {
-                        searchConversation.Add(new SearchCoversationViewModelOut(row));
+                        searchConversation.Add(new SearchCoversationViewModelOut(row, accountId));
                     }
-                    viewModelOut = new ListSearchConversationViewModelOut(accountId, searchConversation);
+                    viewModelOut = new ListSearchConversationViewModelOut( searchConversation);
                     }
             }
             catch (Exception e)

@@ -27,8 +27,6 @@ export default class MessageSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listTransaction: [],
-      avatarUri: '',
       token: '',
     };
   }
@@ -78,10 +76,11 @@ export default class MessageSearch extends Component {
                 response.code &&
                 response.code == Const.REQUEST_CODE_SUCCESSFULLY
               ) {
-                
+               
                 let tempArray = [];
                 response.listSearch.forEach((item) => {
                   let listdata = {
+                    accountSearch: item.accountSearch,
                     accountId : item.accountId,
                     firstName : item.firstName,
                     lastName : item.lastName,
@@ -133,6 +132,7 @@ export default class MessageSearch extends Component {
             return (
               <ListMessageSearch
                 navigate={this.props.navigation.navigate}
+                accountSearch={item.accountSearch}
                 accountId={item.accountId}
                 firstName={item.firstName}
                 lastName={item.lastName}
@@ -159,8 +159,8 @@ export default class MessageSearch extends Component {
 class ListMessageSearch extends Component {
   ConversationDetail = () => {
     this.props.navigate('Conversation', {
-      uid1: this.props.accountId,
-      uid2: this.props.chatWithAccountId,
+      uid1: this.props.accountSearch,
+      uid2: this.props.accountId,
     });
   };
   render() {
