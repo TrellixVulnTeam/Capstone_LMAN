@@ -25,6 +25,7 @@ import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON, MORE_ICON
 import { TextInput } from 'react-native-gesture-handler';
 import { acc, color } from 'react-native-reanimated';
 import NotificationWSS from '../service/NotificationWSS';
+import PushNotification from 'react-native-push-notification';
 
 export default class Profile extends Component {
     constructor(props) {
@@ -97,6 +98,7 @@ export default class Profile extends Component {
         let notificationWSS = NotificationWSS.getInstance(false);
         if(notificationWSS.getConnection()){
             notificationWSS.getConnection().stop();
+            PushNotification.setApplicationIconBadgeNumber(0)
         }
         this.props.navigation.navigate('Login');
     }

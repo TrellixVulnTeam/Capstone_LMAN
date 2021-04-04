@@ -40,6 +40,7 @@ import * as MarkupPostService from '../service/markupPostService';
 import * as NotificationService from '../service/notificationService';
 import * as FollowService from '../service/followService';
 import PostMenu from './postMenu';
+import PushNotification from "react-native-push-notification";
 
 const BadgedIcon = withBadge(1)(Icon);
 
@@ -419,6 +420,7 @@ export default class Newsfeed extends Component {
             .then((response) => {
                 // console.log('Unread notfication', response.listNoti.length);
                 this.setState({ numberUnreadNotification: response.listNoti.length });
+                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification);
                 this.notificationConnection();
             })
             .catch((reason) => {
@@ -456,18 +458,8 @@ export default class Newsfeed extends Component {
                                     numberUnreadNotification:
                                         this.state.numberUnreadNotification + 1,
                                 });
+                                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification);
                             }
-                            this.setState({
-                                numberUnreadNotification:
-                                    this.state.numberUnreadNotification + 1,
-                            });
-                            // if (data) {
-                            //     PushNotification.localNotification({
-                            //         channelId: 'Thông báo',
-                            //         title: "Thông báo",
-                            //         message: data.fromAccountName + ' ' + data.content,
-                            //     });
-                            // }
                         });
                     }
                 }
