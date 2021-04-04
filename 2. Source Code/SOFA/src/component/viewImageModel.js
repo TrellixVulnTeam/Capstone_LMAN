@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, TouchableHighlight, Alert, TouchableWithoutFeedback, Modal, Image, ScrollView } from 'react-native';
+import { View, Text, StatusBar, TouchableHighlight, Alert, TouchableWithoutFeedback, Modal, Image, ScrollView, PermissionsAndroid, Platform, ToastAndroid } from 'react-native';
+import CameraRoll from "@react-native-community/cameraroll";
+import RNFetchBlob from 'rn-fetch-blob';
 import { createImageProgress } from 'react-native-image-progress';
 import ProgressCircle from 'react-native-progress/Circle';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -18,8 +20,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
-import { scale } from '../common/utils';
+import { scale, requestPermission } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default class ViewImageModal extends Component {
@@ -31,7 +34,36 @@ export default class ViewImageModal extends Component {
             isLogin: false,
             isShowDetail: true,
             isShowMore: false,
+            isShowMenu: false
         }
+    }
+
+    async hasAndroidPermission() {
+        const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
+        const hasPermission = await PermissionsAndroid.check(permission);
+        if (hasPermission) {
+            return true;
+        }
+
+        const status = await PermissionsAndroid.request(permission);
+        return status === 'granted';
+    }
+
+    saveImage = async () => {
+        await requestPermission(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+        RNFetchBlob.config({
+            fileCache: true,
+            appendExt: 'png',
+        })
+            .fetch('GET', Const.assets_domain + this.props.image.url)
+            .then(res => {
+                CameraRoll.save(res.data, { type: 'photo', album: 'Sofa' })
+                    .then(res => { console.log(res); ToastAndroid.show("Đã lưu ảnh này", ToastAndroid.SHORT) })
+                    .catch(err => { console.log(err); ToastAndroid.show("Lưu ảnh không thành công!", ToastAndroid.SHORT) })
+            })
+            .catch(error => { console.log(error); ToastAndroid.show("Lưu ảnh không thành công!", ToastAndroid.SHORT) });
+        this.setState({ isShowMenu: false })
     }
 
     getContentDemo(content) {
@@ -60,15 +92,15 @@ export default class ViewImageModal extends Component {
     }
 
     render() {
-        const { isShowDetail, isShowMore } = this.state;
+        const { isShowDetail, isShowMore, isShowMenu } = this.state;
         const { visible, post, image, onRequestClose } = this.props;
         return (
             <View>
+                <StatusBar hidden={true} />
                 <Modal
                     visible={visible}
                     onRequestClose={() => onRequestClose()}
                 >
-                    <StatusBar hidden={true} />
                     <TouchableWithoutFeedback
                         onPress={() => this.setState({ isShowDetail: !isShowDetail, isShowMore: false })}
                     >
@@ -80,14 +112,20 @@ export default class ViewImageModal extends Component {
                                     height: scale(711, Vertical),
                                     resizeMode: 'contain'
                                 }} />
+
                         </View>
                     </TouchableWithoutFeedback>
+                    <MaterialCommunityIcons
+                        onPress={() => { this.setState({ isShowMenu: true, isShowDetail: false }) }}
+                        style={{ position: 'absolute', right: scale(20, Horizontal), top: scale(20, Vertical) }}
+                        name='dots-horizontal' size={30} color={'white'} />
                     {isShowDetail ? (
                         <ScrollView style={{
                             position: 'absolute',
-                            bottom: scale(10, Vertical),
+                            bottom: scale(0, Vertical),
                             backgroundColor: 'rgba(26,26,26,0.4)',
-                            paddingLeft: scale(10, Horizontal)
+                            paddingLeft: scale(10, Horizontal),
+                            paddingBottom: scale(10, Vertical)
                         }}>
                             <View>
                                 <Text
@@ -102,7 +140,6 @@ export default class ViewImageModal extends Component {
                             <TouchableWithoutFeedback
                                 onPress={() => this.setState({ isShowMore: !isShowMore })}
                             >
-
                                 <View style={{
                                     paddingTop: scale(10, Vertical),
                                     flexDirection: 'row',
@@ -166,6 +203,56 @@ export default class ViewImageModal extends Component {
                         </ScrollView>
                     ) : (<View></View>)
                     }
+                    <Modal
+                        animationType='slide'
+                        visible={isShowMenu}
+                        transparent={true}
+                        onRequestClose={() => this.setState({ isShowMenu: false })}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            onPressOut={() => this.setState({ isShowMenu: false, isShowDetail: true })}
+                            style={{
+                                paddingTop: scale(611, Vertical),
+                                backgroundColor: 'transparent',
+                            }}
+                        >
+
+                            <TouchableHighlight
+                                onPress={() => this.saveImage()}
+                                style={{
+                                    marginBottom: scale(10, Vertical),
+                                    marginLeft: 'auto',
+                                    marginRight: 'auto',
+                                    backgroundColor: '#AAAAAA',
+                                    borderRadius: 10,
+                                    width: scale(300, Horizontal),
+                                    height: scale(35, Vertical),
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <Text style={{ color: 'white' }}>Lưu hình ảnh</Text>
+                            </TouchableHighlight>
+                            <TouchableHighlight
+                                onPress={() => this.setState({ isShowMenu: false })}
+
+                                style={{
+                                    marginBottom: scale(10, Vertical),
+                                    marginLeft: 'auto',
+                                    marginRight: 'auto',
+                                    backgroundColor: '#AAAAAA',
+                                    borderRadius: 10,
+                                    width: scale(300, Horizontal),
+                                    height: scale(35, Vertical),
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <Text style={{ color: 'white' }}>Hủy bỏ</Text>
+                            </TouchableHighlight>
+                        </TouchableOpacity>
+                    </Modal>
                 </Modal>
             </View>
         )

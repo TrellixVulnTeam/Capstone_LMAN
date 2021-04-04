@@ -275,9 +275,11 @@ export default class PostMenu extends Component {
                     this.checkFollow();
                 } else {
                     this.setState({ account: {}, isLogin: false });
+                    this.setState({ isReady: true });
                 }
             })
             .catch(reason => {
+                this.setState({ isReady: true });
                 console.log(reason);
                 this.setState({ account: {}, isLogin: false });
             })

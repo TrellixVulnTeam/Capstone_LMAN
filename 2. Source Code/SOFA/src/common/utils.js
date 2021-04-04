@@ -1,4 +1,4 @@
-import { Dimensions, StatusBar } from 'react-native';
+import { Dimensions, StatusBar, PermissionsAndroid } from 'react-native';
 import * as Const from './const';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -77,7 +77,29 @@ const isInteger = (number) => {
     return number + '.0';
   }
   return number;
-
 }
+const requestPermission = async (permission) => {
+  try {
+    if (PermissionsAndroid.check(permission)) {
+      const granted = await PermissionsAndroid.request(
+        permission,
+        {
+          title: "App Camera Permission",
+          message: "App needs access to your camera ",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("Camera permission given");
+      } else {
+        console.log("Camera permission denied");
+      }
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
 
-export { scale, calculateTime, getData, storeData, isInteger };
+export { scale, calculateTime, getData, storeData, isInteger, requestPermission };

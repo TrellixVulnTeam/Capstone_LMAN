@@ -3,15 +3,23 @@
  */
 import ReactNativeForegroundService from '@supersami/rn-foreground-service';
 import 'react-native-gesture-handler';
-import {AppRegistry} from 'react-native';
+import { AppRegistry, PermissionsAndroid } from 'react-native';
+import CameraRoll from "@react-native-community/cameraroll";
 import Navigation from './src/navigation/InitNavigation';
-import {name as appName} from './app.json';
-import {typography} from './utils/typography';
+import { name as appName } from './app.json';
+import { typography } from './utils/typography';
 import PushNotification from 'react-native-push-notification';
 import NotificationWSS from './src/service/NotificationWSS';
 import MessageWSS from './src/service/messageWSS';
+import { requestPermission } from './src/common/utils';
 
 typography();
+
+requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+requestPermission(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+
+
 
 PushNotification.configure({
   onRegister: function (token) {
