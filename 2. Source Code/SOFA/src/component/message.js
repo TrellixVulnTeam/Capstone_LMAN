@@ -28,6 +28,7 @@ export default class Message extends Component {
     super(props);
     this.state = {
       activeRowkey: null,
+      refreshing: false
     };
   }
   getData = async (key) => {
@@ -218,13 +219,19 @@ export default class Message extends Component {
     );
   }
 }
-class MyLisConversation extends Component {
+class MyLisConversation extends Message {
+
   ConversationDetail = () => {
     this.props.navigate('Conversation', {
       uid1: this.props.accountId,
       uid2: this.props.chatWithAccountId,
     });
   };
+  formatTime(dataDate) {
+    let time = new Date(dataDate);
+    let date =  time.getDate() + "/" + parseInt(time.getMonth() + 1) ;
+    return date;
+}
   render() {
     const swipeSetting = {
       autoClose: true,
@@ -250,27 +257,49 @@ class MyLisConversation extends Component {
                 {
                   text: 'Yes',
                   onPress: () => {
-                    var header = {
-                      "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                      "Accept": 'application/json',
-                  };
-                  let url = Const.domain + 'api/Conversation/deleteConversation';
-                  let data = new FormData();
-          data.append("AccountId", this.props.chatWithAccountId);
-                  Request.Post(url, header, data)
-                      .then(response => {
-                          if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                             
-                              alert('delete success!');
-                          } else {
-                              this.props.navigation.navigate('Login')
-                          }
+                    this.getData('token')
+                      .then((result) => {
+                        if (result) {
+                          var header = {
+                            'User-Agent':
+                              'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                            Accept: 'application/json',
+                            Authorization:
+                              'Bearer ' +
+                              result.toString().substr(1, result.length - 2),
+                          };
+                          let url =
+                            Const.domain +
+                            'api/Conversation/deleteConversation';
+                          let data = new FormData();
+                          data.append(
+                            'AccountId',
+                            this.props.chatWithAccountId,
+                          );
+                          Request.Post(url, header, data)
+                            .then((response) => {
+                              if (
+                                response &&
+                                response.code &&
+                                response.code == Const.REQUEST_CODE_SUCCESSFULLY
+                              ) {
+                                alert("Delete success!!!")
+                              } else {
+                                this.props.navigation.navigate('Login');
+                              }
+                            })
+                            .catch((reason) => {
+                              console.log(reason);
+                              this.props.navigation.navigate('Login');
+                            });
+                        } else {
+                          this.props.navigation.navigate('Login');
+                        }
                       })
-                      .catch(reason => {
-                          console.log(reason);
-                          this.props.navigation.navigate('Login')
+                      .catch((reason) => {
+                        console.log('failed');
+                        this.props.navigation.navigate('Login');
                       });
-
                   },
                 },
               ],
@@ -283,6 +312,7 @@ class MyLisConversation extends Component {
       rowId: this.props.index,
       SelectionId: 1,
     };
+    
     return (
       <Swipeout {...swipeSetting}>
         <TouchableOpacity onPress={this.ConversationDetail}>
@@ -319,11 +349,12 @@ class MyLisConversation extends Component {
                 }}>
                 {this.props.chatWithFirstName} {this.props.chatWithLastName}
               </Text>
+
               <Text
                 style={{
                   fontSize: Utils.scale(20, Const.Horizontal),
                 }}>
-                {this.props.lastMessage}
+                {this.props.lastMessage}   {this.formatTime(this.props.timeUpdate)}
               </Text>
             </View>
           </View>

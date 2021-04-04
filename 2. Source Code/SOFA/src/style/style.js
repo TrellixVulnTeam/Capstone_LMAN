@@ -650,3 +650,8 @@ export const noti = StyleSheet.create({
   ArticleTime: { fontFamily: 'SanFranciscoText-Regular' },
 
 });
+export const message = StyleSheet.create({
+time:{
+  textAlign: 'right'
+}
+});

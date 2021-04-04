@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace SOFA_API.Controllers
 {
@@ -18,6 +20,7 @@ namespace SOFA_API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize]
         public ActionResult GetListConversation()
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
@@ -31,6 +34,7 @@ namespace SOFA_API.Controllers
         /// <param name="modelIn"></param>
         /// <returns></returns>
         [HttpPost("searchConversation")]
+        [Authorize]
         public ActionResult SearchConversation([FromForm] SearchCoversationViewModelIn modelIn)
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
@@ -39,11 +43,12 @@ namespace SOFA_API.Controllers
             return Ok(modelOut);
         }
         [HttpPost("deleteConversation")]
+        [Authorize]
         public ActionResult DeleteMessage([FromForm] ConversationViewModelIn modelIn)
         {
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
-            int accountId = Int32.Parse(idClaim.Value.Trim());
-            ConversationViewModelOut conversation = ConversationService.Instance.DeleteConversation(accountId,  Int32.Parse(modelIn.AccountId.ToString()));
+            int id = Int32.Parse(idClaim.Value.Trim());
+            ConversationViewModelOut conversation = ConversationService.Instance.DeleteConversation(id,  Int32.Parse(modelIn.AccountId.ToString()));
             return Ok(conversation);
         }
     }
