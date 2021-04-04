@@ -750,7 +750,7 @@ export default class PostDetail extends Component {
                         <Text>Nội dung này không tồn tại hoặc đã bị xóa!</Text>
                     </View>)}
                 {isLoading ? (
-                    <View style={{ flex: 1, backgroundColor:'black' }}>
+                    <View style={{ backgroundColor: 'white', position: 'absolute', height: scale(711, Vertical), width: scale(400, Horizontal), justifyContent: 'center' }}>
                         <ActivityIndicator size="large" color="#00ff00" />
                     </View>
                 ) : <View></View>}

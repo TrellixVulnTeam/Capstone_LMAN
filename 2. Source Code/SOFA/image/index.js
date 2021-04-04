@@ -13,3 +13,6 @@ export const BACKGROUND = require('./background.jpg')
 export const HOANG = require('./hoangdeptraivodich.jpg')
 export const APP_LOGO = require('./app_logo.png')
 export const WHITE_BACKGROUND = require('./white_background.png')
+export const GALAXY_BACKGROUND = require('./Background_Galaxy.png')
+export const OCEAN_BACKGROUND = require('./Background_Ocean.png')
+
