@@ -26,16 +26,6 @@ Begin
 select v.Id, v.Title, v.Content, v.Code, a.UserName as createdBy, v.ToDate as expiredDate
 from Voucher v inner join AccountVoucher av on v.Id = av.VoucherId inner join Account a on av.AccountId = a.Id
 End
-------------------
-Create PROCEDURE [dbo].[getAllBalance]
-AS
-BEGIN
-SELECT TOP 1 [Balance] FROM (Select  accLogs.AfterBalance Balance,tr.[Date]
-From Transactions tr, AccountLogs accLogs
-Where accLogs.TransactionId = tr.Id and accLogs.AccountID= @AccountID
-    UNION ALL
-    SELECT 0 ,0)A ORDER BY [Date] DESC
-END
 ----------------
 Create PROCEDURE AddNewStaff @Username nvarchar(50), @Password nvarchar(MAX),  @FirstName nvarchar(50), @LastName nvarchar(50), @RoleId int, @DateCreated datetime
 AS
