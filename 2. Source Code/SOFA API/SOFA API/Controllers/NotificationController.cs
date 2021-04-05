@@ -26,10 +26,10 @@ namespace SOFA_API.Controllers
         }
 
         [HttpGet("getnotibyid")]
-        public ActionResult GetNotificationByUserID(int page, int rowOfPage)
+        public ActionResult GetNotificationByUserID(int accountID, int page, int rowOfPage)
         {
             int id = Utils.Instance.GetUserID(User.Claims);
-            ListNotificationViewModelOut listNoti = NotificationService.Instance.GetNotificationByToAccount(id,page,rowOfPage);
+            ListNotificationViewModelOut listNoti = NotificationService.Instance.GetNotificationByToAccount(accountID,page,rowOfPage);
             return Ok(listNoti);
         }
 

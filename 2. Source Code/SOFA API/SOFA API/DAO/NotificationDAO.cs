@@ -25,7 +25,7 @@ namespace SOFA_API.DAO
         public ListNotificationViewModelOut GetNotificationByToAccount(int accountID, int page, int rowOfPage)
         {
             ListNotificationViewModelOut listNotification = new ListNotificationViewModelOut();
-            string sql = "EXEC getNotificationByToAccount @accountID";
+            string sql = "EXEC getNotificationByToAccount @accountID , @page , @rowOfPage ";
             try
             {
                 DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID, page, rowOfPage });
