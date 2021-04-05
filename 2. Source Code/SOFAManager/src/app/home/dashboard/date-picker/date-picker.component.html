@@ -1,0 +1,21 @@
+<mat-form-field (click)="datePicker.open(); focusInputField();">
+  <input
+    matInput
+    #input
+    [matDatepicker]="datePicker"
+    placeholder="{{placeholder}}"
+    [required]="required"
+    (click)="datePicker.open()"
+    [formControl]="control"
+    [max]="max"
+    [min]="min"
+    appMaskDate>
+  <mat-error>{{errorMessage}}</mat-error>
+  <mat-datepicker-toggle
+    matSuffix
+    [for]="datePicker"></mat-datepicker-toggle>
+  <mat-datepicker
+      #datePicker
+      startView="multi-year" [startAt]="date"
+  ></mat-datepicker>
+</mat-form-field>
