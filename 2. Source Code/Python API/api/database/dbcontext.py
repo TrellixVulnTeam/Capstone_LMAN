@@ -13,7 +13,7 @@ class DBContext:
 
     def __init__(self):
         if(DBContext.__instance == None):
-            self.connect = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost,1433;DATABASE=CapstonesNoRelation;UID=sa;PWD=123')
+            self.connect = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=198.13.50.243,1433;DATABASE=CapstonesNoRelation;UID=sa;PWD=@Codera3k48')
             DBContext.__instance = self
     @property
     def connect(self):
