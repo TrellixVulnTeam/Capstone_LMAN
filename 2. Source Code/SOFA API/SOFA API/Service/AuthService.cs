@@ -70,6 +70,7 @@ namespace SOFA_API.Service
                     loginViewModelIn.RoleId = Const.ADMIN_ROLE_ID;
                 }
 
+                loginViewModelIn.DateCreated = DateTime.Now;
 
                 int result = AccountDAO.Instance.AddAccount(AccountValidation(loginViewModelIn));
 

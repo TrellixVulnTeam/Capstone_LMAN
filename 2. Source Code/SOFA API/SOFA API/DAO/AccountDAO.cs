@@ -1,6 +1,8 @@
 ﻿using SOFA_API.DTO;
+using SOFA_API.Service;
 using SOFA_API.ViewModel;
 using SOFA_API.ViewModel.Account;
+using SOFA_API.ViewModel.Profile;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -41,9 +43,10 @@ namespace SOFA_API.DAO
 
         public int AddAccount(AccountViewModelIn accountViewModel)
         {
-            string query = "EXEC AddNewAccount @Username , @Password , @Firstname , @Lastname , @Email , @Phone , @RoleId";
+            string query = "EXEC AddNewAccount @Username , @Password , @Firstname , @Lastname , @Email , @Phone , @RoleId , @DateCreated";
             int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { accountViewModel.Username, accountViewModel.Password, 
-                 accountViewModel.Firstname, accountViewModel.Lastname, accountViewModel.Email, accountViewModel.Phone, accountViewModel.RoleId});
+                 accountViewModel.Firstname, accountViewModel.Lastname, accountViewModel.Email, accountViewModel.Phone, accountViewModel.RoleId,
+            accountViewModel.DateCreated});
             return result;
         }
 
@@ -65,6 +68,12 @@ namespace SOFA_API.DAO
             if (data.Rows.Count > 0)
             {
                 AccountViewModelOut account = new AccountViewModelOut(data.Rows[0]);
+                ProfileViewModelOut profile = ProfileService.Instance.GetProfileModelByAccountID(account.Id);
+                if(profile != null)
+                {
+                    account.Firstname = profile.FirstName;
+                    account.Lastname = profile.LastName;
+                }
                 return account;
             }
             return null;
