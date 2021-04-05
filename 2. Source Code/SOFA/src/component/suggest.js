@@ -319,6 +319,39 @@ export default class Suggest extends Component {
             this.checkLoginToken();
             // }
         });
+        this._screenFocus = this.props.navigation.addListener('blur', () => {
+            this.setState({
+                token: '',
+                account: {},
+                isLogin: false,
+                listPost: [],
+                keyboardHeight: 0,
+                currentPostSelect: {},
+                isShowMenu: false,
+                page: 1,
+                listPostRefreshing: false,
+                info: {
+                    id: 0,
+                    name: '',
+                    accountID: 0,
+                    height: 0,
+                    weight: 0,
+                    bustSize: 0,
+                    waistSize: 0,
+                    hipSize: 0,
+                    skinColor: 0
+                },
+                fashionType: {},
+                listFashionType: [],
+                isLoading: false,
+                similarInfoID: [],
+                currentShowImage: {},
+                currentShowImagePost: {},
+                isShowImage: false,
+                isSelectInfo: false,
+                listInfo: [],
+            })
+        });
     }
 
     removePost(postID) {
@@ -430,7 +463,7 @@ export default class Suggest extends Component {
                 })
                 .catch((reason) => {
                     console.log(reason);
-                    if ((reason.code = Const.REQUEST_CODE_NOT_LOGIN)) {
+                    if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
                         ToastAndroid.show(
                             'Hãy đăng nhập để thực hiện việc này',
                             ToastAndroid.LONG,
@@ -465,7 +498,7 @@ export default class Suggest extends Component {
                 })
                 .catch((reason) => {
                     console.log(reason);
-                    if ((reason.code = Const.REQUEST_CODE_NOT_LOGIN)) {
+                    if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
                         ToastAndroid.show(
                             'Hãy đăng nhập để thực hiện việc này',
                             ToastAndroid.LONG,
@@ -507,7 +540,7 @@ export default class Suggest extends Component {
             })
             .catch((reason) => {
                 console.log(reason);
-                if ((reason.code = Const.REQUEST_CODE_NOT_LOGIN)) {
+                if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
                     ToastAndroid.show(
                         'Hãy đăng nhập để thực hiện việc này',
                         ToastAndroid.LONG,

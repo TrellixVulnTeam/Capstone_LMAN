@@ -518,8 +518,10 @@ export default class Newsfeed extends Component {
             // console.log(this.props.route);
             if (
                 this.props.route &&
-                this.props.route.params &&
-                this.props.route.params.preScreen == 'CreatePost'
+                this.props.route.params && (
+                    this.props.route.params.preScreen == 'CreatePost' ||
+                    this.props.route.params.isRefresh
+                )
             ) {
                 this.getAllPost(1);
             }
@@ -645,7 +647,7 @@ export default class Newsfeed extends Component {
                 })
                 .catch((reason) => {
                     console.log(reason);
-                    if ((reason.code = Const.REQUEST_CODE_NOT_LOGIN)) {
+                    if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
                         ToastAndroid.show(
                             'Hãy đăng nhập để thực hiện việc này',
                             ToastAndroid.LONG,
@@ -680,7 +682,7 @@ export default class Newsfeed extends Component {
                 })
                 .catch((reason) => {
                     console.log(reason);
-                    if ((reason.code = Const.REQUEST_CODE_NOT_LOGIN)) {
+                    if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
                         ToastAndroid.show(
                             'Hãy đăng nhập để thực hiện việc này',
                             ToastAndroid.LONG,
@@ -722,7 +724,7 @@ export default class Newsfeed extends Component {
             })
             .catch((reason) => {
                 console.log(reason);
-                if ((reason.code = Const.REQUEST_CODE_NOT_LOGIN)) {
+                if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
                     ToastAndroid.show(
                         'Hãy đăng nhập để thực hiện việc này',
                         ToastAndroid.LONG,
@@ -1016,6 +1018,9 @@ export default class Newsfeed extends Component {
                             }}
                             onPressDeletePost={(response) => {
                                 this.deletePost(this.state.currentPostSelect.id);
+                            }}
+                            onPressEditPost={(postID) => {
+                                this.props.navigation.navigate('EditPost', { 'postID': postID })
                             }}
                         />
                         <ViewImageModal
