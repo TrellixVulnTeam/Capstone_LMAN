@@ -689,6 +689,8 @@ export default class Suggest extends Component {
                                         </LinearGradient>
                                     </TouchableOpacity>
                                     <TouchableOpacity
+                                        disabled={!(info && info.id && info.id != 0)}
+
                                         style={{ marginLeft: 'auto', marginRight: 'auto', }}
                                         onPress={() => {
                                             this.setState({ isSelectInfo: false });
