@@ -1,9 +1,10 @@
 import * as Request from "../common/request";
 import * as Const from "../common/const";
-import { getData } from '../common/utils';
+import { getData } from "../common/utils";
+import Session from "../common/session";
 
 
-export const getSimilarInfo = (infoID) => {
+export const getListInfo = () => {
     return new Promise((resolve, reject) => {
         getData('token')
             .then(result => {
@@ -14,7 +15,7 @@ export const getSimilarInfo = (infoID) => {
                         "Accept": 'application/json',
                         "Authorization": 'Bearer ' + token,
                     };
-                    let uri = Const.python_domain + 'recommendation/getsimilar/' + infoID;
+                    var uri = Const.domain + 'api/info/userinfo';
                     Request.Get(uri, header)
                         .then(response => {
                             resolve(response);
@@ -22,8 +23,7 @@ export const getSimilarInfo = (infoID) => {
                         .catch(reason => {
                             reject(reason);
                         })
-                }
-                else {
+                } else {
                     reject({ code: Const.REQUEST_CODE_NOT_LOGIN })
                 }
             })

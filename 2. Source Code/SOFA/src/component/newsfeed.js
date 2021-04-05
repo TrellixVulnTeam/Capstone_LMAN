@@ -1,17 +1,5 @@
 import React, { Component, createRef } from 'react';
-import {
-    View,
-    Text,
-    StatusBar,
-    Image,
-    TouchableHighlight,
-    FlatList,
-    TouchableWithoutFeedback,
-    Modal,
-    TouchableOpacity,
-    ToastAndroid,
-    ImageBackground,
-} from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, FlatList, TouchableWithoutFeedback, Modal, TouchableOpacity, ToastAndroid, ImageBackground, } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';

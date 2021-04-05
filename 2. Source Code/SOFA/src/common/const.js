@@ -3,6 +3,7 @@ export const dimHeigth = 711;
 export const Horizontal = 'Horizontal';
 export const Vertical = 'Vertical';
 export const domain = 'https://chientranhvietnam.org/sofaapi/'
+export const python_domain = 'https://chientranhvietnam.org/Python/'
 export const assets_domain = 'https://chientranhvietnam.org/assets/'
 
 export const COMMENT_ROWS_OF_PAGE = 8
