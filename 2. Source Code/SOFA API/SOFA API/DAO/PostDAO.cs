@@ -1,6 +1,7 @@
 ﻿using SOFA_API.Common;
 using SOFA_API.DTO;
 using SOFA_API.ViewModel.Newsfeed;
+using SOFA_API.ViewModel.PostViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -185,6 +186,29 @@ namespace SOFA_API.DAO
             result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { id, content, privacyID, time, bodyInfoID, isVerified });
 
             return result;
+        }
+
+        public List<Post> GetAllPostWithoutPaging()
+        {
+            List<Post> listAllPost = new List<Post>();
+
+            String sql = "EXEC dbo.GetAllPostWithoutPaging";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] {});
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        listAllPost.Add(new Post(row));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+            }
+            return listAllPost;
         }
     }
 }

@@ -6,6 +6,7 @@ using SOFA_API.Hubs;
 using SOFA_API.Service;
 using SOFA_API.ViewModel.Newsfeed;
 using SOFA_API.ViewModel.Notification;
+using SOFA_API.ViewModel.PostViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -199,6 +200,13 @@ namespace SOFA_API.Controllers
             PostViewModelOut postViewModelOut = PostService.Instance.UpdatePostContent(userID, postViewModelIn.PostID, postViewModelIn.Content, postViewModelIn.PrivacyID);
 
             return Ok(postViewModelOut);
+        }
+
+        [HttpGet("GetAllPostWithoutPaging")]
+        public ActionResult GetAllPostWithoutPaging()
+        {
+            AdminPostViewModelOut listAllPost = PostService.Instance.GetAllPostWithoutPaging();
+            return Ok(listAllPost);
         }
     }
 }

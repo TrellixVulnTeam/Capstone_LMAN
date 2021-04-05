@@ -1,4 +1,5 @@
-﻿using SOFA_API.DTO;
+﻿using SOFA_API.Common;
+using SOFA_API.DTO;
 using SOFA_API.Service;
 using SOFA_API.ViewModel;
 using SOFA_API.ViewModel.Account;
@@ -47,6 +48,14 @@ namespace SOFA_API.DAO
             int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { accountViewModel.Username, accountViewModel.Password, 
                  accountViewModel.Firstname, accountViewModel.Lastname, accountViewModel.Email, accountViewModel.Phone, accountViewModel.RoleId,
             accountViewModel.DateCreated});
+            return result;
+        }
+
+        public int AddNewStaff(AccountViewModelIn accountViewModel)
+        {
+            string query = "EXEC AddNewStaff @Username , @Password , @FirstName , @LastName , @RoleId , @DateCreated";
+            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { accountViewModel.Username, 
+                accountViewModel.Password, accountViewModel.Firstname, accountViewModel.Lastname, accountViewModel.RoleId, accountViewModel.DateCreated});
             return result;
         }
 
@@ -107,6 +116,41 @@ namespace SOFA_API.DAO
         {
             string query = "EXEC UpdateUserPassword @Username , @Password";
             DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { username, newPassword });
+        }
+
+        public List<AdminAccountModelOut> GetAllUser()
+        {
+            List<AdminAccountModelOut> list = new List<AdminAccountModelOut>();
+
+            String sql = "EXEC dbo.GetAllUserWithoutPaging";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] {});
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        list.Add(new AdminAccountModelOut(row));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+            }
+            return list;
+        }
+
+        public AccountViewModelOut GetUserById(int id)
+        {
+            string query = "EXEC GetUserById @Id";
+            DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { id });
+            if (data.Rows.Count > 0)
+            {
+                AccountViewModelOut account = new AccountViewModelOut(data.Rows[0]);
+                return account;
+            }
+            return null;
         }
     }
 }

@@ -3,7 +3,9 @@ using Google.Protobuf.Collections;
 using SOFA_API.Common;
 using SOFA_API.DAO;
 using SOFA_API.DTO;
+using SOFA_API.ViewModel.Account;
 using SOFA_API.ViewModel.Newsfeed;
+using SOFA_API.ViewModel.PostViewModel;
 using SOFA_API.ViewModel.Profile;
 using System;
 using System.Collections.Generic;
@@ -639,5 +641,37 @@ namespace SOFA_API.Service
             return ValidatePost(postModelOut);
         }
 
+        public AdminPostViewModelOut GetAllPostWithoutPaging()
+        {
+            AdminPostViewModelOut listPost = new AdminPostViewModelOut();
+
+            try
+            {
+                List<Post> listAllPost = PostDAO.Instance.GetAllPostWithoutPaging();
+
+                foreach (Post item in listAllPost)
+                {
+                    AccountViewModelOut account = AccountDAO.Instance.GetUserById(item.AccountPost);
+                    AdminPostModelOut postModelOut = new AdminPostModelOut();
+                    postModelOut.Id = item.ID;
+                    postModelOut.Content = item.Content;
+                    postModelOut.DateCreated = item.Time;
+                    postModelOut.PostedBy = account.Username;
+                    var images = PostImageDAO.Instance.GetPostImages(item.ID).ToList();
+                    postModelOut.PostImageUri = images[0].Url;
+                    postModelOut.IsActive = true;
+
+                    listPost.ListPost.Add(postModelOut);
+                }
+                listPost.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                listPost.Code = Const.REQUEST_CODE_FAILED;
+                listPost.ErrorMessage = e.Message;
+            }
+            return listPost;
+        }
     }
 }

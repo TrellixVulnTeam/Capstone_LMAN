@@ -425,5 +425,81 @@ namespace SOFA_API.Service
 
             return accountViewModelOut;
         }
+
+        public AccountViewModelOut AddNewStaff(AccountViewModelIn loginViewModelIn)
+        {
+            AccountViewModelOut loginViewModelOut = new AccountViewModelOut();
+
+            try
+            {
+                /*
+                // verify code
+                if (!VerificationService.Instance.VerifyCode(loginViewModelIn.TransactionId, loginViewModelIn.Code))
+                {
+                    loginViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    throw new Exception("Invalid code");
+                }
+                */
+                if (loginViewModelIn.IsApplicationAccess)
+                {
+                    loginViewModelIn.RoleId = Const.USER_ROLE_ID;
+                }
+                else
+                {
+                    loginViewModelIn.RoleId = Const.ADMIN_ROLE_ID;
+                }
+
+                loginViewModelIn.DateCreated = DateTime.Now;
+
+                if (!string.IsNullOrEmpty(loginViewModelIn.Username))
+                {
+                    // check username is exist
+                    AccountViewModelOut account = AccountDAO.Instance.GetUserWithRoleByUserName(loginViewModelIn.Username);
+                    if (account == null)
+                    {
+                        //check password is not null and length >= 6
+                        if (!string.IsNullOrEmpty(loginViewModelIn.Password) && loginViewModelIn.Password.Length >= 6)
+                        {
+                            loginViewModelIn.Password = HashPassword(loginViewModelIn.Password);
+                        }
+                        else
+                        {
+                            throw new Exception("Mật khẩu bao gồm 6 ký tự trở lên");
+                        }
+                        // check firstname
+                        if (string.IsNullOrEmpty(loginViewModelIn.Firstname))
+                        {
+                            throw new Exception("Tên không được để trống");
+                        }
+                        // check lastname
+                        if (string.IsNullOrEmpty(loginViewModelIn.Lastname))
+                        {
+                            throw new Exception("Họ không được để trống");
+                        }
+                    }
+                    else
+                        throw new Exception("Tài khoản đã tồn tại");
+                }
+
+                int result = AccountDAO.Instance.AddNewStaff(loginViewModelIn);
+
+                if (result > 0)
+                {
+                    loginViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    loginViewModelOut.Username = loginViewModelIn.Username;
+                }
+                
+                loginViewModelOut.RoleId = loginViewModelIn.RoleId;
+
+                return loginViewModelOut;
+            }
+            catch (Exception e)
+            {
+                loginViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                loginViewModelOut.ErrorMessage = e.Message;
+                return loginViewModelOut;
+            }
+
+        }
     }
 }
