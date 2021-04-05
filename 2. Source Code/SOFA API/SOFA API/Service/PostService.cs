@@ -226,6 +226,51 @@ namespace SOFA_API.Service
             }
             return postViewModelOut;
         }
+        /// <summary>
+        /// Update content of a post
+        /// </summary>
+        /// <param name="userID">ID of user who make this action</param>
+        /// <param name="postID">ID of the post</param>
+        /// <param name="content">New content of post</param>
+        /// <returns>PostViewModelOut</returns>
+        public PostViewModelOut UpdatePostContent(int userID, int postID, string content, int privacyID)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
+            try
+            {
+                Post postTemp = PostDAO.Instance.GetPostByID(postID);
+                if (postTemp.AccountPost == userID)
+                {
+                    int res = PostDAO.Instance.UpdatePost(postID, content, privacyID, postTemp.Time, postTemp.BodyInfoID, postTemp.IsVerified);
+                    if (res > 0)
+                    {
+                        postTemp.Content = content;
+                        postTemp.PrivacyID = privacyID;
+                        PostModelOut postModelOut = new PostModelOut();
+                        postModelOut.SetPostDetail(postTemp);
+                        postViewModelOut.ListPost.Add(postModelOut);
+                        postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    }
+                    else
+                    {
+                        postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    }
+                }
+                else
+                {
+                    postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    postViewModelOut.ErrorMessage = MessageUtils.ERROR_DONT_HAVE_PERMISSION;
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
+            }
+
+            return postViewModelOut;
+        }
 
         /// <summary>
         /// Service of get list comment of post

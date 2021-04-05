@@ -191,5 +191,14 @@ namespace SOFA_API.Controllers
             object obj = new ClarifaiUtils().AddImage(url, name);
             return Ok(obj);
         }
+        [HttpPost("UpdatePostContent")]
+        public ActionResult UpdatePostContent([FromForm] PostViewModelIn postViewModelIn)
+        {
+            int userID = Utils.Instance.GetUserID(User.Claims);
+
+            PostViewModelOut postViewModelOut = PostService.Instance.UpdatePostContent(userID, postViewModelIn.PostID, postViewModelIn.Content, postViewModelIn.PrivacyID);
+
+            return Ok(postViewModelOut);
+        }
     }
 }
