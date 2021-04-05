@@ -29,12 +29,12 @@ namespace SOFA_API.Service
 
         public NotificationService() { }
 
-        public ListNotificationViewModelOut GetNotificationByToAccount(int accountID)
+        public ListNotificationViewModelOut GetNotificationByToAccount(int accountID, int page, int rowOfPage)
         {
             ListNotificationViewModelOut listNotification = new ListNotificationViewModelOut();
             try
             {
-                listNotification = NotificationDAO.Instance.GetNotificationByToAccount(accountID);
+                listNotification = NotificationDAO.Instance.GetNotificationByToAccount(accountID, page, rowOfPage);
                 if (listNotification != null)
                 {
                     listNotification.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -55,12 +55,12 @@ namespace SOFA_API.Service
             return listNotification;
         }
 
-        public ListNotificationViewModelOut GetUnreadNotificationByToAccount(int accountID)
+        public ListNotificationViewModelOut GetUnreadNotificationByToAccount(int accountID, int page, int rowOfPage)
         {
             ListNotificationViewModelOut listNotification = new ListNotificationViewModelOut();
             try
             {
-                listNotification = NotificationDAO.Instance.GetUnreadNotificationByToAccount(accountID);
+                listNotification = NotificationDAO.Instance.GetUnreadNotificationByToAccount(accountID,page,rowOfPage);
                 if (listNotification != null)
                 {
                     listNotification.Code = Const.REQUEST_CODE_SUCCESSFULLY;
