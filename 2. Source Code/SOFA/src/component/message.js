@@ -28,7 +28,7 @@ export default class Message extends Component {
     super(props);
     this.state = {
       activeRowkey: null,
-      refreshing: false
+      isLoading: false,
     };
   }
   getData = async (key) => {
@@ -51,6 +51,7 @@ export default class Message extends Component {
     }
   };
   getListCoversation() {
+    this.setState({ isLoading: true });
     this.getData('token')
       .then((result) => {
         if (result) {
@@ -111,6 +112,7 @@ export default class Message extends Component {
         console.log('failed');
         this.props.navigation.navigate('Login');
       });
+      this.setState({ isLoading: false });
   }
   componentWillUnmount() {}
 
