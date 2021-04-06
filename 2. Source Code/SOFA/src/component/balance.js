@@ -222,12 +222,10 @@ export default class Balance extends Component {
   }
 }
 class MyListItem extends Component {
-  voucherDetail = () => {
-    this.props.navigate(`VoucherDetail`);
-  };
+
   render() {
     return (
-      <TouchableOpacity onPress={this.voucherDetail}>
+      <TouchableOpacity >
         <View>
           <Text
             style={{
