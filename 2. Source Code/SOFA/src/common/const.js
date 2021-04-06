@@ -9,6 +9,7 @@ export const assets_domain = 'https://chientranhvietnam.org/assets/'
 export const COMMENT_ROWS_OF_PAGE = 8
 export const NEWSFEED_ROWS_OF_PAGE = 4
 export const PROFILE_ROW_OF_PAGE = 12
+export const NOTIFICATION_ROWS_OF_PAGE = 7
 
 export const VERIFICATION_TIME_WAIT = 60;
 export const VERIFICATION_STATUS_MATCH = 1;

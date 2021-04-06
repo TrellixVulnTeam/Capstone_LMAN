@@ -21,7 +21,8 @@ export default class Notification extends Component {
         this.state = {
             token: '',
             user: {},
-            listNotification: []
+            listNotification: [],
+            page: 1
         }
     }
     getData = async (key) => {
@@ -67,11 +68,11 @@ export default class Notification extends Component {
             })
     }
 
-    getAllNotification = async () => {
+    getAllNotification = async (page) => {
+        console.log("1");
         await this.getData('token')
             .then(result => {
                 if (result) {
-                  
                     this.setState({ token: result.toString().substr(1, result.length - 2) });
                 }
             })
@@ -79,24 +80,45 @@ export default class Notification extends Component {
                 this.setState({ token: '' });
                 console.log(reason);
             })
-        
+
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json',
             "Authorization": 'Bearer ' + this.state.token,
         };
         var data = {};
-        var uri = Const.domain + 'api/notification/getnotibyid?accountID=7';
-
+        var uri = Const.domain + 'api/notification/getnotibyid?accountID=13&page=' + page + '&rowOfPage=' + Const.NOTIFICATION_ROWS_OF_PAGE;
         Request.Get(uri, header, data)
             .then(response => {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    console.log("3");
                     let listNotiRes = response.listNoti;
-                    let listNotiTemp = this.state.listNotification;
-                    for (let i = 0; i < listNotiRes.length; i++) {
-                        listNotiTemp.push(new NotificationViewModel(listNotiRes[i]));
+                    // let listNotiTemp = this.state.listNotification;
+                    // for (let i = 0; i < listNotiRes.length; i++) {
+                    //     listNotiTemp.push(new NotificationViewModel(listNotiRes[i]));
+                    // }
+                    // this.setState({ listNotification: listNotiRes });
+
+                    if (page > 1) {
+                        console.log('load more', listNotiRes.length);
+                        if (listNotiRes.length > 0) {
+                            this.setState({
+                                listNotification: [...this.state.listNotification, ...listNotiRes],
+                                listNotificationRefreshing: false,
+                            });
+                        } else {
+                            this.setState({ listNotificationRefreshing: false });
+                        }
                     }
-                    this.setState({ listNotification: listNotiRes });
+                    else {
+                        console.log('reload', listNotiRes.length);
+                        if (listNotiRes.length > 0) {
+                            this.setState({ listNotification: listNotiRes, listNotificationRefreshing: false });
+                        } else {
+                            this.setState({ listNotificationRefreshing: false });
+                        }
+                    }
+
                 }
             })
             .catch(reason => {
@@ -106,13 +128,18 @@ export default class Notification extends Component {
     }
 
     componentDidMount() {
-        this.checkLoginToken();
-        this.getAllNotification();
+        this._screenFocus = this.props.navigation.addListener('focus', () => {
+            this.checkLoginToken();
+            this.getAllNotification(1);
+        });
+        this._screenUnfocus = this.props.navigation.addListener('blur', () => {
+            console.log('unfocus');
+        });
     }
 
     onPressNotification(noti) {
         this.setIsRead(noti)
-        this.props.navigation.navigate('PostDetail', { postID: noti.postId});
+        this.props.navigation.navigate('PostDetail', { postID: noti.postId });
     }
 
     setIsRead(noti) {
@@ -124,35 +151,35 @@ export default class Notification extends Component {
                 "Accept": 'application/json',
                 "Authorization": 'Bearer ' + token,
             };
-        var uri = Const.domain + 'api/notification/setreadnotibyid?ID='+noti.id;
-        Request.Post(uri, header)
-            .then(response => {
-                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    let listNotiTemp = this.state.listNotification;
-                    for (let i = 0; i < listNotiTemp.length; i++) {
-                        if (noti.id == listNotiTemp[i].id){
-                            listNotiTemp[i].isRead = true; 
+            var uri = Const.domain + 'api/notification/setreadnotibyid?ID=' + noti.id;
+            Request.Post(uri, header)
+                .then(response => {
+                    if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        let listNotiTemp = this.state.listNotification;
+                        for (let i = 0; i < listNotiTemp.length; i++) {
+                            if (noti.id == listNotiTemp[i].id) {
+                                listNotiTemp[i].isRead = true;
+                            }
                         }
+                        this.setState({ listNotification: listNotiTemp });
                     }
-                    this.setState({ listNotification: listNotiTemp });
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-            })
+                })
+                .catch(reason => {
+                    console.log(reason);
+                })
         }
     }
 
-    NotiItem = ( {data} ) => {
+    NotiItem = ({ data }) => {
         let noti = data;
-        const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>
+        const B = (props) => <Text style={{ fontWeight: 'bold' }}>{props.children}</Text>
         //console.log(Utils.calculateTime(noti.dateCreated));
         return (
             <TouchableOpacity onPress={() => this.onPressNotification(noti)}>
-                <View style={[Style.noti.Article, {backgroundColor: (noti.isRead == true ? 'white' : '#d6faff'),}]} >
+                <View style={[Style.noti.Article, { backgroundColor: (noti.isRead == true ? 'white' : '#d6faff'), }]} >
                     <View style={Style.noti.flexRow}>
                         <Image source={HOANG} style={Style.noti.ArticleAvatar} />
-                        <Text style={Style.noti.ArticleContent}><B>{noti.fromAccountName}</B>  {noti.content} 
+                        <Text style={Style.noti.ArticleContent}><B>{noti.fromAccountName}</B>  {noti.content}
                             <B> {noti.toAccountName}</B> {"\n"}{Utils.calculateTime(noti.dateCreated)} </Text>
                     </View>
                 </View>
@@ -176,7 +203,11 @@ export default class Notification extends Component {
                         renderItem={({ item, index }) => {
                             return (<this.NotiItem data={item} />)
                         }}
-
+                        onEndReached={() => {
+                            //this.setState({ listPostRefreshing: true });
+                            this.getAllNotification(this.state.page + 1);
+                            this.setState({ page: this.state.page + 1 });
+                        }}
                     />
                 </View>
             </View>
