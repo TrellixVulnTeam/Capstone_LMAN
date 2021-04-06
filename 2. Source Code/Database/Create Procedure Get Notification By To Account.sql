@@ -10,13 +10,13 @@ BEGIN
 	SELECT *
 	FROM dbo.[Notification]
 	WHERE ToAccount = @accountID
-	ORDER BY DateCreated desc
+	ORDER BY IsRead ASC, DateCreated desc
 	OFFSET (@page-1)*@rowsOfPage ROWS
 	FETCH NEXT @rowsOfPage ROWS ONLY
 END
 
 
-EXEC getNotificationByToAccount 7,3,3
+EXEC getNotificationByToAccount 7,10,7
 
 
 
