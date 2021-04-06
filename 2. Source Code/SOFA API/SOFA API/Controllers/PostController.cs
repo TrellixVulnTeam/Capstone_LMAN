@@ -137,6 +137,7 @@ namespace SOFA_API.Controllers
         {
             int id = Utils.Instance.GetUserID(User.Claims);
             postViewModelIn.AccountPost = id;
+            PostService.Instance.setHub(notificationHub);
             PostViewModelOut postViewModelOut = PostService.Instance.CreateNewPost(postViewModelIn);
             return Ok(postViewModelOut);
         }
