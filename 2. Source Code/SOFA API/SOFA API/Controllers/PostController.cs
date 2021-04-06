@@ -6,6 +6,7 @@ using SOFA_API.Hubs;
 using SOFA_API.Service;
 using SOFA_API.ViewModel.Newsfeed;
 using SOFA_API.ViewModel.Notification;
+using SOFA_API.ViewModel.PostViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -136,6 +137,7 @@ namespace SOFA_API.Controllers
         {
             int id = Utils.Instance.GetUserID(User.Claims);
             postViewModelIn.AccountPost = id;
+            PostService.Instance.setHub(notificationHub);
             PostViewModelOut postViewModelOut = PostService.Instance.CreateNewPost(postViewModelIn);
             return Ok(postViewModelOut);
         }
@@ -190,6 +192,22 @@ namespace SOFA_API.Controllers
         {
             object obj = new ClarifaiUtils().AddImage(url, name);
             return Ok(obj);
+        }
+        [HttpPost("UpdatePostContent")]
+        public ActionResult UpdatePostContent([FromForm] PostViewModelIn postViewModelIn)
+        {
+            int userID = Utils.Instance.GetUserID(User.Claims);
+
+            PostViewModelOut postViewModelOut = PostService.Instance.UpdatePostContent(userID, postViewModelIn.PostID, postViewModelIn.Content, postViewModelIn.PrivacyID);
+
+            return Ok(postViewModelOut);
+        }
+
+        [HttpGet("GetAllPostWithoutPaging")]
+        public ActionResult GetAllPostWithoutPaging()
+        {
+            AdminPostViewModelOut listAllPost = PostService.Instance.GetAllPostWithoutPaging();
+            return Ok(listAllPost);
         }
     }
 }

@@ -245,7 +245,7 @@ export default class PostMenu extends Component {
             title: () => 'Chỉnh sửa bài viết',
             detail: () => 'Chỉnh sửa nội dung của bài viết',
             onPress: () => {
-                console.log('edit post', this.props.post.id);
+                this.props.onPressEditPost(this.props.post.id);
                 this.props.onRequestClose()
             }
         },

@@ -113,5 +113,27 @@ namespace SOFA_API.DAO
             return data; ;
         }
 
+        public List<AdminVoucherModelOut> GetAllVoucher()
+        {
+            List<AdminVoucherModelOut> list = new List<AdminVoucherModelOut>();
+            string sql = "EXEC dbo.[GetAllVoucher]";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        list.Add(new AdminVoucherModelOut(row));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            return list; ;
+        }
+
     }
 }

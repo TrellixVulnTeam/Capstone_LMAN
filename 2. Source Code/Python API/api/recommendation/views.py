@@ -12,6 +12,8 @@ from .service import Service
 def get_similar_info(request, id):
     response = Service.get_similar_info(int(id))
     return Response(response)
+
+
 @api_view(['GET'])
 def get_all_info(request):
     response = Service.get_all_info()

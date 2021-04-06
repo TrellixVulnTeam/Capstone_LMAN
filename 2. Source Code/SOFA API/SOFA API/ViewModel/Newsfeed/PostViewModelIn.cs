@@ -19,13 +19,14 @@ namespace SOFA_API.ViewModel.Newsfeed
         public int AccountPost { get; set; }
         public int RatePoint { get; set; }
         public string Comment { get; set; }
+        public int Type { get; set; }
 
 
         public PostViewModelIn() : base() {
             ListImage = new List<ImageModelIn>();
         }
 
-        public PostViewModelIn(int id, string content, int privacyID, DateTime time, int bodyInfoID, int accountPost, int ratePoint, string comment)
+        public PostViewModelIn(int id, string content, int privacyID, DateTime time, int bodyInfoID, int accountPost, int ratePoint, string comment, int type)
         {
             PostID = id;
             Content = content;
@@ -35,6 +36,7 @@ namespace SOFA_API.ViewModel.Newsfeed
             AccountPost = accountPost;
             RatePoint = ratePoint;
             Comment = comment;
+            Type = type;
         }
 
     }

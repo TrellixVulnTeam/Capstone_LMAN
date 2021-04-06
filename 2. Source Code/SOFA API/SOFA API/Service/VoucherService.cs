@@ -108,5 +108,23 @@ namespace SOFA_API.Service
             }
             return modelOut;
         }
+
+        public AdminVoucherViewModelOut GetAllVoucher()
+        {
+            AdminVoucherViewModelOut listVouchers = new AdminVoucherViewModelOut();
+            try
+            {
+                listVouchers.ListVoucher = VoucherDAO.Instance.GetAllVoucher();
+
+                listVouchers.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                listVouchers.Code = Const.REQUEST_CODE_FAILED;
+                listVouchers.ErrorMessage = e.Message;
+            }
+            return listVouchers;
+        }
     }
 }

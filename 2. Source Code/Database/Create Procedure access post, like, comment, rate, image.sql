@@ -64,7 +64,7 @@ CREATE PROC GetPostByID
 @postID INT
 AS
 BEGIN
-	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID, IsVerified
+	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID, IsVerified, [Type]
 	FROM dbo.Post
 	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
 	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
@@ -78,7 +78,7 @@ CREATE PROC GetPostByBodyInfoID
 @bodyInfoID INT, @page INT, @rowsOfPage INT
 AS
 BEGIN
-	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID, RatingAvg.Average AS RateAVG, IsVerified
+	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID, RatingAvg.Average AS RateAVG, IsVerified, [Type]
 	FROM dbo.Post
 	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
 	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
@@ -98,7 +98,7 @@ GO
 DROP PROC IF EXISTS AddNewPost
 GO
 CREATE PROC AddNewPost
-@content NVARCHAR(MAX), @privacyID INT, @accountPost INT, @bodyInfoID INT, @isVerified BIT
+@content NVARCHAR(MAX), @privacyID INT, @accountPost INT, @bodyInfoID INT, @isVerified BIT, @type INT
 AS
 BEGIN
 	INSERT INTO dbo.Post
@@ -108,7 +108,8 @@ BEGIN
 	    Time,
 	    AccountPost,
 		BodyInfoID,
-		IsVerified
+		IsVerified,
+		Type
 	)
 	OUTPUT Inserted.*
 	VALUES
@@ -117,7 +118,8 @@ BEGIN
 	    GETDATE(), -- Time - datetime
 	    @accountPost ,         -- AccountPost - int
 		@bodyInfoID,
-		@isVerified
+		@isVerified,
+		@type
 	    )
 END
 GO

@@ -29,6 +29,7 @@ namespace SOFA_API.ViewModel.Newsfeed
         public int MyRatePoint { get; set; }
         public bool IsVerified { get; set; }
         public bool IsMarked { get; set; }
+        public int Type { get; set; }
         public PostModelOut()
         {
             ListImage = new List<Image>();
@@ -43,9 +44,10 @@ namespace SOFA_API.ViewModel.Newsfeed
             MyRatePoint = 0;
             IsMarked = false;
             IsVerified = false;
+            Type = 0;
         }
 
-        public PostModelOut(int iD, string content, int privacyID, DateTime time, int bodyInfoID, int accountPost, string firstName, string lastName, string avatar, bool gender, List<Image> listImage, List<LikeModelOut> listLike, List<CommentModelOut> listComment, List<Rate> listRate, int numberOfLike, int numberOfComment, double rateAverage, bool isLiked, int myRatePoint, bool isVerified, bool isMarked)
+        public PostModelOut(int iD, string content, int privacyID, DateTime time, int bodyInfoID, int accountPost, string firstName, string lastName, string avatar, bool gender, List<Image> listImage, List<LikeModelOut> listLike, List<CommentModelOut> listComment, List<Rate> listRate, int numberOfLike, int numberOfComment, double rateAverage, bool isLiked, int myRatePoint, bool isVerified, bool isMarked, int type)
         {
             ID = iD;
             Content = content;
@@ -67,7 +69,8 @@ namespace SOFA_API.ViewModel.Newsfeed
             IsLiked = isLiked;
             MyRatePoint = myRatePoint;
             IsVerified = isVerified;
-            IsMarked = false;
+            IsMarked = isMarked;
+            Type = type;
         }
 
         public void SetPostDetail(Post post)
@@ -79,6 +82,7 @@ namespace SOFA_API.ViewModel.Newsfeed
             AccountPost = post.AccountPost;
             BodyInfoID = post.BodyInfoID;
             IsVerified = post.IsVerified;
+            Type = post.Type;
         }
         public void SetAccountPost(DTO.Profile profile)
         {

@@ -13,10 +13,11 @@ namespace SOFA_API.DTO
         public int AccountPost { get; set; }
         public int BodyInfoID { get; set; }
         public bool IsVerified { get; set; }
+        public int Type { get; set; }
 
         public Post() { }
 
-        public Post(int id, string content, int privacyID, DateTime time, int accountPost, int bodyInfoID, bool isVerified)
+        public Post(int id, string content, int privacyID, DateTime time, int accountPost, int bodyInfoID, bool isVerified, int type)
         {
             this.ID = id;
             this.Content = content;
@@ -25,6 +26,7 @@ namespace SOFA_API.DTO
             this.AccountPost = accountPost;
             this.BodyInfoID = bodyInfoID;
             this.IsVerified = isVerified;
+            this.Type = type;
         }
 
         public Post(DataRow row)
@@ -36,6 +38,7 @@ namespace SOFA_API.DTO
             this.AccountPost = (int)row["AccountPost"];
             this.BodyInfoID = Convert.IsDBNull(row["BodyInfoID"]) ? 0 : (int)row["BodyInfoID"];
             this.IsVerified = Convert.IsDBNull(row["IsVerified"]) ? false : (bool)row["IsVerified"];
+            this.Type = Convert.IsDBNull(row["Type"]) ? 0 : (int)row["Type"];
         }
     }
 }

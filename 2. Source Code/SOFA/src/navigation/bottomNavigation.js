@@ -82,7 +82,7 @@ export default function Navigation() {
 
 
             //   }}>
-            <Ionicons name="add-circle-sharp" color={color} size={size} />
+            <Ionicons name="add-circle-sharp" color={color} size={size+5} />
             // </LinearGradient>
           ),
         }}
@@ -103,7 +103,7 @@ export default function Navigation() {
         options={{
           title: 'Tài khoản',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" color={color} size={size} />
+            <MaterialCommunityIcons name="account" color={color} size={size+8} />
           ),
         }}
       />

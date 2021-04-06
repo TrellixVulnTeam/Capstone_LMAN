@@ -1,17 +1,5 @@
 import React, { Component, createRef } from 'react';
-import {
-    View,
-    Text,
-    StatusBar,
-    Image,
-    TouchableHighlight,
-    FlatList,
-    TouchableWithoutFeedback,
-    Modal,
-    TouchableOpacity,
-    ToastAndroid,
-    ImageBackground,
-} from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, FlatList, TouchableWithoutFeedback, Modal, TouchableOpacity, ToastAndroid, ImageBackground, } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -40,6 +28,7 @@ import * as MarkupPostService from '../service/markupPostService';
 import * as NotificationService from '../service/notificationService';
 import * as FollowService from '../service/followService';
 import PostMenu from './postMenu';
+import PushNotification from "react-native-push-notification";
 
 const BadgedIcon = withBadge(1)(Icon);
 
@@ -419,6 +408,7 @@ export default class Newsfeed extends Component {
             .then((response) => {
                 // console.log('Unread notfication', response.listNoti.length);
                 this.setState({ numberUnreadNotification: response.listNoti.length });
+                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification);
                 this.notificationConnection();
             })
             .catch((reason) => {
@@ -456,18 +446,8 @@ export default class Newsfeed extends Component {
                                     numberUnreadNotification:
                                         this.state.numberUnreadNotification + 1,
                                 });
+                                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification);
                             }
-                            this.setState({
-                                numberUnreadNotification:
-                                    this.state.numberUnreadNotification + 1,
-                            });
-                            // if (data) {
-                            //     PushNotification.localNotification({
-                            //         channelId: 'Thông báo',
-                            //         title: "Thông báo",
-                            //         message: data.fromAccountName + ' ' + data.content,
-                            //     });
-                            // }
                         });
                     }
                 }
@@ -538,8 +518,10 @@ export default class Newsfeed extends Component {
             // console.log(this.props.route);
             if (
                 this.props.route &&
-                this.props.route.params &&
-                this.props.route.params.preScreen == 'CreatePost'
+                this.props.route.params && (
+                    this.props.route.params.preScreen == 'CreatePost' ||
+                    this.props.route.params.isRefresh
+                )
             ) {
                 this.getAllPost(1);
             }
@@ -665,7 +647,7 @@ export default class Newsfeed extends Component {
                 })
                 .catch((reason) => {
                     console.log(reason);
-                    if ((reason.code = Const.REQUEST_CODE_NOT_LOGIN)) {
+                    if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
                         ToastAndroid.show(
                             'Hãy đăng nhập để thực hiện việc này',
                             ToastAndroid.LONG,
@@ -700,7 +682,7 @@ export default class Newsfeed extends Component {
                 })
                 .catch((reason) => {
                     console.log(reason);
-                    if ((reason.code = Const.REQUEST_CODE_NOT_LOGIN)) {
+                    if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
                         ToastAndroid.show(
                             'Hãy đăng nhập để thực hiện việc này',
                             ToastAndroid.LONG,
@@ -742,7 +724,7 @@ export default class Newsfeed extends Component {
             })
             .catch((reason) => {
                 console.log(reason);
-                if ((reason.code = Const.REQUEST_CODE_NOT_LOGIN)) {
+                if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
                     ToastAndroid.show(
                         'Hãy đăng nhập để thực hiện việc này',
                         ToastAndroid.LONG,
@@ -1036,6 +1018,9 @@ export default class Newsfeed extends Component {
                             }}
                             onPressDeletePost={(response) => {
                                 this.deletePost(this.state.currentPostSelect.id);
+                            }}
+                            onPressEditPost={(postID) => {
+                                this.props.navigation.navigate('EditPost', { 'postID': postID })
                             }}
                         />
                         <ViewImageModal

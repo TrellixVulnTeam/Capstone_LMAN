@@ -45,10 +45,15 @@ namespace SOFA_API.Common
         public const int NOTIFICATION_TYPE_COMMENT = 2;
         public const int NOTIFICATION_TYPE_RATE = 3;
         public const int NOTIFICATION_TYPE_FOLLOW = 4;
+        public const int NOTIFICATION_TYPE_INVALID_IMAGE = 5;
 
         public const string NOTIFICATION_CONTENT_LIKE = "đã thích bài đăng của bạn";
         public const string NOTIFICATION_CONTENT_COMMENT = "đã bình luận về bài đăng của bạn";
         public const string NOTIFICATION_CONTENT_RATE = "đã đánh giá bài đăng của bạn";
         public const string NOTIFICATION_CONTENT_FOLLOW = "đã theo dõi bạn";
+        public const string NOTIFICATION_CONTENT_INVALID_IMAGE = "Hình ảnh bạn vừa tải lên có nội dung không phù hợp! Mọi người sẽ không thể nhìn thầy bài viết này!";
+
+        public const int POST_TYPE_NORMAL = 0;
+        public const int POST_TYPE_PRODUCT = 1;
     }
 }

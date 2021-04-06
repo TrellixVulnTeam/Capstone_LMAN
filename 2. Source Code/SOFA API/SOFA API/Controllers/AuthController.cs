@@ -81,5 +81,12 @@ namespace SOFA_API.Controllers
             return Ok(loginViewModelOut);
         }
 
+        [HttpPost("addNewStaff")]
+        public ActionResult AddNewStaff([FromForm] AccountViewModelIn data)
+        {
+            AccountViewModelOut loginViewModelOut = authService.AddNewStaff(data);
+            return Ok(loginViewModelOut);
+        }
+
     }
 }

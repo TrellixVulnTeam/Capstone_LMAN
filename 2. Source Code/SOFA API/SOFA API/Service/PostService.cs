@@ -1,9 +1,15 @@
 ﻿using Clarifai.Api;
 using Google.Protobuf.Collections;
+using Microsoft.AspNetCore.SignalR;
 using SOFA_API.Common;
 using SOFA_API.DAO;
 using SOFA_API.DTO;
+
+using SOFA_API.ViewModel.Account;
 using SOFA_API.ViewModel.Newsfeed;
+using SOFA_API.ViewModel.PostViewModel;
+using SOFA_API.Hubs;
+using SOFA_API.ViewModel.Notification;
 using SOFA_API.ViewModel.Profile;
 using System;
 using System.Collections.Generic;
@@ -16,6 +22,7 @@ namespace SOFA_API.Service
     public class PostService
     {
         private static PostService instance;
+        private IHubContext<NotificationHub> notificationHub;
 
         public static PostService Instance
         {
@@ -28,6 +35,11 @@ namespace SOFA_API.Service
             {
                 instance = value;
             }
+        }
+
+        public void setHub(IHubContext<NotificationHub> notiHub)
+        {
+            this.notificationHub = notiHub;
         }
 
         public PostService() { }
@@ -224,6 +236,51 @@ namespace SOFA_API.Service
                 postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
                 postViewModelOut.ErrorMessage = e.Message;
             }
+            return postViewModelOut;
+        }
+        /// <summary>
+        /// Update content of a post
+        /// </summary>
+        /// <param name="userID">ID of user who make this action</param>
+        /// <param name="postID">ID of the post</param>
+        /// <param name="content">New content of post</param>
+        /// <returns>PostViewModelOut</returns>
+        public PostViewModelOut UpdatePostContent(int userID, int postID, string content, int privacyID)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
+            try
+            {
+                Post postTemp = PostDAO.Instance.GetPostByID(postID);
+                if (postTemp.AccountPost == userID)
+                {
+                    int res = PostDAO.Instance.UpdatePost(postID, content, privacyID, postTemp.Time, postTemp.BodyInfoID, postTemp.IsVerified);
+                    if (res > 0)
+                    {
+                        postTemp.Content = content;
+                        postTemp.PrivacyID = privacyID;
+                        PostModelOut postModelOut = new PostModelOut();
+                        postModelOut.SetPostDetail(postTemp);
+                        postViewModelOut.ListPost.Add(postModelOut);
+                        postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    }
+                    else
+                    {
+                        postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    }
+                }
+                else
+                {
+                    postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    postViewModelOut.ErrorMessage = MessageUtils.ERROR_DONT_HAVE_PERMISSION;
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
+            }
+
             return postViewModelOut;
         }
 
@@ -520,7 +577,7 @@ namespace SOFA_API.Service
             PostViewModelOut postViewModelOut = new PostViewModelOut();
             try
             {
-                Post post = new Post(0, postViewModelIn.Content, postViewModelIn.PrivacyID, postViewModelIn.Time, postViewModelIn.AccountPost, postViewModelIn.BodyInfoID, false);
+                Post post = new Post(0, postViewModelIn.Content, postViewModelIn.PrivacyID, postViewModelIn.Time, postViewModelIn.AccountPost, postViewModelIn.BodyInfoID, false, postViewModelIn.Type);
                 post = PostDAO.Instance.CreatePost(post);
                 if (post != null && post.ID != 0)
                 {
@@ -547,7 +604,17 @@ namespace SOFA_API.Service
                     }
                     postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                     postViewModelOut.ListPost.Add(postModelOut);
-                    ValidatePost(postModelOut);
+                    bool isValidate = ValidatePost(postModelOut);
+                    if (isValidate)
+                    {
+                        int res = PostDAO.Instance.UpdatePost(postModelOut.ID, postModelOut.Content, postModelOut.PrivacyID, postModelOut.Time, postModelOut.BodyInfoID, true);
+                    }
+                    else
+                    {
+                        NotificationViewModelIn notificationViewModelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_INVALID_IMAGE, post.ID, 0);
+                        NotificationViewModelOut notificationViewModelOut = NotificationService.Instance.CreatedNotification(notificationViewModelIn);
+                        notificationHub.Clients.User(notificationViewModelOut.ToAccount.ToString()).SendAsync("NewNotification", notificationViewModelOut);
+                    }
                 }
                 else
                 {
@@ -568,7 +635,7 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="Data of the post"></param>
         /// <returns></returns>
-        public object ValidatePost(PostModelOut postModelOut)
+        public bool ValidatePost(PostModelOut postModelOut)
         {
 
             ClarifaiUtils clarifaiUtils = new ClarifaiUtils();
@@ -577,10 +644,9 @@ namespace SOFA_API.Service
                 RepeatedField<Concept> listConcept = clarifaiUtils.ModeratationImage("https://chientranhvietnam.org/assets/" + postModelOut.ListImage[i].Url);
                 if (listConcept[0].Name != "safe")
                 {
-                    return listConcept;
+                    return false;
                 }
             }
-            int res = PostDAO.Instance.UpdatePost(postModelOut.ID, postModelOut.Content, postModelOut.PrivacyID, postModelOut.Time, postModelOut.BodyInfoID, true);
             return true;
         }
         public object Verify(int postID)
@@ -594,5 +660,37 @@ namespace SOFA_API.Service
             return ValidatePost(postModelOut);
         }
 
+        public AdminPostViewModelOut GetAllPostWithoutPaging()
+        {
+            AdminPostViewModelOut listPost = new AdminPostViewModelOut();
+
+            try
+            {
+                List<Post> listAllPost = PostDAO.Instance.GetAllPostWithoutPaging();
+
+                foreach (Post item in listAllPost)
+                {
+                    AccountViewModelOut account = AccountDAO.Instance.GetUserById(item.AccountPost);
+                    AdminPostModelOut postModelOut = new AdminPostModelOut();
+                    postModelOut.Id = item.ID;
+                    postModelOut.Content = item.Content;
+                    postModelOut.DateCreated = item.Time;
+                    postModelOut.PostedBy = account.Username;
+                    var images = PostImageDAO.Instance.GetPostImages(item.ID).ToList();
+                    postModelOut.PostImageUri = images[0].Url;
+                    postModelOut.IsActive = true;
+
+                    listPost.ListPost.Add(postModelOut);
+                }
+                listPost.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                listPost.Code = Const.REQUEST_CODE_FAILED;
+                listPost.ErrorMessage = e.Message;
+            }
+            return listPost;
+        }
     }
 }

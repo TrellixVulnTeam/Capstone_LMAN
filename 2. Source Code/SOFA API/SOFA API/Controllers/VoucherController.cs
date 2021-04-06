@@ -66,5 +66,12 @@ namespace SOFA_API.Controllers
             AddVoucherViewModelOut modelOut = VoucherService.Instance.UseVoucher(id,viewModelIn);
             return Ok(modelOut);
         }
+
+        [HttpGet("getAllVoucher")]
+        public ActionResult GetAllVoucher()
+        {
+            AdminVoucherViewModelOut modelOut = VoucherService.Instance.GetAllVoucher();
+            return Ok(modelOut);
+        }
     }
 }
