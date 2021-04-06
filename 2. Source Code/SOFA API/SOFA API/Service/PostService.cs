@@ -608,6 +608,14 @@ namespace SOFA_API.Service
                     if (isValidate)
                     {
                         int res = PostDAO.Instance.UpdatePost(postModelOut.ID, postModelOut.Content, postModelOut.PrivacyID, postModelOut.Time, postModelOut.BodyInfoID, true);
+                        if (post.Type == Const.POST_TYPE_PRODUCT)
+                        {
+                            ClarifaiUtils clarifaiUtils = new ClarifaiUtils();
+                            foreach (DTO.Image image in postModelOut.ListImage)
+                            {
+                                clarifaiUtils.AddImage(image.Url, image.PostID + "|" + image.ID);
+                            }
+                        }
                     }
                     else
                     {
