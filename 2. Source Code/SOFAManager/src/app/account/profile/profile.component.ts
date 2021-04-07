@@ -9,19 +9,11 @@ import {User} from "../../../model/user";
 })
 export class ProfileComponent implements OnInit {
 
-  currentUser: User;
   constructor(public router: Router) {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
   }
 
   ngOnInit() {
   }
 
-  logOut() {
-    // this.authService.logOut();
-    // localStorage.removeItem('currentUser');
-    localStorage.removeItem('currentUser');
-    this.router.navigate(['/logout']);
-    console.log('currentUser', localStorage.removeItem('currentUser'));
-  }
+
 }
