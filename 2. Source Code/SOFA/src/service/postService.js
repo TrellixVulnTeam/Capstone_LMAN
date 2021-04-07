@@ -212,7 +212,7 @@ export const commentPost = (postID, comment) => {
             })
     })
 }
-export const createPost = (content, privacyID, listPrimaryImage, listShirtImage, listTrousersImage, listAccessoriesImage, bodyInfoID) => {
+export const createPost = (content, privacyID, listPrimaryImage, listShirtImage, listTrousersImage, listAccessoriesImage, bodyInfoID, type) => {
     return new Promise((resolve, reject) => {
         getData('token')
             .then(result => {
@@ -227,7 +227,8 @@ export const createPost = (content, privacyID, listPrimaryImage, listShirtImage,
                     };
                     let data = new FormData();
                     data.append('content', content);
-                    data.append('PrivacyID', privacy);
+                    data.append('PrivacyID', privacyID);
+                    data.append('Type', type);
                     let count = 0;
                     for (let i = 0; i < listPrimaryImage.length; i++) {
                         data.append('ListImage[' + count + '].Image', listPrimaryImage[i].data);

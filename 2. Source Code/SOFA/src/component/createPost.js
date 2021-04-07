@@ -22,6 +22,9 @@ import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import { AVATAR, ADD_PRIMARY_IMAGE, BACKGROUND, OCEAN_BACKGROUND } from '../../image/index';
 import InfoField from './infoField';
+
+import * as PostService from '../service/postService';
+
 export default class CreatePost extends Component {
     constructor(props) {
         super(props);
@@ -33,6 +36,7 @@ export default class CreatePost extends Component {
             },
             content: '',
             privacy: 3,
+            type: 0,
             listPrimaryImage: [],
             listShirtImage: [],
             listTrousersImage: [],
@@ -50,7 +54,8 @@ export default class CreatePost extends Component {
                 hipSize: 0,
                 skinColor: 0
             },
-            listInfo: []
+            listInfo: [],
+            isShowIntro: true
         }
     }
     getData = async (key) => {
@@ -299,41 +304,9 @@ export default class CreatePost extends Component {
     }
 
     postStatus = () => {
-        const { token, content, privacy, listPrimaryImage, listShirtImage, listTrousersImage, listAccessoriesImage } = this.state;
+        const { content, privacy, listPrimaryImage, listShirtImage, listTrousersImage, listAccessoriesImage, info, type } = this.state;
         this.setState({ isLoading: true, isPrePosting: false });
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            'Content-Type': 'multipart/form-data',
-            "Accept": 'application/json',
-            "Authorization": 'Bearer ' + token,
-        };
-        let data = new FormData();
-        data.append('content', content);
-        data.append('PrivacyID', privacy);
-        let count = 0;
-        for (let i = 0; i < listPrimaryImage.length; i++) {
-            data.append('ListImage[' + count + '].Image', listPrimaryImage[i].data);
-            data.append('ListImage[' + count + '].ImageType', 1);
-            count++;
-        }
-        for (let i = 0; i < listShirtImage.length; i++) {
-            data.append('ListImage[' + count + '].Image', listShirtImage[i].data);
-            data.append('ListImage[' + count + '].ImageType', 1);
-            count++;
-        }
-        for (let i = 0; i < listTrousersImage.length; i++) {
-            data.append('ListImage[' + count + '].Image', listTrousersImage[i].data);
-            data.append('ListImage[' + count + '].ImageType', 1);
-            count++;
-        }
-        for (let i = 0; i < listAccessoriesImage.length; i++) {
-            data.append('ListImage[' + count + '].Image', listAccessoriesImage[i].data);
-            data.append('ListImage[' + count + '].ImageType', 1);
-            count++;
-        }
-        data.append('BodyInfoID', this.state.info.id);
-        let uri = Const.domain + 'api/post/createpost';
-        Request.Post(uri, header, data)
+        PostService.createPost(content, privacy, listPrimaryImage, listShirtImage, listTrousersImage, listAccessoriesImage, info.id, type)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.setState({ isLoading: false });
@@ -364,12 +337,16 @@ export default class CreatePost extends Component {
                 this.setState({ isLoading: true });
                 console.log(reason);
                 Alert.alert('Thông báo', 'Đăng bài không thành công');
-            })
+            });
     }
 
     onPressPostButton() {
-        this.getListInfo();
-        this.setState({ isPrePosting: true });
+        if (this.state.type == 0) {
+            this.getListInfo();
+            this.setState({ isPrePosting: true });
+        } else {
+            this.postStatus();
+        }
     }
 
     componentDidMount() {
@@ -388,7 +365,7 @@ export default class CreatePost extends Component {
     }
 
     render() {
-        const { account, listPrimaryImage, listAccessoriesImage, listShirtImage, listTrousersImage, content, privacy, isLoading, isPrePosting, info, listInfo } = this.state;
+        const { account, listPrimaryImage, listAccessoriesImage, listShirtImage, listTrousersImage, content, privacy, isLoading, isPrePosting, info, listInfo, type } = this.state;
         const privacies = [
             {
                 value: 1,
@@ -408,6 +385,19 @@ export default class CreatePost extends Component {
 
             }
         ]
+        const postTypes = [
+            {
+                value: 0,
+                label: 'Chia sẻ cá nhân',
+                icon: () => <FontAwesome5 name='user-shield' size={20} color={'#9E9E9E'} />
+            },
+            {
+                value: 1,
+                label: 'Đăng sản phẩm',
+                icon: () => <FontAwesome5 name='user-friends' size={20} color={'#9E9E9E'} />
+
+            }
+        ]
         const infoFields = [
             { id: 'name', name: 'Tiêu đề', unit: '' },
             { id: 'height', name: 'Chiều cao', unit: 'cm' },
@@ -415,7 +405,6 @@ export default class CreatePost extends Component {
             { id: 'bustSize', name: 'Vòng 1', unit: 'cm' },
             { id: 'waistSize', name: 'Vòng 2', unit: 'cm' },
             { id: 'hipSize', name: 'Vòng 3', unit: 'cm' },
-            { id: 'skinColor', name: 'Màu da', unit: '' },
         ]
         return (
             <View style={styles().Container}>
@@ -458,10 +447,17 @@ export default class CreatePost extends Component {
                             }}>{account.firstName + ' ' + account.lastName}</Text>
                         <DropDownPicker
                             defaultValue={3}
-                            containerStyle={{ width: scale(150, Horizontal), height: scale(30, Vertical) }}
+                            containerStyle={{ width: scale(190, Horizontal), height: scale(35, Vertical) }}
                             items={privacies}
                             style={styles().ArticlePrivacy}
                             onChangeItem={(item) => this.setState({ privacy: item.value })}
+                        />
+                        <DropDownPicker
+                            defaultValue={0}
+                            containerStyle={{ width: scale(190, Horizontal), height: scale(35, Vertical) }}
+                            items={postTypes}
+                            style={styles().ArticlePrivacy}
+                            onChangeItem={(item) => this.setState({ type: item.value })}
                         />
                     </View>
                 </View>
@@ -639,6 +635,50 @@ export default class CreatePost extends Component {
                         <ActivityIndicator size="large" color="#00ff00" />
                     </View>) :
                     (<View></View>)}
+                <Modal
+                    transparent={true}
+                    visible={this.state.showIntro}
+                >
+                    <View style={{
+                        height: scale(400, Vertical),
+                        width: scale(300, Horizontal),
+                        backgroundColor: 'white',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        marginTop: 'auto',
+                        marginBottom: 'auto',
+                        borderRadius: 10,
+                        elevation: 10,
+                        paddingHorizontal: scale(20, Horizontal),
+                        paddingVertical: scale(20, Vertical),
+                    }}>
+                        <Text style={{ fontWeight: 'bold' }}>Thông báo này chỉ hiển thị lần đầu</Text>
+                        <Text>Có 2 dạng bài viết:</Text>
+                        <Text style={{
+                            marginLeft: scale(10, Horizontal),
+                            marginTop: scale(5, Vertical),
+                        }}>Dạng 1: Bài viết chia sẻ cá nhân là bài đăng thông thường chia sẻ phong cách thời trang của bạn.</Text>
+                        <Text style={{
+                            marginLeft: scale(10, Horizontal),
+                            marginTop: scale(5, Vertical),
+                        }}                        >Dạng 2: Bài viết giới thiệu sản phẩm cho việc kinh doanh là bài viết đăng thông tin sản phẩm thời trang. Với loại bài đăng này bạn sẽ mất phí. Người dùng sẽ dế tìm thấy sản phẩm của qua tính năng tìm nơi bán</Text>
+                        <Text>Lưu ý: Trong bài viết yêu cầu phải có hình ảnh và tiêu đề. Nội dung sẽ được kiểm định, chỉ được phép đăng nội dung về thời trang và hợp lệ.</Text>
+                        <TouchableOpacity
+                            onPress={() => this.setState({ showIntro: false })}
+                            style={{
+                                height: scale(30, Vertical),
+                                width: scale(80, Horizontal),
+                                backgroundColor: '#2a7ea0',
+                                borderRadius: 10,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginTop: scale(10, Vertical),
+                                marginLeft: 'auto',
+                                marginRight: scale(0, Horizontal)
+                            }}
+                        ><Text style={{ color: 'white' }}>Đã đọc</Text></TouchableOpacity>
+                    </View>
+                </Modal>
             </View >
         )
     }
@@ -681,6 +721,7 @@ const styles = (props) => StyleSheet.create({
         marginTop: scale(10, Vertical)
     },
     ArticlePrivacy: {
+        marginTop: scale(5, Vertical),
         borderRadius: 5,
         borderColor: '#9E9E9E'
     },
@@ -730,7 +771,9 @@ const styles = (props) => StyleSheet.create({
         width: scale(400, Horizontal),
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)'
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        position: 'absolute',
+        top: 0
     },
     DropdownInfo: {
         borderRadius: 5,
