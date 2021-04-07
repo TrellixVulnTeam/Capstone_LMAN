@@ -607,13 +607,21 @@ namespace SOFA_API.Service
                     bool isValidate = (bool)ValidatePost(postModelOut);
                     if (isValidate)
                     {
+                        Utils.Instance.SaveLog("Image verified");
+
                         int res = PostDAO.Instance.UpdatePost(postModelOut.ID, postModelOut.Content, postModelOut.PrivacyID, postModelOut.Time, postModelOut.BodyInfoID, true);
                         if (post.Type == Const.POST_TYPE_PRODUCT)
                         {
                             ClarifaiUtils clarifaiUtils = new ClarifaiUtils();
                             foreach (DTO.Image image in postModelOut.ListImage)
                             {
+
                                 clarifaiUtils.AddImage("https://chientranhvietnam.org/assets/" + image.Url, image.PostID + "|" + image.ID);
+                                string url = "https://chientranhvietnam.org/assets/" + image.Url;
+                                string name = image.PostID + "|" + image.ID;
+                                Utils.Instance.SaveLog("Upload image: " + url + " - " + name);
+                                object o = clarifaiUtils.AddImage("https://chientranhvietnam.org/assets/" + image.Url, image.PostID + "|" + image.ID);
+                                Utils.Instance.SaveLog(o.ToString());
                             }
                         }
                     }
