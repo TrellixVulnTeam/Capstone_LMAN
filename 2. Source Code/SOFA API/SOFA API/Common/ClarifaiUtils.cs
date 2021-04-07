@@ -29,7 +29,7 @@ namespace SOFA_API.Common
             var response = Client.PostModelOutputs(
             new PostModelOutputsRequest()
             {
-                ModelId = "d16f390eb32cad478c7ae150069bd2c6",
+                ModelId = "e9576d86d2004ed1a38ba0cf39ecb4b1",
                 Inputs =
                 {
                     new List<Input>()

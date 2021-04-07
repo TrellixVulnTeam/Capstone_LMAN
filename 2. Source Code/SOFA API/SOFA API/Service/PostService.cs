@@ -604,7 +604,7 @@ namespace SOFA_API.Service
                     }
                     postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                     postViewModelOut.ListPost.Add(postModelOut);
-                    bool isValidate = ValidatePost(postModelOut);
+                    bool isValidate = (bool)ValidatePost(postModelOut);
                     if (isValidate)
                     {
                         int res = PostDAO.Instance.UpdatePost(postModelOut.ID, postModelOut.Content, postModelOut.PrivacyID, postModelOut.Time, postModelOut.BodyInfoID, true);
@@ -613,7 +613,7 @@ namespace SOFA_API.Service
                             ClarifaiUtils clarifaiUtils = new ClarifaiUtils();
                             foreach (DTO.Image image in postModelOut.ListImage)
                             {
-                                clarifaiUtils.AddImage("https://chientranhvietnam.org/assets/"+image.Url, image.PostID + "|" + image.ID);
+                                clarifaiUtils.AddImage("https://chientranhvietnam.org/assets/" + image.Url, image.PostID + "|" + image.ID);
                             }
                         }
                     }
@@ -650,7 +650,7 @@ namespace SOFA_API.Service
             for (int i = 0; i < postModelOut.ListImage.Count; i++)
             {
                 RepeatedField<Concept> listConcept = clarifaiUtils.ModeratationImage("https://chientranhvietnam.org/assets/" + postModelOut.ListImage[i].Url);
-                if (listConcept[0].Name != "safe")
+                if (listConcept[0].Name != "sfw")
                 {
                     return false;
                 }
