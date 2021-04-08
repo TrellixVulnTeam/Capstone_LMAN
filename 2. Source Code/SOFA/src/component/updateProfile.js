@@ -241,8 +241,15 @@ export default class UpdateProfile extends Component{
             
                       console.log(account);
                       let url = Const.domain + 'api/profile/updateprofile';
-            
-                      Request.Post(url, header, data)
+                      if(!account.firstName || account.firstName == '' || account.firstName == null){
+                        ToastAndroid.show('Vui lòng không để trống Họ', ToastAndroid.SHORT);
+                      }else if(!account.lastName || account.lastName == '' || account.lastName == null){
+                        ToastAndroid.show('Vui lòng không để trống Tên', ToastAndroid.SHORT);
+                      }else if(!account.address || account.address == '' || account.address == null){
+                        ToastAndroid.show('Vui lòng không để trống Địa chỉ', ToastAndroid.SHORT);
+                      }
+                      else{
+                        Request.Post(url, header, data)
                         .then(response => {
                             console.log(response);
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -261,6 +268,7 @@ export default class UpdateProfile extends Component{
                             console.log(reason);
                         });
 
+                      }                     
                 } else {
                     this.props.navigation.navigate('Login')
                 }
