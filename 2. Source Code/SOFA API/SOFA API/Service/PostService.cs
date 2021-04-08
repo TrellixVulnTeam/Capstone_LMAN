@@ -613,8 +613,6 @@ namespace SOFA_API.Service
                             ClarifaiUtils clarifaiUtils = new ClarifaiUtils();
                             foreach (DTO.Image image in postModelOut.ListImage)
                             {
-
-                                clarifaiUtils.AddImage("https://chientranhvietnam.org/assets/" + image.Url, image.PostID + "|" + image.ID);
                                 string url = "https://chientranhvietnam.org/assets/" + image.Url;
                                 string name = image.PostID + "-" + image.ID;
                                 object o = clarifaiUtils.AddImage(url, name);
