@@ -1,0 +1,24 @@
+USE [CapstonesNoRelation]
+GO
+
+CREATE PROC CreateNewFeedback
+(@title nvarchar(max), @content nvarchar(max), @userFeedbackId int, @status int)
+AS
+BEGIN
+INSERT INTO [dbo].[Feedback]
+           ([Title]
+           ,[Content]
+           ,[UserFeedbackId]
+		   ,[LastUpdated]
+           ,[Status])
+		   OUTPUT inserted.*
+     VALUES
+           (@title
+           ,@content
+           ,@userFeedbackId
+		   ,@lastUpdated
+           ,@status)
+END
+
+GO
+	

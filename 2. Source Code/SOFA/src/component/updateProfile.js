@@ -4,7 +4,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import DatePicker from 'react-native-datepicker'
 
 import * as signalR from '@microsoft/signalr';
@@ -17,7 +17,7 @@ import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON } from '..
 import { TextInput } from 'react-native-gesture-handler';
 import { acc } from 'react-native-reanimated';
 
-export default class UpdateProfile extends Component{
+export default class UpdateProfile extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -74,7 +74,7 @@ export default class UpdateProfile extends Component{
                 if (source.base64) {
                     var header = {
                         "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',                       
+                        "Accept": 'application/json',
                     };
                     console.log(header);
                     let data = new FormData();
@@ -143,7 +143,7 @@ export default class UpdateProfile extends Component{
                         if (source.base64) {
                             var header = {
                                 "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                                "Accept": 'application/json',                               
+                                "Accept": 'application/json',
                             };
                             console.log(header);
                             let data = new FormData();
@@ -167,26 +167,26 @@ export default class UpdateProfile extends Component{
             });
     }
 
-    updateAvatar(){
-        const {account} = this.state;
+    updateAvatar() {
+        const { account } = this.state;
         this.getData('token')
             .then(result => {
                 if (result) {
                     let header = {
                         "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
                         "Content-Type": "multipart/form-data",
-                        "Host":"chientranhvietnam.org",
+                        "Host": "chientranhvietnam.org",
                         "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2),
-                      };
-                      let data = new FormData();
-                      
-                      data.append('Avatar', account.avatar);
-                      console.log("Update avatar!");
-            
-                      console.log(account);
-                      let url = Const.domain + 'api/profile/updateavatar';
-            
-                      Request.Post(url, header, data)
+                    };
+                    let data = new FormData();
+
+                    data.append('Avatar', account.avatar);
+                    console.log("Update avatar!");
+
+                    console.log(account);
+                    let url = Const.domain + 'api/profile/updateavatar';
+
+                    Request.Post(url, header, data)
                         .then(response => {
                             console.log(response);
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -194,10 +194,10 @@ export default class UpdateProfile extends Component{
                                 console.log(response);
                                 //this.props.navigation.goBack();               
                             } else {
-                            if (response.code == Const.REQUEST_CODE_FAILED) {
-                                ToastAndroid.show('Update Failed', 'Update avatar không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
-                                console.log(response);
-                            }
+                                if (response.code == Const.REQUEST_CODE_FAILED) {
+                                    ToastAndroid.show('Update Failed', 'Update avatar không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
+                                    console.log(response);
+                                }
                             }
                         })
                         .catch(reason => {
@@ -216,59 +216,59 @@ export default class UpdateProfile extends Component{
     }
 
 
-    updateInfomation(){
-        const {account} = this.state;
+    updateInfomation() {
+        const { account } = this.state;
         this.getData('token')
             .then(result => {
                 if (result) {
                     let header = {
                         "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
                         "Content-Type": "multipart/form-data",
-                        "Host":"chientranhvietnam.org",
+                        "Host": "chientranhvietnam.org",
                         "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2),
-                      };
-                      let data = new FormData();
-                      data.append('AccountID', account.accountID);
-                      data.append('FirstName', account.firstName);
-                      data.append('LastName', account.lastName);
-                      data.append('Gender', account.gender);
-                      data.append('DOB', account.dob);
-                      data.append('Email', account.email);
-                      data.append('Phone', account.phone);
-                      data.append('Address', account.address);
-                      data.append('Avatar', account.avatar);
-                      console.log("Update profile!");
-            
-                      console.log(account);
-                      let url = Const.domain + 'api/profile/updateprofile';
-                      if(!account.firstName || account.firstName == '' || account.firstName == null){
-                        ToastAndroid.show('Vui lòng không để trống Họ', ToastAndroid.SHORT);
-                      }else if(!account.lastName || account.lastName == '' || account.lastName == null){
-                        ToastAndroid.show('Vui lòng không để trống Tên', ToastAndroid.SHORT);
-                      }else if(!account.address || account.address == '' || account.address == null){
-                        ToastAndroid.show('Vui lòng không để trống Địa chỉ', ToastAndroid.SHORT);
-                      }
-                      else{
-                        Request.Post(url, header, data)
-                        .then(response => {
-                            console.log(response);
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                ToastAndroid.show('Update thành công!', ToastAndroid.SHORT);
-                                console.log(response);
-                                this.props.navigation.goBack();               
-                            } else {
-                            if (response.code == Const.REQUEST_CODE_FAILED) {
-                                ToastAndroid.show('Update không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
-                                console.log(response);
-                            }
-                            }
-                        })
-                        .catch(reason => {
-                            console.log('Lỗi rồi!');
-                            console.log(reason);
-                        });
+                    };
+                    let data = new FormData();
+                    data.append('AccountID', account.accountID);
+                    data.append('FirstName', account.firstName);
+                    data.append('LastName', account.lastName);
+                    data.append('Gender', account.gender);
+                    data.append('DOB', account.dob);
+                    data.append('Email', account.email);
+                    data.append('Phone', account.phone);
+                    data.append('Address', account.address);
+                    data.append('Avatar', account.avatar);
+                    console.log("Update profile!");
 
-                      }                     
+                    console.log(account);
+                    let url = Const.domain + 'api/profile/updateprofile';
+                    if (!account.firstName || account.firstName == '' || account.firstName == null) {
+                        ToastAndroid.show('Vui lòng không để trống Họ', ToastAndroid.SHORT);
+                    } else if (!account.lastName || account.lastName == '' || account.lastName == null) {
+                        ToastAndroid.show('Vui lòng không để trống Tên', ToastAndroid.SHORT);
+                    } else if (!account.address || account.address == '' || account.address == null) {
+                        ToastAndroid.show('Vui lòng không để trống Địa chỉ', ToastAndroid.SHORT);
+                    }
+                    else {
+                        Request.Post(url, header, data)
+                            .then(response => {
+                                console.log(response);
+                                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                    ToastAndroid.show('Update thành công!', ToastAndroid.SHORT);
+                                    console.log(response);
+                                    this.props.navigation.goBack();
+                                } else {
+                                    if (response.code == Const.REQUEST_CODE_FAILED) {
+                                        ToastAndroid.show('Update không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
+                                        console.log(response);
+                                    }
+                                }
+                            })
+                            .catch(reason => {
+                                console.log('Lỗi rồi!');
+                                console.log(reason);
+                            });
+
+                    }
                 } else {
                     this.props.navigation.navigate('Login')
                 }
@@ -277,7 +277,7 @@ export default class UpdateProfile extends Component{
                 console.log('failed');
                 this.props.navigation.navigate('Login')
             })
-        
+
     }
 
 
@@ -285,123 +285,123 @@ export default class UpdateProfile extends Component{
         //this._unsubcribe();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         //this.getProfile();
-        const {account, avatarUri} = this.props.route.params;
-        this.setState({avatarUri: avatarUri});
-        this.setState({account: account})
+        const { account, avatarUri } = this.props.route.params;
+        this.setState({ avatarUri: avatarUri });
+        this.setState({ account: account })
     }
 
-    render(){
-        const {avatarUri, account} = this.state;
+    render() {
+        const { avatarUri, account } = this.state;
         LogBox.ignoreAllLogs();
         LogBox.ignoreLogs['componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.'];
         const data = [
-            {label: 'Nam                                ', value:1},
-            {label: 'Nữ', value:2},
-            ];
+            { label: 'Nam                                ', value: 1 },
+            { label: 'Nữ', value: 2 },
+        ];
         return (
             <View style={[Style.common.container]}>
-                <ScrollView>               
+                <ScrollView>
                     <StatusBar hidden={false} backgroundColor='#fbb897' />
-                    <LinearGradient colors={['#fbb897','#ff8683']}>
+                    <LinearGradient colors={['#fbb897', '#ff8683']}>
                         <View style={Style.profile.firstHeader}>
-                            <Image 
-                            source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
-                            resizeMode={"cover"}
-                            style={{
-                                height: Utils.scale(110, Const.Horizontal),
-                                width: Utils.scale(110, Const.Horizontal),
-                                borderRadius: Utils.scale(55, Const.Horizontal),
-                                borderWidth: 2,
-                                overflow: 'hidden',
-                                alignSelf: 'center',
-                                //marginLeft: Utils.scale(149, Const.Horizontal),
-                            }} />
+                            <Image
+                                source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
+                                resizeMode={"cover"}
+                                style={{
+                                    height: Utils.scale(110, Const.Horizontal),
+                                    width: Utils.scale(110, Const.Horizontal),
+                                    borderRadius: Utils.scale(55, Const.Horizontal),
+                                    borderWidth: 2,
+                                    overflow: 'hidden',
+                                    alignSelf: 'center',
+                                    //marginLeft: Utils.scale(149, Const.Horizontal),
+                                }} />
                             <View style={{
                                 marginTop: Utils.scale(10, Const.Vertical),
                                 height: Utils.scale(70, Const.Vertical),
                                 width: Utils.scale(200, Const.Horizontal),
                                 alignSelf: 'center',
                             }}>
-                            <MenuProvider>
-                                <Menu>
-                                    <MenuTrigger >
-                                        <Text style={Style.updateProfile.updateAvaText}>Thay đổi ảnh đại diện</Text>
-                                    </MenuTrigger>
-                                    <MenuOptions>
-                                        <MenuOption onSelect={() => this.takePicture(source => {
-                                            console.log('Take picture callback');
-                                            account.avatar = source.base64;
-                                            this.setState({ account: account });
-                                            this.updateAvatar();
-                                        })} text='Máy ảnh' />
-                                        <MenuOption onSelect={() => this.chooseFile(source => {
-                                            console.log('Choose file callback');
-                                            account.avatar = source.base64;
-                                            this.setState({ account: account });
-                                            this.updateAvatar();
-                                        })} text='Thư viện' />
-                                    </MenuOptions>
-                                </Menu>
-                            </MenuProvider>
-                            </View>                      
+                                <MenuProvider>
+                                    <Menu>
+                                        <MenuTrigger >
+                                            <Text style={Style.updateProfile.updateAvaText}>Thay đổi ảnh đại diện</Text>
+                                        </MenuTrigger>
+                                        <MenuOptions>
+                                            <MenuOption onSelect={() => this.takePicture(source => {
+                                                console.log('Take picture callback');
+                                                account.avatar = source.base64;
+                                                this.setState({ account: account });
+                                                this.updateAvatar();
+                                            })} text='Máy ảnh' />
+                                            <MenuOption onSelect={() => this.chooseFile(source => {
+                                                console.log('Choose file callback');
+                                                account.avatar = source.base64;
+                                                this.setState({ account: account });
+                                                this.updateAvatar();
+                                            })} text='Thư viện' />
+                                        </MenuOptions>
+                                    </Menu>
+                                </MenuProvider>
+                            </View>
                         </View>
-                    </LinearGradient>                 
+                    </LinearGradient>
                     <View style={Style.updateProfile.updateInfo}>
                         <View style={Style.updateProfile.updateName}>
                             <View style={Style.updateProfile.updateItemFirst}>
                                 <Text style={Style.updateProfile.updateLabel}>Họ</Text>
                                 <TextInput defaultValue={account.firstName}
-                                            onChangeText={text => { 
-                                                account.firstName = text;
-                                                this.setState({ account: account });
-                                            }}
-                                            style={Style.updateProfile.updateInputFirst}
-                                />                      
-                            </View>    
+                                    onChangeText={text => {
+                                        account.firstName = text;
+                                        this.setState({ account: account });
+                                    }}
+                                    style={Style.updateProfile.updateInputFirst}
+                                />
+                            </View>
                             <View style={Style.updateProfile.updateItemFirst}>
                                 <Text style={Style.updateProfile.updateLabel}>Tên</Text>
                                 <TextInput defaultValue={account.lastName}
-                                            onChangeText={text => { 
-                                                account.lastName = text;
-                                                this.setState({ account: account });
-                                            }}
-                                            style={Style.updateProfile.updateInputFirst}
-                                />                      
-                            </View>   
+                                    onChangeText={text => {
+                                        account.lastName = text;
+                                        this.setState({ account: account });
+                                    }}
+                                    style={Style.updateProfile.updateInputFirst}
+                                />
+                            </View>
                         </View>
-                        
+
                         <View style={Style.updateProfile.updateItemSecond}>
-                            <Text style={Style.updateProfile.updateLabel}>Giới tính</Text> 
-                            <View></View>           
+                            <Text style={Style.updateProfile.updateLabel}>Giới tính</Text>
+                            <View></View>
                             <RadioForm
                                 radio_props={data}
-                                initial={account.gender==true?1:0}
+                                initial={account.gender == true ? 1 : 0}
                                 formHorizontal={true}
                                 labelHorizontal={true}
                                 buttonColor={'#F0054D'}
                                 selectedButtonColor={'red'}
                                 animation={true}
                                 onPress={(value) => {
-                                    account.gender=(value==1?true:false);
+                                    account.gender = (value == 1 ? true : false);
                                     this.setState({ account: account });
                                 }}
-                                labelStyle={{fontSize: Utils.scale(15, Const.Horizontal),  }}
+                                labelStyle={{ fontSize: Utils.scale(15, Const.Horizontal), }}
                             />
-            
-                        </View> 
-                        
+
+                        </View>
+
                         <View style={Style.updateProfile.updateItemSecond}>
                             <Text style={Style.updateProfile.updateLabel}>Địa chỉ</Text>
                             <TextInput defaultValue={account.address}
-                                        onChangeText={text => { 
-                                            account.address = text;
-                                            this.setState({ account: account });
-                                        }}
-                                        style={Style.updateProfile.updateInput}
-                            />                      
-                        </View>    
+                                onChangeText={text => {
+                                    account.address = text;
+                                    this.setState({ account: account });
+                                }}
+                                style={Style.updateProfile.updateInput}
+                            />
+                        </View>
                         <View style={Style.updateProfile.updateItemSecond}>
                             <Text style={Style.updateProfile.updateLabel}>Ngày sinh</Text>
                             <DatePicker
@@ -415,50 +415,50 @@ export default class UpdateProfile extends Component{
                                 confirmBtnText="Confirm"
                                 cancelBtnText="Cancel"
                                 customStyles={{
-                                dateIcon: {
-                                    position: 'absolute',
-                                    left: 0,
-                                    top: 4,
-                                    marginRight: 2
-                                },
-                                dateInput: {
-                                    borderWidth:0,
-                                }
-                                // ... You can check the source to find the other keys.
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: 4,
+                                        marginRight: 2
+                                    },
+                                    dateInput: {
+                                        borderWidth: 0,
+                                    }
+                                    // ... You can check the source to find the other keys.
                                 }}
                                 onDateChange={(date) => {
                                     account.dob = date;
                                     this.setState({ account: account });
                                 }}
-                            />                     
-                        </View>    
+                            />
+                        </View>
                         <View style={Style.updateProfile.updateItemSecond}>
                             <Text style={Style.updateProfile.updateLabel}>Email</Text>
                             <TouchableOpacity onPress={() => ToastAndroid.show(
-                                                                'Bạn có thể thay đổi Email tại Account -> Cập nhật bảo mật', ToastAndroid.LONG
-                                                            )}>
-                            <TextInput defaultValue={account.email}    
-                                        editable = {false}                                   
-                                        selectTextOnFocus={false}
-                                        onChangeText={text => { 
-                                            account.phone = text;
-                                            this.setState({ account: account });
-                                        }}
-                                        style={Style.updateProfile.updateInput}
-                            />            
-                            </TouchableOpacity>          
-                        </View>  
+                                'Bạn có thể thay đổi Email tại Account -> Cập nhật bảo mật', ToastAndroid.LONG
+                            )}>
+                                <TextInput defaultValue={account.email}
+                                    editable={false}
+                                    selectTextOnFocus={false}
+                                    onChangeText={text => {
+                                        account.phone = text;
+                                        this.setState({ account: account });
+                                    }}
+                                    style={Style.updateProfile.updateInput}
+                                />
+                            </TouchableOpacity>
+                        </View>
                         <View style={Style.updateProfile.buttonAll}>
-                            <TouchableOpacity onPress={()=>this.props.navigation.goBack()} style={Style.updateProfile.appButtonContainer}>
+                            <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={Style.updateProfile.appButtonContainer}>
                                 <Text style={Style.updateProfile.appButtonText}>Hủy bỏ</Text>
                             </TouchableOpacity>
                             <View style={Style.updateProfile.buttonEmpty}></View>
-                            <TouchableOpacity onPress={()=>this.updateInfomation()} style={Style.updateProfile.appButtonContainer}>
+                            <TouchableOpacity onPress={() => this.updateInfomation()} style={Style.updateProfile.appButtonContainer}>
                                 <Text style={Style.updateProfile.appButtonText}>Cập nhật</Text>
                             </TouchableOpacity>
                         </View>
-                        
-                    </View>                                        
+
+                    </View>
                 </ScrollView>
             </View >
         )
