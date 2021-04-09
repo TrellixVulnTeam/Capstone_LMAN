@@ -15,11 +15,11 @@ namespace SOFA_API.Controllers
     public class FeedbackController : ControllerBase
     {
         [HttpPost("createfeedback")]
+        [Authorize]
         public ActionResult SendFeedback([FromForm] FeedbackViewModelIn feedback)
         {
-            //var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
-            //feedback.UserFeedbackId = Int32.Parse(idClaim.Value.Trim());
-            feedback.UserFeedbackId = 13;
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            feedback.UserFeedbackId = Int32.Parse(idClaim.Value.Trim());
             DateTime myDateTime = DateTime.Now;
             feedback.LastUpdated = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
             FeedbackViewModelOut newFeedback = FeedbackService.Instance.CreateNewFeedback(feedback);
