@@ -124,7 +124,8 @@ export default class Profile extends Component {
     }
 
     onPressFeedback() {
-        alert('Click Feedback');
+        const {account} = this.state;
+        this.props.navigation.navigate('CreateFeedback', { 'userId': account.accountID });
     }
 
     onPressSupprot() {

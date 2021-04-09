@@ -24,6 +24,7 @@ import ListFollower from '../component/listFollower';
 import Profile from '../component/profile';
 import MessageSearch from '../component/messageSearch';
 import EditPost from '../component/editPost';
+import CreateFeedback from '../component/createFeedback';
 const Stack = createStackNavigator();
 
 export default function Navigation() {
@@ -53,7 +54,7 @@ export default function Navigation() {
                 <Stack.Screen name='Profile' component={Profile} options={{ headerShown: false }} />
                 <Stack.Screen name='MessageSearch' component={MessageSearch} options={{ headerShown: false }} />
                 <Stack.Screen name='EditPost' component={EditPost} options={{ headerShown: false }} />
-
+                <Stack.Screen name='CreateFeedback' component={CreateFeedback} options={{ headerShown: false}} />
             </Stack.Navigator>
         </NavigationContainer>
     )
