@@ -50,7 +50,6 @@ export default class UpdateProfile extends Component {
     }
 
     onPressSendFeedback() {
-        const { userId } = this.props.route.params;
         var { feedbackTitle, feedbackContent, feedbackStatus } = this.state;
         this.getData('token')
             .then(result => {

@@ -28,10 +28,8 @@ export default class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            token: '',
-            pageNumber: 1,
-            listFollower: [],
-            myAccount: {},
+            listFeedback: [],
+            numberFeedback: 0,
         }
     }
     getData = async (key) => {
@@ -55,17 +53,17 @@ export default class Profile extends Component {
         }
     }
 
-    getListFollower() {
-        const { userId } = this.props.route.params;
+    getListFeedback() {
         var header = {
             "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
             "Accept": 'application/json',
         };
-        let url = Const.domain + 'api/follow/getfollowerlist?userId=' + userId;
+        let url = Const.domain + 'api/feedback/getlistfeedback';
         Request.Get(url, header)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({ listFollower: response.listFollower });
+                    this.setState({ listFeedback: response.listFeedback });
+                    this.setState({ numberFeedback: response.listFeedback.length })
                 } else {
                     this.props.navigation.navigate('Login')
                 }
@@ -73,7 +71,6 @@ export default class Profile extends Component {
             .catch(reason => {
                 console.log(reason);
                 this.props.navigation.navigate('Login')
-
             });
     }
 
@@ -81,71 +78,31 @@ export default class Profile extends Component {
         //this.setState({ account: {}, avatarUri: '', pageNumber: 1, listImageAll: [] });
     }
 
-    getProfile = async () => {
-        const { account } = this.state;
-        console.log('Access profile');
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    var header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                        "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
-                    };
-                    let url = Const.domain + 'api/profile';
-                    Request.Get(url, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                this.setState({ myAccount: response });
-                                console.log(this.state.myAccount);
-                            } else {
-                                this.props.navigation.navigate('Login')
-                            }
-                        })
-                        .catch(reason => {
-                            console.log(reason);
-                            this.props.navigation.navigate('Login')
 
-                        });
-                } else {
-                    this.props.navigation.navigate('Login')
-                }
-            })
-            .catch(reason => {
-                console.log('failed');
-                this.props.navigation.navigate('Login')
-            })
-    }
-
-
-    onClickItem(userId) {
-        const { myAccount } = this.state;
-        if (myAccount && myAccount.accountID && myAccount.accountID == userId) {
-            this.props.navigation.navigate('Profile');
-        } else {
-            this.props.navigation.navigate('OtherProfile', { 'accountID': userId });
-        }
+    onClickItem(feedbackId) {
+        // if(myAccount && myAccount.accountID && myAccount.accountID == userId){
+        //     this.props.navigation.navigate('Profile');
+        // }else{
+        //     this.props.navigation.navigate('OtherProfile', { 'accountID': userId });
+        // }
+        ToastAndroid.show('Direct', 'Sẽ direct sang feedback có Id là: ' + feedbackId, ToastAndroid.SHORT);
     }
 
     componentDidMount() {
-        this.getListFollower();
-        this.getProfile();
+        this.getListFeedback();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
-            this.getListFollower();
-            this.getProfile();
+            this.getListFeedback();
         });
         this._unfocus = this.props.navigation.addListener('blur', () => {
-            this.setState({ listFollower: [] });
         });
     }
 
     render() {
-        const { userId, numberFollower } = this.props.route.params;
-        const { listFollower } = this.state;
+        const { numberFeedback, listFeedback } = this.state;
         return (
             <View>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
-                <LinearGradient colors={['#00bfff', '#99e6ff']}>
+                <LinearGradient colors={['#ff8533', '#ffb380']}>
                     <View style={{
                         alignContent: 'center',
                         alignItems: 'center',
@@ -154,26 +111,26 @@ export default class Profile extends Component {
                         // borderBottomLeftRadius: 15,
                         // borderBottomRightRadius: 15,
                         width: Utils.scale(400, Const.Horizontal),
-                        height: Utils.scale(40, Const.Vertical),
+                        height: Utils.scale(35, Const.Vertical),
                     }}>
                         <Text style={{
                             fontSize: Utils.scale(15, Const.Horizontal),
                             marginTop: Utils.scale(9, Const.Vertical),
                             fontWeight: 'bold',
                             textAlignVertical: 'center',
-                        }}>Số người theo dõi: {numberFollower}</Text>
+                        }}>Số feedback của bạn: {numberFeedback}</Text>
                     </View>
                 </LinearGradient>
                 <View style={{
                     height: Utils.scale(665, Const.Vertical),
                 }}>
                     <FlatList
-                        data={listFollower}
+                        data={listFeedback}
                         keyExtractor={(item, index) => index + ''}
                         renderItem={({ item, index }) => {
                             return (
                                 <TouchableOpacity onPress={() => {
-                                    this.onClickItem(item.accountId);
+                                    this.onClickItem(item.Id);
                                 }}>
                                     <View style={{
                                         flexDirection: 'row',
@@ -183,24 +140,24 @@ export default class Profile extends Component {
                                         borderBottomWidth: 2,
                                         textAlignVertical: 'center',
                                     }}>
-                                        <Image
-                                            source={(item.avatarUri && item.avatarUri.length > 0) ? { uri: Const.assets_domain + item.avatarUri + '?time=' + new Date() } : AVATAR}
-                                            resizeMode={"cover"}
-                                            style={{
-                                                height: Utils.scale(45, Const.Horizontal),
-                                                width: Utils.scale(45, Const.Horizontal),
-                                                borderRadius: Utils.scale(22.5, Const.Horizontal),
-                                                borderWidth: 0.2,
-                                                overflow: 'hidden',
-                                                marginLeft: Utils.scale(7, Const.Horizontal),
-                                                marginTop: Utils.scale(4, Const.Vertical),
-                                            }} />
                                         <Text style={{
                                             fontSize: Utils.scale(20, Const.Horizontal),
                                             fontWeight: 'bold',
                                             textAlignVertical: 'center',
                                             marginLeft: Utils.scale(7, Const.Horizontal),
-                                        }}>{item.firstName} {item.lastName}</Text>
+                                        }}>{item.Id}</Text>
+                                        <Text style={{
+                                            fontSize: Utils.scale(20, Const.Horizontal),
+                                            fontWeight: 'bold',
+                                            textAlignVertical: 'center',
+                                            marginLeft: Utils.scale(7, Const.Horizontal),
+                                        }}>{item.Title}</Text>
+                                        <Text style={{
+                                            fontSize: Utils.scale(20, Const.Horizontal),
+                                            fontWeight: 'bold',
+                                            textAlignVertical: 'center',
+                                            marginLeft: Utils.scale(7, Const.Horizontal),
+                                        }}>{item.Status}</Text>
                                     </View>
                                 </TouchableOpacity>
 
@@ -208,6 +165,7 @@ export default class Profile extends Component {
                         }}
                     />
                 </View>
+
             </View>
         )
     }

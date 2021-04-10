@@ -125,7 +125,7 @@ export default class Profile extends Component {
 
     onPressFeedback() {
         const {account} = this.state;
-        this.props.navigation.navigate('CreateFeedback', { 'userId': account.accountID });
+        this.props.navigation.navigate('ListFeedback');
     }
 
     onPressSupprot() {
