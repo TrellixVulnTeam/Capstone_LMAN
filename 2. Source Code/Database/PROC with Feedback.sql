@@ -21,4 +21,14 @@ INSERT INTO [dbo].[Feedback]
 END
 
 GO
-	
+
+CREATE PROC GetFeedbackByUserId
+@userId int
+AS
+BEGIN
+SELECT * FROM Feedback
+WHERE UserFeedbackId = @userId
+ORDER BY LastUpdated DESC
+END
+
+GO

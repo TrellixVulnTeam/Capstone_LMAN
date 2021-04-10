@@ -25,5 +25,15 @@ namespace SOFA_API.Controllers
             FeedbackViewModelOut newFeedback = FeedbackService.Instance.CreateNewFeedback(feedback);
             return Ok(newFeedback);
         }
+
+        [HttpGet("getlistfeedback")]
+        [Authorize]
+        public ActionResult GetListFeedback()
+        {
+            var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            int userId = Int32.Parse(idClaim.Value.Trim());
+            ListFeedbackViewModelOut newFeedback = FeedbackService.Instance.GetListFeedback(userId);
+            return Ok(newFeedback);
+        }
     }
 }

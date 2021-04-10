@@ -29,6 +29,11 @@ namespace SOFA_API.Service
         {
         }
 
+        /// <summary>
+        /// Function to create a new feedback
+        /// </summary>
+        /// <param name="feedbackIn"></param>
+        /// <returns>Create a new feedback</returns>
         public FeedbackViewModelOut CreateNewFeedback(FeedbackViewModelIn feedbackIn)
         {
             FeedbackViewModelOut newFeedback = null;
@@ -53,6 +58,37 @@ namespace SOFA_API.Service
                 newFeedback.Code = Const.REQUEST_CODE_FAILED;
             }
             return newFeedback;
+        }
+
+        /// <summary>
+        /// Funtionn to get all feedback of an user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>List of feedback</returns>
+        public ListFeedbackViewModelOut GetListFeedback(int userId)
+        {
+            ListFeedbackViewModelOut listFeedback = null;
+            try
+            {
+                listFeedback = FeedbackDAO.Instance.GetListFeedback(userId);
+                if (listFeedback != null)
+                {
+                    listFeedback.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                {
+                    listFeedback = new ListFeedbackViewModelOut();
+                    listFeedback.Code = Const.REQUEST_CODE_FAILED;
+                    throw new Exception("Get feedback failed!");
+                }
+            }
+            catch (Exception e)
+            {
+                listFeedback = new ListFeedbackViewModelOut();
+                listFeedback.ErrorMessage = e.ToString();
+                listFeedback.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return listFeedback;
         }
     }
 }

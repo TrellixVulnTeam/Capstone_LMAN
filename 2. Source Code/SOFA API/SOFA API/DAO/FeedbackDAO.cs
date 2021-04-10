@@ -26,6 +26,11 @@ namespace SOFA_API.DAO
 
         }
 
+        /// <summary>
+        /// Function to create a new feedback
+        /// </summary>
+        /// <param name="feedbackIn"></param>
+        /// <returns>a new feedback</returns>
         public FeedbackViewModelOut CreateNewFeedback(FeedbackViewModelIn feedbackIn)
         {
             FeedbackViewModelOut newFeedback = null;
@@ -44,6 +49,35 @@ namespace SOFA_API.DAO
                 throw e;
             }
             return newFeedback;
+        }
+
+        /// <summary>
+        /// Function to get all feedback of an user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>List of feedback</returns>
+        public ListFeedbackViewModelOut GetListFeedback(int userId)
+        {
+            ListFeedbackViewModelOut listFeedback = new ListFeedbackViewModelOut();
+            string sql = "EXEC GetFeedbackByUserId @userId";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { userId });
+                if(data.Rows.Count > 0)
+                {
+                    for(int i = 0; i < data.Rows.Count; i++)
+                    {
+                        FeedbackViewModelOut feedback = new FeedbackViewModelOut(data.Rows[i]);
+                        listFeedback.ListFeedback.Add(feedback);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+            return listFeedback;
         }
     }
 }
