@@ -78,6 +78,7 @@ export default class Login extends Component {
             let data = new FormData();
             data.append('username', username);
             data.append('password', password);
+            data.append('isApplicationAccess', true)
             let url = Const.domain + 'api/auth/login';
             Request.Post(url, header, data)
                 .then(response => {
