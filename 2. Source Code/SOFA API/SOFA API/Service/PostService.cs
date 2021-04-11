@@ -734,6 +734,7 @@ namespace SOFA_API.Service
                     postModelOut.SetPostDetail(post);
                     Profile profile = ProfileDAO.Instance.GetProfileByAccountID(post.AccountPost);
                     postModelOut.SetAccountPost(profile);
+                    postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(postID);
                     postModelOut.NumberOfComment = postModelOut.ListComment.Count;
                     postModelOut.NumberOfLike = postModelOut.ListLike.Count;
                     postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(postID);
