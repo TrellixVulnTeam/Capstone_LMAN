@@ -129,7 +129,6 @@ namespace SOFA_API.Common
             {
                 throw new Exception("Request failed, response: " + response);
             }
-
             return response.Hits;
         }
         public RepeatedField<Hit> SearchImageTemp(string url)

@@ -703,5 +703,111 @@ namespace SOFA_API.Service
             }
             return listPost;
         }
+        /// <summary>
+        /// Get the post of image
+        /// </summary>
+        /// <param name="userID">ID of user who search sell place</param>
+        /// <param name="id">ID of the image that you want to get</param>
+        /// <param name="listPost">List of post found before. This use to check the post is not repeat</param>
+        /// <returns>Data of the post</returns>
+        private PostModelOut GetPostByImage(int userID, string id, List<PostModelOut> listPost)
+        {
+            try
+            {
+                PostModelOut postModelOut = new PostModelOut();
+                //ID of the image is concatenated of postID and imageID
+                int postID = Int32.Parse(id.Split('-')[0]);
+                foreach (PostModelOut item in listPost)
+                {
+                    if (item.ID == postID)
+                    {
+                        return null;
+                    }
+                }
+                Post post = PostDAO.Instance.GetPostByID(postID);
+                if (post.ID > 0)
+                {
+                    if (post.Type == Const.POST_TYPE_NORMAL)
+                    {
+                        return null;
+                    }
+                    postModelOut.SetPostDetail(post);
+                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(post.AccountPost);
+                    postModelOut.SetAccountPost(profile);
+                    postModelOut.NumberOfComment = postModelOut.ListComment.Count;
+                    postModelOut.NumberOfLike = postModelOut.ListLike.Count;
+                    postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(postID);
+                    if (userID != 0)
+                    {
+                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(post.ID, userID) != null;
+                        Rate rateTemp = RateDAO.Instance.GetRatingOfUser(post.ID, userID);
+                        postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                        MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(post.ID, userID);
+                        postModelOut.IsMarked = markupPost != null ? true : false;
+                    }
+                    return postModelOut;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Service process for endpoind search seller
+        /// </summary>
+        /// <param name="userID">ID of the user who make query</param>
+        /// <param name="postViewModelIn">Data include image</param>
+        /// <returns>Post view model out</returns>
+        public PostViewModelOut SearchPostByImage(int userID, PostViewModelIn postViewModelIn)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
+            ClarifaiUtils clarifaiUtils = new ClarifaiUtils();
+            try
+            {
+                ImageModelIn imageQuery = postViewModelIn.ListImage[0];
+                ProfileViewModelOut currentProfile = ProfileService.Instance.GetProfileModelByAccountID(userID);
+                if (currentProfile != null)
+                {
+                    DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                    long ms = (long)(DateTime.UtcNow - epoch).TotalMilliseconds;
+                    string filename = ms + ".png";
+                    string path = Const.ASSETS_PATH_QUERY_IMAGE.Replace("@username", currentProfile.UserName);
+                    string imageContent = imageQuery.Image;
+                    Utils.Instance.SaveImageFromBase64String(imageContent, path, filename);
+                    string imageUrl = Path.Combine(path, filename);
+                    RepeatedField<Hit> searchResults = clarifaiUtils.SearchImageTemp(Const.DOMAIN_ASSETS + imageUrl);
+                    Utils.Instance.SaveLog(searchResults.ToString());
+                    foreach (Hit result in searchResults)
+                    {
+                        if (result.Score > 0.85)
+                        {
+                            PostModelOut postModelOut = GetPostByImage(userID, result.Input.Id, postViewModelOut.ListPost);
+                            if (postModelOut != null)
+                            {
+                                postViewModelOut.ListPost.Add(postModelOut);
+                            }
+                        }
+                    }
+                    postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
+                postViewModelOut.ListPost = new List<PostModelOut>();
+            }
+            return postViewModelOut;
+        }
     }
 }
+

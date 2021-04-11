@@ -209,5 +209,14 @@ namespace SOFA_API.Controllers
             AdminPostViewModelOut listAllPost = PostService.Instance.GetAllPostWithoutPaging();
             return Ok(listAllPost);
         }
+        [HttpPost("SearchPostByImage")]
+        [Authorize]
+        public ActionResult SearchPostByImage([FromForm] PostViewModelIn postViewModelIn)
+        {
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            PostViewModelOut postViewModelOut = PostService.Instance.SearchPostByImage(userID, postViewModelIn);
+
+            return Ok(postViewModelOut);
+        }
     }
 }
