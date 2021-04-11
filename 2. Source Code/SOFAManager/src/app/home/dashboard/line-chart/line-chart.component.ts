@@ -10,10 +10,10 @@ import {Color, Label} from "ng2-charts";
 export class LineChartComponent implements OnInit {
 
   lineChartData: ChartDataSets[] = [
-    { data: [85, 72, 78, 75, 77, 75], label: 'Crude oil prices' },
+    { data: [99,1], label: 'Crude oil prices' },
   ];
 
-  lineChartLabels: Label[] = ['January', 'February', 'March', 'April', 'May', 'June'];
+  lineChartLabels: Label[] = ['Active', 'Inactive'];
 
   lineChartOptions = {
     responsive: true,

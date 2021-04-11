@@ -9,9 +9,9 @@ import {ChartType} from "chart.js";
 })
 export class DonutChartComponent implements OnInit {
 
-  doughnutChartLabels: Label[] = ['BMW', 'Ford', 'Tesla'];
+  doughnutChartLabels: Label[] = ['Active', 'Inactive'];
   doughnutChartData: MultiDataSet = [
-    [55, 25, 20]
+    [99, 1]
   ];
   doughnutChartType: ChartType = 'doughnut';
 
