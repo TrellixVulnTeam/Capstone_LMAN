@@ -26,8 +26,8 @@
     </div>
     <div class="col-3" style="padding-top: 20px;">
         <div style="width: 150px;" class="text-center">
-            <h3 *ngIf="userDetail.isActive" style="color: green;">Acitve</h3>
-            <h3 *ngIf="!userDetail.isActive" style="color: red;">Inacitve</h3>
+            <h3 *ngIf="userDetail.isActive" style="color: green;">Active</h3>
+            <h3 *ngIf="!userDetail.isActive" style="color: red;">Inactive</h3>
         </div>
         <div *ngIf="userDetail.isActive" style="padding-top: 15px;">
             <button style="width: 150px;" type="button" class="btn btn-danger" (click)="onClickBan(accountId)">Ban</button>
@@ -39,7 +39,7 @@
             <button style="width: 150px;" type="button" class="btn btn-warning" (click)="onClickResetPassword(accountId)">Reset password</button>
         </div>
         <div style="padding-top: 15px;">
-            <button style="width: 150px;" type="button" class="btn btn-success">Add balance</button>
+            <button style="width: 150px;" type="button" class="btn btn-success" (click)="onClickAddBalance(accountId)">Add balance</button>
         </div>
     </div>
 </div>

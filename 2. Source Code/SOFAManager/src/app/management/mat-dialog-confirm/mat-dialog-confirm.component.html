@@ -1,8 +1,13 @@
 <h2 mat-dialog-title>{{data.title}}</h2>
 <mat-dialog-content class="mat-typography">
-  <h4>{{data.content}}</h4>
+  <h4 *ngIf="!data.isGetInput">{{data.content}}</h4>
+  <mat-form-field *ngIf="data.isGetInput">
+    <mat-label>VNĐ</mat-label>
+    <input matInput [(ngModel)]="inputData" type="number">
+  </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Hủy</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Ok</button>
+  <button *ngIf="!data.isGetInput" mat-button [mat-dialog-close]="true" cdkFocusInitial>Ok</button>
+  <button *ngIf="data.isGetInput" mat-button [mat-dialog-close]="inputData" cdkFocusInitial>Ok</button>
 </mat-dialog-actions>
