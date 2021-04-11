@@ -554,7 +554,13 @@ export default class PostDetail extends Component {
                                                     >
                                                         <View style={Style.newsfeed.ArticleImageStyle}>
                                                             <Image
-                                                                style={Style.newsfeed.ArticleImage}
+                                                                style={{
+                                                                    flex: 1,
+                                                                    height: scale(400, Horizontal),
+                                                                    width: scale(400, Horizontal),
+                                                                    resizeMode: 'cover',
+                                                                    borderRadius: 20,
+                                                                }}
                                                                 source={{ uri: Const.assets_domain + item.url }} />
                                                         </View>
                                                     </TouchableWithoutFeedback>

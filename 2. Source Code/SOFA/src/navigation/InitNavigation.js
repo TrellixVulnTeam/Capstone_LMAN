@@ -26,6 +26,7 @@ import MessageSearch from '../component/messageSearch';
 import EditPost from '../component/editPost';
 import CreateFeedback from '../component/createFeedback';
 import ListFeedback from '../component/listFeedback';
+import SellPlace from '../component/sellPlace';
 const Stack = createStackNavigator();
 
 export default function Navigation() {
@@ -55,8 +56,9 @@ export default function Navigation() {
                 <Stack.Screen name='Profile' component={Profile} options={{ headerShown: false }} />
                 <Stack.Screen name='MessageSearch' component={MessageSearch} options={{ headerShown: false }} />
                 <Stack.Screen name='EditPost' component={EditPost} options={{ headerShown: false }} />
-                <Stack.Screen name='CreateFeedback' component={CreateFeedback} options={{ headerShown: false}} />
-                <Stack.Screen name='ListFeedback' component={ListFeedback} options={{ headerShown: false}} />
+                <Stack.Screen name='CreateFeedback' component={CreateFeedback} options={{ headerShown: false }} />
+                <Stack.Screen name='ListFeedback' component={ListFeedback} options={{ headerShown: false }} />
+                <Stack.Screen name='SellPlace' component={SellPlace} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

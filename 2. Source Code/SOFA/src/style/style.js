@@ -206,6 +206,7 @@ export const newsfeed = StyleSheet.create({
     marginTop: scale(20, Vertical),
     marginLeft: scale(5, Horizontal),
     marginRight: 'auto',
+    width: scale(380, Horizontal)
   },
   ArticleImageStyle: {
   },
@@ -651,7 +652,7 @@ export const noti = StyleSheet.create({
 
 });
 export const message = StyleSheet.create({
-time:{
-  textAlign: 'right'
-}
+  time: {
+    textAlign: 'right'
+  }
 });

@@ -253,7 +253,6 @@ export default class CreateInfo extends Component {
             { id: 'bustSize', name: 'Vòng 1', unit: 'cm', keyboardType: 'decimal-pad', onChange: (value) => this.setState({ info: { ...this.state.info, bustSize: parseFloat(value.trim().length > 0 ? value.trim() : 0) } }) },
             { id: 'waistSize', name: 'Vòng 2', unit: 'cm', keyboardType: 'decimal-pad', onChange: (value) => this.setState({ info: { ...this.state.info, waistSize: parseFloat(value.trim().length > 0 ? value.trim() : 0) } }) },
             { id: 'hipSize', name: 'Vòng 3', unit: 'cm', keyboardType: 'decimal-pad', onChange: (value) => this.setState({ info: { ...this.state.info, hipSize: parseFloat(value.trim().length > 0 ? value.trim() : 0) } }) },
-            { id: 'skinColor', name: 'Màu da', unit: '', keyboardType: 'decimal-pad', onChange: (value) => this.setState({ info: { ...this.state.info, skinColor: parseInt(value.trim().length > 0 ? value.trim() : 0) } }) },
         ]
         return (
             <View style={styles().Container}>

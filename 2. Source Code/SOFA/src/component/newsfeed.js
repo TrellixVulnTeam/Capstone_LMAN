@@ -809,17 +809,20 @@ export default class Newsfeed extends Component {
                     </Text>
                 </View>
                 <View style={Style.newsfeed.ArticleImageList}>
-                    <Image
-                        style={[
-                            {
-                                position: 'absolute',
-                                left: scale(10, Horizontal),
-                                top: scale(-10, Vertical),
-                            },
-                            Style.newsfeed.ArticleImage,
-                        ]}
-                        source={WHITE_BACKGROUND}
-                    />
+                    {post.listImage.length > 1 ? (
+                        <Image
+                            style={[
+                                {
+                                    position: 'absolute',
+                                    left: scale(10, Horizontal),
+                                    top: scale(-10, Vertical),
+                                },
+                                Style.newsfeed.ArticleImage,
+                            ]}
+                            source={WHITE_BACKGROUND}
+                        />
+                    ) : (<View></View>)}
+
                     <FlatList
                         contentContainerStyle={{ alignSelf: 'flex-start' }}
                         showsVerticalScrollIndicator={false}
@@ -903,13 +906,7 @@ export default class Newsfeed extends Component {
     };
 
     render() {
-        const {
-            isShowMenu,
-            listPost,
-            account,
-            currentPostSelect,
-            listPostRefreshing,
-        } = this.state;
+        const { isShowMenu, listPost, account, currentPostSelect, listPostRefreshing, } = this.state;
         return (
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
@@ -1021,6 +1018,9 @@ export default class Newsfeed extends Component {
                             }}
                             onPressEditPost={(postID) => {
                                 this.props.navigation.navigate('EditPost', { 'postID': postID })
+                            }}
+                            onPressBuyPlace={(post) => {
+                                this.props.navigation.navigate("SellPlace", { 'post': post });
                             }}
                         />
                         <ViewImageModal

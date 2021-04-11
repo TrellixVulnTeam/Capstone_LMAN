@@ -39,11 +39,12 @@ export default class PostMenu extends Component {
     actionArticleNotOwn = [
         {
             key: 'buyplace',
-            icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
+            icon: () => <MaterialIcons name='place' size={scale(30, Horizontal)} color={'black'} />,
             title: () => 'Tìm shop',
             detail: () => 'Tìm shop có bán sản phẩm này',
             onPress: () => {
-
+                this.props.onPressBuyPlace(this.props.post);
+                this.props.onRequestClose();
             }
         },
         {
