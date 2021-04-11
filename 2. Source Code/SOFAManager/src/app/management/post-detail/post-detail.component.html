@@ -1,0 +1,63 @@
+<div style="padding-top: 100px;">
+    <div class="container" style="background-color: white; padding: 30px;">
+        <div class="row">
+            <div class="col-6">
+                <p>Posted by: <a [routerLink]="['/user-detail', postDetail.accountPost]">{{postDetail.postedBy}}</a> -
+                    Date: {{postDetail.dateCreated | date: 'MMM d, y, h:mm:ss a'}}</p>
+                <h5>"{{postDetail.content}}"</h5>
+                <br><br>
+                <h6 style="font-style: italic;opacity: 0.5;">Total like: {{postDetail.totalLike}}</h6>
+                <h6 style="font-style: italic;opacity: 0.5;">Average rate: {{postDetail.rateAverage}}</h6>
+            </div>
+            <div class="col-6">
+                <img style="max-height: 400px; max-width: 400px; display: inline-block;" src="{{postImg}}">
+                <button style="width: 100px; margin-left: 100px;display: inline-block;" type="button" class="btn btn-danger" (click)="onClickDelete()">Xóa</button>
+            </div>
+        </div>
+        <div *ngIf="this.postDetail.listComment.length > 0" class="card" style="margin-top: 30px;">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Comment</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let comment of postDetail.listComment | paginate: { id: 'foo',
+                            itemsPerPage: 10,
+                            currentPage: page,
+                            totalItems: totalRecord }">
+                                <td><a [routerLink]="['/user-detail', comment.accountID]">
+                                    {{comment.firstName + ' ' + comment.lastName}}
+                                    </a></td>
+                                <th>{{comment.content}}</th>
+                                <td>{{comment.time | date: 'MMM d, y, h:mm:ss a'}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="this.postDetail.listComment.length > 0" style="text-align:center">
+            <pagination-controls class="justify-content-center" id="foo"
+            (pageChange)="page = $event"
+            maxSize="5"
+            directionLinks="true"
+            autoHide="true"
+            responsive="true"
+            previousLabel="Previous"
+            nextLabel="Next"
+            screenReaderPaginationLabel="Pagination"
+            screenReaderPageLabel="page"
+            screenReaderCurrentLabel="You're on page">
+        </pagination-controls></div>
+        <hr style="margin-top: 100px;font-style: italic;">
+        <div *ngIf="postDetail.listComment.length == 0" style="font-style: italic;">
+            <p>Chưa có comment cho post này</p>
+        </div>
+    </div>
+    
+</div>

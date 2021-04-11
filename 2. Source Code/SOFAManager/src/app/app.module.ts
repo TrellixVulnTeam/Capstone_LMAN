@@ -39,6 +39,7 @@ import { UserDetailComponent } from './management/user-detail/user-detail.compon
 import {MatDialogModule} from '@angular/material/dialog';
 import { MatDialogConfirmComponent } from './management/mat-dialog-confirm/mat-dialog-confirm.component';
 import {MatButtonModule} from '@angular/material/button';
+import { PostDetailComponent } from './management/post-detail/post-detail.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import {MatButtonModule} from '@angular/material/button';
     RecommendationDataComponent,
     NewStaffComponent,
     UserDetailComponent,
-    MatDialogConfirmComponent
+    MatDialogConfirmComponent,
+    PostDetailComponent
   ],
   entryComponents: [MatDialogConfirmComponent],
   imports: [

@@ -18,6 +18,7 @@ import { VoucherComponent } from './management/voucher/voucher.component';
 import { UserBalanceComponent } from './management/user-balance/user-balance.component';
 import { RecommendationDataComponent } from './management/recommendation-data/recommendation-data.component';
 import { UserDetailComponent } from './management/user-detail/user-detail.component';
+import { PostDetailComponent } from './management/post-detail/post-detail.component';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt')
@@ -39,7 +40,8 @@ const routes: Routes = [
       { path: 'vouchers', component: VoucherComponent, data: { title: 'Voucher management' }, canActivate: [AuthGuardService] },
       { path: 'balances', component: UserBalanceComponent, data: { title: 'Balance management' }, canActivate: [AuthGuardService] },
       { path: 'recommendation', component: RecommendationDataComponent, data: { title: 'Recommentdation management' }, canActivate: [AuthGuardService] },
-      { path: 'user-detail/:id', component: UserDetailComponent, data: { title: 'Recommentdation management' }, canActivate: [AuthGuardService] }
+      { path: 'user-detail/:id', component: UserDetailComponent, data: { title: 'User detail' }, canActivate: [AuthGuardService] },
+      { path: 'post-detail/:id', component: PostDetailComponent, data: { title: 'Post Detail' }, canActivate: [AuthGuardService] }
     ]
   },
   { path: 'login', component: LoginComponent, data: { title: 'Đăng nhập' } },

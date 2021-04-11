@@ -1,20 +1,21 @@
 <header class="page-header">
     <div class="container-fluid">
-      <h2 class="no-margin-bottom">Users list</h2>
+        <h2 class="no-margin-bottom">Users list</h2>
     </div>
-  </header>
+</header>
 <div class="breadcrumb-holder container-fluid">
     <ul class="breadcrumb">
-      <li class="breadcrumb-item"><a href="">Home</a></li>
-      <li class="breadcrumb-item active">User</li>
+        <li class="breadcrumb-item"><a href="">Home</a></li>
+        <li class="breadcrumb-item active">User</li>
     </ul>
-  </div>
+</div>
 <div class="row">
     <div class="col-4"></div>
     <div class="col-4">
-        <div class="input-group" style="margin-bottom: 20px">
-            <input type="text" class="form-control" placeholder="Search user by username" [(ngModel)]="username" (ngModelChange)="search()"> 
-          </div>
+        <div class="input-group" style="margin-bottom: 20px; display: inline-block;">
+            <input style="display: inline-block;" type="text" class="form-control" placeholder="Search user by username" [(ngModel)]="username"
+                (ngModelChange)="search()">
+        </div>
     </div>
 </div>
 <div class="col-lg-12">
@@ -46,12 +47,13 @@
                             <td>{{user.firstName + ' ' + user.lastName}}</td>
                             <td>{{user.phone}}</td>
                             <td>{{user.dateCreated | date }}</td>
-                            <td><img style="max-height: 40px; max-width: 40px;" src="{{assetsDonmain + user.avatarUri}}"></td>
+                            <td><img style="max-height: 40px; max-width: 40px;"
+                                    src="{{assetsDonmain + user.avatarUri}}"></td>
                             <td *ngIf="user.isActive">Active</td>
                             <td *ngIf="!user.isActive">Inactive</td>
                             <td><a [routerLink]="['/user-detail', user.id]">
                                     edit
-                              </a></td>
+                                </a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -60,15 +62,8 @@
     </div>
 </div>
 <div style="text-align:center">
-    <pagination-controls class="justify-content-center" id="foo"
-    (pageChange)="page = $event"
-    maxSize="5"
-    directionLinks="true"
-    autoHide="true"
-    responsive="true"
-    previousLabel="Previous"
-    nextLabel="Next"
-    screenReaderPaginationLabel="Pagination"
-    screenReaderPageLabel="page"
-    screenReaderCurrentLabel="You're on page">
-</pagination-controls></div>
+    <pagination-controls class="justify-content-center" id="foo" (pageChange)="page = $event" maxSize="5"
+        directionLinks="true" autoHide="true" responsive="true" previousLabel="Previous" nextLabel="Next"
+        screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+    </pagination-controls>
+</div>

@@ -40,7 +40,7 @@
                             <td>{{post.dateCreated | date }}</td>
                             <td *ngIf="post.isActive">Active</td>
                             <td *ngIf="!post.isActive">Inactive</td>
-                            <td><a href="#">
+                            <td><a [routerLink]="['/post-detail', post.id]">
                                     edit
                               </a></td>
                         </tr>
