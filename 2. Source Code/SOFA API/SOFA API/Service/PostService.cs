@@ -842,6 +842,99 @@ namespace SOFA_API.Service
             }
             return listPost;
         }
+
+        public AdminPostDetailModelOut AdminGetPostDetail(int postId)
+        {
+            AdminPostDetailModelOut postDetail = new AdminPostDetailModelOut();
+            try
+            {
+                PostModelOut postModelOut = new PostModelOut();
+                Post post = PostDAO.Instance.GetPostByID(postId);
+                Profile profile = ProfileDAO.Instance.GetProfileByAccountID(post.AccountPost);
+                postModelOut.SetPostDetail(post);
+                postModelOut.SetAccountPost(profile);
+                postModelOut.ListLike = LikeDAO.Instance.GetAllLikeOfPost(postId);
+
+                List<Comment> comments = CommentDAO.Instance.GetAllCommentOfPostWithoutPaging(postId);
+                List<CommentModelOut> commentModelOuts = new List<CommentModelOut>();
+                foreach (Comment comment in comments)
+                {
+                    Profile profileComment = ProfileDAO.Instance.GetProfileByAccountID(comment.AccountID);
+                    CommentModelOut commentModelOut = new CommentModelOut();
+                    commentModelOut.SetComment(comment);
+                    commentModelOut.SetAccountComment(profileComment);
+                    commentModelOuts.Add(commentModelOut);
+                }
+                postModelOut.ListComment = commentModelOuts;
+                postModelOut.ListRate = RateDAO.Instance.GetListOfRate(postId);
+                postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(postId);
+                postModelOut.NumberOfComment = postModelOut.ListComment.Count;
+                postModelOut.NumberOfLike = postModelOut.ListLike.Count;
+                postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(postId);
+                if (post.AccountPost != 0)
+                {
+                    postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(post.ID, post.AccountPost) != null;
+                    Rate rateTemp = RateDAO.Instance.GetRatingOfUser(post.ID, post.AccountPost);
+                    postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                    MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(post.ID, post.AccountPost);
+                    postModelOut.IsMarked = markupPost != null ? true : false;
+                }
+
+                postDetail.Id = postModelOut.ID;
+                postDetail.AccountPost = postModelOut.AccountPost;
+                postDetail.PostedBy = postModelOut.FirstName + " " + postModelOut.LastName;
+                postDetail.DateCreated = postModelOut.Time;
+                postDetail.Content = postModelOut.Content;
+                postDetail.ListImage = postModelOut.ListImage;
+                postDetail.TotalLike = postModelOut.NumberOfLike;
+                postDetail.RateAverage = postModelOut.RateAverage;
+                postDetail.ListComment = postModelOut.ListComment;
+                postDetail.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                postDetail.Code = Const.REQUEST_CODE_FAILED;
+                postDetail.ErrorMessage = e.Message;
+            }
+            return postDetail;
+        }
+
+        public PostViewModelOut AdminDeletePostByID(int postID)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
+            try
+            {
+                Post post = PostDAO.Instance.GetPostByID(postID);
+                if (post != null)
+                {
+                    PostModelOut postModelOut = new PostModelOut();
+                    int flag = PostDAO.Instance.DeletePostByPostID(postID);
+                    if (flag > 0)
+                    {
+                        postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                        postModelOut.ID = postID;
+                        postViewModelOut.ListPost.Add(postModelOut);
+                    }
+                    else
+                    {
+                        postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    }
+                }
+                else
+                {
+                    postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    postViewModelOut.ErrorMessage = MessageUtils.ERROR_DONT_HAVE_PERMISSION;
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.ToString();
+            }
+            return postViewModelOut;
+        }
     }
 }
 

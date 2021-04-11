@@ -225,5 +225,18 @@ namespace SOFA_API.Controllers
             AdminPostViewModelOut listAllPost = PostService.Instance.GetPostByUserWithoutPaging(id);
             return Ok(listAllPost);
         }
+
+        [HttpGet("AdminGetPostDetail")]
+        public ActionResult AdminGetPostDetail(int postID)
+        {
+            AdminPostDetailModelOut postDetail = PostService.Instance.AdminGetPostDetail(postID);
+            return Ok(postDetail);
+        }
+        [HttpPost("AdminDeletePost")]
+        public ActionResult AdminDeletePost([FromForm] int postId)
+        {
+            PostViewModelOut postViewModelOut = PostService.Instance.AdminDeletePostByID(postId);
+            return Ok(postViewModelOut);
+        }
     }
 }

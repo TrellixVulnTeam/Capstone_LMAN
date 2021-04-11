@@ -80,5 +80,21 @@ namespace SOFA_API.DAO
             return comments;
         }
 
+        public List<Comment> GetAllCommentOfPostWithoutPaging(int postID)
+        {
+            List<Comment> comments = new List<Comment>();
+            string sql = "EXEC dbo.GetAllCommentOfPostWithoutPaging @postID";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID});
+            if (data.Rows.Count > 0)
+            {
+                foreach (DataRow row in data.Rows)
+                {
+                    comments.Add(new Comment(row));
+                }
+            }
+
+            return comments;
+        }
+
     }
 }
