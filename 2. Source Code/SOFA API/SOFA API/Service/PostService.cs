@@ -809,6 +809,39 @@ namespace SOFA_API.Service
             }
             return postViewModelOut;
         }
+
+        public AdminPostViewModelOut GetPostByUserWithoutPaging(int accountId)
+        {
+            AdminPostViewModelOut listPost = new AdminPostViewModelOut();
+
+            try
+            {
+                List<Post> listAllPost = PostDAO.Instance.GetPostByUserWithoutPaging(accountId);
+
+                foreach (Post item in listAllPost)
+                {
+                    AccountViewModelOut account = AccountDAO.Instance.GetUserById(item.AccountPost);
+                    AdminPostModelOut postModelOut = new AdminPostModelOut();
+                    postModelOut.Id = item.ID;
+                    postModelOut.Content = item.Content;
+                    postModelOut.DateCreated = item.Time;
+                    postModelOut.PostedBy = account.Username;
+                    var images = PostImageDAO.Instance.GetPostImages(item.ID).ToList();
+                    postModelOut.PostImageUri = images[0].Url;
+                    postModelOut.IsActive = true;
+
+                    listPost.ListPost.Add(postModelOut);
+                }
+                listPost.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                listPost.Code = Const.REQUEST_CODE_FAILED;
+                listPost.ErrorMessage = e.Message;
+            }
+            return listPost;
+        }
     }
 }
 

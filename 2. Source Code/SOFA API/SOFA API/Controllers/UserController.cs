@@ -20,5 +20,26 @@ namespace SOFA_API.Controllers
             AdminAccountViewModelOut listAllPost = UserService.Instance.GetAllUser();
             return Ok(listAllPost);
         }
+
+        [HttpGet("GetUserDetailByID")]
+        public ActionResult GetUserDetailByID(int id)
+        {
+            AdminUserDetailViewModelOut user = UserService.Instance.GetUserDetailById(id);
+            return Ok(user);
+        }
+
+        [HttpPost("BanUser")]
+        public ActionResult BanUser([FromForm] int accountId)
+        {
+            AccountViewModelOut user = UserService.Instance.BanUser(accountId);
+            return Ok(user);
+        }
+
+        [HttpPost("UnbanUser")]
+        public ActionResult UnbanUser([FromForm] int accountId)
+        {
+            AccountViewModelOut user = UserService.Instance.UnbanUser(accountId);
+            return Ok(user);
+        }
     }
 }

@@ -115,5 +115,27 @@ namespace SOFA_API.DAO
             return data; ;
 
         }
+
+        public List<AdminUserbalanceModel> GetUserBalanceByAccountId(int id)
+        {
+            List<AdminUserbalanceModel> listBalace = new List<AdminUserbalanceModel>();
+            string sql = "EXEC dbo.GetUserBalanceById @AccountID";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { id });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        listBalace.Add(new AdminUserbalanceModel(row));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            return listBalace;
+        }
     }
 }

@@ -96,5 +96,25 @@ namespace SOFA_API.Service
             }
             return topUpAccountModelOut;
         }
+
+        public AdminUserbalanceViewModelOut GetUserBalanceByAccountId(int accountId)
+        {
+            AdminUserbalanceViewModelOut userBalance = new AdminUserbalanceViewModelOut();
+
+            try
+            {
+                userBalance.ListBalance = BalanceDAO.Instance.GetUserBalanceByAccountId(accountId);
+                userBalance.TotalBalance = BalanceDAO.Instance.GetBalanceByAccountID(accountId).Balance;
+
+                userBalance.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                userBalance.Code = Const.REQUEST_CODE_FAILED;
+                userBalance.ErrorMessage = e.Message;
+            }
+            return userBalance;
+        }
     }
 }

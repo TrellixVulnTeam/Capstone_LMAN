@@ -55,5 +55,12 @@ namespace SOFA_API.Controllers
             TopUpAccountModelOut topUpAccountModelOut = BalanceService.Instance.topUpAccount(topUp);
             return Ok(topUpAccountModelOut);
         }
+
+        [HttpGet("GetUserBalanceById")]
+        public ActionResult GetUserBalanceById(int id)
+        {
+            AdminUserbalanceViewModelOut modelOut = BalanceService.Instance.GetUserBalanceByAccountId(id);
+            return Ok(modelOut);
+        }
     }
 }

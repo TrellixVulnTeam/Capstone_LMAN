@@ -152,5 +152,29 @@ namespace SOFA_API.DAO
             }
             return null;
         }
+
+        public AdminUserDetailViewModelOut GetUserDetailById(int accountId)
+        {
+            string query = "EXEC GetUserDetailByID @AccountId";
+            DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { accountId });
+            if (data.Rows.Count > 0)
+            {
+                AdminUserDetailViewModelOut user = new AdminUserDetailViewModelOut(data.Rows[0]);
+                return user;
+            }
+            return null;
+        }
+
+        public void BanUser(int accountId)
+        {
+            string query = "EXEC BanUser @AccountId";
+            DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { accountId });
+        }
+
+        public void UnbanUser(int accountId)
+        {
+            string query = "EXEC UnbanUser @AccountId";
+            DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { accountId });
+        }
     }
 }

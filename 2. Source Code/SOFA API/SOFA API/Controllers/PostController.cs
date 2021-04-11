@@ -218,5 +218,12 @@ namespace SOFA_API.Controllers
 
             return Ok(postViewModelOut);
         }
+
+        [HttpGet("GetPostByUserWithoutPaging")]
+        public ActionResult GetPostByUserWithoutPaging(int id)
+        {
+            AdminPostViewModelOut listAllPost = PostService.Instance.GetPostByUserWithoutPaging(id);
+            return Ok(listAllPost);
+        }
     }
 }
