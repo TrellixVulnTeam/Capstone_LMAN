@@ -19,8 +19,8 @@ export class DefaultLayoutComponent implements OnInit {
   ngOnInit() {
     // get token
     let userStored = JSON.parse(localStorage.getItem('user'));
-    this.user.firstname = userStored.firstname
-    this.user.lastname = userStored.lastname
+    this.user.firstName = userStored.firstName
+    this.user.lastName = userStored.lastName
     this.user.roleName = userStored.roleName
   }
 

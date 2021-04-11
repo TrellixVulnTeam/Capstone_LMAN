@@ -43,8 +43,8 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('jwt', (<any>response).token);
 
           this.user.id = (<any>response).id;
-          this.user.firstname = (<any>response).firstname;
-          this.user.lastname = (<any>response).lastname;
+          this.user.firstName = (<any>response).firstname;
+          this.user.lastName = (<any>response).lastname;
           this.user.roleName = (<any>response).roleName;
           this.user.email = (<any>response).email;
           this.user.phone = (<any>response).phone;

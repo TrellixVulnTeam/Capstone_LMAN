@@ -1,22 +1,21 @@
 export class User {
   id: number;
   userName = '';
-  firstname = '';
-  lastname = '';
+  firstName = '';
+  lastName = '';
+  gender = false;
   roleName = '';
   email = '';
   phone = '';
   avatar = '';
+  address = '';
   dateCreated: Date = new Date();
-  isActive: boolean = false; 
-
-  constructor(id?: number, firstname?: string, lastname?: string, roleName?: string, email?: string, phone?: string) {
-    this.id = id;
-    this.firstname = firstname;
-    this.lastname = lastname;
-    this.roleName = roleName;
-    this.email = email;
-    this.phone = phone;
-  }
+  doB: Date = new Date();
+  isActive: boolean = false;
+  height: number;
+  weight: number;
+  bustSize: number;
+  waistSize: number;
+  hipSize: number;
 
 }

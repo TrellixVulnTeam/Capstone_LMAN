@@ -35,6 +35,11 @@ import { UserBalanceComponent } from './management/user-balance/user-balance.com
 import { RecommendationDataComponent } from './management/recommendation-data/recommendation-data.component';
 import { NewStaffComponent } from './management/new-staff/new-staff.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { UserDetailComponent } from './management/user-detail/user-detail.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogConfirmComponent } from './management/mat-dialog-confirm/mat-dialog-confirm.component';
+import {MatButtonModule} from '@angular/material/button';
+
 
 @NgModule({
   declarations: [
@@ -59,8 +64,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
     VoucherComponent,
     UserBalanceComponent,
     RecommendationDataComponent,
-    NewStaffComponent
+    NewStaffComponent,
+    UserDetailComponent,
+    MatDialogConfirmComponent
   ],
+  entryComponents: [MatDialogConfirmComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -75,7 +83,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     MatFormFieldModule,
     MatInputModule,
     MatNativeDateModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    MatDialogModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

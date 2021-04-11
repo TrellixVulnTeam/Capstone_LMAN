@@ -34,19 +34,19 @@
             <img src="assets/images/avatar-1.jpg" class="img-fluid rounded-circle">
           </a></div>
         <div class="title">
-          <h1 class="h4">{{user.firstname + ' ' + user.lastname}}</h1>
+          <h1 class="h4">{{user.firstName + ' ' + user.lastName}}</h1>
           <p>{{user.roleName}}</p>
         </div>
       </div>
       <ul class="list-unstyled">
-        <li class="active"><a href="/dashboard"><h6>Dashboard</h6></a></li>
-        <li class="active"><a href="/users"><h6>User</h6></a></li>
-        <li class="active"><a href="/posts"> <h6>Post</h6></a></li>
-        <li class="active"><a href="/reports"><h6>Report</h6></a></li>
-        <li class="active"><a href="/vouchers"><h6>Voucher</h6></a></li>
+        <li class="active"><a [routerLink]="['/dashboard']"><h6>Dashboard</h6></a></li>
+        <li class="active"><a [routerLink]="['/users']"><h6>User</h6></a></li>
+        <li class="active"><a [routerLink]="['/posts']"> <h6>Post</h6></a></li>
+        <li class="active"><a [routerLink]="['/reports']"><h6>Report</h6></a></li>
+        <li class="active"><a [routerLink]="['/vouchers']"><h6>Voucher</h6></a></li>
         <!-- <li class="active"><a href="/balances"><h6>User balance</h6></a></li> -->
-        <li class="active"><a href="/recommendation"><h6>Recommendation data</h6></a></li>
-        <li class="active"><a href="/register"><h6>Create new staff</h6></a></li>
+        <li class="active"><a [routerLink]="['/recommendation']"><h6>Recommendation data</h6></a></li>
+        <li class="active"><a [routerLink]="['/register']"><h6>Create new staff</h6></a></li>
       </ul>
     </nav>
     <div class="content-inner">

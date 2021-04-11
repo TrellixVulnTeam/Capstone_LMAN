@@ -1,0 +1,163 @@
+<header class="page-header" style="padding: 15px;">
+    <div class="container-fluid">
+        <h3 class="no-margin-bottom">Thông tin cơ bản</h3>
+    </div>
+</header>
+<div class="row" style="padding-top: 20px; padding-bottom: 20px;">
+    <div class="col-3 text-center">
+        <h3>{{userDetail.firstName + " " + userDetail.lastName}} </h3>
+        <img style="max-height: 200px; max-width: 200px; padding-top: 15px;" src="{{assetsDonmain + userDetail.avatar}}"
+            class="rounded">
+        <h6 style="padding-top: 15px;">Joined: {{userDetail.dateCreated | date}}</h6>
+    </div>
+    <div class="col-3">
+        <h5 style="padding-top: 15px;">Email: {{userDetail.email}}</h5>
+        <h5 style="padding-top: 15px;">Phone: {{userDetail.phone}}</h5>
+        <h5 style="padding-top: 15px;">Gender: {{userDetail.gender ? "Male" : "Female"}}</h5>
+        <h5 style="padding-top: 15px;">Gender: {{userDetail.address.length > 0 ? userDetail.address : "N/A"}}</h5>
+        <h5 style="padding-top: 15px;">Date of birth: {{userDetail.doB | date}}</h5>
+    </div>
+    <div class="col-3">
+        <h5 style="padding-top: 15px;">Height: {{userDetail.height != 0 ? userDetail.height : "N/A"}}</h5>
+        <h5 style="padding-top: 15px;">Weight: {{userDetail.weight!= 0 ? userDetail.height : "N/A"}}</h5>
+        <h5 style="padding-top: 15px;">Bust: {{userDetail.bustSize != 0 ? userDetail.height : "N/A"}}</h5>
+        <h5 style="padding-top: 15px;">Waist: {{userDetail.waistSize != 0 ? userDetail.height : "N/A"}}</h5>
+        <h5 style="padding-top: 15px;">Hip: {{userDetail.hipSize != 0 ? userDetail.height : "N/A"}}</h5>
+    </div>
+    <div class="col-3" style="padding-top: 20px;">
+        <div style="width: 150px;" class="text-center">
+            <h3 *ngIf="userDetail.isActive" style="color: green;">Acitve</h3>
+            <h3 *ngIf="!userDetail.isActive" style="color: red;">Inacitve</h3>
+        </div>
+        <div *ngIf="userDetail.isActive" style="padding-top: 15px;">
+            <button style="width: 150px;" type="button" class="btn btn-danger" (click)="onClickBan(accountId)">Ban</button>
+        </div>
+        <div *ngIf="!userDetail.isActive" style="padding-top: 15px;">
+            <button style="width: 150px;" type="button" class="btn btn-danger" (click)="onClickUnban(accountId)">Unban</button>
+        </div>
+        <div style="padding-top: 15px;">
+            <button style="width: 150px;" type="button" class="btn btn-warning" (click)="onClickResetPassword(accountId)">Reset password</button>
+        </div>
+        <div style="padding-top: 15px;">
+            <button style="width: 150px;" type="button" class="btn btn-success">Add balance</button>
+        </div>
+    </div>
+</div>
+<header class="page-header" style="padding: 15px;">
+    <div class="container-fluid" >
+        <h3 style="display: inline-block;" class="no-margin-bottom">Thông tin số dư</h3>
+        <h5 style="display: inline-block; position:relative; float:right; padding-top: 5px;" >Total Balance: {{userBalance.totalBalance}}</h5>
+    </div>
+</header>
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+        <div *ngIf="userBalance.listBalance.length > 0" class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Amount</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Date created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let balance of userBalance.listBalance | paginate: { id: 'balance',
+                            itemsPerPage: 5,
+                            currentPage: page,
+                            totalItems: totalRecord }">
+                                <th scope="row">{{balance.id}}</th>
+                                <td>{{balance.amount}}</td>
+                                <td>{{balance.type == 1 ? "Topup" : "Other"}}</td>
+                                <td>{{balance.description}}</td>
+                                <td>{{balance.dateCreated | date }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="userBalance.listBalance.length == 0" class="text-center" style="padding-top: 10px;">
+            <h3>Không có số dư</h3>
+        </div>
+    </div>
+</div>
+<div style="text-align:center">
+    <pagination-controls class="justify-content-center" id="balance"
+    (pageChange)="page = $event"
+    maxSize="5"
+    directionLinks="true"
+    autoHide="true"
+    responsive="true"
+    previousLabel="Previous"
+    nextLabel="Next"
+    screenReaderPaginationLabel="Pagination"
+    screenReaderPageLabel="page"
+    screenReaderCurrentLabel="You're on page">
+</pagination-controls></div>
+<header class="page-header" style="padding: 15px;">
+    <div class="container-fluid" >
+        <h3 style="display: inline-block;" class="no-margin-bottom">Bài đăng</h3>
+    </div>
+</header>
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+        <div *ngIf="userPost.length > 0" class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Content</th>
+                                <th>Image</th>
+                                <th>Posted by</th>
+                                <th>Date created</th>
+                                <th>Status</th>
+                                <th>Option</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let post of userPost | paginate: { id: 'post',
+                            itemsPerPage: 10,
+                            currentPage: page,
+                            totalItems: totalRecord }">
+                                <th scope="row">{{post.id}}</th>
+                                <td>{{post.content}}</td>
+                                <td><img style="max-height: 40px; max-width: 40px;" src="{{assetsDonmain + post.postImageUri}}"></td>
+                                <td>{{post.postedBy}}</td>
+                                <td>{{post.dateCreated | date }}</td>
+                                <td *ngIf="post.isActive">Active</td>
+                                <td *ngIf="!post.isActive">Inactive</td>
+                                <td><a href="#">
+                                        edit
+                                  </a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="userPost.length == 0" class="text-center" style="padding-top: 10px;">
+            <h3>Không có bài đăng</h3>
+        </div>
+    </div>
+</div>
+<div style="text-align:center">
+    <pagination-controls class="justify-content-center" id="post"
+    (pageChange)="page = $event"
+    maxSize="5"
+    directionLinks="true"
+    autoHide="true"
+    responsive="true"
+    previousLabel="Previous"
+    nextLabel="Next"
+    screenReaderPaginationLabel="Pagination"
+    screenReaderPageLabel="page"
+    screenReaderCurrentLabel="You're on page">
+</pagination-controls></div>
