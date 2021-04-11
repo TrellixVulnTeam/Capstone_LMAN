@@ -230,6 +230,12 @@ namespace SOFA_API.Service
                             throw new Exception("Tên tài khoản hoặc mật khẩu không đúng");
                         }
 
+                        // check admin login
+                        if (!loginViewModelIn.IsApplicationAccess && account.RoleId != Const.ADMIN_ROLE_ID)
+                        {
+                            throw new Exception("Bạn không có quyền truy cập vào trang này");
+                        }
+
                         // security key
                         string securityKey = Configuration["JWT:SecretKey"];
 
