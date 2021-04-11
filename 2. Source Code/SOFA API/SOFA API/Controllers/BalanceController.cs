@@ -52,6 +52,7 @@ namespace SOFA_API.Controllers
         [HttpPost("topUpAccount")]
         public ActionResult TopUpAccount([FromForm] TopUpAccountModelIn topUp)
         {
+            topUp.Description = "Topup by admin";
             TopUpAccountModelOut topUpAccountModelOut = BalanceService.Instance.topUpAccount(topUp);
             return Ok(topUpAccountModelOut);
         }
