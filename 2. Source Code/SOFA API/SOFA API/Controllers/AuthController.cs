@@ -88,5 +88,12 @@ namespace SOFA_API.Controllers
             return Ok(loginViewModelOut);
         }
 
+        [HttpPost("admin-reset-password")]
+        public ActionResult AdminResetPassword([FromForm] int accountId)
+        {
+            AccountViewModelOut loginViewModelOut = authService.AdminResetPassword(accountId);
+            return Ok(loginViewModelOut);
+        }
+
     }
 }

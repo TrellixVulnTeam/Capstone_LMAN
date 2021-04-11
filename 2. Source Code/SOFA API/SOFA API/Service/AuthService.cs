@@ -507,5 +507,47 @@ namespace SOFA_API.Service
             }
 
         }
+        public AccountViewModelOut AdminResetPassword(int accountId)
+        {
+            AccountViewModelOut loginViewModelOut = new AccountViewModelOut();
+
+            try
+            {
+                AccountViewModelIn loginViewModelIn = new AccountViewModelIn();
+                if (accountId != 0)
+                {
+                    // check account
+                    AccountViewModelOut account = AccountDAO.Instance.GetUserById(accountId);
+
+                    if (account != null)
+                    {
+                        
+                        loginViewModelIn.Username = account.Username;
+                        loginViewModelIn.NewPassword = HashPassword("123456");
+                    }
+                    else
+                    {
+                        throw new Exception("Account không tồn tại");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Account id không hợp lệ");
+                }
+
+                // update
+                AccountDAO.Instance.UpdateUserPassword(loginViewModelIn.Username, loginViewModelIn.NewPassword);
+                loginViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                loginViewModelOut.Username = loginViewModelIn.Username;
+
+                return loginViewModelOut;
+            }
+            catch (Exception e)
+            {
+                loginViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                loginViewModelOut.ErrorMessage = e.Message;
+                return loginViewModelOut;
+            }
+        }
     }
 }
