@@ -44,3 +44,12 @@ BEGIN
 	SET IsActive = 1
 	WHERE Id = @AccountId;
 END
+-----------------------
+CREATE PROC [dbo].[GetAllCommentOfPostWithoutPaging]
+@postID INT
+AS
+BEGIN
+    SELECT * FROM dbo.Comment 
+	WHERE PostId = @postID
+	ORDER BY [Time] ASC
+END
