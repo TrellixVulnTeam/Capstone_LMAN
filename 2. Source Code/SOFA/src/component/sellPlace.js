@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import { View, Text, StatusBar, Image, TouchableHighlight, FlatList, TouchableWithoutFeedback, Modal, TouchableOpacity, ToastAndroid, ImageBackground, StyleSheet } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableHighlight, FlatList, ActivityIndicator, Modal, TouchableOpacity, ToastAndroid, ImageBackground, StyleSheet } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -9,9 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { Badge, Icon, withBadge } from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
-import { BoxShadow } from 'react-native-shadow';
+import ImagePicker from 'react-native-image-crop-picker';
 
 import * as signalR from '@microsoft/signalr';
 import * as Style from '../style/style';
@@ -35,10 +33,50 @@ export default class SellPlace extends Component {
         super(props);
         this.state = {
             isLoading: false,
-            isSelectImage: false,
+            isSelectImage: true,
             isError: false,
             errorMessage: '',
-            postQuery: {},
+            currentImage: {},
+            postQuery: {
+                "id": 84,
+                "content": "Quần jean body\nGiá: 159k",
+                "privacyID": 3,
+                "time": "2021-04-08T03:35:03.363",
+                "bodyInfoID": 0,
+                "accountPost": 7,
+                "firstName": "Mai Văn",
+                "lastName": "Viên",
+                "avatar": "VienMV/avatar/1.png",
+                "gender": true,
+                "listImage": [
+                    {
+                        "id": 75,
+                        "postID": 84,
+                        "url": "VienMV\\post_image\\84_75.png"
+                    },
+                    {
+                        "id": 76,
+                        "postID": 84,
+                        "url": "VienMV\\post_image\\84_76.png"
+                    },
+                    {
+                        "id": 77,
+                        "postID": 84,
+                        "url": "VienMV\\post_image\\84_77.png"
+                    }
+                ],
+                "listLike": [],
+                "listComment": [],
+                "listRate": [],
+                "numberOfLike": 1,
+                "numberOfComment": 0,
+                "rateAverage": 4.5,
+                "isLiked": false,
+                "myRatePoint": 0,
+                "isVerified": true,
+                "isMarked": false,
+                "type": 1
+            },
             listPost: [
                 {
                     "id": 84,
@@ -114,17 +152,58 @@ export default class SellPlace extends Component {
         }
     }
 
+    imageHeight = 1334;
+    imageWidth = 1000;
+
+
+    processImageForSearch(image) {
+        console.log(image);
+        ImagePicker.openCropper({
+            cropperToolbarTitle: 'Chọn hình ảnh của sản phẩm',
+            includeBase64: true,
+            cropping: true,
+            path: Const.assets_domain + image.url
+        })
+            .then(item => {
+                this.setState({ isLoading: true, isSelectImage: false })
+                PostService.searchProductPostByImage(item.data)
+                    .then(response => {
+                        if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                            if (response.listPost.length > 0) {
+                                this.setState({ listPost: response.listPost })
+                                this.setState({ isLoading: false, isSelectImage: false })
+
+                            }
+                            else {
+                                ToastAndroid.show('Không tìm thấy bài viết cho sản phẩm này!', ToastAndroid.SHORT);
+                                this.setState({ isLoading: false, isSelectImage: true })
+                            }
+                        }
+                    })
+                    .catch(reason => {
+                        console.log(reason);
+                        if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                            ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                        } else {
+                            ToastAndroid.show('Không tìm thấy bài viết cho sản phẩm này!', ToastAndroid.SHORT);
+                            this.setState({ isLoading: false, isSelectImage: true })
+                        }
+                    })
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
+    }
 
 
     componentDidMount() {
         this._screenFocus = this.props.navigation.addListener('focus', () => {
-            console.log('sell place');
             this.setState({ isLoading: true });
             const { post } = this.props.route.params;
             if (post.id == 0) {
                 this.setState({ isError: true, errorMessage: 'Lỗi không xác định', isLoading: false });
             } else {
-                this.setState({ isLoading: false });
+                this.setState({ isSelectImage: true, isLoading: false, postQuery: post });
             }
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
@@ -189,7 +268,7 @@ export default class SellPlace extends Component {
     }
 
     render() {
-        const { isLoading, isSelectImage, isError, errorMessage, listPost, postQuery } = this.state;
+        const { isLoading, isSelectImage, isError, errorMessage, listPost, postQuery, currentImage } = this.state;
         return (
             <View style={[Style.common.container]}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
@@ -210,6 +289,46 @@ export default class SellPlace extends Component {
                         </View>
                     )}
                 </ImageBackground>
+                <Modal
+                    visible={isSelectImage}
+                    onRequestClose={() => {
+                        this.setState({ isSelectImage: false });
+                        this.props.navigation.goBack();
+                    }}
+                >
+                    <View style={[styles.modalSelectImage]}>
+                        <View style={[styles.modalSelectImageHeader]}>
+                            {/* <Ionicons
+                                onPress={() => this.props.navigation.goBack()}
+                                style={styles.modalSelectImageIconClose}
+                                name='close' size={40} color={'black'} /> */}
+                            <Text style={[styles.modalSelectImageText]}>Chọn hình ảnh</Text>
+                            {/* <TouchableOpacity
+                                style={[styles.modalSelectImageSelectButton]}
+                                onPress={() => this.onPressPostButton()}>
+                                <Text style={styles.modalSelectImageSelectButtonText}>Chọn</Text>
+                            </TouchableOpacity> */}
+                        </View>
+                        <FlatList
+                            numColumns={2}
+                            data={postQuery.listImage}
+                            keyExtractor={(item, index) => item.id + ''}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <TouchableOpacity
+                                        onPress={() => this.processImageForSearch(item)}
+                                    >
+                                        <Image
+                                            style={[styles.selectImage]}
+                                            source={{ uri: Const.assets_domain + item.url }}
+                                        />
+                                    </TouchableOpacity>
+                                )
+                            }}
+                        />
+                    </View>
+
+                </Modal>
                 {isError ? (
                     <View style={[styles.errorBounder]}>
                         <Text>{errorMessage}</Text>
@@ -231,13 +350,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)'
     },
     errorBounder: {
-        flex: 1,
-        alignContent: 'center',
+        position: 'absolute',
+        height: scale(711, Vertical),
+        width: scale(400, Vertical),
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white'
-    }
-    ,
+    },
     articleBounder: {
         backgroundColor: 'transparent',
         width: scale(360, Horizontal),
@@ -308,5 +427,45 @@ const styles = StyleSheet.create({
     },
     articleActionRateText: {
         color: 'white'
-    }
+    },
+    modalSelectImage: {
+        height: scale(711, Vertical),
+        width: scale(400, Horizontal)
+    },
+    modalSelectImageHeader: {
+        flexDirection: 'row',
+        marginTop: scale(10, Vertical),
+        alignItems: 'center'
+    },
+    modalSelectImageIconClose: {
+        marginLeft: scale(10, Horizontal),
+        marginRight: 'auto'
+    },
+    modalSelectImageText: {
+        marginLeft: 'auto',
+        marginRight: 'auto'
+    },
+    modalSelectImageSelectButton: {
+        marginLeft: 'auto',
+        marginRight: scale(10, Horizontal),
+        backgroundColor: '#4489FF',
+        height: scale(30, Vertical),
+        width: scale(60, Horizontal),
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    modalSelectImageSelectButtonText: {
+        color: 'white',
+    },
+    modalSelectImageBounder: {
+        flex: 1,
+        backgroundColor: 'rgba(26,26,26,1)'
+    },
+    selectImage: {
+        width: scale(160, Horizontal),
+        height: scale(248, Vertical),
+        resizeMode: 'contain',
+        marginLeft: scale(20, Horizontal)
+    },
 })

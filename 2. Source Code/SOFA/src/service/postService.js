@@ -442,7 +442,7 @@ export const searchProductPostByImage = (image) => {
                         "Authorization": 'Bearer ' + token,
                     };
                     let data = new FormData();
-                    data.append('ListImage[0].Image', listPrimaryImage[i].data);
+                    data.append('ListImage[0].Image', image);
                     let uri = Const.domain + 'api/post/SearchPostByImage';
                     Request.Post(uri, header, data)
                         .then(response => {

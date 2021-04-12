@@ -74,9 +74,7 @@ export default class Newsfeed extends Component {
                     ? 'Thêm vào danh sách các mục đã lưu'
                     : 'Xóa khỏi danh sách các mục đã lưu',
             onPress: () => {
-                console.log(this.state.currentPostSelect);
                 if (!this.state.currentPostSelect.isMarked) {
-                    console.log('save post', this.state.currentPostSelect.id);
                     MarkupPostService.markupPost(this.state.currentPostSelect.id)
                         .then((response) => {
                             if (
@@ -170,7 +168,6 @@ export default class Newsfeed extends Component {
             title: () => 'Ẩn bài viết',
             detail: () => 'Ẩn bài viết này khỏi newsfeed của bạn',
             onPress: () => {
-                console.log('hide post', this.state.currentPostSelect.id);
                 ToastAndroid.show(
                     'Tính năng này đang trong quá trình phát triển!',
                     ToastAndroid.LONG,
@@ -185,7 +182,6 @@ export default class Newsfeed extends Component {
             title: () => 'Báo cáo bài viết này',
             detail: () => 'Tôi lo ngại về bài viết này',
             onPress: () => {
-                console.log('report post', this.state.currentPostSelect.id);
                 ToastAndroid.show(
                     'Tính năng này đang trong quá trình phát triển!',
                     ToastAndroid.LONG,
@@ -205,7 +201,6 @@ export default class Newsfeed extends Component {
             title: () => 'Theo dõi ' + this.state.currentPostSelect.lastName,
             detail: () => 'Xem những bài viết từ người này',
             onPress: () => {
-                console.log('follow user', this.state.currentPostSelect.id);
                 FollowService.followSomeone(this.state.currentPostSelect.accountPost)
                     .then((response) => {
                         if (
@@ -260,7 +255,6 @@ export default class Newsfeed extends Component {
             title: () => 'Báo cáo ' + this.state.currentPostSelect.lastName,
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
-                console.log('report user', this.state.currentPostSelect.id);
                 ToastAndroid.show(
                     'Tính năng này đang trong quá trình phát triển!',
                     ToastAndroid.LONG,
@@ -288,9 +282,7 @@ export default class Newsfeed extends Component {
                     ? 'Thêm vào danh sách các mục đã lưu'
                     : 'Xóa khỏi danh sách các mục đã lưu',
             onPress: () => {
-                console.log(this.state.currentPostSelect);
                 if (!this.state.currentPostSelect.isMarked) {
-                    console.log('save post', this.state.currentPostSelect.id);
                     MarkupPostService.markupPost(this.state.currentPostSelect.id)
                         .then((response) => {
                             if (
@@ -380,7 +372,6 @@ export default class Newsfeed extends Component {
             title: () => 'Xóa bài viết',
             detail: () => 'Xóa bài viết này khỏi danh sách bài viết của bạn',
             onPress: () => {
-                console.log('delete post', this.state.currentPostSelect.id);
                 this.setState({ isShowMenu: false });
                 this.deletePost(this.state.currentPostSelect.id);
             },
@@ -397,7 +388,6 @@ export default class Newsfeed extends Component {
             title: () => 'Chỉnh sửa bài viết',
             detail: () => 'Chỉnh sửa nội dung của bài viết',
             onPress: () => {
-                console.log('edit post', this.state.currentPostSelect.id);
                 this.setState({ isShowMenu: false });
             },
         },
@@ -406,7 +396,6 @@ export default class Newsfeed extends Component {
     loadUnreadNotification() {
         NotificationService.getUnreadNotification(this.state.account.accountID)
             .then((response) => {
-                // console.log('Unread notfication', response.listNoti.length);
                 this.setState({ numberUnreadNotification: response.listNoti.length });
                 PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification);
                 this.notificationConnection();
@@ -421,7 +410,6 @@ export default class Newsfeed extends Component {
             .then((result) => {
                 if (result) {
                     let token = result.toString().substr(1, result.length - 2);
-                    console.log(this.connection);
                     if (typeof this.connection === 'undefined') {
                         this.connection = new signalR.HubConnectionBuilder()
                             .withUrl(Const.domain + 'notification', {
@@ -434,13 +422,11 @@ export default class Newsfeed extends Component {
                         this.connection
                             .start()
                             .then(() => {
-                                console.log('Connected');
                             })
                             .catch(function (err) {
                                 return console.error(err.toString());
                             });
                         this.connection.on('NewNotification', (data) => {
-                            console.log(data.fromAccountName + ' ' + data.content);
                             if (data) {
                                 this.setState({
                                     numberUnreadNotification:
@@ -485,7 +471,6 @@ export default class Newsfeed extends Component {
                         listPostRes.isShowComment = false;
                     }
                     if (page > 1) {
-                        console.log('load more', listPostRes.length);
                         if (listPostRes.length > 0) {
                             this.setState({
                                 listPost: [...this.state.listPost, ...listPostRes],
@@ -495,7 +480,6 @@ export default class Newsfeed extends Component {
                             this.setState({ listPostRefreshing: false });
                         }
                     } else {
-                        console.log('reload', listPostRes.length);
                         if (listPostRes.length > 0) {
                             this.setState({ listPost: listPostRes, listPostRefreshing: false });
                         } else {
@@ -515,7 +499,6 @@ export default class Newsfeed extends Component {
         this.loadUnreadNotification();
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.checkLoginToken();
-            // console.log(this.props.route);
             if (
                 this.props.route &&
                 this.props.route.params && (
@@ -527,12 +510,10 @@ export default class Newsfeed extends Component {
             }
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
-            console.log('unfocus');
         });
     }
 
     componentWillUnmount() {
-        console.log('Will Unmount newsfeed');
         if (this.connection) {
             this.connection.stop();
         }
