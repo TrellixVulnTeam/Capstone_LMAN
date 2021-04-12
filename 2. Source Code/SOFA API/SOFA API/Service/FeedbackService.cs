@@ -90,5 +90,31 @@ namespace SOFA_API.Service
             }
             return listFeedback;
         }
+
+        public FeedbackViewModelOut GetFeedbackById(int fid)
+        {
+            FeedbackViewModelOut feedback = null;
+            try
+            {
+                feedback = FeedbackDAO.Instance.GetFeedbackById(fid);
+                if (feedback != null)
+                {
+                    feedback.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                {
+                    feedback = new FeedbackViewModelOut();
+                    feedback.Code = Const.REQUEST_CODE_FAILED;
+                    throw new Exception("Get feedback failed!");
+                }
+            }
+            catch (Exception e)
+            {
+                feedback = new FeedbackViewModelOut();
+                feedback.ErrorMessage = e.ToString();
+                feedback.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return feedback;
+        }
     }
 }

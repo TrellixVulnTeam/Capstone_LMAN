@@ -79,5 +79,28 @@ namespace SOFA_API.DAO
             }
             return listFeedback;
         }
+
+        public FeedbackViewModelOut GetFeedbackById(int fid)
+        {
+            FeedbackViewModelOut feedback = null;
+            string sql = "EXEC GetFeedbackById 7";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { fid });
+                if (data.Rows.Count > 0)
+                {
+                    for (int i = 0; i < data.Rows.Count; i++)
+                    {
+                        feedback = new FeedbackViewModelOut(data.Rows[i]);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+            return feedback;
+        }
     }
 }
