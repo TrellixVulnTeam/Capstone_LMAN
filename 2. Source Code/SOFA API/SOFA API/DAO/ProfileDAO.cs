@@ -209,5 +209,25 @@ namespace SOFA_API.DAO
             }
             return list;
         }
+        /// <summary>
+        /// Function get people who follow someone
+        /// </summary>
+        /// <param name="keyword">Keyword use to search</param>
+        /// <returns>a list of People</returns>
+        public List<ProfileModelOut> SearchUserByName(string keyword, int page, int rowsOfPage)
+        {
+            List<ProfileModelOut> list = new List<ProfileModelOut>();
+            string sql = "EXEC dbo.GetProfileByName @keyword , @page , @rowsOfPage";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { keyword, page, rowsOfPage });
+            if (data.Rows.Count > 0)
+            {
+                for (int i = 0; i < data.Rows.Count; i++)
+                {
+                    ProfileModelOut profile = new ProfileModelOut(data.Rows[i]);
+                    list.Add(profile);
+                }
+            }
+            return list;
+        }
     }
 }

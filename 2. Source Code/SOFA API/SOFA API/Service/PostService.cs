@@ -238,6 +238,37 @@ namespace SOFA_API.Service
             }
             return postViewModelOut;
         }
+
+        public PostViewModelOut SearchPostByText(string keyword, int page, int rowsOfPage)
+        {
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
+
+            try
+            {
+                List<Post> listAllPost = PostDAO.Instance.SearchPostByText(keyword, page, rowsOfPage);
+                foreach (Post item in listAllPost)
+                {
+                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
+                    PostModelOut postModelOut = new PostModelOut();
+                    postModelOut.SetPostDetail(item);
+                    postModelOut.SetAccountPost(profile);
+                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
+                    postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
+                    postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
+                    postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                    postViewModelOut.ListPost.Add(postModelOut);
+                }
+                postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
+            }
+            return postViewModelOut;
+        }
+
         /// <summary>
         /// Update content of a post
         /// </summary>

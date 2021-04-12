@@ -233,5 +233,27 @@ namespace SOFA_API.DAO
             }
             return listAllPost;
         }
+        public List<Post> SearchPostByText(string keyWord, int page, int rowsOfPage)
+        {
+            List<Post> listAllPost = new List<Post>();
+
+            String sql = "EXEC dbo.SearchPostByText @keyWord , @page , @rowsOfPage";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { keyWord, page, rowsOfPage});
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        listAllPost.Add(new Post(row));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+            }
+            return listAllPost;
+        }
     }
 }

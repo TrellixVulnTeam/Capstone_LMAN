@@ -62,5 +62,12 @@ namespace SOFA_API.Controllers
             ProfileViewModelOut profile = ProfileService.Instance.GetFollowerPeopelByAccountID(accountId);
             return Ok(profile);
         }
+
+        [HttpGet("SearchUserByName")]
+        public ActionResult SearchUserByName(string keyword, int page, int rowsOfPage)
+        {
+            ProfileListUserViewModelOut profileViewModelOut = ProfileService.Instance.SearchUserByName(keyword, page, rowsOfPage);
+            return Ok(profileViewModelOut);
+        }
     }
 }

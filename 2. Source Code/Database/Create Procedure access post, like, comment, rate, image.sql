@@ -95,6 +95,21 @@ BEGIN
 END
 GO
 
+DROP PROC IF EXISTS SearchPostByText
+GO
+CREATE PROC SearchPostByText
+@keyWord NVARCHAR(MAX), @page INT, @rowsOfPage INT
+AS
+BEGIN
+	SELECT dbo.Post.* FROM dbo.Post
+	INNER JOIN dbo.Profile ON AccountPost = AccountId
+	WHERE (Content LIKE '%' + @keyWord + '%') OR (CONCAT(FirstName, ' ', LastName) LIKE '%' + @keyWord + '%')
+	ORDER BY Time DESC
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
+END
+GO
+
 DROP PROC IF EXISTS AddNewPost
 GO
 CREATE PROC AddNewPost
@@ -301,7 +316,7 @@ AS
 BEGIN
     SELECT * FROM dbo.Comment 
 	WHERE PostId = @postID
-	ORDER BY [Time] ASC
+	ORDER BY [Time] DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
 	FETCH NEXT @rowsOfPage ROWS ONLY
 END
@@ -446,4 +461,3 @@ BEGIN
 	SELECT * FROM MarkupPost WHERE PostID = @postID AND accountID = @accountID
 END
 GO
-

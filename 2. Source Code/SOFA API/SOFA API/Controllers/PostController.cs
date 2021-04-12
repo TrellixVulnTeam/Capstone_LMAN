@@ -238,5 +238,11 @@ namespace SOFA_API.Controllers
             PostViewModelOut postViewModelOut = PostService.Instance.AdminDeletePostByID(postId);
             return Ok(postViewModelOut);
         }
+        [HttpGet("SearchPost")]
+        public ActionResult SearchPostByText(string keyword, int page, int rowsOfPage)
+        {
+            PostViewModelOut postViewModelOut = PostService.Instance.SearchPostByText(keyword, page, rowsOfPage);
+            return Ok(postViewModelOut);
+        }
     }
 }

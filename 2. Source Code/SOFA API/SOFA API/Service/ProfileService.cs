@@ -83,6 +83,29 @@ namespace SOFA_API.Service
             }
             return newProfile;
         }
+        /// <summary>
+        /// Search all user by keyword
+        /// </summary>
+        /// <param name="keyword">Keyword to search user</param>
+        /// <param name="page">Current page</param>
+        /// <param name="rowsOfPage">Number of item on a page</param>
+        /// <returns>Profile List User View Model Out</returns>
+        internal ProfileListUserViewModelOut SearchUserByName(string keyword, int page, int rowsOfPage)
+        {
+            ProfileListUserViewModelOut profileListUserViewModelOut = new ProfileListUserViewModelOut();
+            try
+            {
+                profileListUserViewModelOut.ListProfile = ProfileDAO.Instance.SearchUserByName(keyword, page, rowsOfPage);
+                profileListUserViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                profileListUserViewModelOut.ErrorMessage = e.ToString();
+                profileListUserViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return profileListUserViewModelOut;
+        }
 
         /// <summary>
         /// Function UpdateProfileByAccountID
