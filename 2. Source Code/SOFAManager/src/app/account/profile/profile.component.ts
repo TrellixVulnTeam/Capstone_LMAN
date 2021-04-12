@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
-import {User} from "../../../model/user";
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { ApiService } from 'src/service/api-service.service';
+import { User } from "../../../model/user";
+import * as CONST from '../../../config/config'
 
 @Component({
   selector: 'app-profile',
@@ -9,11 +12,68 @@ import {User} from "../../../model/user";
 })
 export class ProfileComponent implements OnInit {
 
-  constructor(public router: Router) {
+  user: User = new User();
+  isChangePassword = false;
+  oldPassword: '';
+  newPassword: '';
+  cfNewPassword: '';
+  invalid = false;
+  errorMessage = '';
+  constructor(public router: Router,
+    private toastr: ToastrService,
+    private apiService: ApiService) {
   }
 
   ngOnInit() {
+    this.user = JSON.parse(localStorage.getItem('user'));
+    console.log(this.user);
   }
 
+  changePassword() {
+    this.isChangePassword = true;
+  }
 
+  onClickCancel() {
+    this.oldPassword = '';
+    this.newPassword = '';
+    this.cfNewPassword = '';
+    this.invalid = false;
+    this.isChangePassword = false;
+  }
+  onClickChange() {
+    if (this.newPassword != this.cfNewPassword) {
+      this.invalid = true;
+      this.errorMessage = "Nhập lại mật khẩu mới không chính xác";
+    }else if (this.cfNewPassword.length < 6 || this.newPassword.length < 6) {
+      this.invalid = true;
+      this.errorMessage = 'Mật khẩu gồm 6 ký tự trở lên'
+    } else {
+      let formData = new FormData();
+      formData.append('username', this.user.userName);
+      formData.append('password', this.oldPassword);
+      formData.append('newPassword', this.newPassword);
+      let url = 'auth/admin-change-password';
+      this.apiService.post(url, formData).subscribe(response => {
+        if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
+          this.notificationSuccess('Đổi mật khẩu thành công');
+          localStorage.removeItem('jwt');
+          localStorage.removeItem('user')
+          this.router.navigate(['/login']);
+        }
+        else {
+          this.invalid = true;
+          this.errorMessage = 'Mật khẩu hiện tại không đúng'
+        }
+      }, error => {
+        this.invalid = true;
+        console.log((<any>error).code);
+      })
+    }
+  }
+
+  notificationSuccess(notification: string) {
+    this.toastr.success(notification, '', {
+      timeOut: 2000, positionClass: 'toast-top-center'
+    });
+  }
 }

@@ -28,7 +28,6 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    console.log(this.username + ' -- ' + this.password)
     if(this.username == '' || this.password == ''){
       this.invalidLogin = true;
       this.errorMessage = 'Username và password không được để trống'
@@ -38,11 +37,11 @@ export class LoginComponent implements OnInit {
       formData.append('password', this.password);
       let url = 'auth/login';
       this.apiService.post(url, formData).subscribe(response => {
-        console.log(response);
         if((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY){
           localStorage.setItem('jwt', (<any>response).token);
 
           this.user.id = (<any>response).id;
+          this.user.userName = (<any>response).username;
           this.user.firstName = (<any>response).firstname;
           this.user.lastName = (<any>response).lastname;
           this.user.roleName = (<any>response).roleName;
