@@ -126,5 +126,29 @@ namespace SOFA_API.Service
             }
             return listVouchers;
         }
+
+        public AdminVoucherViewModelOut DeleteVoucher(int voucherId)
+        {
+            AdminVoucherViewModelOut listVouchers = new AdminVoucherViewModelOut();
+            try
+            {
+                VoucherDetaiForUserViewModelOut viewModelOut = VoucherDAO.Instance.GetVoucherById(voucherId);
+
+                if (viewModelOut != null)
+                {
+                    VoucherDAO.Instance.DeleteVoucher(voucherId);
+                    listVouchers.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                    throw new Exception("Voucher không tồn tại");
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                listVouchers.Code = Const.REQUEST_CODE_FAILED;
+                listVouchers.ErrorMessage = e.Message;
+            }
+            return listVouchers;
+        }
     }
 }

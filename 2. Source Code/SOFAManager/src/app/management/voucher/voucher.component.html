@@ -39,8 +39,8 @@
                             <td>{{voucher.code}}</td>
                             <td>{{voucher.createdBy}}</td>
                             <td>{{voucher.expiredDate | date }}</td>
-                            <td><a href="#">
-                                    edit
+                            <td><a [routerLink]="[]" (click)="deleteVoucher(voucher.id)">
+                                    delete
                               </a></td>
                         </tr>
                     </tbody>

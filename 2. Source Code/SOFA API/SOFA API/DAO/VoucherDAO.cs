@@ -135,5 +135,33 @@ namespace SOFA_API.DAO
             return list; ;
         }
 
+        public void DeleteVoucher(int voucherId)
+        {
+            string sql = "EXEC dbo.DeleteVoucher @VoucherId";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { voucherId });
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+        }
+
+        public VoucherDetaiForUserViewModelOut GetVoucherById(int voucherId)
+        {
+            VoucherDetaiForUserViewModelOut viewModelOut = new VoucherDetaiForUserViewModelOut();
+            string sql = "EXEC dbo.GetVoucherById @VoucherId";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { voucherId });
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            return viewModelOut;
+        }
+
     }
 }

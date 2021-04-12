@@ -73,5 +73,13 @@ namespace SOFA_API.Controllers
             AdminVoucherViewModelOut modelOut = VoucherService.Instance.GetAllVoucher();
             return Ok(modelOut);
         }
+
+        [HttpPost("DeleteVoucher")]
+        public ActionResult GetAllVoucher([FromForm] int voucherId)
+        {
+            AdminVoucherViewModelOut modelOut = VoucherService.Instance.DeleteVoucher(voucherId);
+
+            return Ok(modelOut);
+        }
     }
 }
