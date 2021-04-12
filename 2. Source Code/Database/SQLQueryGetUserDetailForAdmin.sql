@@ -53,3 +53,22 @@ BEGIN
 	WHERE PostId = @postID
 	ORDER BY [Time] ASC
 END
+
+---
+CREATE PROC [dbo].DeleteVoucher
+@VoucherId INT
+AS
+BEGIN
+    DELETE FROM dbo.Voucher 
+	WHERE Id = @VoucherId
+END
+
+-----
+CREATE PROC [dbo].GetVoucherById
+@VoucherId INT
+AS
+BEGIN
+    SELECT v.Id, v.Title, v.Code VoucherCode, v.Content, v.[Description],v.[Image],v.FromDate,v.ToDate,v.IsExpires, av.IsUsed
+	FROM Voucher v , AccountVoucher av
+	WHERE  v.Id= av.VoucherId
+END
