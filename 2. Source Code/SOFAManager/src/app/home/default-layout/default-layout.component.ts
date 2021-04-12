@@ -22,6 +22,7 @@ export class DefaultLayoutComponent implements OnInit {
     this.user.firstName = userStored.firstName
     this.user.lastName = userStored.lastName
     this.user.roleName = userStored.roleName
+    this.router.navigate(['/dashboard']);
   }
 
   

@@ -30,12 +30,18 @@
     <div class="card shadow mb-4">
       <!-- Card Header - Dropdown -->
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">User</h6>
+        <h5 class="m-0 font-weight-bold text-primary">{{dashboardInfo.totalUser}} Users</h5>
       </div>
       <!-- Card Body -->
       <div class="card-body">
         <div class="chart-pie pt-4">
-          <app-donut-chart class="mt-10"></app-donut-chart>
+          <div class="chart-wrapper">
+            <canvas baseChart
+                    [data]="doughnutChartData"
+                    [labels]="doughnutChartLabels"
+                    [chartType]="doughnutChartType">
+            </canvas>
+          </div>
         </div>
         <hr>
       </div>
@@ -46,16 +52,26 @@
     <div class="card shadow mb-4">
       <!-- Card Header - Dropdown -->
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Post</h6>
+        <h5 class="m-0 font-weight-bold text-primary">{{dashboardInfo.totalPost}} Posts</h5>
       </div>
       <!-- Card Body -->
       <div class="card-body">
         <div class="chart-pie pt-4">
-          <app-pie-chart class="mt-10"></app-pie-chart>
+          <div class="chart-wrapper">
+            <canvas baseChart
+                    [data]="pieChartData"
+                    [labels]="pieChartLabels"
+                    [chartType]="pieChartType"
+                    [options]="pieChartOptions"
+                    [plugins]="pieChartPlugins"
+                    [legend]="pieChartLegend">
+            </canvas>
+          </div>
         </div>
         <hr>
       </div>
     </div>
   </div>
 </div>
+
 <!-- End of Main Content -->
