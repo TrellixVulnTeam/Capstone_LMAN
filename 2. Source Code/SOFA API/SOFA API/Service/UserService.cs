@@ -1,5 +1,6 @@
 ﻿using SOFA_API.Common;
 using SOFA_API.DAO;
+using SOFA_API.DTO;
 using SOFA_API.ViewModel.Account;
 using System;
 using System.Collections.Generic;
@@ -119,6 +120,28 @@ namespace SOFA_API.Service
                 user.ErrorMessage = e.Message;
             }
             return user;
+        }
+        public AdminDashboardModelOut GetDashBoardInformation()
+        {
+            AdminDashboardModelOut modelOut = new AdminDashboardModelOut();
+            try
+            {
+                List<AdminAccountModelOut> listUser = AccountDAO.Instance.GetAllUser();
+                List<Post> listPost = PostDAO.Instance.GetAllPostWithoutPaging();
+
+                modelOut.TotalUser = listUser.Count;
+                modelOut.NumberOfUserActive = listUser.Count(user => user.IsActive == true);
+                modelOut.TotalPost = listPost.Count;
+                modelOut.NumberOfPostVerified = listPost.Count(post => post.IsVerified == true);
+                modelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                modelOut.Code = Const.REQUEST_CODE_FAILED;
+                modelOut.ErrorMessage = e.Message;
+            }
+            return modelOut;
         }
     }
 }

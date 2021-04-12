@@ -41,5 +41,12 @@ namespace SOFA_API.Controllers
             AccountViewModelOut user = UserService.Instance.UnbanUser(accountId);
             return Ok(user);
         }
+
+        [HttpGet("GetDashboard")]
+        public ActionResult GetDashboard()
+        {
+            AdminDashboardModelOut dashboard = UserService.Instance.GetDashBoardInformation();
+            return Ok(dashboard);
+        }
     }
 }
