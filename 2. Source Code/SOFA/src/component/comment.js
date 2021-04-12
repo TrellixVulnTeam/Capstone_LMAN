@@ -16,6 +16,10 @@ import { scale, calculateTime } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { AVATAR } from '../../image/index';
 
+import * as PostService from '../service/postService';
+import * as AuthService from '../service/authService';
+
+
 export default class Comment extends Component {
     constructor(props) {
         super(props);
@@ -55,36 +59,24 @@ export default class Comment extends Component {
 
 
     checkLoginToken = async () => {
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    let token = result.toString().substr(1, result.length - 2);
-                    var header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                        "Authorization": 'Bearer ' + token,
-                    };
-                    var uri = Const.domain + 'api/profile';
-                    Request.Get(uri, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                this.setState({ account: response, isLogin: true, token: token });
-                            } else {
-                                this.setState({ account: {}, isLogin: false, token: '' });
-                            }
-                        })
-                        .catch(reason => {
-                            this.setState({ account: {}, isLogin: false, token: '' });
-                        })
+        AuthService.getProfile()
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.setState({ account: response, isLogin: true });
+                } else {
+                    this.setState({ account: {}, isLogin: false, token: '' });
                 }
             })
             .catch(reason => {
-                this.setState({ token: '' });
+                this.setState({ account: {}, isLogin: false, token: '' });
                 console.log(reason);
-            })
+            });
     }
 
     componentDidMount() {
+        // this.checkLoginToken();
+        // this.setState({ post: { id: 85 } });
+        // this.GetAllComment({ id: 85 }, 1);
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             const { post } = this.props.route.params;
             this.setState({ post: post });
@@ -109,67 +101,53 @@ export default class Comment extends Component {
                 listComment: [],
                 page: 1
             })
-            console.log('unfocus');
         })
         this.keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow', (event) => {
-                if (this.state.inScreen) {
-                    this.setState({ isKeyBoardShow: true });
-                    this.setState({ keyboardHeight: event.endCoordinates.height });
-                }
+                this.setState({ isKeyBoardShow: true });
+                this.setState({ keyboardHeight: event.endCoordinates.height });
             }
         );
         this.keyboardDidHideListener = Keyboard.addListener(
             'keyboardDidHide', () => {
-                if (this.state.inScreen) {
-                    this.setState({ keyboardHeight: 0 });
-                    this.setState({ isKeyBoardShow: false });
-                }
+                this.setState({ keyboardHeight: 0 });
+                this.setState({ isKeyBoardShow: false });
             },
         );
     }
 
+    componentWillUnmount() {
+        Keyboard.removeAllListeners('keyboardDidShow');
+        Keyboard.removeAllListeners('keyboardDidHide');
+    }
+
 
     onPressCommentButton() {
-        const { token, post, commentText } = this.state;
-        if (token && token.length > 0) {
-            if (post.id > 0 && commentText.length > 0) {
-                var header = {
-                    "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                    'Content-Type': 'multipart/form-data',
-                    "Accept": 'application/json',
-                    "Authorization": 'Bearer ' + token,
-                };
-                let data = new FormData();
-                data.append('PostID', post.id);
-                data.append('Comment', commentText);
-                let uri = Const.domain + 'api/post/commentpost';
-                Request.Post(uri, header, data)
-                    .then(response => {
-                        if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                            let comment = response.listPost[0].listComment[0];
-                            this.setState({ listComment: [...this.state.listComment, comment] });
-                        } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
-                            console.log(response.errorMessage);
-                        }
-                    })
-                    .catch(reason => {
-                        console.log(reason);
-                    })
-            }
-        } else {
-            Alert.alert('Thông báo', 'Hãy đăng nhập để bình luận về bài viết');
-        }
-        this.setState({ commentText: '' });
+        const { post, commentText } = this.state;
+        PostService.commentPost(post.id, commentText)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    let comment = response.listPost[0].listComment[0];
+                    let listComment = this.state.listComment;
+                    listComment.unshift(comment);
+                    this.setState({ listComment: listComment, commentText: '' });
+                } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                    ToastAndroid.show("Bình luận bài viết không thành công! Hãy thử lại!", ToastAndroid.LONG);
+                    console.log(response.errorMessage);
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                } else {
+                    ToastAndroid.show("Bình luận bài viết không thành công! Hãy thử lại!", ToastAndroid.LONG);
+                }
+            })
     }
 
     GetAllComment(post, page) {
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json'
-        };
-        let uri = Const.domain + 'api/post/GetCommentOfPost?postID=' + post.id + '&page=' + page + '&rowsOfPage=' + Const.COMMENT_ROWS_OF_PAGE;
-        Request.Get(uri, header)
+        PostService.getCommentOfPost(post.id, page)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     if (response.listPost.length > 0) {
@@ -177,12 +155,16 @@ export default class Comment extends Component {
                         if (page == 1) {
                             if (listComment.length > 0) {
                                 this.setState({ listComment: listComment, isRefresing: false });
+                                this.setState({ page: page });
+                                console.log(this.state.page);
                             } else {
                                 this.setState({ isRefresing: false });
                             }
                         } else {
                             if (listComment.length > 0) {
                                 this.setState({ listComment: [...this.state.listComment, ...listComment], isRefresing: false })
+                                this.setState({ page: page });
+                                console.log(this.state.page);
                             } else {
                                 this.setState({ isRefresing: false });
                             }
@@ -194,6 +176,7 @@ export default class Comment extends Component {
             })
             .catch(reason => {
                 console.log(reason);
+                ToastAndroid.show("Lỗi khi tải thêm bình luận", ToastAndroid.LONG);
             })
     }
 
@@ -208,57 +191,68 @@ export default class Comment extends Component {
 
 
     render() {
-        const { listComment, commentText } = this.state;
+        const { listComment, commentText, page, keyboardHeight, account } = this.state;
         return (
-            <View style={Style.common.container}>
+            <View style={[styles.container]}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
-                <FlatList
-                    data={listComment}
-                    keyExtractor={(item, index) => item.id + ''}
-                    renderItem={({ item }) => {
-                        return (
-                            <View style={styles.CommentItemBounder}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <TouchableWithoutFeedback
-                                        onPress={() => this.navigateProfile(item.accountID)}
-                                    >
-                                        <Image
-                                            style={styles.CommentAvatar}
-                                            source={item.avatar && item.avatar.length > 0 ? { uri: Const.assets_domain + item.avatar } : { AVATAR }} />
-                                    </TouchableWithoutFeedback>
-                                    <View style={styles.CommentItem}>
-                                        <Text
-                                            style={styles.CommentAuthor}
-                                            onPress={() => this.navigateProfile(item.accountID)}>{item.firstName + " " + item.lastName}
-                                        </Text>
-                                        <Text style={styles.CommentContent}>{item.content}</Text>
+                <View
+                    style={{
+                        maxHeight: scale(650 - keyboardHeight, Vertical),
+                    }}
+                >
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        data={listComment}
+                        keyExtractor={(item, index) => item.id + ''}
+                        inverted={true}
+                        renderItem={({ item }) => {
+                            return (
+                                <View style={styles.CommentItemBounder}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <TouchableWithoutFeedback
+                                            onPress={() => this.navigateProfile(item.accountID)}
+                                        >
+                                            <Image
+                                                style={styles.CommentAvatar}
+                                                source={item.avatar && item.avatar.length > 0 ? { uri: Const.assets_domain + item.avatar } : { AVATAR }} />
+                                        </TouchableWithoutFeedback>
+                                        <View style={styles.CommentItem}>
+                                            <Text
+                                                style={styles.CommentAuthor}
+                                                onPress={() => this.navigateProfile(item.accountID)}>{item.firstName + " " + item.lastName}
+                                            </Text>
+                                            <Text style={styles.CommentContent}>{item.content}</Text>
+
+                                        </View>
+                                    </View>
+                                    <View style={styles.CommentAction}>
+                                        <Text style={{ fontSize: 13 }}>{calculateTime(item.time)}</Text>
+                                        <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Thích</Text>
+                                        <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Trả lời</Text>
 
                                     </View>
                                 </View>
-                                <View style={styles.CommentAction}>
-                                    <Text style={{ fontSize: 13 }}>{calculateTime(item.time)}</Text>
-                                    <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Thích</Text>
-                                    <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Trả lời</Text>
+                            )
+                        }}
+                        refreshing={this.state.isRefresing}
+                        onEndReached={() => {
+                            console.log('loadmore');
+                            this.GetAllComment(this.state.post, page + 1);
+                        }}
+                        onEndReachedThreshold={0.5}
+                        onRefresh={() => {
+                            this.setState({ isRefresing: true });
+                            this.GetAllComment(this.state.post, 1);
+                        }}
 
-                                </View>
-                            </View>
-                        )
-                    }}
-                    refreshing={this.state.isRefresing}
-                    onEndReached={() => {
-                        // this.setState({ isRefresing: true });
-                        this.GetAllComment(this.state.post, this.state.page + 1);
-                        this.setState({ page: this.state.page + 1 })
-                    }}
-                    onEndReachedThreshold={0.3}
-                    onRefresh={() => {
-                        this.setState({ isRefresing: true });
-                        this.GetAllComment(this.state.post, 1);
-                        this.setState({ page: 1 })
-                    }}
-
-                />
-                <View style={{ height: scale(40, Vertical) }}>
+                    />
+                </View>
+                <View style={[styles.commentBounder, {
+                    bottom: scale(keyboardHeight + 10, Vertical),
+                }]}>
+                    <Image
+                        style={styles.CommentAvatar}
+                        source={account.avatarUri && account.avatarUri.length > 0 ? { uri: Const.assets_domain + account.avatarUri } : { AVATAR }} />
                     <TextInput
                         value={commentText}
                         placeholder={'Bình luận'}
@@ -274,6 +268,9 @@ export default class Comment extends Component {
     }
 }
 const styles = StyleSheet.create({
+    container: {
+        height: scale(711, Vertical),
+    },
     CommentItemBounder: {
         marginLeft: scale(10, Horizontal),
         marginTop: scale(10, Vertical),
@@ -285,21 +282,29 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(222,222,222,0.3)'
     },
     CommentAvatar: {
-        width: scale(40, Horizontal),
-        height: scale(40, Horizontal),
-        borderRadius: 50
+        width: scale(50, Horizontal),
+        height: scale(50, Horizontal),
+        borderRadius: 50,
+        resizeMode: 'cover'
     },
     CommentAuthor: {
         fontWeight: 'bold',
         marginLeft: scale(10, Horizontal)
     },
     CommentContent: { marginLeft: scale(10, Horizontal) },
+    commentBounder: {
+        position: 'absolute',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
     CommentTextBox: {
         backgroundColor: 'white',
-        borderRadius: 10
+        borderRadius: 10,
+        width: scale(300, Horizontal),
+        marginLeft: scale(10, Horizontal)
     },
     CommentAction: {
-        marginTop:scale(5, Vertical),
+        marginTop: scale(5, Vertical),
         flexDirection: 'row',
         marginLeft: scale(50, Horizontal)
     }

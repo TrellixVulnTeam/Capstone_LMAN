@@ -75,7 +75,8 @@ export default class PostDetail extends Component {
             commentPage: 1,
             isRefresing: false,
             commentText: '',
-            isLoading: true
+            isLoading: true,
+            isLoadMoreComment: false,
         }
     }
 
@@ -86,9 +87,7 @@ export default class PostDetail extends Component {
             title: () => !this.state.post.isMarked ? 'Lưu bài viết' : 'Bỏ lưu bài viết',
             detail: () => !this.state.post.isMarked ? 'Thêm vào danh sách các mục đã lưu' : 'Xóa khỏi danh sách các mục đã lưu',
             onPress: () => {
-                console.log(this.state.post);
                 if (!this.state.post.isMarked) {
-                    console.log('save post', this.state.post.id);
                     MarkupPostService.markupPost(this.state.post.id)
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -136,7 +135,6 @@ export default class PostDetail extends Component {
             title: () => 'Ẩn bài viết',
             detail: () => 'Ẩn bài viết này khỏi newsfeed của bạn',
             onPress: () => {
-                console.log('hide post', this.state.post.id);
                 ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
             }
         },
@@ -146,7 +144,6 @@ export default class PostDetail extends Component {
             title: () => 'Báo cáo bài viết này',
             detail: () => 'Tôi lo ngại về bài viết này',
             onPress: () => {
-                console.log('report post', this.state.post.id);
                 ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
@@ -157,7 +154,6 @@ export default class PostDetail extends Component {
             title: () => 'Theo dõi ' + this.state.post.lastName,
             detail: () => 'Xem những bài viết từ người này',
             onPress: () => {
-                console.log('follow user', this.state.post.id);
                 ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
@@ -168,7 +164,6 @@ export default class PostDetail extends Component {
             title: () => 'Báo cáo ' + this.state.post.lastName,
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
-                console.log('report user', this.state.post.id);
                 ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
@@ -183,9 +178,7 @@ export default class PostDetail extends Component {
             title: () => !this.state.post.isMarked ? 'Lưu bài viết' : 'Bỏ lưu bài viết',
             detail: () => !this.state.post.isMarked ? 'Thêm vào danh sách các mục đã lưu' : 'Xóa khỏi danh sách các mục đã lưu',
             onPress: () => {
-                console.log(this.state.post);
                 if (!this.state.post.isMarked) {
-                    console.log('save post', this.state.post.id);
                     MarkupPostService.markupPost(this.state.post.id)
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -233,7 +226,6 @@ export default class PostDetail extends Component {
             title: () => 'Xóa bài viết',
             detail: () => 'Xóa bài viết này khỏi danh sách bài viết của bạn',
             onPress: () => {
-                console.log('delete post', this.state.post.id);
                 this.setState({ isShowMenu: false });
                 this.deletePost(this.state.post.id);
             }
@@ -244,7 +236,6 @@ export default class PostDetail extends Component {
             title: () => 'Chỉnh sửa bài viết',
             detail: () => 'Chỉnh sửa nội dung của bài viết',
             onPress: () => {
-                console.log('edit post', this.state.post.id);
                 ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
                 this.setState({ isShowMenu: false });
             }
@@ -291,6 +282,8 @@ export default class PostDetail extends Component {
         PostService.getPostDetail(postID)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    let post = response.listPost[0];
+                    post.listComment = post.listComment.reverse();
                     this.setState({ post: response.listPost[0] });
                     this.setState({ isLoading: false });
                 }
@@ -300,6 +293,29 @@ export default class PostDetail extends Component {
                 ToastAndroid.show("Tải bài viết không thành công! Hãy thử lại!", ToastAndroid.LONG);
                 this.setState({ isLoading: false });
             });
+    }
+
+    loadMoreComment() {
+        const { post, commentPage } = this.state;
+        this.setState({ isLoadMoreComment: true });
+        PostService.getCommentOfPost(post.id, commentPage + 1)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    if (response.listPost[0].listComment.length > 0) {
+                        let listComment = response.listPost[0].listComment;
+                        listComment = listComment.reverse();
+                        let temp = post.listComment;
+                        listComment = listComment.concat(temp);
+                        this.setState({ post: { ...this.state.post, listComment: listComment } });
+                        this.setState({ isLoadMoreComment: false, commentPage: commentPage + 1 });
+                    }
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                this.setState({ isLoadMoreComment: false });
+                ToastAndroid.show("Lỗi khi tải thêm bình luận", ToastAndroid.LONG);
+            })
     }
 
     updatePost(key, value) {
@@ -334,6 +350,7 @@ export default class PostDetail extends Component {
                     listComment.push(commentRes);
                     this.setState({ post: { ...this.state.post, listComment: listComment }, commentText: '' });
                 } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
+                    ToastAndroid.show('Bình luận không thành công! Hãy thử lại!', ToastAndroid.LONG);
                     console.log(response.errorMessage);
                 }
             })
@@ -435,38 +452,10 @@ export default class PostDetail extends Component {
         this.setState({ currentShowImage: image, isShowImage: true });
     }
 
-    GetAllComment(post, page) {
-        PostService.getCommentOfPost(post.id, page)
-            .then(response => {
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    if (response.listPost.length > 0) {
-                        let listComment = response.listPost[0].listComment;
-                        if (page == 1) {
-                            if (listComment.length > 0) {
-                                this.setState({ listComment: listComment, isRefresing: false });
-                            } else {
-                                this.setState({ isRefresing: false });
-                            }
-                        } else {
-                            if (listComment.length > 0) {
-                                this.setState({ listComment: [...this.state.listComment, ...listComment], isRefresing: false })
-                            } else {
-                                this.setState({ isRefresing: false });
-                            }
-                        }
-                    }
-                } else if (response && response.code && response.code == Const.REQUEST_CODE_FAILED) {
-                    console.log(response.errorMessage);
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-            });
-
-    }
-
     componentDidMount() {
         this.checkLoginToken();
+        this.setState({ post: { ...this.state.post, id: 85 } });
+        this.getPostDetail(85);
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.setState({ isLoading: true });
             this.checkLoginToken()
@@ -477,7 +466,7 @@ export default class PostDetail extends Component {
     }
 
     render() {
-        const { post, isShowImage, currentShowImage, commentText, isLoading } = this.state;
+        const { post, isShowImage, currentShowImage, commentText, isLoading, isLoadMoreComment } = this.state;
         return (
             <View style={{
                 flex: 1,
@@ -491,11 +480,9 @@ export default class PostDetail extends Component {
                                 <View
                                     style={{
                                         backgroundColor: 'white',
-                                        // marginTop: scale(20, Vertical),
                                         borderTopLeftRadius: 10,
                                         borderBottomLeftRadius: 10,
                                         paddingVertical: scale(10, Vertical),
-                                        height: scale(711, Vertical)
                                     }}
                                 >
                                     <View style={Style.common.flexRow}>
@@ -547,7 +534,6 @@ export default class PostDetail extends Component {
                                             keyExtractor={item => item.id + ''}
                                             pagingEnabled={true}
                                             renderItem={({ item }) => {
-                                                console.log(item);
                                                 return (
                                                     <TouchableWithoutFeedback
                                                         onPress={() => this.onPressImage(post, item)}
@@ -592,7 +578,7 @@ export default class PostDetail extends Component {
                                                 <MaterialCommunityIcons
                                                     name={post.isLiked ? 'heart' : 'heart-outline'}
                                                     size={30}
-                                                    color={post.isLiked ? '#dc3f1c' : '#232323'} />
+                                                    color={post.isLiked ? 'rgba(48,128,153,1)' : '#232323'} />
                                                 <Text style={Style.newsfeed.ArticleNumberOfReact}>Yêu thích</Text>
                                             </TouchableOpacity>
                                             <View
@@ -606,7 +592,7 @@ export default class PostDetail extends Component {
                                                     ratingCount={5}
                                                     imageSize={30}
                                                     type='custom'
-                                                    ratingColor='#dc3f1c'
+                                                    ratingColor='rgba(48,128,153,1)'
                                                     tintColor='white'
                                                     readonly={!this.state.isLogin}
                                                     ratingBackgroundColor='#FFF2D1'
@@ -622,7 +608,7 @@ export default class PostDetail extends Component {
                                                     <MaterialCommunityIcons
                                                         name={'heart'}
                                                         size={16}
-                                                        color={'#dc3f1c'} />
+                                                        color={'rgba(48,128,153,1)'} />
                                                     <Text>{post.listLike[post.listLike.length - 1].firstName + ' ' + post.listLike[post.listLike.length - 1].lastName}</Text>
                                                     {post.listLike.length > 1 ? (
                                                         <View>
@@ -633,15 +619,39 @@ export default class PostDetail extends Component {
                                             ) : (<View></View>)}
                                         </View>
                                     </View>
-
+                                    {post.numberOfComment > post.listComment.length ?
+                                        (
+                                            <TouchableOpacity
+                                                disabled={isLoadMoreComment}
+                                                onPress={() => this.loadMoreComment()}
+                                            >
+                                                <View>
+                                                    {!isLoadMoreComment ? (
+                                                        <View>
+                                                            <Text style={[{
+                                                                color: '#787878'
+                                                            }, styles.CommentItemBounder]}>Xem thêm bình luần</Text>
+                                                        </View>
+                                                    ) : (<View>
+                                                        <ActivityIndicator size="small" color="rgb(48,128,153)" />
+                                                    </View>)}
+                                                </View>
+                                            </TouchableOpacity>
+                                        ) : (<View></View>)}
                                 </View>
 
                             )}
                             ListFooterComponent={(
                                 <View>
-                                    <Text style={[{
-                                        color: '#787878'
-                                    }, styles.CommentItemBounder]}>Xem thêm bình luần</Text>
+                                    <TextInput
+                                        placeholder={'Viết bình luận'}
+                                        returnKeyLabel={'Gửi'}
+                                        returnKeyType={'send'}
+                                        value={commentText}
+                                        onChangeText={text => this.setState({ commentText: text })}
+                                        onSubmitEditing={() => this.onPressComment(post.id, commentText)}
+                                        style={[styles.CommentTextBox]}
+                                    />
                                 </View>
 
                             )}
@@ -678,39 +688,6 @@ export default class PostDetail extends Component {
                             }}
                             refreshing={this.state.isRefresing}
                         />
-                        <View
-                            style={{
-                                paddingVertical: scale(5, Vertical),
-                                width: scale(400, Horizontal),
-                                height: scale(50, Vertical),
-                                backgroundColor: 'white',
-                                shadowColor: "black",
-                                shadowOffset: {
-                                    width: 0,
-                                    height: 0.6
-                                },
-                                shadowOpacity: 1,
-                                shadowRadius: 0.6,
-                                elevation: 5
-                            }}
-                        >
-                            <TextInput
-                                placeholder={'Viết bình luận'}
-                                returnKeyLabel={'Gửi'}
-                                returnKeyType={'send'}
-                                value={commentText}
-                                onChangeText={text => this.setState({ commentText: text })}
-                                onSubmitEditing={() => this.onPressComment(post.id, commentText)}
-                                style={{
-                                    marginLeft: scale(10, Horizontal),
-                                    height: scale(40, Vertical),
-                                    width: scale(360, Horizontal),
-                                    backgroundColor: '#E2E2E2',
-                                    borderRadius: 20,
-                                    paddingLeft: scale(15, Horizontal),
-                                }}
-                            />
-                        </View>
                         <PostMenu
                             ref={child => { this.postMenu = child }}
                             post={post}
@@ -754,12 +731,15 @@ export default class PostDetail extends Component {
                         width: scale(400, Horizontal)
                     }}>
                         <Text>Nội dung này không tồn tại hoặc đã bị xóa!</Text>
-                    </View>)}
-                {isLoading ? (
-                    <View style={{ backgroundColor: 'white', position: 'absolute', height: scale(711, Vertical), width: scale(400, Horizontal), justifyContent: 'center' }}>
-                        <ActivityIndicator size="large" color="#00ff00" />
-                    </View>
-                ) : <View></View>}
+                    </View>)
+                }
+                {
+                    isLoading ? (
+                        <View style={{ backgroundColor: 'white', position: 'absolute', height: scale(711, Vertical), width: scale(400, Horizontal), justifyContent: 'center' }}>
+                            <ActivityIndicator size="large" color="#00ff00" />
+                        </View>
+                    ) : <View></View>
+                }
             </View >
         )
     }
@@ -786,8 +766,13 @@ const styles = StyleSheet.create({
     },
     CommentContent: { marginLeft: scale(10, Horizontal) },
     CommentTextBox: {
-        backgroundColor: 'white',
-        borderRadius: 10
+        backgroundColor: '#E6E6E6',
+        borderRadius: 10,
+        width: scale(300, Horizontal),
+        minHeight: scale(50, Vertical),
+        marginLeft: scale(50, Horizontal),
+        marginTop: scale(10, Vertical),
+        marginBottom: scale(10, Vertical)
     },
     CommentAction: {
         marginTop: scale(5, Vertical),
