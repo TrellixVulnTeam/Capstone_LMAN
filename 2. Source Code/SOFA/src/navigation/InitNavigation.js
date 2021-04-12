@@ -28,6 +28,7 @@ import CreateFeedback from '../component/createFeedback';
 import ListFeedback from '../component/listFeedback';
 import SellPlace from '../component/sellPlace';
 import FeedbackDetail from '../component/feedbackDetail';
+import Search from '../component/search';
 const Stack = createStackNavigator();
 
 export default function Navigation() {
@@ -61,6 +62,7 @@ export default function Navigation() {
                 <Stack.Screen name='ListFeedback' component={ListFeedback} options={{ headerShown: false }} />
                 <Stack.Screen name='SellPlace' component={SellPlace} options={{ headerShown: false }} />
                 <Stack.Screen name='FeedbackDetail' component={FeedbackDetail} options={{ headerShown: false }} />
+                <Stack.Screen name='Search' component={Search} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

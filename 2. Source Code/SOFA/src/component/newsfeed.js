@@ -11,7 +11,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Badge, Icon, withBadge } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import { BoxShadow } from 'react-native-shadow';
 
 import * as signalR from '@microsoft/signalr';
 import * as Style from '../style/style';
@@ -19,7 +18,6 @@ import * as Const from '../common/const';
 import * as Utils from '../common/utils';
 import { scale, getData } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
-import { color } from 'react-native-reanimated';
 import { AVATAR, WHITE_BACKGROUND, GALAXY_BACKGROUND, OCEAN_BACKGROUND } from '../../image/index';
 import ViewImageModal from './viewImageModel';
 import * as PostService from '../service/postService';
@@ -903,6 +901,7 @@ export default class Newsfeed extends Component {
                         </View>
                         <TouchableOpacity
                             style={Style.newsfeed.searchIcon}
+                            onPress={() => this.props.navigation.navigate('Search')}
                         >
                             <Ionicons
                                 name={'search-sharp'}
