@@ -12,9 +12,13 @@
 <div class="row">
     <div class="col-4"></div>
     <div class="col-4">
-        <div class="input-group" style="margin-bottom: 20px; display: inline-block;">
-            <input style="display: inline-block;" type="text" class="form-control" placeholder="Search user by username" [(ngModel)]="username"
-                (ngModelChange)="search()">
+        <div class="input-group" style="margin-bottom: 20px; display: inline-block">
+            <input style="display: inline-block; width: 300px; padding-top: 2px;" type="text" class="form-control" placeholder="Search user"
+                [(ngModel)]="keyword" (ngModelChange)="search()">
+            <select class="browser-default custom-select" style="display: inline-block; width: 120px; margin-left: 30px;"
+            [(ngModel)]="selectedValue" (change)="selectOption()">
+                <option *ngFor="let c of selectOptionList; let i = index" [ngValue]="c">{{c}}</option>
+            </select>
         </div>
     </div>
 </div>

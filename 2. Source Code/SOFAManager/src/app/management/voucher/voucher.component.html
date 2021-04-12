@@ -9,9 +9,19 @@
       <li class="breadcrumb-item active">Voucher</li>
     </ul>
   </div>
-  <div class="input-group" style="width: 500px; margin-bottom: 20px; margin-left: 600px;">
-    <input type="text" class="form-control" placeholder="Search voucher by username" [(ngModel)]="username" (ngModelChange)="search()"> 
-  </div>
+  <div class="row">
+    <div class="col-4"></div>
+    <div class="col-4">
+        <div class="input-group" style="margin-bottom: 20px; display: inline-block">
+            <input style="display: inline-block; width: 300px; padding-top: 2px;" type="text" class="form-control" placeholder="Search user"
+                [(ngModel)]="keyword" (ngModelChange)="search()">
+            <select class="browser-default custom-select" style="display: inline-block; width: 120px; margin-left: 30px;"
+            [(ngModel)]="selectedValue" (change)="selectOption()">
+                <option *ngFor="let c of selectOptionList; let i = index" [ngValue]="c">{{c}}</option>
+            </select>
+        </div>
+    </div>
+</div>
 <div class="col-lg-12">
     <div class="card">
         <div class="card-body">

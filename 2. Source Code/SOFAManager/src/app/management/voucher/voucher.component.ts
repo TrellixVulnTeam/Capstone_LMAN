@@ -18,21 +18,27 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class VoucherComponent implements OnInit {
 
-  username: '';
+  keyword: '';
   listVoucher: Array<Voucher> = new Array<Voucher>();
+  defaultListVoucher: Array<Voucher> = new Array<Voucher>();
   totalRecord: number;
   page: 1;
+  selectOptionList: string[];
+  selectedValue: string;
 
   constructor(private apiService: ApiService,
     private dialog: MatDialog,
     private toastr: ToastrService) { }
 
   ngOnInit() {
+    this.selectOptionList = ['Title', 'Content', 'Code', 'Created by'];
+    this.selectedValue = 'Title';
+
     let url = 'voucher/getallvoucher'
     this.apiService.get(url).subscribe(response => {
-      console.log(response);
       if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
         this.listVoucher = response['listVoucher'];
+        this.defaultListVoucher = this.listVoucher;
         this.totalRecord = this.listVoucher.length;
       }
       else {
@@ -44,12 +50,34 @@ export class VoucherComponent implements OnInit {
   }
 
   search() {
-    if (this.username == "") {
-      this.ngOnInit();
+    this.listVoucher = this.defaultListVoucher;
+    if (this.keyword == "") {
+      this.listVoucher = this.defaultListVoucher;
     } else {
-      this.listVoucher = this.listVoucher.filter(res => {
-        return res.createdBy.toLocaleLowerCase().match(this.username.toLocaleLowerCase())
-      })
+      switch (this.selectedValue) {
+        case 'Title':
+          this.listVoucher = this.listVoucher.filter(res => {
+            return res.title.toLocaleLowerCase().match(this.keyword.toLocaleLowerCase())
+          });
+          break;
+        case 'Content':
+          this.listVoucher = this.listVoucher.filter(res => {
+            return res.content.toLocaleLowerCase().match(this.keyword.toLocaleLowerCase())
+          });
+          break;
+        case 'Code':
+          this.listVoucher = this.listVoucher.filter(res => {
+            return res.code.toLocaleLowerCase().match(this.keyword.toLocaleLowerCase())
+          });
+          break;
+        case 'Created by':
+          this.listVoucher = this.listVoucher.filter(res => {
+            return res.createdBy.toLocaleLowerCase().match(this.keyword.toLocaleLowerCase())
+          });
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -92,6 +120,10 @@ export class VoucherComponent implements OnInit {
     this.toastr.success(notification, '', {
       timeOut: 2000, positionClass: 'toast-top-center'
     });
+  }
+
+  selectOption(){
+    this.search();
   }
 
 }
