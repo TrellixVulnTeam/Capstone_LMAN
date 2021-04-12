@@ -32,3 +32,4 @@ ORDER BY LastUpdated DESC
 END
 
 GO
+

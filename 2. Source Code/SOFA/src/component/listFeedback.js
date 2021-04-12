@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView, ToastAndroid, TouchableOpacity } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
@@ -54,24 +54,38 @@ export default class Profile extends Component {
     }
 
     getListFeedback() {
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json',
-        };
-        let url = Const.domain + 'api/feedback/getlistfeedback';
-        Request.Get(url, header)
-            .then(response => {
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({ listFeedback: response.listFeedback });
-                    this.setState({ numberFeedback: response.listFeedback.length })
+        this.getData('token')
+            .then(result => {
+                if (result) {
+                    var header = {
+                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                        "Accept": 'application/json',
+                        "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
+                    };
+                    let url = Const.domain + 'api/feedback/getlistfeedback';
+                    Request.Get(url, header)
+                        .then(response => {
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                this.setState({ listFeedback: response.listFeedback });
+                                this.setState({ numberFeedback: response.listFeedback.length })
+                            } else {
+                                this.props.navigation.navigate('Login')
+                            }
+                        })
+                        .catch(reason => {
+                            console.log(reason);
+                            this.props.navigation.navigate('Login')
+                        });
                 } else {
                     this.props.navigation.navigate('Login')
                 }
             })
             .catch(reason => {
-                console.log(reason);
+                console.log('failed');
                 this.props.navigation.navigate('Login')
-            });
+            })
+
+
     }
 
     componentWillUnmount() {
@@ -85,7 +99,7 @@ export default class Profile extends Component {
         // }else{
         //     this.props.navigation.navigate('OtherProfile', { 'accountID': userId });
         // }
-        ToastAndroid.show('Direct', 'Sẽ direct sang feedback có Id là: ' + feedbackId, ToastAndroid.SHORT);
+        ToastAndroid.show('Direct', feedbackId, ToastAndroid.SHORT);
     }
 
     componentDidMount() {
@@ -105,20 +119,50 @@ export default class Profile extends Component {
                 <LinearGradient colors={['#ff8533', '#ffb380']}>
                     <View style={{
                         alignContent: 'center',
-                        alignItems: 'center',
                         // paddingTop: Utils.scale(20, Const.Vertical),
                         // paddingBottom: Utils.scale(20, Const.Vertical),
                         // borderBottomLeftRadius: 15,
                         // borderBottomRightRadius: 15,
                         width: Utils.scale(400, Const.Horizontal),
-                        height: Utils.scale(35, Const.Vertical),
+                        height: Utils.scale(45, Const.Vertical),
+                        flexDirection: 'row',
                     }}>
-                        <Text style={{
-                            fontSize: Utils.scale(15, Const.Horizontal),
-                            marginTop: Utils.scale(9, Const.Vertical),
-                            fontWeight: 'bold',
-                            textAlignVertical: 'center',
-                        }}>Số feedback của bạn: {numberFeedback}</Text>
+                        <View style={{
+                            width: Utils.scale(260, Const.Horizontal),
+                        }}>
+                            <Text style={{
+                                fontSize: Utils.scale(15, Const.Horizontal),
+                                marginTop: Utils.scale(9, Const.Vertical),
+                                marginLeft: Utils.scale(9, Const.Vertical),
+                                fontWeight: 'bold',
+                                textAlignVertical: 'center',
+                            }}>Số feedback của bạn: {numberFeedback}</Text>
+                        </View>
+
+                        <View style={{
+                            width: Utils.scale(140, Const.Horizontal),
+                        }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('CreateFeedback')}>
+                                <View style={{
+                                    marginTop: Utils.scale(2, Const.Horizontal),
+                                    //marginRight: Utils.scale(5, Const.Horizontal),
+                                    backgroundColor: '#fff0b3',
+                                    borderColor: 'black',
+                                    borderWidth: 2,
+                                    borderRadius: 7,
+                                    width: Utils.scale(135, Const.Horizontal),
+                                    height: Utils.scale(40, Const.Vertical),
+                                    justifyContent: 'center'
+                                }}>
+                                    <Text style={{
+                                        marginTop: Utils.scale(-3, Const.Vertical),
+                                        marginLeft: Utils.scale(11, Const.Horizontal),
+                                        fontSize: Utils.scale(18, Const.Horizontal),
+                                        fontWeight: 'bold',
+                                    }}>Gửi feedback</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </LinearGradient>
                 <View style={{
@@ -130,34 +174,56 @@ export default class Profile extends Component {
                         renderItem={({ item, index }) => {
                             return (
                                 <TouchableOpacity onPress={() => {
-                                    this.onClickItem(item.Id);
+                                    this.onClickItem(item.id);
                                 }}>
                                     <View style={{
                                         flexDirection: 'row',
                                         width: Utils.scale(400, Const.Horizontal),
-                                        height: Utils.scale(50, Const.Vertical),
+                                        height: Utils.scale(40, Const.Vertical),
                                         borderColor: 'black',
                                         borderBottomWidth: 2,
                                         textAlignVertical: 'center',
                                     }}>
-                                        <Text style={{
-                                            fontSize: Utils.scale(20, Const.Horizontal),
-                                            fontWeight: 'bold',
+                                        <View style={{
+                                            width: Utils.scale(50, Const.Horizontal),
                                             textAlignVertical: 'center',
-                                            marginLeft: Utils.scale(7, Const.Horizontal),
-                                        }}>{item.Id}</Text>
-                                        <Text style={{
-                                            fontSize: Utils.scale(20, Const.Horizontal),
-                                            fontWeight: 'bold',
+                                            alignItems: 'center',
+                                            alignSelf: 'center',
+                                            borderRightWidth: 1,
+                                            borderColor: 'gray',
+                                        }}>
+                                            <Text style={{
+                                                fontSize: Utils.scale(17, Const.Horizontal),
+                                                textAlignVertical: 'center',
+                                            }}>{item.id}</Text>
+                                        </View>
+
+                                        <View style={{
+                                            width: Utils.scale(230, Const.Horizontal),
                                             textAlignVertical: 'center',
-                                            marginLeft: Utils.scale(7, Const.Horizontal),
-                                        }}>{item.Title}</Text>
-                                        <Text style={{
-                                            fontSize: Utils.scale(20, Const.Horizontal),
-                                            fontWeight: 'bold',
+                                            borderRightWidth: 1,
+                                            borderColor: 'gray',
+                                            alignSelf: 'center',
+                                        }}>
+                                            <Text style={{
+                                                fontSize: Utils.scale(17, Const.Horizontal),
+                                                textAlignVertical: 'center',
+                                                marginLeft: Utils.scale(7, Const.Horizontal),
+                                            }}>{(item.title.length > 28)? item.title.substring(0, 28)+' ...' : item.title}</Text>
+                                        </View>
+
+                                        <View style={{
+                                            width: Utils.scale(120, Const.Horizontal),
                                             textAlignVertical: 'center',
-                                            marginLeft: Utils.scale(7, Const.Horizontal),
-                                        }}>{item.Status}</Text>
+                                            alignItems: 'center',
+                                            alignSelf: 'center',
+                                        }}>
+                                            <Text style={{
+                                                fontSize: Utils.scale(17, Const.Horizontal),
+                                                textAlignVertical: 'center',
+                                            }}>{(item.status == 1) ? 'Đang chờ' : 'Đã xử lý'}</Text>
+                                        </View>
+
                                     </View>
                                 </TouchableOpacity>
 
