@@ -95,5 +95,11 @@ namespace SOFA_API.Controllers
             return Ok(loginViewModelOut);
         }
 
+        [HttpPost("admin-change-password")]
+        public ActionResult AdminChangePassword([FromForm] AccountViewModelIn data)
+        {
+            AccountViewModelOut loginViewModelOut = authService.AdminChangePassword(data);
+            return Ok(loginViewModelOut);
+        }
     }
 }

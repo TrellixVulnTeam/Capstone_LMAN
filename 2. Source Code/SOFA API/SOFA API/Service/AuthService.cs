@@ -65,7 +65,8 @@ namespace SOFA_API.Service
                 if (loginViewModelIn.IsApplicationAccess)
                 {
                     loginViewModelIn.RoleId = Const.USER_ROLE_ID;
-                } else
+                }
+                else
                 {
                     loginViewModelIn.RoleId = Const.ADMIN_ROLE_ID;
                 }
@@ -494,7 +495,7 @@ namespace SOFA_API.Service
                     loginViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                     loginViewModelOut.Username = loginViewModelIn.Username;
                 }
-                
+
                 loginViewModelOut.RoleId = loginViewModelIn.RoleId;
 
                 return loginViewModelOut;
@@ -521,7 +522,7 @@ namespace SOFA_API.Service
 
                     if (account != null)
                     {
-                        
+
                         loginViewModelIn.Username = account.Username;
                         loginViewModelIn.NewPassword = HashPassword("123456");
                     }
@@ -533,6 +534,46 @@ namespace SOFA_API.Service
                 else
                 {
                     throw new Exception("Account id không hợp lệ");
+                }
+
+                // update
+                AccountDAO.Instance.UpdateUserPassword(loginViewModelIn.Username, loginViewModelIn.NewPassword);
+                loginViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                loginViewModelOut.Username = loginViewModelIn.Username;
+
+                return loginViewModelOut;
+            }
+            catch (Exception e)
+            {
+                loginViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                loginViewModelOut.ErrorMessage = e.Message;
+                return loginViewModelOut;
+            }
+        }
+
+        public AccountViewModelOut AdminChangePassword(AccountViewModelIn loginViewModelIn)
+        {
+            AccountViewModelOut loginViewModelOut = new AccountViewModelOut();
+
+            try
+            {
+                AccountViewModelOut account = AccountDAO.Instance.GetUserWithRoleByUserName(loginViewModelIn.Username);
+                // check username and status
+                if (account != null)
+                {
+                    // check password
+                    if (!VerifyPassword(loginViewModelIn.Password, account.Password))
+                    {
+                        throw new Exception("Tên tài khoản hoặc mật khẩu không đúng");
+                    }
+                    if (!string.IsNullOrEmpty(loginViewModelIn.NewPassword) && loginViewModelIn.NewPassword.Length >= 6)
+                    {
+                        loginViewModelIn.NewPassword = HashPassword(loginViewModelIn.NewPassword);
+                    }
+                    else
+                    {
+                        throw new Exception("Mật khẩu bao gồm 6 ký tự trở lên");
+                    }
                 }
 
                 // update
