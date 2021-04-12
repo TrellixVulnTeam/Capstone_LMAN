@@ -501,7 +501,7 @@ namespace SOFA_API.Service
                 postModelOut.ListComment = commentModelOuts;
                 postModelOut.ListRate = RateDAO.Instance.GetListOfRate(postViewModelIn.PostID);
                 postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(postViewModelIn.PostID);
-                postModelOut.NumberOfComment = postModelOut.ListComment.Count;
+                postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(postViewModelIn.PostID);
                 postModelOut.NumberOfLike = postModelOut.ListLike.Count;
                 postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(postViewModelIn.PostID);
                 if (userID != 0)
@@ -735,7 +735,7 @@ namespace SOFA_API.Service
                     Profile profile = ProfileDAO.Instance.GetProfileByAccountID(post.AccountPost);
                     postModelOut.SetAccountPost(profile);
                     postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(postID);
-                    postModelOut.NumberOfComment = postModelOut.ListComment.Count;
+                    postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(postID);
                     postModelOut.NumberOfLike = postModelOut.ListLike.Count;
                     postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(postID);
                     if (userID != 0)
