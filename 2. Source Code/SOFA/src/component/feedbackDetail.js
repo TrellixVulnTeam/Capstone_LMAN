@@ -55,7 +55,7 @@ export default class UpdateProfile extends Component {
                         "Accept": 'application/json',
                         "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
                     };
-                    let url = Const.domain + 'api/feedback/getfeedbackdetail?fid='+feedbackId;
+                    let url = Const.domain + 'api/feedback/getfeedbackdetail?fid=' + feedbackId;
                     Request.Get(url, header)
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -89,7 +89,7 @@ export default class UpdateProfile extends Component {
     }
 
     render() {
-        const { feedback } = this.state;
+        const { feedback, colorStatus } = this.state;
         //LogBox.ignoreAllLogs();      
         return (
             <ScrollView>
@@ -114,8 +114,8 @@ export default class UpdateProfile extends Component {
                             }}>Tiêu đề</Text>
                             <Text
                                 style={{
-                                    height: Utils.scale(35, Const.Vertical),
-                                    width: Utils.scale(380, Const.Horizontal),
+                                    alignSelf: 'flex-start',
+                                    width: Utils.scale(395, Const.Horizontal),
                                     marginLeft: Utils.scale(5, Const.Horizontal),
                                     fontSize: Utils.scale(17, Const.Horizontal),
                                 }}
@@ -133,14 +133,31 @@ export default class UpdateProfile extends Component {
                                 fontSize: Utils.scale(15, Const.Horizontal),
                             }}>Nội dung</Text>
                             <Text style={{
-                                    height: Utils.scale(35, Const.Vertical),
-                                    width: Utils.scale(380, Const.Horizontal),
-                                    marginLeft: Utils.scale(5, Const.Horizontal),
-                                    fontSize: Utils.scale(17, Const.Horizontal),
-                                    textAlignVertical: "top",
-                                }}
+                                width: Utils.scale(395, Const.Horizontal),
+                                marginLeft: Utils.scale(5, Const.Horizontal),
+                                fontSize: Utils.scale(17, Const.Horizontal),
+                                textAlignVertical: "top",
+                            }}
                             >{feedback.content}</Text>
-                        </View>     
+                        </View>
+                        <View style={{
+                            marginLeft: Utils.scale(10, Const.Horizontal),
+                            marginTop: Utils.scale(10, Const.Vertical),
+                        }}>
+                            <Text style={{
+                                marginLeft: Utils.scale(5, Const.Vertical),
+                                fontWeight: 'bold',
+                                fontSize: Utils.scale(15, Const.Horizontal),
+                            }}>Trạng thái</Text>
+                            <Text style={{
+                                width: Utils.scale(395, Const.Horizontal),
+                                marginLeft: Utils.scale(5, Const.Horizontal),
+                                fontSize: Utils.scale(17, Const.Horizontal),
+                                textAlignVertical: "top",
+                                color: (feedback.status == 1) ? '#ff3333' : '#00e600',
+                            }}
+                            >{(feedback.status == 1) ? 'Đang chờ' : 'Đã xử lý'}</Text>
+                        </View>
                     </View>
                 </View>
             </ScrollView>

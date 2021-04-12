@@ -131,8 +131,8 @@ export default class Profile extends Component {
                             width: Utils.scale(260, Const.Horizontal),
                         }}>
                             <Text style={{
-                                fontSize: Utils.scale(15, Const.Horizontal),
-                                marginTop: Utils.scale(9, Const.Vertical),
+                                fontSize: Utils.scale(16, Const.Horizontal),
+                                marginTop: Utils.scale(9.5, Const.Vertical),
                                 marginLeft: Utils.scale(9, Const.Vertical),
                                 fontWeight: 'bold',
                                 textAlignVertical: 'center',
@@ -165,6 +165,61 @@ export default class Profile extends Component {
                         </View>
                     </View>
                 </LinearGradient>
+                <View>
+                    <View style={{
+                        flexDirection: 'row',
+                        width: Utils.scale(400, Const.Horizontal),
+                        height: Utils.scale(40, Const.Vertical),
+                        borderColor: 'black',
+                        borderBottomWidth: 2,
+                        textAlignVertical: 'center',
+                    }}>
+                        <View style={{
+                            width: Utils.scale(50, Const.Horizontal),
+                            textAlignVertical: 'center',
+                            alignItems: 'center',
+                            alignSelf: 'center',
+                            borderRightWidth: 1,
+                            borderColor: 'gray',
+                        }}>
+                            <Text style={{
+                                fontSize: Utils.scale(19, Const.Horizontal),
+                                textAlignVertical: 'center',
+                                fontWeight: 'bold'
+                            }}>Mã</Text>
+                        </View>
+
+                        <View style={{
+                            width: Utils.scale(230, Const.Horizontal),
+                            textAlignVertical: 'center',
+                            borderRightWidth: 1,
+                            borderColor: 'gray',
+                            alignSelf: 'center',
+                            alignItems: 'center',
+                        }}>
+                            <Text style={{
+                                fontSize: Utils.scale(19, Const.Horizontal),
+                                textAlignVertical: 'center',
+                                marginLeft: Utils.scale(7, Const.Horizontal),
+                                fontWeight: 'bold',
+                            }}>Tiêu đề</Text>
+                        </View>
+
+                        <View style={{
+                            width: Utils.scale(120, Const.Horizontal),
+                            textAlignVertical: 'center',
+                            alignItems: 'center',
+                            alignSelf: 'center',
+                        }}>
+                            <Text style={{
+                                fontSize: Utils.scale(19, Const.Horizontal),
+                                textAlignVertical: 'center',
+                                fontWeight:'bold',
+                            }}>Trạng thái</Text>
+                        </View>
+
+                    </View>
+                </View>
                 <View style={{
                     height: Utils.scale(665, Const.Vertical),
                 }}>
@@ -209,7 +264,7 @@ export default class Profile extends Component {
                                                 fontSize: Utils.scale(17, Const.Horizontal),
                                                 textAlignVertical: 'center',
                                                 marginLeft: Utils.scale(7, Const.Horizontal),
-                                            }}>{(item.title.length > 28)? item.title.substring(0, 28)+' ...' : item.title}</Text>
+                                            }}>{(item.title.length > 28) ? item.title.substring(0, 28) + ' ...' : item.title}</Text>
                                         </View>
 
                                         <View style={{
@@ -221,6 +276,7 @@ export default class Profile extends Component {
                                             <Text style={{
                                                 fontSize: Utils.scale(17, Const.Horizontal),
                                                 textAlignVertical: 'center',
+                                                color: (item.status == 1) ? '#ff3333' : '#00e600',
                                             }}>{(item.status == 1) ? 'Đang chờ' : 'Đã xử lý'}</Text>
                                         </View>
 
