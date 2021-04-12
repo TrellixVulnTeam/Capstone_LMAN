@@ -83,7 +83,7 @@ namespace SOFA_API.DAO
         public FeedbackViewModelOut GetFeedbackById(int fid)
         {
             FeedbackViewModelOut feedback = null;
-            string sql = "EXEC GetFeedbackById 7";
+            string sql = "EXEC GetFeedbackById @feedbackId";
             try
             {
                 DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { fid });

@@ -99,7 +99,7 @@ export default class Profile extends Component {
         // }else{
         //     this.props.navigation.navigate('OtherProfile', { 'accountID': userId });
         // }
-        ToastAndroid.show('Direct', feedbackId, ToastAndroid.SHORT);
+        this.props.navigation.navigate('FeedbackDetail', { 'feedbackId': feedbackId });
     }
 
     componentDidMount() {

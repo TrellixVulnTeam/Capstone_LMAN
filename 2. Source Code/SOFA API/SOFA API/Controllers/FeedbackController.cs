@@ -37,7 +37,7 @@ namespace SOFA_API.Controllers
         }
 
         [HttpGet("getfeedbackdetail")]
-        //[Authorize]
+        [Authorize]
         public ActionResult GetFeedbackById(int fid) {
             FeedbackViewModelOut feedback = FeedbackService.Instance.GetFeedbackById(fid);
             return Ok(feedback);
