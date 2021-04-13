@@ -72,3 +72,29 @@ BEGIN
 	FROM Voucher v , AccountVoucher av
 	WHERE  v.Id= av.VoucherId
 END
+------------------------------
+CREATE PROC [dbo].GetAllUserFeedback
+AS
+BEGIN
+    SELECT *
+	FROM Feedback f, Account a
+	WHERE f.UserFeedbackId = a.Id
+	ORDER BY f.LastUpdated DESC
+END
+
+-------------------------------
+CREATE PROCEDURE [dbo].[AddNewNotificationFeedback] @TypeNotification int, @Content nvarchar(MAX), @FromAccount int, @ToAccount int, @DateCreated datetime
+AS
+INSERT INTO [Notification](TypeNotification, IsRead, Content, FromAccount, ToAccount, DateCreated ) 
+values(@TypeNotification, 0, @Content, @FromAccount, @ToAccount, @DateCreated)
+
+------------------------------
+CREATE PROC [dbo].[UpdateFeedbackStatus]
+@feedbackId INT, @lastUpdated DATETIME
+AS
+BEGIN
+	UPDATE Feedback
+	SET Status = 2, LastUpdated = @lastUpdated
+	WHERE Id = @feedbackId
+END
+
