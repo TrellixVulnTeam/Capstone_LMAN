@@ -48,10 +48,26 @@ namespace SOFA_API.ViewModel.Notification
             Content = row["Content"].ToString();
             IsRead = Convert.IsDBNull(row["IsRead"]) ? false: (bool)row["Isread"];
             DateCreated = (DateTime)row["DateCreated"];
-            FromAccountName = ProfileDAO.Instance.GetProfileByAccountID(FromAccount).FirstName + " " +
-                ProfileDAO.Instance.GetProfileByAccountID(FromAccount).LastName;
-            ToAccountName = ProfileDAO.Instance.GetProfileByAccountID(ToAccount).FirstName + " " +
-                ProfileDAO.Instance.GetProfileByAccountID(ToAccount).LastName;
+            FromAccountName = GetProfileFullName(FromAccount);
+            ToAccountName = GetProfileFullName(ToAccount);
+        }
+
+        private string GetProfileFullName(int accountID)
+        {
+            if (accountID == 0)
+            {
+                return "Hệ thống";
+            } else
+            {
+                DTO.Profile profile = ProfileDAO.Instance.GetProfileByAccountID(accountID);
+                if (profile != null)
+                {
+                    return profile.FirstName + " " + profile.LastName;
+                } else
+                {
+                    return "";
+                }
+            }
         }
     }
 }
