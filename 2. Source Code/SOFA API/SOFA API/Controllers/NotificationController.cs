@@ -48,6 +48,12 @@ namespace SOFA_API.Controllers
             NotificationViewModelOut noti = NotificationService.Instance.SetReadNotificationById(ID);
             return Ok(noti);
         }
-
+        [HttpGet("MarkAllAsRead")]
+        public ActionResult MarkAllAsRead()
+        {
+            int id = Utils.Instance.GetUserID(User.Claims);
+            NotificationViewModelOut noti = NotificationService.Instance.MarkAllAsRead(id);
+            return Ok(noti);
+        }
     }
 }

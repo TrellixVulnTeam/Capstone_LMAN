@@ -80,7 +80,6 @@ namespace SOFA_API.Service
             }
             return listNotification;
         }
-
         public NotificationViewModelOut CreatedNotification(NotificationViewModelIn modelIn)
         {
             NotificationViewModelOut notificationViewModelOut = new NotificationViewModelOut();
@@ -203,6 +202,36 @@ namespace SOFA_API.Service
             }
             return notification;
         }
+        /// <summary>
+        /// Change status of all unread notification of an user to readed
+        /// </summary>
+        /// <param name="accountID">ID of user</param>
+        /// <returns>NotificationViewModelOut</returns>
+        public NotificationViewModelOut MarkAllAsRead(int accountID)
+        {
+            NotificationViewModelOut notification = new NotificationViewModelOut();
+            try
+            {
+                int result = NotificationDAO.Instance.MarkAllAsRead(accountID);
+                if (result > 0)
+                {
+                    notification.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                {
+                    notification.Code = Const.REQUEST_CODE_FAILED;
+                    throw new Exception("Can't update Notification");
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                notification.Code = Const.REQUEST_CODE_FAILED;
+                notification.ErrorMessage = ex.ToString();
+            }
+            return notification;
+        }
+
 
         public NotificationViewModelOut AddNewNotificationFeedback(int feedbackId, int toAccountId)
         {
@@ -229,12 +258,14 @@ namespace SOFA_API.Service
                     notificationViewModelOut.ToAccount = modelIn.ToAccount;
                     notificationViewModelOut.DateCreated = modelIn.DateCreated;
                     notificationViewModelOut.FromAccountName = "Hệ thống";
-                } else
+                }
+                else
                 {
                     throw new Exception("Account không tồn tại");
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Utils.Instance.SaveLog(ex.ToString());
                 notificationViewModelOut.Code = Const.REQUEST_CODE_FAILED;
                 notificationViewModelOut.ErrorMessage = ex.Message;

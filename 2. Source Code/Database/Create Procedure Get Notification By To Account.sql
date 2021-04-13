@@ -15,9 +15,16 @@ BEGIN
 	FETCH NEXT @rowsOfPage ROWS ONLY
 END
 
-SELECT DATEDIFF(day,'2021/04/05 08:00',GETDATE())
+DROP PROC IF EXISTS MarkAllNotificationAsReaded
+GO
+CREATE PROC MarkAllNotificationAsReaded
+@accountID INT
+AS
+BEGIN
+	UPDATE dbo.Notification SET IsRead = 1 WHERE ToAccount = @accountID
+END
+GO
 
-EXEC getNotificationByToAccount 13,2,7
 
 
 

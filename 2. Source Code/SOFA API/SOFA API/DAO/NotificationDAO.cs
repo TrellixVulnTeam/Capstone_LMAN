@@ -101,6 +101,24 @@ namespace SOFA_API.DAO
             modelIn.FromAccount, modelIn.ToAccount, modelIn.DateCreated});
             return result;
         }
-
+        /// <summary>
+        /// Set status of all unread notification to readed
+        /// </summary>
+        /// <param name="accountID">ID of user</param>
+        /// <returns>Number of notification changed</returns>
+        public int MarkAllAsRead(int accountID)
+        {
+            string sql = "EXEC MarkAllNotificationAsReaded @accountID";
+            try
+            {
+                int result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountID });
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+        }
     }
 }
