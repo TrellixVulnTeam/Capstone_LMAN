@@ -1,4 +1,3 @@
-import NotificationWSS from '../service/NotificationWSS';
 export default class Session {
     static _instance;
 

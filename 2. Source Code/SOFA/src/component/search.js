@@ -11,8 +11,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Badge, Icon, withBadge } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import { createAppContainer } from 'react-navigation';
-
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import * as Style from '../style/style';
 import * as Const from '../common/const';
@@ -22,135 +21,125 @@ import { Horizontal, Vertical } from '../common/const';
 import { AVATAR, WHITE_BACKGROUND, GALAXY_BACKGROUND, OCEAN_BACKGROUND } from '../../image/index';
 import ViewImageModal from './viewImageModel';
 
-import SearchNavigator from '../tabs/SearchRouter';
-
 import * as PostService from '../service/postService';
+import * as ProfileService from '../service/profileService';
 import * as AuthService from '../service/authService';
 import * as MarkupPostService from '../service/markupPostService';
 import * as NotificationService from '../service/notificationService';
 import * as FollowService from '../service/followService';
 
-const AppIndex = createAppContainer(SearchNavigator);
+import Session from '../common/session';
+
+import SearchPostTab from '../tabs/searchPostTab';
+import SearchUSerTab from '../tabs/searchUserTab';
+
+const Tab = createMaterialTopTabNavigator();
 
 
 export default class Search extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            listPost: [
-                {
-                    "id": 85,
-                    "content": "Sơ mi thanh lịch\nGiá: 189k",
-                    "privacyID": 3,
-                    "time": "2021-04-12T03:56:12.247",
-                    "bodyInfoID": 0,
-                    "accountPost": 7,
-                    "firstName": "Mai Văn",
-                    "lastName": "Viên",
-                    "avatar": "VienMV/avatar/1.png",
-                    "gender": true,
-                    "listImage": [
-                        {
-                            "id": 78,
-                            "postID": 85,
-                            "url": "VienMV\\post_image\\85_78.png"
-                        },
-                        {
-                            "id": 79,
-                            "postID": 85,
-                            "url": "VienMV\\post_image\\85_79.png"
-                        },
-                        {
-                            "id": 80,
-                            "postID": 85,
-                            "url": "VienMV\\post_image\\85_80.png"
-                        }
-                    ],
-                    "listLike": [],
-                    "listComment": [],
-                    "listRate": [],
-                    "numberOfLike": 2,
-                    "numberOfComment": 14,
-                    "rateAverage": 4.5,
-                    "isLiked": false,
-                    "myRatePoint": 0,
-                    "isVerified": true,
-                    "isMarked": false,
-                    "type": 1
-                },
-                {
-                    "id": 84,
-                    "content": "Quần jean body\nGiá: 159k",
-                    "privacyID": 3,
-                    "time": "2021-04-08T03:35:03.363",
-                    "bodyInfoID": 0,
-                    "accountPost": 7,
-                    "firstName": "Mai Văn",
-                    "lastName": "Viên",
-                    "avatar": "VienMV/avatar/1.png",
-                    "gender": true,
-                    "listImage": [
-                        {
-                            "id": 75,
-                            "postID": 84,
-                            "url": "VienMV\\post_image\\84_75.png"
-                        },
-                        {
-                            "id": 76,
-                            "postID": 84,
-                            "url": "VienMV\\post_image\\84_76.png"
-                        },
-                        {
-                            "id": 77,
-                            "postID": 84,
-                            "url": "VienMV\\post_image\\84_77.png"
-                        }
-                    ],
-                    "listLike": [],
-                    "listComment": [],
-                    "listRate": [],
-                    "numberOfLike": 2,
-                    "numberOfComment": 0,
-                    "rateAverage": 4.5,
-                    "isLiked": false,
-                    "myRatePoint": 0,
-                    "isVerified": true,
-                    "isMarked": false,
-                    "type": 1
-                },
-                {
-                    "id": 78,
-                    "content": "Linh Ka",
-                    "privacyID": 3,
-                    "time": "2021-04-07T14:53:03.6",
-                    "bodyInfoID": 11,
-                    "accountPost": 7,
-                    "firstName": "Mai Văn",
-                    "lastName": "Viên",
-                    "avatar": "VienMV/avatar/1.png",
-                    "gender": true,
-                    "listImage": [
-                        {
-                            "id": 69,
-                            "postID": 78,
-                            "url": "VienMV\\post_image\\78_69.png"
-                        }
-                    ],
-                    "listLike": [],
-                    "listComment": [],
-                    "listRate": [],
-                    "numberOfLike": 1,
-                    "numberOfComment": 2,
-                    "rateAverage": 4.7,
-                    "isLiked": false,
-                    "myRatePoint": 0,
-                    "isVerified": true,
-                    "isMarked": false,
-                    "type": 0
-                }
-            ]
+            listPost: [],
+            listUser: [],
+            currentTextSearch: '',
+            searchText: '',
+            postTabPage: 1,
+            userTabPage: 1,
+            postTabLoading: false,
+            userTabLoading: false,
         }
     }
+
+    async searchPost(type) {
+        const { searchText, currentTextSearch } = this.state;
+        let queryText = type == 1 ? searchText : currentTextSearch;
+        if (type == 1) {
+            this.setState({ postTabLoading: true });
+            await this.setState({ postTabPage: 1 });
+        }
+        if (queryText.length > 0) {
+            console.log(queryText, this.state.postTabPage);
+            PostService.searchPostByKeyword(queryText, this.state.postTabPage)
+                .then(response => {
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        let listPostRes = response.listPost;
+                        if (type == 1) {
+                            this.setState({ listPost: listPostRes });
+                            if (listPostRes.length > 0) {
+                                this.setState({ postTabPage: this.state.postTabPage + 1 });
+                            }
+                            this.setState({ postTabLoading: false });
+                        } else {
+                            if (listPostRes.length > 0) {
+                                this.setState({ listPost: [...this.state.listPost, ...listPostRes], postTabPage: this.state.postTabPage + 1 })
+                                console.log('load more post', this.state.listPost);
+
+                            }
+                        }
+                        console.log('after post', this.state.postTabPage + '-' + this.state.userTabPage);
+
+                    } else {
+                        ToastAndroid.show('Lỗi trong quá trình tìm kiếm', ToastAndroid.LONG);
+                        console.log(response.errorMessage);
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                    ToastAndroid.show('Lỗi trong quá trình tìm kiếm', ToastAndroid.LONG);
+                });
+        }
+
+    }
+    async searchUser(type) {
+        const { searchText, currentTextSearch } = this.state;
+        if (type == 1) {
+            await this.setState({ userTabPage: 1 });
+            this.setState({ userTabLoading: true });
+        }
+        let queryText = type == 1 ? searchText : currentTextSearch;
+        if (queryText.length > 0) {
+            ProfileService.searchUserByName(queryText, this.state.userTabPage)
+                .then(response => {
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        let listProfileRes = response.listProfile;
+                        if (type == 1) {
+                            this.setState({ listUser: listProfileRes });
+                            if (listProfileRes.length > 0) {
+                                this.setState({ userTabPage: this.state.userTabPage + 1 });
+                                this.setState({ userTabLoading: false });
+                            }
+                        } else {
+                            if (listProfileRes.length > 0) {
+                                this.setState({ listUser: [...this.state.listUser, ...listProfileRes], userTabPage: this.state.userTabPage + 1 })
+                                console.log('load more user', this.state.listUser);
+                            }
+                        }
+                        console.log('after user', this.state.postTabPage + '-' + this.state.userTabPage);
+
+
+                    } else {
+                        ToastAndroid.show('Lỗi trong quá trình tìm kiếm', ToastAndroid.LONG);
+                        console.log(response.errorMessage);
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                    ToastAndroid.show('Lỗi trong quá trình tìm kiếm', ToastAndroid.LONG);
+                });
+        }
+
+    }
+
+    navigateProfile(accountID) {
+        console.log('searcg', Session.getInstance().account);
+        if (account && account.accountID && account.accountID == accountID) {
+            this.props.navigation.navigate('Profile');
+        } else {
+            this.props.navigation.navigate('OtherProfile', { 'accountID': accountID });
+        }
+    }
+
     componentDidMount() {
         this._screenFocus = this.props.navigation.addListener('focus', () => {
         });
@@ -158,23 +147,25 @@ export default class Search extends Component {
         });
     }
     componentWillUnmount() {
-
-    }
-
-    Article({ data }) {
-        return (
-            <View>
-                <Text>{data.content}</Text>
-            </View>
-        )
     }
 
     render() {
+        const { listPost, listUser, searchText, postTabLoading, userTabLoading } = this.state;
         return (
             <View style={[styles.container]}>
+
+                <Text style={[styles.title, { color: 'white', position: 'absolute', top: -2, left: -2 }]}>Tìm kiếm</Text>
                 <Text style={[styles.title]}>Tìm kiếm</Text>
+
                 <View style={[styles.header]}>
                     <TextInput
+                        onChangeText={(text) => this.setState({ searchText: text })}
+                        value={searchText}
+                        onSubmitEditing={() => {
+                            this.setState({ currentTextSearch: searchText });
+                            this.searchPost(1);
+                            this.searchUser(1);
+                        }}
                         returnKeyType={'search'}
                         style={[styles.searchBox]}
                         placeholder={'Từ khóa tìm kiếm'}
@@ -186,7 +177,42 @@ export default class Search extends Component {
                         />
                     </TouchableOpacity>
                 </View>
-                <AppIndex />
+                <Tab.Navigator
+                    swipeEnabled={false}
+                    tabBarOptions={{
+                        activeTintColor: '#2a7ea0',
+                        indicatorStyle: {
+                            backgroundColor: '#2a7ea0'
+                        }
+                    }}
+                    backBehavior='initialRoute'
+                >
+                    <Tab.Screen
+                        name="SearchPostTab"
+                        children={() =>
+                            <SearchPostTab
+                                listPost={listPost}
+                                onPressPost={(postID) => this.props.navigation.navigate('PostDetail', { 'postID': postID })}
+                                loadMore={() => this.searchPost(0)}
+                                isLoading={postTabLoading}
+                            />}
+                        options={{
+                            title: 'Bài viết'
+                        }} />
+                    <Tab.Screen
+                        name="SearchUserTab"
+                        children={() =>
+                            <SearchUSerTab
+                                listUser={listUser}
+                                onPressUser={(accountID) => this.navigateProfile(accountID)}
+                                loadMore={() => this.searchUser(0)}
+                                isLoading={userTabLoading}
+                            />}
+                        options={{
+                            title: 'Mọi người'
+                        }}
+                    />
+                </Tab.Navigator>
             </View>
         )
     }
@@ -217,6 +243,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: scale(20, Vertical),
         right: scale(15, Horizontal)
-    }
+    },
 
 })

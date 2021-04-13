@@ -20,11 +20,14 @@ import { scale, getData } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { AVATAR, WHITE_BACKGROUND, GALAXY_BACKGROUND, OCEAN_BACKGROUND } from '../../image/index';
 import ViewImageModal from './viewImageModel';
+
 import * as PostService from '../service/postService';
 import * as AuthService from '../service/authService';
 import * as MarkupPostService from '../service/markupPostService';
 import * as NotificationService from '../service/notificationService';
 import * as FollowService from '../service/followService';
+import Session from "../common/session";
+
 import PostMenu from './postMenu';
 import PushNotification from "react-native-push-notification";
 
@@ -444,11 +447,7 @@ export default class Newsfeed extends Component {
     checkLoginToken = async () => {
         AuthService.getProfile()
             .then((response) => {
-                if (
-                    response &&
-                    response.code &&
-                    response.code == Const.REQUEST_CODE_SUCCESSFULLY
-                ) {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.setState({ account: response, isLogin: true });
                 } else {
                     this.setState({ account: {}, isLogin: false });
@@ -497,13 +496,7 @@ export default class Newsfeed extends Component {
         this.loadUnreadNotification();
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.checkLoginToken();
-            if (
-                this.props.route &&
-                this.props.route.params && (
-                    this.props.route.params.preScreen == 'CreatePost' ||
-                    this.props.route.params.isRefresh
-                )
-            ) {
+            if (this.props.route && this.props.route.params && (this.props.route.params.preScreen == 'CreatePost' || this.props.route.params.isRefresh)) {
                 this.getAllPost(1);
             }
         });
@@ -889,7 +882,6 @@ export default class Newsfeed extends Component {
         return (
             <View style={Style.common.container}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
-
                 <ImageBackground
                     source={OCEAN_BACKGROUND}
                     style={{ flex: 1, resizeMode: 'cover', justifyContent: 'center' }}>
