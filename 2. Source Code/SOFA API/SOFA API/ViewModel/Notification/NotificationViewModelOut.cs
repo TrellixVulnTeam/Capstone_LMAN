@@ -46,7 +46,7 @@ namespace SOFA_API.ViewModel.Notification
             FromAccount = Convert.IsDBNull(row["FromAccount"]) ? 0 : (int)row["FromAccount"]; ;
             ToAccount = (int)row["ToAccount"];
             Content = row["Content"].ToString();
-            IsRead = Convert.IsDBNull(row["IsRead"]) ? false: (bool)row["Isread"]; ;
+            IsRead = Convert.IsDBNull(row["IsRead"]) ? false: (bool)row["Isread"];
             DateCreated = (DateTime)row["DateCreated"];
             FromAccountName = ProfileDAO.Instance.GetProfileByAccountID(FromAccount).FirstName + " " +
                 ProfileDAO.Instance.GetProfileByAccountID(FromAccount).LastName;
