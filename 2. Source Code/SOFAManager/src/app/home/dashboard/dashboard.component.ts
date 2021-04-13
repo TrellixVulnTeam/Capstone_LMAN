@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
     responsive: true,
   };
   pieChartLabels: Label[] = ['Verified', 'Not Verified'];
-  pieChartData: SingleDataSet = [99,1];
+  pieChartData: SingleDataSet = [126,34];
   pieChartType: ChartType = 'pie';
   pieChartLegend = true;
   pieChartPlugins = [];
@@ -34,14 +34,9 @@ export class DashboardComponent implements OnInit {
     this.apiService.get('user/GetDashboard').subscribe(response => {
       if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
         this.dashboardInfo = <any>response;
-        let userActivePercent = (this.dashboardInfo.numberOfUserActive / this.dashboardInfo.totalUser)*100;
-        let userInactivePercent = 100 - userActivePercent;
-        let postVerifiedPercent = (this.dashboardInfo.numberOfPostVerified / this.dashboardInfo.totalPost)*100;
-        let postNotVerifiedPercent = 100 - postVerifiedPercent;
 
-        this.doughnutChartData = [[userActivePercent, userInactivePercent]]
-        this.pieChartData = [postVerifiedPercent, postNotVerifiedPercent]
-
+        this.doughnutChartData = [[this.dashboardInfo.numberOfUserActive, this.dashboardInfo.totalUser - this.dashboardInfo.numberOfUserActive]]
+        this.pieChartData = [this.dashboardInfo.numberOfPostVerified, this.dashboardInfo.totalPost - this.dashboardInfo.numberOfPostVerified]
       }
       else {
       }

@@ -28,7 +28,6 @@ export class PostComponent implements OnInit {
 
     let url = 'post/GetAllPostWithoutPaging'
     this.apiService.get(url).subscribe(response => {
-      console.log(response);
       if((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY){
         this.listPost = response['listPost'];
         this.defaultListPost = this.listPost;

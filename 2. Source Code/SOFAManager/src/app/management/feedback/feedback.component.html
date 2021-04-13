@@ -1,0 +1,77 @@
+<header class="page-header">
+    <div class="container-fluid">
+      <h2 class="no-margin-bottom">Feedback list</h2>
+    </div>
+  </header>
+<div class="breadcrumb-holder container-fluid">
+    <ul class="breadcrumb">
+      <li class="breadcrumb-item"><a href="">Home</a></li>
+      <li class="breadcrumb-item active">Feedback</li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="col-4"></div>
+    <div class="col-4">
+        <div class="input-group" style="margin-bottom: 20px; display: inline-block">
+            <input style="display: inline-block; width: 300px; padding-top: 2px;" type="text" class="form-control" placeholder="Search feedback"
+                [(ngModel)]="keyword" (ngModelChange)="search()">
+            <select class="browser-default custom-select" style="display: inline-block; width: 120px; margin-left: 30px;"
+            [(ngModel)]="selectedValue" (change)="selectOption()">
+                <option *ngFor="let c of selectOptionList; let i = index" [ngValue]="c">{{c}}</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Send by</th>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Date created</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let feedback of listFeedback | paginate: { id: 'foo',
+                        itemsPerPage: 10,
+                        currentPage: page,
+                        totalItems: totalRecord }">
+                            <th scope="row">{{feedback.id}}</th>
+                            <td>{{feedback.username}}</td>
+                            <td>{{feedback.title}}</td>
+                            <td>{{truncateChar(feedback.content)}}</td>
+                            <td>{{feedback.lastUpdated | date }}</td>
+                            <td>{{feedback.status == 1 ? 'pending' : 'processed'}}</td>
+                            <td *ngIf="feedback.status == 1"><a [routerLink]="[]" (click)="acceptFeedback(feedback.id, feedback.userFeedbackId)">
+                                    accept
+                              </a></td>
+                              <td *ngIf="feedback.status != 1">processed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="text-align:center">
+    <pagination-controls class="justify-content-center" id="foo"
+    (pageChange)="page = $event"
+    maxSize="5"
+    directionLinks="true"
+    autoHide="true"
+    responsive="true"
+    previousLabel="Previous"
+    nextLabel="Next"
+    screenReaderPaginationLabel="Pagination"
+    screenReaderPageLabel="page"
+    screenReaderCurrentLabel="You're on page">
+</pagination-controls></div>
+
+

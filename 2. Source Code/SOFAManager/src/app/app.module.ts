@@ -40,6 +40,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { MatDialogConfirmComponent } from './management/mat-dialog-confirm/mat-dialog-confirm.component';
 import {MatButtonModule} from '@angular/material/button';
 import { PostDetailComponent } from './management/post-detail/post-detail.component';
+import { FeedbackComponent } from './management/feedback/feedback.component';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { PostDetailComponent } from './management/post-detail/post-detail.compon
     NewStaffComponent,
     UserDetailComponent,
     MatDialogConfirmComponent,
-    PostDetailComponent
+    PostDetailComponent,
+    FeedbackComponent
   ],
   entryComponents: [MatDialogConfirmComponent],
   imports: [
