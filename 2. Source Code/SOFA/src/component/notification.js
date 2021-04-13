@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, ToastAndroid, FlatList, TouchableOpacity } from 'react-native';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -69,29 +69,11 @@ export default class Notification extends Component {
     }
 
     getAllNotification = async (page) => {
-        console.log("1");
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    this.setState({ token: result.toString().substr(1, result.length - 2) });
-                }
-            })
-            .catch(reason => {
-                this.setState({ token: '' });
-                console.log(reason);
-            })
 
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json',
-            "Authorization": 'Bearer ' + this.state.token,
-        };
-        var data = {};
-        var uri = Const.domain + 'api/notification/getnotibyid?accountID=13&page=' + page + '&rowOfPage=' + Const.NOTIFICATION_ROWS_OF_PAGE;
-        Request.Get(uri, header, data)
+        NotificationService.getNotiByID(page, Const.NOTIFICATION_ROWS_OF_PAGE)
             .then(response => {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    console.log("3");
+                    console.log(response);
                     let listNotiRes = response.listNoti;
                     // let listNotiTemp = this.state.listNotification;
                     // for (let i = 0; i < listNotiRes.length; i++) {
@@ -119,12 +101,18 @@ export default class Notification extends Component {
                         }
                     }
 
+                } else {
+                    ToastAndroid.show('Tải thông báo không thành công!', ToastAndroid.SHORT);
                 }
             })
             .catch(reason => {
                 console.log(reason);
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                } else {
+                    ToastAndroid.show('Tải thông báo không thành công!', ToastAndroid.SHORT);
+                }
             })
-
     }
 
     componentDidMount() {

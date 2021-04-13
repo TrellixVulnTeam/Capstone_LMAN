@@ -395,7 +395,7 @@ export default class Newsfeed extends Component {
     ];
 
     loadUnreadNotification() {
-        NotificationService.getUnreadNotification(this.state.account.accountID)
+        NotificationService.getUnreadNotification(1, 100)
             .then((response) => {
                 this.setState({ numberUnreadNotification: response.listNoti.length });
                 PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification);
@@ -496,6 +496,7 @@ export default class Newsfeed extends Component {
         this.loadUnreadNotification();
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.checkLoginToken();
+            this.loadUnreadNotification();
             if (this.props.route && this.props.route.params && (this.props.route.params.preScreen == 'CreatePost' || this.props.route.params.isRefresh)) {
                 this.getAllPost(1);
             }
