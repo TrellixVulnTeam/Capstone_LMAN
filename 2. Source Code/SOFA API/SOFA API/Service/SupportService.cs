@@ -91,5 +91,21 @@ namespace SOFA_API.Service
             }
             return request;
         }
+
+        public SupportRequestViewModelOut CheckFashionista(int userId)
+        {
+            SupportRequestViewModelOut support = new SupportRequestViewModelOut();
+            try
+            {
+                support.isFashionista = SupportDAO.Instance.CheckFashionista(userId);
+                support.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                support.ErrorMessage = e.ToString();
+                support.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return support;
+        }
     }
 }

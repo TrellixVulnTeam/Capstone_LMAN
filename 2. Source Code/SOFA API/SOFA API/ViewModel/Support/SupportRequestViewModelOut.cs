@@ -15,13 +15,14 @@ namespace SOFA_API.ViewModel.Support
         public string TimeCreate { get; set; }
         public int Status { get; set; }
         public string Respone { get; set; }
+        public bool isFashionista { get; set; }
 
         public SupportRequestViewModelOut() : base()
         {
 
         }
 
-        public SupportRequestViewModelOut(int id, int requestType, int userRequestId, string timeCreate, int status, string respone) : base()
+        public SupportRequestViewModelOut(int id, int requestType, int userRequestId, string timeCreate, int status, string respone, bool isFashionista) : base()
         {
             this.Id = id;
             this.RequestType = requestType;
@@ -29,6 +30,7 @@ namespace SOFA_API.ViewModel.Support
             this.TimeCreate = timeCreate;
             this.Status = status;
             this.Respone = respone;
+            this.isFashionista = isFashionista;
         }
 
         public SupportRequestViewModelOut(DataRow row) : base()
@@ -39,6 +41,7 @@ namespace SOFA_API.ViewModel.Support
             this.TimeCreate = row["TimeCreate"].ToString();
             this.Status = (int)row["Status"];
             this.Respone = Convert.IsDBNull(row["Respone"]) ? "" : row["Respone"].ToString();
+            this.isFashionista = false;
         }
     }
 }

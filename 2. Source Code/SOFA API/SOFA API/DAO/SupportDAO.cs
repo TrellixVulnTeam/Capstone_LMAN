@@ -76,5 +76,26 @@ namespace SOFA_API.DAO
             }
             return request;
         }
+
+        /// <summary>
+        /// Function to check if someone is fashionista
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool CheckFashionista(int userId)
+        {
+            string sql = "Select IsFashionista from Profile where AccountId = " + userId;
+            bool isFashionista = false;
+            try
+            {
+                isFashionista = (bool)DataProvider.Instance.ExecuteScalar(sql);
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+            return isFashionista;
+        }
     }
 }
