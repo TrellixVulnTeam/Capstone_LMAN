@@ -35,10 +35,10 @@ namespace SOFA_API.Controllers
 
         [HttpGet("getUnreadNotification")]
         [Authorize]
-        public ActionResult GetUnreadNotification(int page, int rowOfPage)
+        public ActionResult GetUnreadNotification(int page, int rowsOfPage)
         {
             int id = Utils.Instance.GetUserID(User.Claims);
-            ListNotificationViewModelOut listUnreadNotification = NotificationService.Instance.GetUnreadNotificationByToAccount(id, page, rowOfPage);
+            ListNotificationViewModelOut listUnreadNotification = NotificationService.Instance.GetUnreadNotificationByToAccount(id, page, rowsOfPage);
             return Ok(listUnreadNotification);
         }
 
