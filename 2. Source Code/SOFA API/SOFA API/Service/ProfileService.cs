@@ -96,11 +96,15 @@ namespace SOFA_API.Service
             try
             {
                 profileListUserViewModelOut.ListProfile = ProfileDAO.Instance.SearchUserByName(keyword, page, rowsOfPage);
-                if (usesID != 0) {
-                    foreach (ProfileModelOut profileModelOut in profileListUserViewModelOut.ListProfile)
+
+                foreach (ProfileModelOut profileModelOut in profileListUserViewModelOut.ListProfile)
+                {
+                    profileModelOut.FollowerNumber = FollowDAO.Instance.GetFollowerNumber(profileModelOut.AccountID);
+                    profileModelOut.PostNumber = PostDAO.Instance.CountPostOfUser(profileModelOut.AccountID);
+                    if (usesID != 0)
                     {
                         profileModelOut.IsFollowed = FollowService.Instance.CheckFollowed(usesID, profileModelOut.AccountID).IsFollowed;
-                    } 
+                    }
                 }
                 profileListUserViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }

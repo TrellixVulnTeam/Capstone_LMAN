@@ -461,3 +461,15 @@ BEGIN
 	SELECT * FROM MarkupPost WHERE PostID = @postID AND accountID = @accountID
 END
 GO
+
+DROP PROC IF EXISTS CountPublicPostOfUser
+GO
+CREATE PROC CountPublicPostOfUser
+@accountID INT
+AS
+BEGIN
+	SELECT COUNT(*) FROM dbo.Post WHERE AccountPost = @accountID AND PrivacyID = 3
+END
+GO
+
+EXEC dbo.CountPublicPostOfUser @accountID = 7 -- int

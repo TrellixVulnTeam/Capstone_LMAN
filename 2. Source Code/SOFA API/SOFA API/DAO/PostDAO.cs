@@ -195,7 +195,7 @@ namespace SOFA_API.DAO
             String sql = "EXEC dbo.GetAllPostWithoutPaging";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] {});
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { });
                 if (data.Rows.Count > 0)
                 {
                     foreach (DataRow row in data.Rows)
@@ -240,7 +240,7 @@ namespace SOFA_API.DAO
             String sql = "EXEC dbo.SearchPostByText @keyWord , @page , @rowsOfPage";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { keyWord, page, rowsOfPage});
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { keyWord, page, rowsOfPage });
                 if (data.Rows.Count > 0)
                 {
                     foreach (DataRow row in data.Rows)
@@ -254,6 +254,22 @@ namespace SOFA_API.DAO
                 Utils.Instance.SaveLog(ex.ToString());
             }
             return listAllPost;
+        }
+
+        /// <summary>
+        /// Count number post of an user
+        /// </summary>
+        /// <param name="accountID">ID of user</param>
+        /// <returns>The integer that is number public post of that user</returns>
+        public int CountPostOfUser(int accountID)
+        {
+            int res = 0;
+
+            string sql = "EXEC dbo.CountPublicPostOfUser @accountID";
+
+            res = (int)DataProvider.Instance.ExecuteScalar(sql, new object[] { accountID });
+
+            return res;
         }
     }
 }

@@ -62,6 +62,7 @@ namespace SOFA_API.ViewModel.Profile
             this.PostNumber = 0;
             this.UserName = row["UserName"].ToString();
             this.Role = null;
+            this.IsFollowed = false;
         }
     }
 }
