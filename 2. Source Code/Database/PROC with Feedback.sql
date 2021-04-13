@@ -33,3 +33,14 @@ END
 
 GO
 
+CREATE PROC GetFeedbackById
+@feedbackId int
+AS
+BEGIN
+SELECT * FROM Feedback
+WHERE Id = @feedbackId
+END
+
+GO
+
+
