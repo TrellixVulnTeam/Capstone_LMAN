@@ -471,5 +471,3 @@ BEGIN
 	SELECT COUNT(*) FROM dbo.Post WHERE AccountPost = @accountID AND PrivacyID = 3
 END
 GO
-
-EXEC dbo.CountPublicPostOfUser @accountID = 7 -- int

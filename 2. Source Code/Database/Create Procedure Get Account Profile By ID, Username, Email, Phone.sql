@@ -80,9 +80,14 @@ CREATE PROC GetProfileByName
 @keyword NVARCHAR(MAX), @page INT, @rowsOfPage INT
 AS
 BEGIN
-	SELECT Account.Id, UserName, IsActive,IsBlock, Profile.AccountId, FirstName, LastName, Gender, DOB, Email, Phone, Address, Avatar, [Role].[Name] AS [role] FROM dbo.Account 
+	SELECT Account.Id, UserName, IsActive,IsBlock, Profile.AccountId, FirstName, LastName, Gender, DOB, Email, Phone, Address, Avatar, [Role].[Name] AS [role] 
+	FROM dbo.Account 
 	INNER JOIN dbo.Profile ON Profile.AccountId = Account.Id
     INNER JOIN dbo.AccountRole ON AccountRole.AccountId = Account.Id
     INNER JOIN dbo.Role ON Role.Id = AccountRole.RoleId
 	WHERE CONCAT(FirstName, ' ', LastName) LIKE '%'+@keyword+'%'
+	ORDER BY Account.Id
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
 END
+GO
