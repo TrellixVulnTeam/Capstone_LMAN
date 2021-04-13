@@ -42,11 +42,11 @@ namespace SOFA_API.ViewModel.Notification
         {
             Id = (int)row["Id"];
             TypeNotification = (int)row["TypeNotification"];
-            PostId = (int)row["PostId"];
-            FromAccount = (int)row["FromAccount"];
+            PostId = Convert.IsDBNull(row["PostID"]) ? 0 : (int)row["PostID"]; ;
+            FromAccount = Convert.IsDBNull(row["FromAccount"]) ? 0 : (int)row["FromAccount"]; ;
             ToAccount = (int)row["ToAccount"];
             Content = row["Content"].ToString();
-            IsRead = (bool)row["IsRead"];
+            IsRead = Convert.IsDBNull(row["IsRead"]) ? false: (bool)row["Isread"]; ;
             DateCreated = (DateTime)row["DateCreated"];
             FromAccountName = ProfileDAO.Instance.GetProfileByAccountID(FromAccount).FirstName + " " +
                 ProfileDAO.Instance.GetProfileByAccountID(FromAccount).LastName;
