@@ -90,12 +90,18 @@ namespace SOFA_API.Service
         /// <param name="page">Current page</param>
         /// <param name="rowsOfPage">Number of item on a page</param>
         /// <returns>Profile List User View Model Out</returns>
-        internal ProfileListUserViewModelOut SearchUserByName(string keyword, int page, int rowsOfPage)
+        internal ProfileListUserViewModelOut SearchUserByName(int usesID, string keyword, int page, int rowsOfPage)
         {
             ProfileListUserViewModelOut profileListUserViewModelOut = new ProfileListUserViewModelOut();
             try
             {
                 profileListUserViewModelOut.ListProfile = ProfileDAO.Instance.SearchUserByName(keyword, page, rowsOfPage);
+                if (usesID != 0) {
+                    foreach (ProfileModelOut profileModelOut in profileListUserViewModelOut.ListProfile)
+                    {
+                        profileModelOut.IsFollowed = FollowService.Instance.CheckFollowed(usesID, profileModelOut.AccountID).IsFollowed;
+                    } 
+                }
                 profileListUserViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
             catch (Exception e)

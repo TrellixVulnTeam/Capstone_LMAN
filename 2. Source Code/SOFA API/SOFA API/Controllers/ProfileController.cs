@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SOFA_API.Common;
 using SOFA_API.Service;
 using SOFA_API.ViewModel;
 using SOFA_API.ViewModel.Profile;
@@ -66,7 +67,8 @@ namespace SOFA_API.Controllers
         [HttpGet("SearchUserByName")]
         public ActionResult SearchUserByName(string keyword, int page, int rowsOfPage)
         {
-            ProfileListUserViewModelOut profileViewModelOut = ProfileService.Instance.SearchUserByName(keyword, page, rowsOfPage);
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            ProfileListUserViewModelOut profileViewModelOut = ProfileService.Instance.SearchUserByName(userID, keyword, page, rowsOfPage);
             return Ok(profileViewModelOut);
         }
     }
