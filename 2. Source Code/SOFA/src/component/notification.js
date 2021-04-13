@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, ToastAndroid, FlatList, TouchableOpacity } from 'react-native';
 
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Octicons from 'react-native-vector-icons/Octicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -73,14 +82,7 @@ export default class Notification extends Component {
         NotificationService.getNotiByID(page, Const.NOTIFICATION_ROWS_OF_PAGE)
             .then(response => {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    console.log(response);
                     let listNotiRes = response.listNoti;
-                    // let listNotiTemp = this.state.listNotification;
-                    // for (let i = 0; i < listNotiRes.length; i++) {
-                    //     listNotiTemp.push(new NotificationViewModel(listNotiRes[i]));
-                    // }
-                    // this.setState({ listNotification: listNotiRes });
-
                     if (page > 1) {
                         console.log('load more', listNotiRes.length);
                         if (listNotiRes.length > 0) {
@@ -110,7 +112,7 @@ export default class Notification extends Component {
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                     ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                 } else {
-                    ToastAndroid.show('Tải thông báo không thành công!', ToastAndroid.SHORT);
+                    ToastAndroid.show('Tải thông báo không thành công!', ToastAndroid.LONG);
                 }
             })
     }
@@ -121,7 +123,6 @@ export default class Notification extends Component {
             this.getAllNotification(1);
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
-            console.log('unfocus');
         });
     }
 
@@ -131,31 +132,45 @@ export default class Notification extends Component {
     }
 
     setIsRead(noti) {
-        const { token } = this.state;
-        if (token && token.length > 0) {
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                'Content-Type': 'multipart/form-data',
-                "Accept": 'application/json',
-                "Authorization": 'Bearer ' + token,
-            };
-            var uri = Const.domain + 'api/notification/setreadnotibyid?ID=' + noti.id;
-            Request.Post(uri, header)
-                .then(response => {
-                    if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        let listNotiTemp = this.state.listNotification;
-                        for (let i = 0; i < listNotiTemp.length; i++) {
-                            if (noti.id == listNotiTemp[i].id) {
-                                listNotiTemp[i].isRead = true;
-                            }
+        NotificationService.setReadNotiByID(noti.id)
+            .then(response => {
+                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    let listNotiTemp = this.state.listNotification;
+                    for (let i = 0; i < listNotiTemp.length; i++) {
+                        if (noti.id == listNotiTemp[i].id) {
+                            listNotiTemp[i].isRead = true;
                         }
-                        this.setState({ listNotification: listNotiTemp });
                     }
-                })
-                .catch(reason => {
-                    console.log(reason);
-                })
-        }
+                    this.setState({ listNotification: listNotiTemp });
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                } else {
+                    ToastAndroid.show('Đánh dấu đã đọc không thành công!', ToastAndroid.LONG);
+                }
+            })
+    }
+
+    markAsRead() {
+        NotificationService.markAllAsRead()
+            .then(response => {
+                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.getAllNotification(1);
+                } else {
+                    ToastAndroid.show('Đánh dấu đã đọc không thành công!', ToastAndroid.LONG);
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                } else {
+                    ToastAndroid.show('Đánh dấu đã đọc không thành công!', ToastAndroid.LONG);
+                }
+            })
     }
 
     NotiItem = ({ data }) => {
@@ -181,7 +196,16 @@ export default class Notification extends Component {
             <View style={Style.noti.container}>
                 <View>
                     <Text style={Style.noti.header}>Thông báo</Text>
-                    <Text style={Style.noti.headerText}>Trước đó</Text>
+                    <View style={[Style.noti.headerMoreBounder]}>
+                        <Text style={Style.noti.headerText}>Trước đó</Text>
+                        <TouchableOpacity
+                            onPress={() => this.markAsRead()}
+                            style={[Style.noti.markAsReadBounder]}>
+                            <MaterialIcons name='mark-chat-read' size={20} color='black' />
+                            <Text style={{}}>Đánh dấu tất cả đã đọc</Text>
+
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 <View style={{ height: scale(625, Vertical) }}>
@@ -196,6 +220,7 @@ export default class Notification extends Component {
                             this.getAllNotification(this.state.page + 1);
                             this.setState({ page: this.state.page + 1 });
                         }}
+                        onEndReachedThreshold={0.5}
                     />
                 </View>
             </View>
