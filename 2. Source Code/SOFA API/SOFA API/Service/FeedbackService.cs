@@ -116,5 +116,49 @@ namespace SOFA_API.Service
             }
             return feedback;
         }
+
+        public AdminFeedbackViewModelOut GetAllFeedback()
+        {
+            AdminFeedbackViewModelOut listFeedback = new AdminFeedbackViewModelOut();
+            try
+            {
+                listFeedback.ListFeedback = FeedbackDAO.Instance.GetAllUserFeedback();
+                listFeedback.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+
+            }
+            catch (Exception e)
+            {
+                listFeedback.ErrorMessage = e.ToString();
+                listFeedback.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return listFeedback;
+        }
+
+        public FeedbackViewModelOut ProcessFeedback(int feedbackId)
+        {
+            FeedbackViewModelOut feedback = new FeedbackViewModelOut(); ;
+            try
+            {
+                FeedbackViewModelOut f = new FeedbackViewModelOut();
+                f = FeedbackDAO.Instance.GetFeedbackById(feedbackId);
+
+                if (f != null)
+                {
+                    feedback = FeedbackDAO.Instance.UpdateFeedbackStatus(feedbackId, DateTime.Now);
+                    feedback.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }  else
+                {
+                    throw new Exception("Feedback is not exist");
+                }
+
+                
+            }
+            catch (Exception e)
+            {
+                feedback.ErrorMessage = e.ToString();
+                feedback.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return feedback;
+        }
     }
 }

@@ -102,5 +102,45 @@ namespace SOFA_API.DAO
             }
             return feedback;
         }
+
+        public List<AdminFeedbackModel> GetAllUserFeedback()
+        {
+            List<AdminFeedbackModel> listFeedback = new List<AdminFeedbackModel>();
+            string sql = "EXEC GetAllUserFeedback";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] {});
+                if (data.Rows.Count > 0)
+                {
+                    for (int i = 0; i < data.Rows.Count; i++)
+                    {
+                        listFeedback.Add(new AdminFeedbackModel(data.Rows[i]));
+                        
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+            return listFeedback;
+        }
+
+        public FeedbackViewModelOut UpdateFeedbackStatus(int feedbackId, DateTime lastUpdated)
+        {
+            FeedbackViewModelOut feedback = new FeedbackViewModelOut();
+            try
+            {
+                string sql = "EXEC UpdateFeedbackStatus @feedbackId , @lastUpdated";
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { feedbackId, lastUpdated });
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+            return feedback;
+        }
     }
 }

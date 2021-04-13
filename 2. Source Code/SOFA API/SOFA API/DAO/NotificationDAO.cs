@@ -94,6 +94,13 @@ namespace SOFA_API.DAO
             return result;
         }
 
+        public int AddNewNotificationFeedback(NotificationViewModelIn modelIn)
+        {
+            string query = "EXEC AddNewNotificationFeedback @TypeNotification , @Content , @FromAccount , @ToAccount , @DateCreated";
+            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { modelIn.TypeNotification, modelIn.Content,
+            modelIn.FromAccount, modelIn.ToAccount, modelIn.DateCreated});
+            return result;
+        }
 
     }
 }

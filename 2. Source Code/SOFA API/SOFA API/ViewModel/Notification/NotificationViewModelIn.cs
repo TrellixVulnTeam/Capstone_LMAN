@@ -35,6 +35,15 @@ namespace SOFA_API.ViewModel.Notification
             DateCreated = dateCreated;
         }
 
+        public NotificationViewModelIn(int typeNotification, string content,
+            int fromAccount, int toAccount)
+        {
+            TypeNotification = typeNotification;
+            Content = content;
+            FromAccount = fromAccount;
+            ToAccount = toAccount;
+        }
+
         public NotificationViewModelIn(int typeNotification, int postId,
             int fromAccount)
         {

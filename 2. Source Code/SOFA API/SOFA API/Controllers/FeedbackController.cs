@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using SOFA_API.Common;
+using SOFA_API.Hubs;
 using SOFA_API.Service;
 using SOFA_API.ViewModel.Feedback;
+using SOFA_API.ViewModel.Notification;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +19,12 @@ namespace SOFA_API.Controllers
     [ApiController]
     public class FeedbackController : ControllerBase
     {
+        protected readonly IHubContext<NotificationHub> notificationHub;
+        public FeedbackController([NotNull] IHubContext<NotificationHub> notificationHub)
+        {
+            this.notificationHub = notificationHub;
+        }
+
         [HttpPost("createfeedback")]
         [Authorize]
         public ActionResult SendFeedback([FromForm] FeedbackViewModelIn feedback)
@@ -42,5 +53,28 @@ namespace SOFA_API.Controllers
             FeedbackViewModelOut feedback = FeedbackService.Instance.GetFeedbackById(fid);
             return Ok(feedback);
         }
+
+        [HttpGet("getAllFeedback")]
+        public ActionResult GetAllFeedback()
+        {
+            AdminFeedbackViewModelOut feedback = FeedbackService.Instance.GetAllFeedback();
+            return Ok(feedback);
+        }
+
+        [HttpPost("adminProcessFeedback")]
+        public ActionResult AdminProcessFeedback([FromForm] FeedbackViewModelIn feedback)
+        {
+            FeedbackViewModelOut modelOut = FeedbackService.Instance.ProcessFeedback(feedback.Id);
+
+            if (modelOut.Code == Const.REQUEST_CODE_SUCCESSFULLY)
+            {
+                NotificationViewModelOut notificationModelOut = NotificationService.Instance.AddNewNotificationFeedback(feedback.Id, 
+                    feedback.UserFeedbackId);
+                notificationHub.Clients.User(notificationModelOut.ToAccount.ToString()).SendAsync("NewNotification", notificationModelOut);
+            }
+
+            return Ok(modelOut);
+        }
+
     }
 }

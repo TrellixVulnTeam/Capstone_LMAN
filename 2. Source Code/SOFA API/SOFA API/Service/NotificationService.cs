@@ -1,6 +1,7 @@
 ﻿using SOFA_API.Common;
 using SOFA_API.DAO;
 using SOFA_API.DTO;
+using SOFA_API.ViewModel.Account;
 using SOFA_API.ViewModel.Notification;
 using SOFA_API.ViewModel.Profile;
 using System;
@@ -201,6 +202,45 @@ namespace SOFA_API.Service
                 notification.ErrorMessage = ex.Message;
             }
             return notification;
+        }
+
+        public NotificationViewModelOut AddNewNotificationFeedback(int feedbackId, int toAccountId)
+        {
+            NotificationViewModelOut notificationViewModelOut = new NotificationViewModelOut();
+            try
+            {
+                AccountViewModelOut account = AccountDAO.Instance.GetUserById(toAccountId);
+
+                if (account != null)
+                {
+                    NotificationViewModelIn modelIn = new NotificationViewModelIn();
+                    modelIn.TypeNotification = Const.NOTIFICATION_TYPE_FEEDBACK;
+                    modelIn.Content = Const.NOTIFICATION_CONTENT_FEEDBACK;
+                    modelIn.FromAccount = 0;
+                    modelIn.ToAccount = toAccountId;
+                    modelIn.DateCreated = DateTime.Now;
+
+                    int result = NotificationDAO.Instance.AddNewNotificationFeedback(modelIn);
+
+                    notificationViewModelOut.TypeNotification = modelIn.TypeNotification;
+                    notificationViewModelOut.IsRead = false;
+                    notificationViewModelOut.Content = modelIn.Content;
+                    notificationViewModelOut.FromAccount = modelIn.FromAccount;
+                    notificationViewModelOut.ToAccount = modelIn.ToAccount;
+                    notificationViewModelOut.DateCreated = modelIn.DateCreated;
+                    notificationViewModelOut.FromAccountName = "Hệ thống";
+                } else
+                {
+                    throw new Exception("Account không tồn tại");
+                }
+            }
+            catch (Exception ex) {
+                Utils.Instance.SaveLog(ex.ToString());
+                notificationViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                notificationViewModelOut.ErrorMessage = ex.Message;
+            }
+
+            return notificationViewModelOut;
         }
 
     }
