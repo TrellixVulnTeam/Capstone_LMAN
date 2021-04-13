@@ -63,7 +63,7 @@ namespace SOFA_API.DAO
         public ListNotificationViewModelOut GetUnreadNotificationByToAccount(int accountID, int page, int rowOfPage)
         {
             ListNotificationViewModelOut listNotification = new ListNotificationViewModelOut();
-            string sql = "EXEC getNotificationByToAccount @accountID, @page, @rowsOfPage ";
+            string sql = "EXEC getNotificationByToAccount @accountID , @page , @rowsOfPage ";
             try
             {
                 DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID, page, rowOfPage });
