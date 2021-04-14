@@ -13,7 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import {LogBox, TouchableOpacity} from 'react-native';
+import { LogBox, TouchableOpacity } from 'react-native';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -58,7 +58,7 @@ export default class Profile extends Component {
     }
 
     getProfile = async () => {
-        const { account } = this.state;    
+        const { account } = this.state;
         await this.getData('token')
             .then(result => {
                 if (result) {
@@ -73,7 +73,7 @@ export default class Profile extends Component {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                 this.setState({ account: response });
                                 this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
-                                this.setState({isLogin: true});
+                                this.setState({ isLogin: true });
                             } else {
                                 this.props.navigation.navigate('Login')
                             }
@@ -84,30 +84,46 @@ export default class Profile extends Component {
 
                         });
                 } else {
-                    this.setState({isLogin: false});
+                    this.setState({ isLogin: false });
                 }
             })
             .catch(reason => {
-                this.setState({isLogin: false});
+                this.setState({ isLogin: false });
             })
     }
 
     logout() {
-        AsyncStorage.removeItem('token');
-        AsyncStorage.removeItem('user');
-        let notificationWSS = NotificationWSS.getInstance(false);
-        if(notificationWSS.getConnection()){
-            notificationWSS.getConnection().stop();
-            PushNotification.setApplicationIconBadgeNumber(0)
-        }
-        this.props.navigation.navigate('Login');
+
+        Alert.alert(
+            "Đăng xuất?",
+            "Bạn có muốn đăng xuất không?",
+            [
+                {
+                    text: "Không",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Có", onPress: () => {
+                        AsyncStorage.removeItem('token');
+                        AsyncStorage.removeItem('user');
+                        let notificationWSS = NotificationWSS.getInstance(false);
+                        if (notificationWSS.getConnection()) {
+                            notificationWSS.getConnection().stop();
+                            PushNotification.setApplicationIconBadgeNumber(0)
+                        }
+                        this.props.navigation.navigate('Login');
+                    }
+                }
+            ]
+        );
     }
 
     onPressBalance() {
         this.props.navigation.navigate('Balance');
     }
 
-    onPressMessage(){
+    onPressMessage() {
         this.props.navigation.navigate('Message');
     }
 
@@ -124,7 +140,7 @@ export default class Profile extends Component {
     }
 
     onPressFeedback() {
-        const {account} = this.state;
+        const { account } = this.state;
         this.props.navigation.navigate('ListFeedback');
     }
 
@@ -136,7 +152,7 @@ export default class Profile extends Component {
         //this._unsubcribe();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         console.log('My Account');
         this.getProfile();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
@@ -149,10 +165,10 @@ export default class Profile extends Component {
         const { account, avatarUri, isLogin } = this.state;
         LogBox.ignoreLogs(['source.uri should not be an empty string']);
         // console.log(account);     
-        if(!isLogin){
+        if (!isLogin) {
             return (
-                
-                <View style = {{
+
+                <View style={{
                     alignSelf: 'center'
                 }}>
                     <StatusBar hidden={false} backgroundColor='#fbb897' />
@@ -162,38 +178,38 @@ export default class Profile extends Component {
                         color: '#EA0D1A',
                         fontSize: 20,
                     }}>Hãy đăng nhập để sử dụng chức năng này</Text>
-                    <TouchableOpacity                       
+                    <TouchableOpacity
                         style={{
                             alignSelf: 'center',
                             marginTop: Utils.scale(20, Const.Vertical),
                         }}
                         onPress={() => this.props.navigation.navigate('Login')}
-                        >
-                            
-                            <LinearGradient
-                                        start={{ x: 0, y: 0 }}
-                                        end={{ x: 1, y: 0 }}
-                                        colors={['#fbb897', '#ff8683']}
-                                        style={{
-                                            width: Utils.scale(120, Const.Horizontal),
-                                            borderRadius: Utils.scale(25, Const.Horizontal),
-                                            height: Utils.scale(50, Const.Horizontal),
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            marginBottom: Utils.scale(10, Const.Horizontal),
-                                            elevation: Utils.scale(7, Const.Horizontal),
-                                        }}>
-                                        <Text style={{
-                                            color: "white",
-                                            fontSize: Utils.scale(16, Const.Horizontal),
-                                            backgroundColor: 'transparent',
-                                        }}>ĐĂNG NHẬP</Text>
-                                    </LinearGradient>
-                        
+                    >
+
+                        <LinearGradient
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            colors={['#fbb897', '#ff8683']}
+                            style={{
+                                width: Utils.scale(120, Const.Horizontal),
+                                borderRadius: Utils.scale(25, Const.Horizontal),
+                                height: Utils.scale(50, Const.Horizontal),
+                                alignItems: "center",
+                                justifyContent: "center",
+                                marginBottom: Utils.scale(10, Const.Horizontal),
+                                elevation: Utils.scale(7, Const.Horizontal),
+                            }}>
+                            <Text style={{
+                                color: "white",
+                                fontSize: Utils.scale(16, Const.Horizontal),
+                                backgroundColor: 'transparent',
+                            }}>ĐĂNG NHẬP</Text>
+                        </LinearGradient>
+
                     </TouchableOpacity>
                 </View>
             )
-        }else{
+        } else {
             return (
                 <ScrollView>
                     <Text style={{
@@ -203,27 +219,27 @@ export default class Profile extends Component {
                         fontSize: Utils.scale(23, Const.Horizontal),
                     }}>Account</Text>
                     <StatusBar hidden={false} backgroundColor='#fbb897' />
-                   <View style={{
-                       marginLeft: Utils.scale(15, Const.Horizontal),
-                       marginTop: Utils.scale(13, Const.Vertical),
-                       }}>
+                    <View style={{
+                        marginLeft: Utils.scale(15, Const.Horizontal),
+                        marginTop: Utils.scale(13, Const.Vertical),
+                    }}>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile')}>
                             <View style={{
                                 flexDirection: 'row',
                             }}>
                                 <View>
-                                <Image 
-                                    source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
-                                    resizeMode={"cover"}
-                                    style={{
-                                        height: Utils.scale(40, Const.Horizontal),
-                                        width: Utils.scale(40, Const.Horizontal),
-                                        borderRadius: Utils.scale(20, Const.Horizontal),
-                                        borderWidth: 1,
-                                        overflow: 'hidden',
-                                        //alignSelf: 'center',
-                                        //marginLeft: Utils.scale(149, Const.Horizontal),
-                                    }} />
+                                    <Image
+                                        source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
+                                        resizeMode={"cover"}
+                                        style={{
+                                            height: Utils.scale(40, Const.Horizontal),
+                                            width: Utils.scale(40, Const.Horizontal),
+                                            borderRadius: Utils.scale(20, Const.Horizontal),
+                                            borderWidth: 1,
+                                            overflow: 'hidden',
+                                            //alignSelf: 'center',
+                                            //marginLeft: Utils.scale(149, Const.Horizontal),
+                                        }} />
                                 </View>
                                 <View style={{
                                     marginLeft: Utils.scale(10, Const.Horizontal),
@@ -231,7 +247,7 @@ export default class Profile extends Component {
                                     <Text style={{
                                         fontSize: Utils.scale(19, Const.Horizontal),
                                         fontWeight: 'bold',
-                                    }}>{account.firstName+' '+account.lastName}</Text>
+                                    }}>{account.firstName + ' ' + account.lastName}</Text>
                                     <Text style={{
                                         fontSize: Utils.scale(13, Const.Horizontal),
                                     }}>Xem trang cá nhân của bạn</Text>
@@ -244,7 +260,7 @@ export default class Profile extends Component {
                             marginRight: Utils.scale(15, Const.Horizontal),
                             borderBottomColor: 'black',
                             borderBottomWidth: 1,
-                        }} />   
+                        }} />
 
                         <View style={{
                             marginLeft: Utils.scale(3, Const.Horizontal),
@@ -255,16 +271,16 @@ export default class Profile extends Component {
                                 }}>
                                     <MaterialIcons name='account-balance-wallet' size={30} color={'black'} style={{
                                         marginTop: Utils.scale(15, Const.Horizontal),
-                                        
+
                                     }} />
                                     <Text style={{
                                         marginLeft: Utils.scale(15, Const.Horizontal),
                                         marginTop: Utils.scale(15, Const.Vertical),
                                         alignSelf: 'center',
-                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontSize: Utils.scale(17, Const.Horizontal),
                                         fontWeight: 'bold'
                                     }}>Xem số dư tài khoản</Text>
-                                </View>                              
+                                </View>
                             </TouchableOpacity>
                         </View>
 
@@ -277,16 +293,16 @@ export default class Profile extends Component {
                                 }}>
                                     <Ionicons name='bookmark' size={30} color={'black'} style={{
                                         marginTop: Utils.scale(15, Const.Horizontal),
-                                        
+
                                     }} />
                                     <Text style={{
                                         marginLeft: Utils.scale(16, Const.Horizontal),
                                         marginTop: Utils.scale(15, Const.Vertical),
                                         alignSelf: 'center',
-                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontSize: Utils.scale(17, Const.Horizontal),
                                         fontWeight: 'bold'
                                     }}>Xem bài đã lưu</Text>
-                                </View>                              
+                                </View>
                             </TouchableOpacity>
                         </View>
 
@@ -299,16 +315,16 @@ export default class Profile extends Component {
                                 }}>
                                     <MaterialIcons name='security' size={30} color={'black'} style={{
                                         marginTop: Utils.scale(15, Const.Horizontal),
-                                        
+
                                     }} />
                                     <Text style={{
                                         marginLeft: Utils.scale(15, Const.Horizontal),
                                         marginTop: Utils.scale(15, Const.Vertical),
                                         alignSelf: 'center',
-                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontSize: Utils.scale(17, Const.Horizontal),
                                         fontWeight: 'bold'
                                     }}>Cài đặt bảo mật</Text>
-                                </View>                              
+                                </View>
                             </TouchableOpacity>
                         </View>
 
@@ -321,16 +337,16 @@ export default class Profile extends Component {
                                 }}>
                                     <Ionicons name='settings' size={30} color={'black'} style={{
                                         marginTop: Utils.scale(15, Const.Horizontal),
-                                        
+
                                     }} />
                                     <Text style={{
                                         marginLeft: Utils.scale(17, Const.Horizontal),
                                         marginTop: Utils.scale(15, Const.Vertical),
                                         alignSelf: 'center',
-                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontSize: Utils.scale(17, Const.Horizontal),
                                         fontWeight: 'bold'
                                     }}>Cài đặt chung</Text>
-                                </View>                              
+                                </View>
                             </TouchableOpacity>
                         </View>
 
@@ -343,16 +359,16 @@ export default class Profile extends Component {
                                 }}>
                                     <MaterialIcons name='feedback' size={30} color={'black'} style={{
                                         marginTop: Utils.scale(15, Const.Horizontal),
-                                        
+
                                     }} />
                                     <Text style={{
                                         marginLeft: Utils.scale(16, Const.Horizontal),
                                         marginTop: Utils.scale(15, Const.Vertical),
                                         alignSelf: 'center',
-                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontSize: Utils.scale(17, Const.Horizontal),
                                         fontWeight: 'bold'
                                     }}>Phản hồi và thắc mắc</Text>
-                                </View>                              
+                                </View>
                             </TouchableOpacity>
                         </View>
 
@@ -365,16 +381,16 @@ export default class Profile extends Component {
                                 }}>
                                     <MaterialCommunityIcons name='comment-question' size={30} color={'black'} style={{
                                         marginTop: Utils.scale(15, Const.Horizontal),
-                                        
+
                                     }} />
                                     <Text style={{
                                         marginLeft: Utils.scale(16, Const.Horizontal),
                                         marginTop: Utils.scale(15, Const.Vertical),
                                         alignSelf: 'center',
-                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontSize: Utils.scale(17, Const.Horizontal),
                                         fontWeight: 'bold'
                                     }}>Hỗ trợ</Text>
-                                </View>                              
+                                </View>
                             </TouchableOpacity>
                         </View>
 
@@ -387,22 +403,22 @@ export default class Profile extends Component {
                                 }}>
                                     <Entypo name='log-out' size={30} color={'black'} style={{
                                         marginTop: Utils.scale(15, Const.Horizontal),
-                                        
+
                                     }} />
                                     <Text style={{
                                         marginLeft: Utils.scale(15, Const.Horizontal),
                                         marginTop: Utils.scale(15, Const.Vertical),
                                         alignSelf: 'center',
-                                        fontSize: Utils.scale(17, Const.Horizontal), 
+                                        fontSize: Utils.scale(17, Const.Horizontal),
                                         fontWeight: 'bold'
                                     }}>Đăng xuất</Text>
-                                </View>                              
+                                </View>
                             </TouchableOpacity>
                         </View>
-                   </View>
+                    </View>
                 </ScrollView>
             )
         }
-        
+
     }
 }
