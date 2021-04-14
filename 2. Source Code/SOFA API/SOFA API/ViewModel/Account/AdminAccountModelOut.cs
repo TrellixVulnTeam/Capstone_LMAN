@@ -19,6 +19,20 @@ namespace SOFA_API.ViewModel.Account
         public DateTime DateCreated { get; set; }
         public bool IsActive { get; set; }
 
+        public AdminAccountModelOut(int id, string userName, string email, string firstName, string lastName, 
+            string phone, string avatarUri, DateTime dateCreated, bool isActive)
+        {
+            Id = id;
+            UserName = userName;
+            Email = email;
+            FirstName = firstName;
+            LastName = lastName;
+            Phone = phone;
+            AvatarUri = avatarUri;
+            DateCreated = dateCreated;
+            IsActive = isActive;
+        }
+
         public AdminAccountModelOut(DataRow row) : base()
         {
             Id = Int32.Parse(row["Id"].ToString());
