@@ -41,7 +41,8 @@ namespace SOFA_API.DAO
                         listMes.ListMess.Add(new MessageViewModelOut(row));
                     }
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Utils.Instance.SaveLog(e.ToString());
                 throw e;
@@ -56,13 +57,13 @@ namespace SOFA_API.DAO
         /// <param name="uid1"></param>
         /// <param name="uid2"></param>
         /// <returns>List Messsage</returns>
-        public ListMessageViewModelOut GetMessageBySenderAndReceiverId(int uid1, int uid2)
+        public ListMessageViewModelOut GetMessageBySenderAndReceiverId(int uid1, int uid2, int page, int rowsOfPage)
         {
             ListMessageViewModelOut listMes = new ListMessageViewModelOut();
-            string sql = "EXEC getMessageBySenderAndReceiverID @userId1 , @userId2";
+            string sql = "EXEC getMessageBySenderAndReceiverID @userId1 , @userId2 , @page , @rowsOfPage";
             try
             {
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { uid1, uid2 });
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { uid1, uid2, page, rowsOfPage });
                 if (data.Rows.Count > 0)
                 {
                     foreach (DataRow row in data.Rows)
@@ -123,24 +124,24 @@ namespace SOFA_API.DAO
                         {
                             mess.ConversationId = (int)dataTable2.Rows[0]["Id"];
                         }
-                    }                
+                    }
                 }
                 if (mess.Content == null) mess.Content = "";
                 DataTable dataTable = DataProvider.Instance.ExecuteQuery(sql1, new object[] {mess.FromAccountId, mess.ToAccountId,
                                                                                   mess.Content, mess.SenderDeleted, mess.ReceiverDeleted,
                                                                                   mess.IsRead, mess.ConversationId, mess.Time});
-                if(dataTable.Rows.Count > 0)
+                if (dataTable.Rows.Count > 0)
                 {
                     message = new MessageViewModelOut(dataTable.Rows[0]);
                 }
                 if (!String.IsNullOrEmpty(mess.ImageBase64))
                 {
                     DataTable dataTable1 = DataProvider.Instance.ExecuteQuery(sql2, new object[] { mess.Time, mess.ImageUrl });
-                    if(dataTable1.Rows.Count > 0)
+                    if (dataTable1.Rows.Count > 0)
                     {
                         message.ImageUrl = dataTable1.Rows[0]["Url"].ToString();
                     }
-                    
+
                 }
                 message.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }

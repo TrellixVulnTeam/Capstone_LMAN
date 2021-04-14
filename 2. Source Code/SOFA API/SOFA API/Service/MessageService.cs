@@ -66,12 +66,12 @@ namespace SOFA_API.Service
         /// <param name="uid1"></param>
         /// <param name="uid2"></param>
         /// <returns>List message</returns>
-        public ListMessageViewModelOut GetMessageBySenderAndReceiverId(int uid1, int uid2)
+        public ListMessageViewModelOut GetMessageBySenderAndReceiverId(int uid1, int uid2, int page, int rowsOfPage)
         {
             ListMessageViewModelOut listMess = null;
             try
             {
-                listMess = MessageDAO.Instance.GetMessageBySenderAndReceiverId(uid1, uid2);
+                listMess = MessageDAO.Instance.GetMessageBySenderAndReceiverId(uid1, uid2, page, rowsOfPage);
                 if (listMess != null)
                 {
                     listMess.Code = Const.REQUEST_CODE_SUCCESSFULLY;

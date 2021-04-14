@@ -1,6 +1,7 @@
   Use CapstonesNoRelation
   GO
-
+  DROP PROC IF EXISTS getMessageBySenderAndReceiverID
+  GO
   CREATE PROC getMessageBySenderAndReceiverID
   @userId1 int,
   @userId2 int
@@ -13,5 +14,4 @@
   where (Message.FromAccountId = @userId1 and Message.ToAccountId = @userId2 and SenderDeleted = 0 ) or (Message.FromAccountId = @userId2 and Message.ToAccountId = @userId1 and ReceiverDeleted = 0)
   order by Message.Time ASC
   END
-
-  EXEC getMessageBySenderAndReceiverID 3,4
+  GO

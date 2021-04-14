@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using SOFA_API.Common;
 using SOFA_API.Hubs;
 using SOFA_API.Service;
 using SOFA_API.ViewModel.Message;
@@ -14,6 +16,7 @@ namespace SOFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MessageController : ControllerBase
     {
 
@@ -31,15 +34,18 @@ namespace SOFA_API.Controllers
         }
 
         [HttpGet("getmessagebyuid")]
-        public ActionResult GetMessageByDirectTwoId(int uid1, int uid2)
+        public ActionResult GetMessageByDirectTwoId(int uid2, int page, int rowsOfPage)
         {
-            ListMessageViewModelOut listMess = MessageService.Instance.GetMessageBySenderAndReceiverId(uid1, uid2);
+            int uid1 = Utils.Instance.GetUserID(User.Claims);
+            ListMessageViewModelOut listMess = MessageService.Instance.GetMessageBySenderAndReceiverId(uid1, uid2, page, rowsOfPage);
             return Ok(listMess);
         }
 
         [HttpPost("sendmessage")]
         public async Task<ActionResult> CreateNewMessage([FromForm] MessageViewModelIn newMessage)
         {
+            int fromAccountID = Utils.Instance.GetUserID(User.Claims);
+            newMessage.FromAccountId = fromAccountID;
             DateTime myDateTime = DateTime.Now;
             string sqlFormattedDate = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
             string imageUrl = "message/" + newMessage.ConversationId + "/" + myDateTime.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".png";
