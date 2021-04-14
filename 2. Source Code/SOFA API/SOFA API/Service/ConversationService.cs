@@ -71,6 +71,23 @@ namespace SOFA_API.Service
             }
             return listSearch;
         }
+        public ListSearchConversationViewModelOut GetAllUserSearch(int accountId)
+        {
+            ListSearchConversationViewModelOut listSearch = new ListSearchConversationViewModelOut();
+            try
+            {
+                listSearch = ConversationDAO.Instance.GetAllUserSearch(accountId);
+                listSearch.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                listSearch.Code = Const.REQUEST_CODE_FAILED;
+                listSearch.ErrorMessage = ex.Message;
+
+            }
+            return listSearch;
+        }
         public ConversationViewModelOut DeleteConversation(int accountId, int chatWithAccountId)
         {
             ConversationViewModelOut newConversation = new ConversationViewModelOut();
