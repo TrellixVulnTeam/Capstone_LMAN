@@ -7,19 +7,22 @@ import {
   Button,
   Image,
   FlatList,
-  TouchableOpacity,
+  TouchableOpacity,StyleSheet,
 } from 'react-native';
 import * as Request from '../common/request';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Style from '../style/style';
 import * as Const from '../common/const';
 import {AVATAR} from '../../image/index';
-import {ScrollView} from 'react-native-gesture-handler';
-import { SearchBar } from 'react-native-elements';
+import {ScrollView, TextInput} from 'react-native-gesture-handler';
+import {SearchBar} from 'react-native-elements';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import * as Utils from "../common/utils";
+import * as Utils from '../common/utils';
+import { scale, getData } from '../common/utils';
+import { Horizontal, Vertical } from '../common/const';
+
 
 
 
@@ -28,6 +31,8 @@ export default class MessageSearch extends Component {
     super(props);
     this.state = {
       token: '',
+      allUser: [],
+      dataSearch: [],
     };
   }
   getData = async (key) => {
@@ -76,20 +81,19 @@ export default class MessageSearch extends Component {
                 response.code &&
                 response.code == Const.REQUEST_CODE_SUCCESSFULLY
               ) {
-               
                 let tempArray = [];
                 response.listSearch.forEach((item) => {
                   let listdata = {
                     accountSearch: item.accountSearch,
-                    accountId : item.accountId,
-                    firstName : item.firstName,
-                    lastName : item.lastName,
-                    userName : item.userName,
-                    avatarUri : item.avatarUri};
+                    accountId: item.accountId,
+                    firstName: item.firstName,
+                    lastName: item.lastName,
+                    userName: item.userName,
+                    avatarUri: item.avatarUri,
+                  };
                   tempArray.push(listdata);
                 });
-                this.setState({dataSearch: tempArray});
-                
+                this.setState({allUser: tempArray});
               } else {
                 this.props.navigation.navigate('Login');
               }
@@ -107,25 +111,32 @@ export default class MessageSearch extends Component {
         this.props.navigation.navigate('Login');
       });
   }
-  searchConversation(){
-
+  searchConversation(keySearch) {
+    this.setState({
+      dataSearch: this.state.allUser.filter((i) =>
+        i.userName.toLowerCase().includes(keySearch.toLowerCase()) || (i.firstName + i.lastName).toLowerCase().includes(keySearch.toLowerCase()) ,
+      ),
+    });
   }
 
-
-
   render() {
-    const {
-      dataSearch
-    } = this.state;
+    const {dataSearch} = this.state;
     return (
       <View>
-        <SearchBar
+        <View style={[styles.header]}>
+        <TextInput
+        ref="input"
           placeholder="Tìm kiếm..."
+          clearButtonMode="always"
           lightTheme
           round
-          onFocus={() => this.searchConversation()}
-          autoCorrect={false}
-        />
+          style={[styles.searchBox]}
+          onChangeText={(text) => {
+            this.searchConversation(text);
+          }}
+          clearButtonMode='always'
+          />
+          </View>
         <FlatList
           data={dataSearch}
           renderItem={({item, index}) => {
@@ -138,7 +149,6 @@ export default class MessageSearch extends Component {
                 lastName={item.lastName}
                 userName={item.userName}
                 avatarUri={item.avatarUri}
-                
               />
             );
           }}
@@ -164,39 +174,68 @@ class ListMessageSearch extends Component {
     });
   };
   render() {
-
     return (
       <TouchableOpacity onPress={this.ConversationDetail}>
-      <View style={{
-          flexDirection: 'row',
-      }}>
-          <View>
-          <Image 
-              source={(this.props.avatarUri && this.props.avatarUri.length > 0) ? { uri: Const.assets_domain + this.props.avatarUri } : AVATAR}
-              resizeMode={"cover"}
-              style={{
-                  height: Utils.scale(40, Const.Horizontal),
-                  width: Utils.scale(40, Const.Horizontal),
-                  borderRadius: Utils.scale(20, Const.Horizontal),
-                  borderWidth: 1,
-                  overflow: 'hidden',
-                  //alignSelf: 'center',
-                  //marginLeft: Utils.scale(149, Const.Horizontal),
-              }} />
-          </View>
-          <View style={{
-              marginLeft: Utils.scale(10, Const.Horizontal),
+        <View
+          style={{
+            flexDirection: 'row',
           }}>
-              <Text style={{
-                  fontSize: Utils.scale(19, Const.Horizontal),
-                  fontWeight: 'bold',
-              }}>{this.props.firstName+' '+this.props.lastName}</Text>
-              <Text style={{
-                  fontSize: Utils.scale(13, Const.Horizontal),
-              }}>@{this.props.userName}</Text>
+          <View>
+            <Image
+              source={
+                this.props.avatarUri && this.props.avatarUri.length > 0
+                  ? {uri: Const.assets_domain + this.props.avatarUri}
+                  : AVATAR
+              }
+              resizeMode={'cover'}
+              style={{
+                height: Utils.scale(40, Const.Horizontal),
+                width: Utils.scale(40, Const.Horizontal),
+                borderRadius: Utils.scale(20, Const.Horizontal),
+                borderWidth: 1,
+                overflow: 'hidden',
+                //alignSelf: 'center',
+                //marginLeft: Utils.scale(149, Const.Horizontal),
+              }}
+            />
           </View>
-      </View>
-  </TouchableOpacity>
+          <View
+            style={{
+              marginLeft: Utils.scale(10, Const.Horizontal),
+            }}>
+            <Text
+              style={{
+                fontSize: Utils.scale(19, Const.Horizontal),
+                fontWeight: 'bold',
+              }}>
+              {this.props.firstName + ' ' + this.props.lastName}
+            </Text>
+            <Text
+              style={{
+                fontSize: Utils.scale(13, Const.Horizontal),
+              }}>
+              @{this.props.userName}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
     );
   }
 }
+const styles = StyleSheet.create({
+  
+  searchBox: {
+      height: scale(50, Vertical),
+      marginLeft: scale(10, Horizontal),
+      marginRight: scale(10, Horizontal),
+      borderWidth: 0.1,
+      borderColor: 'white',
+      borderRadius: 5,
+      elevation: 1,
+  },
+  header: {
+    paddingVertical: scale(10, Vertical),
+},
+  
+})
+

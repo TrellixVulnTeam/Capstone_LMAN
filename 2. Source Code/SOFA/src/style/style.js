@@ -665,3 +665,13 @@ export const message = StyleSheet.create({
         textAlign: 'right'
     }
 });
+export const messageSearch = StyleSheet.create({
+    input: {
+        flex: 1,
+        height: 40,
+        backgroundColor: '#e4e6eb',
+        borderRadius: 16,
+        paddingHorizontal: 16,
+        fontSize: 15
+      },
+});

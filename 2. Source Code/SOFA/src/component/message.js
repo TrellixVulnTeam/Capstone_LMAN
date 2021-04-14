@@ -9,6 +9,7 @@ import {
   Image,
   FlatList,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import * as Request from '../common/request';
 import AsyncStorage from '@react-native-async-storage/async-storage';
