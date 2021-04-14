@@ -132,7 +132,7 @@ export default class Search extends Component {
     }
 
     navigateProfile(accountID) {
-        console.log('searcg', Session.getInstance().account);
+        const account =  Session.getInstance().account;
         if (account && account.accountID && account.accountID == accountID) {
             this.props.navigation.navigate('Profile');
         } else {

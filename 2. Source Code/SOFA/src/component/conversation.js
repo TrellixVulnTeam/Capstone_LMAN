@@ -1,577 +1,571 @@
 import React, { Component, createRef, useRef } from 'react';
-import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableOpacity, TextInput, Keyboard } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { MenuProvider } from 'react-native-popup-menu';
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
-import LinearGradient from 'react-native-linear-gradient';
+import { Modal, View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, TouchableOpacity, TouchableWithoutFeedback, TextInput, Keyboard, StyleSheet, ToastAndroid } from 'react-native';
+
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Octicons from 'react-native-vector-icons/Octicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import ImagePicker from 'react-native-image-crop-picker';
 
 import * as signalR from '@microsoft/signalr';
-import * as Request from '../common/request';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Style from '../style/style';
-import * as Const from "../common/const";
-import * as Utils from "../common/utils";
+import * as Const from '../common/const';
+import * as Utils from '../common/utils';
+import { scale, getMessageTime, diffTime } from '../common/utils';
+import { Horizontal, Vertical } from '../common/const';
+import { AVATAR, WHITE_BACKGROUND, GALAXY_BACKGROUND, OCEAN_BACKGROUND } from '../../image/index';
 
-import Session from "../common/session";
+import * as AuthService from '../service/authService';
+import * as ProfileService from '../service/profileService';
+import * as MessageService from '../service/messageService';
+
+import Session from '../common/session';
 
 export default class Conversation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            listMessage: [],
-            myProfile: {},
-            friendProfile: {},
-            friendId: 0,
-            onEmojiKeyboard: false,
-            messageText: '',
-            message: {},
+            isLoading: false,
+            color: '#46AA4A',
+            keyboardHeight: 0,
+            page: 1,
+            canLoadMore: false,
+            refreshingList: false,
+            content: '',
             imageBase64: '',
-            token: '',
-            chatHeight: 605,
-            conversationId: 0,
-        }
-
-    }
-
-    flatList = createRef();
-
-    getData = async (key) => {
-        try {
-            const value = await AsyncStorage.getItem(key);
-            if (value !== null) {
-                return value;
-            }
-        } catch (e) {
-            console.log(e);
-            return null;
-        }
-    };
-    storeData = async (key, value) => {
-        try {
-            const jsonValue = JSON.stringify(value);
-            await AsyncStorage.setItem(key, jsonValue);
-        }
-        catch (e) {
-            console.log(e);
+            account: {},
+            friendAccount: {},
+            listMessage: [],
+            inputHeight: 40,
+            isShowModalImage: false,
+            currentShowImage: '',
         }
     }
-
-
-
-    chooseFile = (callback) => {
-        const { account, token } = this.state;
-        let options = {
-            title: 'Select Image',
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-            includeBase64: true
-        };
-        launchImageLibrary(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log(
-                    'User tapped custom button: ',
-                    response.customButton
-                );
-                alert(response.customButton);
-            } else {
-                let source = response;
-                callback(source);
-
-            }
-        });
-    }
-
-    requestCameraPermission = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.CAMERA,
-                {
-                    title: "App Camera Permission",
-                    message: "App needs access to your camera ",
-                    buttonNeutral: "Ask Me Later",
-                    buttonNegative: "Cancel",
-                    buttonPositive: "OK"
+    concatList(list1, list2) {
+        let listRes = list1;
+        let pos = 0;
+        for (let i = 0; i < list2.length; i++) {
+            let flag = true;
+            for (let j = list1.length - 1; j >= 0; j--) {
+                if (list1[j].id == list2[i].id) {
+                    flag = false;
+                    break;
                 }
-            );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log("Camera permission given");
-            } else {
-                console.log("Camera permission denied");
             }
-        } catch (err) {
-            console.warn(err);
+            if (flag) {
+                pos = i;
+                break;
+            }
         }
-    };
+        for (let i = pos; i < list2.length; i++) {
+            listRes.push(list2[i])
+        }
+        return listRes;
+    }
 
-    takePicture = (callback) => {
-        const { account, token } = this.state;
-        let options = {
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-            includeBase64: true
-        };
-        this.requestCameraPermission()
+    getListMessage(page) {
+        const { account, friendAccount } = this.state;
+        if (page > 1) {
+            this.setState({ canLoadMore: false });
+        }
+        MessageService.getMessageByUID(friendAccount.accountID, page)
             .then(response => {
-                launchCamera(options, (response) => {
-                    if (response.didCancel) {
-                        console.log('User cancelled image picker');
-                    } else if (response.error) {
-                        console.log('ImagePicker Error: ', response.error);
-                    } else {
-                        let source = response;
-                        callback(source);
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    let listMessageTemp = response.listMess;
+                    for (let i = 0; i < listMessageTemp.length; i++) {
+                        listMessageTemp[i].isMyMessage = listMessageTemp[i].fromAccountId == account.accountID;
+                        listMessageTemp[i].isShowDetail = false;
                     }
-                });
-            });
-    }
-
-    onlineChat() {
-        const { myProfile, token, friendId } = this.state;
-        if (typeof this.connection === 'undefined') {
-            this.connection = new signalR.HubConnectionBuilder()
-                .withUrl(Const.domain + 'message', {
-                    accessTokenFactory: () => this.state.token,
-                    skipNegotiation: true,
-                    transport: signalR.HttpTransportType.WebSockets
-                })
-                .build();
-            this.connection.start().then(() => {
-                console.log('Connected!');
-            }).catch(function (err) {
-                return console.error(err.toString());
-            });
-            this.connection.on("NewMessage", data => {
-                console.log('New message', data);
-                let temp = this.state.listMessage;
-                let item = data;
-                temp.push(item);
-                this.setState({ listMessage: temp });
-                setTimeout(() => {
-                    console.log('Có tin nhắn');
-                    this.flatList.current.scrollToEnd()
-                }, 0);
-                console.log('add message');
-            }
-            );
-        }
-
-    }
-
-    getProfile = async () => {
-        console.log('Get my profile');
-        const { uid1, uid2 } = this.props.route.params;
-        Session.getInstance().currentUserChat = uid2;
-        var { message } = this.state;
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    var header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                        "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
-                    };
-                    this.setState({ token: result.toString().substr(1, result.length - 2) });
-                    let url = Const.domain + 'api/profile';
-                    Request.Get(url, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                this.setState({ myProfile: response });
-                                var friendId = uid1;
-                                if (response.accountID == uid1) {
-                                    friendId = uid2;
-                                    message.fromAccountId = uid1;
-                                    message.toAccountId = uid2;
-                                } else {
-                                    message.fromAccountId = uid2;
-                                    message.toAccountId = uid1;
-                                }
-                                this.setState({ message: message });
-                                this.setState({ friendId: friendId });
-                                this.getFriendProfile();
-                                this.getMessage();
-                                this.onlineChat();
-                            } else {
-                                this.props.navigation.navigate('Login')
-                            }
-                        })
-                        .catch(reason => {
-                            console.log(reason);
-                            this.props.navigation.navigate('Login')
-
-                        });
-                } else {
-                    this.props.navigation.navigate('Login')
-                }
-            })
-            .catch(reason => {
-                console.log('failed');
-                this.props.navigation.navigate('Login')
-            })
-    }
-
-    getFriendProfile = async () => {
-        var { friendId } = this.state;
-
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json',
-        };
-        let url = Const.domain + 'api/profile/otherprofile?id=' + friendId;
-        Request.Get(url, header)
-            .then(response => {
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({ friendProfile: response });
-                    //this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
-                } else {
-                    this.props.navigation.navigate('Login')
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-                this.props.navigation.navigate('Login')
-
-            });
-    }
-    getMessage() {
-        console.log('Get message')
-        var { listMessage, myProfile, friendId } = this.state;
-        // console.log(myProfile);
-        // console.log(friendId);
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json',
-        };
-        let url = Const.domain + 'api/message/getmessagebyuid?uid1=' + myProfile.accountID + '&uid2=' + friendId;
-        console.log('url: ' + url);
-        Request.Get(url, header)
-            .then(response => {
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    let listMessage = response.listMess;
-                    this.setState({ listMessage: listMessage });
-                    setTimeout(() => {
-                        this.flatList.current.scrollToEnd()
-                    }, 0);
-                    console.log(this.state.listMessage);
-                } else {
-                    this.props.navigation.navigate('Login')
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-                this.props.navigation.navigate('Login')
-            });
-
-    }
-
-    onPressSend() {
-        var { message, messageText, imageBase64, conversationId } = this.state;
-        const { cid } = this.props.route.params;
-        console.log(messageText);
-        console.log(imageBase64);
-        if (messageText != '' || imageBase64 != '') {
-            message.senderDeleted = false;
-            message.receiverDeleted = false;
-            message.isRead = false;
-            if (cid) {
-                message.conversationId = cid;
-            } else {
-                message.conversationId = conversationId;
-            }
-
-            message.imageBase64 = imageBase64;
-            message.content = messageText;
-
-            console.log(message);
-
-            var header = {
-                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                "Content-Type": "multipart/form-data",
-                "Host": "chientranhvietnam.org",
-                "Accept": 'application/json',
-            };
-            let data = new FormData();
-            data.append('fromAccountId', message.fromAccountId);
-            data.append('toAccountId', message.toAccountId);
-            data.append('content', message.content);
-            data.append('senderDeleted', message.senderDeleted);
-            data.append('receiverDeleted', message.receiverDeleted);
-            data.append('isRead', message.isRead);
-            data.append('conversationId', message.conversationId);
-            data.append('imageBase64', message.imageBase64);
-            let url = Const.domain + 'api/message/sendmessage';
-            Request.Post(url, header, data)
-                .then(response => {
-                    console.log(response);
-                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        let temp = this.state.listMessage;
-                        let item = response;
-                        temp.push(item);
-                        this.setState({ listMessage: temp });
-                        this.setState({ conversationId: item.conversationId });
-                        this.setState({ imageBase64: '' });
-                        this.setState({ messageText: '' });
-                        setTimeout(() => this.flatList.current.scrollToEnd(), 0);
-                        console.log('add sent message');
-                    } else {
-                        if (response.code == Const.REQUEST_CODE_FAILED) {
-                            console.log(response);
+                    if (page == 1) {
+                        this.setState({ listMessage: listMessageTemp });
+                        if (listMessageTemp.length > 0) {
+                            this.setState({ page: page, canLoadMore: true });
                         }
+                        this.setState({ refreshingList: false });
+                        this.getListMessage(2);
+                    } else {
+                        console.log('load more', page);
+                        let listTemp = this.state.listMessage;
+                        listTemp = this.concatList(listTemp, listMessageTemp);
+                        this.setState({ listMessage: listTemp });
+                        if (listMessageTemp.length > 0) {
+                            this.setState({ page: page });
+                        }
+                        this.setState({ canLoadMore: true });
+
+                    }
+                } else {
+                    ToastAndroid.show('Tải tin nhắn bị lỗi!', ToastAndroid.SHORT);
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                } else {
+                    ToastAndroid.show('Tải tin nhắn bị lỗi!', ToastAndroid.SHORT);
+                    this.setState({ isLoading: false, isSelectImage: true })
+                }
+            })
+    }
+
+    selectImage = () => {
+        ImagePicker.openPicker({
+            compressImageMaxHeight: 1200,
+            compressImageMaxWidth: 900,
+            includeBase64: true,
+            cropping: true
+        })
+            .then(result => {
+                let imageContent = result.data;
+                this.setState({ imageBase64: imageContent });
+                this.sendMessage();
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
+    }
+    takePicture = () => {
+        ImagePicker.openCamera({
+            compressImageMaxHeight: 1200,
+            compressImageMaxWidth: 900,
+            includeBase64: true,
+            cropping: true
+        })
+            .then(result => {
+                let imageContent = result.data;
+                this.setState({ imageBase64: imageContent });
+                this.sendMessage();
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
+    }
+
+    sendMessage() {
+        const { friendAccount, listMessage, content, imageBase64 } = this.state;
+        if (content.length > 0 || imageBase64.length > 0) {
+            MessageService.sendMessage(friendAccount.accountID, content, imageBase64, listMessage[0].conversationId)
+                .then(response => {
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        let messageRes = response;
+                        messageRes.isMyMessage = true;
+                        this.setState({ listMessage: [response, ...listMessage], content: '', imageBase64: '' });
+                    } else {
+                        ToastAndroid.show('Gửi tin nhắn bị lỗi!', ToastAndroid.SHORT);
                     }
                 })
                 .catch(reason => {
-                    console.log('Lỗi rồi!');
                     console.log(reason);
-                });
-
-            console.log(message);
-            this.setState({ messageText: '' });
-        }
-    }
-
-    getItemLayout = (data, index) => (
-        { length: Utils.scale(200, Const.Vertical), offset: (Utils.scale(200, Const.Vertical) + 5) * index, index }
-    )
-
-    removeMessageFromList(messageId) {
-
-    }
-
-    onDeleteMessage(message) {
-        var { friendId, listMessage } = this.state;
-        let isSenderDelete = false;
-        if (friendId != message.fromAccountId) {
-            isSenderDelete = true;
-        }
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json',
-        };
-        let url = Const.domain + 'api/message/deletemessage?messageId=' + message.id + '&isSenderDelete=' + isSenderDelete;
-        Request.Post(url, header)
-            .then(response => {
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    var array = [...listMessage];
-                    var index = array.indexOf(message)
-                    if (index !== -1) {
-                        array.splice(index, 1);
-                        this.setState({ listMessage: array });
+                    if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                        ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                    } else {
+                        ToastAndroid.show('Gửi tin nhắn bị lỗi!', ToastAndroid.SHORT);
+                        this.setState({ isLoading: false, isSelectImage: true })
                     }
-                    setTimeout(() => {
-                        this.flatList.current.scrollToEnd()
-                    }, 0);
-                    alert('delete success!');
-                } else {
-                    this.props.navigation.navigate('Login')
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-                this.props.navigation.navigate('Login')
-            });
+                })
+        }
 
+    }
+
+    onlineChat() {
+        const { account, token, friendAccount } = this.state;
+        if (typeof this.connection === 'undefined') {
+            this.connection = new signalR.HubConnectionBuilder()
+                .withUrl(Const.domain + 'message', {
+                    accessTokenFactory: () => token,
+                    skipNegotiation: true,
+                    transport: signalR.HttpTransportType.WebSockets,
+                })
+                .withAutomaticReconnect()
+                .build();
+            this.connection
+                .start()
+                .then(() => {
+                })
+                .catch(function (err) {
+                    return console.error(err.toString());
+                });
+            this.connection.on('NewMessage', (data) => {
+                if (data.fromAccountId == friendAccount.accountID) {
+                    this.setState({ listMessage: [data, ...this.state.listMessage] })
+                }
+            });
+        }
     }
 
     componentDidMount() {
-        this.setState({ listMessage: [], myProfile: {} });
-        this.getProfile();
-        this._unsubcribe = this.props.navigation.addListener('focus', () => {
-            this.setState({ listMessage: [], myProfile: {} });
-            this.getProfile();
-        });
-        this._unfocus = this.props.navigation.addListener('blur', () => {
-            this.setState({ listMessage: [], myProfile: {} });
-        });
-        this.keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow', (event) => {
-                this.setState({ chatHeight: 605 - event.endCoordinates.height });
-                setTimeout(() => this.flatList.current.scrollToEnd(), 0);
+        this._screenFocus = this.props.navigation.addListener('focus', () => {
+            const { uid2 } = this.props.route.params;
+            Session.getInstance().currentUserChat = uid2;
+            this.setState({ account: Session.getInstance().account, token: Session.getInstance().token });
+            if (Session.getInstance().settings && Session.getInstance().settings.chatColor) {
+                this.setState({ color: Session.getInstance().settings.chatColor });
             }
-        );
-        this.keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            () => {
-                this.setState({ chatHeight: 605 });
-                setTimeout(() => this.flatList.current.scrollToEnd(), 0);
-            },
-        );
+            ProfileService.getOtherProfile(uid2)
+                .then(response => {
+                    this.setState({ friendAccount: response });
+                    this.onlineChat();
+                    this.getListMessage(1);
+                })
+                .catch(reason => {
+                    console.log(reason);
+                    ToastAndroid.show('Không thể tìm thấy thông tin bạn bè! Hãy thử lại!', ToastAndroid.LONG);
+                    this.props.navigation.goBack();
+                })
+        });
+        this._screenUnfocus = this.props.navigation.addListener('blur', () => {
+            Session.getInstance().currentUserChat = 0;
+            if (this.connection) {
+                this.connection.stop();
+            }
+        });
+
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (event) => {
+            this.setState({ keyboardHeight: event.endCoordinates.height });
+            // setTimeout(() => this.flatList.current.scrollToEnd(), 0);
+        });
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            this.setState({ keyboardHeight: 0 })
+        });
     }
 
     componentWillUnmount() {
-        console.log('unmount');
         Keyboard.removeAllListeners('keyboardDidShow');
         Keyboard.removeAllListeners('keyboardDidHide');
-        Session.getInstance().currentUserChat = 0;
-        if (this.connection) {
-            this.connection.stop();
-        }
+    }
+    onPressMessageItem(index) {
+        const { listMessage } = this.state;
+        let listTemp = listMessage;
+        listTemp[index].isShowDetail = listTemp[index].isShowDetail ? false : true;
+        this.setState({ listMessage: listTemp });
     }
 
     render() {
-        const { cid, uid1, uid2 } = this.props.route.params;
-        var { listMessage, myProfile, friendProfile, messageText, onEmojiKeyboard, message, imageBase64, chatHeight } = this.state;
+        const { account, friendAccount, listMessage, keyboardHeight, page, canLoadMore, refreshingList, inputHeight, content, isShowModalImage, currentShowImage } = this.state;
         return (
-            <View>
-                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
-                <LinearGradient colors={['#b30000', '#e60000', '#ff3333']}>
-                    <View style={{
-                        width: Utils.scale(400, Const.Horizontal),
-                        height: Utils.scale(40, Const.Vertical),
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexDirection: 'row',
-                    }}>
-                        <View style={{
-                            width: Utils.scale(50, Const.Horizontal),
-                        }}></View>
-                        <View>
-                            <Text style={{
-                                textAlign: 'center',
-                                textAlignVertical: "center",
-                                color: 'white',
-                                fontSize: 18,
-                                width: Utils.scale(300, Const.Horizontal),
-                            }}>{friendProfile.firstName} {friendProfile.lastName}</Text>
-                        </View>
-                        <View>
-                            <TouchableOpacity onPress={() => alert('Click More')} style={{
-                                width: Utils.scale(50, Const.Horizontal),
-                                marginTop: Utils.scale(15, Const.Vertical),
-                                marginLeft: Utils.scale(15, Const.Horizontal),
-                            }}>
-                                <Entypo name='dots-three-horizontal' size={22} color={'white'} />
-                                <Text style={{
-                                    color: 'white',
-                                }}></Text>
-                            </TouchableOpacity>
+            <View style={[styles.container]}>
+                <StatusBar backgroundColor={this.state.color} />
+                <View style={[styles.header, { backgroundColor: this.state.color }]}>
+                    <View style={[styles.headerChatFriend]}>
+                        <Image
+                            source={friendAccount.avatarUri && friendAccount.avatarUri.length > 0 ? { uri: Const.assets_domain + friendAccount.avatarUri } : AVATAR}
+                            style={[styles.headerChatFriendAvatar]}
+                        />
+                        <View style={[styles.headerChatFriendInfo]}>
+                            <Text style={[styles.headerChatFriendInfoName]}>{friendAccount.firstName + ' ' + friendAccount.lastName}</Text>
+                            <Text style={[styles.headerChatFriendInfoActiveTime]}>{'3 phút trước'}</Text>
                         </View>
                     </View>
-                </LinearGradient>
-                <View style={{
-                    width: Utils.scale(400, Const.Horizontal),
-                    height: Utils.scale(chatHeight, Const.Vertical),
-                }}>
+                    <View style={[styles.headerActionBounder]}>
+                        <Ionicons style={[styles.headerActionPhoneIcon]} name='call' size={25} color='white' />
+                        <Ionicons style={[styles.headerActionVideoIcon]} name='videocam' size={25} color='white' />
+                    </View>
+                </View>
+                <View style={[{ height: scale(640 - keyboardHeight - Math.min(100, inputHeight), Vertical), paddingBottom: scale(10, Vertical) }]}>
                     <FlatList
-                        ref={this.flatList}
+                        inverted={true}
                         data={listMessage}
-                        //initialScrollIndex={listMessage.length-2}
-                        //inverted = {true}
-                        getItemLayout={this.getItemLayout}
-                        keyExtractor={(item, index) => index + ''}
-                        onScroll={e => {
-                            this.scrollOffset = e.nativeEvent.contentOffset.y;
-                        }}
-                        onLayout={e => {
-                            this.flatlistTopOffset = e.nativeEvent.layout.y;
-                        }}
-                        scrollEventThrottle={16}
-                        renderItem={({ item, index }) => {
-                            return (
-                                <TouchableOpacity onLongPress={() => this.onDeleteMessage(item)}>
-                                    <View>
-                                        {item.content && item.content.length > 0 ? (
-                                            <View style={[Style.common.flexRow, {
-                                                paddingLeft: 20,
-                                                paddingRight: 20,
-                                                alignItems: 'center',
-                                                alignContent: 'center',
-                                                backgroundColor: 'white',
-                                                borderRadius: 40,
-                                                height: Utils.scale(40, Const.Vertical),
-                                                marginLeft: (item.fromAccountId != myProfile.accountID ? 10 : 'auto'),
-                                                marginRight: (item.fromAccountId != myProfile.accountID ? 'auto' : 10),
-                                                marginTop: 5,
-                                            }]}>
-                                                <Text style={{ alignItems: 'center' }}>{item.content}</Text>
-                                            </View>
-                                        ) : (
-                                            <View></View>
-                                        )}
+                        keyExtractor={(item, index) => item.id + ''}
+                        renderItem={({ item, index }) =>
+                            <Message
+                                friendAccount={friendAccount}
+                                data={item}
+                                bounderColor={this.state.color}
+                                index={index}
+                                onPressMessageItem={(index) => this.onPressMessageItem(index)}
+                                nextIndex={index < listMessage.length - 1 ? listMessage[index + 1] : { fromAccountId: 0 }}
+                                onPressImage={(url) => this.setState({ currentShowImage: url, isShowModalImage: true })}
+                            />}
+                        onEndReachedThreshold={0.5}
 
-                                        {item.imageUrl && item.imageUrl.length > 0 ? (
-                                            <View style={[Style.common.flexRow, {
-                                                height: Utils.scale(200, Const.Vertical),
-                                                width: Utils.scale(200, Const.Horizontal),
-                                                marginLeft: (item.fromAccountId != myProfile.accountID ? 0 : 'auto'),
-                                                marginRight: (item.fromAccountId != myProfile.accountID ? 'auto' : 0),
-                                            }]}>
-
-                                                <Image style={{
-                                                    borderRadius: 20,
-                                                    flex: 1,
-                                                    width: null,
-                                                    height: null,
-                                                    resizeMode: 'contain'
-                                                }}
-                                                    source={{ uri: Const.assets_domain + item.imageUrl }}
-                                                />
-                                            </View>
-                                        ) : (<View></View>)}
-                                    </View>
-                                </TouchableOpacity>
-                            )
+                        onEndReached={() => {
+                            if (canLoadMore) {
+                                this.getListMessage(page + 1);
+                            }
                         }}
+                        onRefresh={() => {
+                            this.setState({ refreshingList: true });
+                            this.getListMessage(1);
+                        }}
+                        refreshing={refreshingList}
                     />
                 </View>
-                <View style={{
-                    width: Utils.scale(400, Const.Horizontal),
-                    height: Utils.scale(40, Const.Vertical),
-                }}>
-                    <View
-                        style={[Style.common.flexRow, { marginBottom: Utils.scale(5, Const.Vertical), marginTop: Utils.scale(20, Const.Horizontal), justifyContent: 'center', alignItems: 'center' }]}>
-                        <TextInput
-                            defaultValue={messageText}
-                            onChangeText={text => {
-                                this.setState({ messageText: text });
-                            }}
-                            style={
-                                {
-                                    backgroundColor: 'white',
-                                    height: Utils.scale(40, Const.Vertical),
-                                    width: Utils.scale(260, Const.Horizontal),
-                                    borderColor: 'gray',
-                                    borderWidth: 1,
-                                    borderRadius: 20,
-                                    paddingLeft: Utils.scale(10, Const.Horizontal),
-                                    marginLeft: Utils.scale(10, Const.Horizontal),
-                                }} />
-                        <Icon
-                            name="image"
-                            size={35}
-                            color="black"
-                            style={{ marginLeft: Utils.scale(8, Const.Horizontal) }}
-                            onPress={() => this.chooseFile((source) => {
-                                this.setState({ imageBase64: source.base64 });
-                                this.onPressSend();
-                            })} />
-                        <TouchableOpacity onPress={() => this.takePicture((source) => {
-                            this.setState({ imageBase64: source.base64 });
-                            this.onPressSend();
-                        })}>
-                            <Entypo name='camera' size={32} color={'black'} style={{
-                                marginLeft: Utils.scale(8, Const.Horizontal),
-                            }} />
+                <View style={[styles.messageBoxBounder]}>
+                    <TouchableOpacity
+                        onPress={() => console.log('select emoji')}
+                        style={[styles.messageBoxIconEmotion]}
+                    >
+                        <Entypo name='emoji-happy' color={this.state.color} size={25} />
+                    </TouchableOpacity>
+                    <TextInput
+                        style={[styles.messageBoxInput]}
+                        placeholder={'Nhập tin nhắn'}
+                        returnKeyType={'none'}
+                        multiline={true}
+                        onContentSizeChange={(event) => {
+                            this.setState({ inputHeight: event.nativeEvent.contentSize.height });
+                        }}
+                        onChangeText={(text) => {
+                            this.setState({ content: text })
+                        }}
+                        value={content}
+                    />
+                    {!(content.length > 0) ? (
+                        <View style={[styles.messageBoxActionBounder]}>
+                            <TouchableOpacity
+                                onPress={() => this.selectImage()}
+                                style={[styles.messageBoxIconImage]}
+                            >
+                                <Entypo name='images' color={this.state.color} size={25} />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => this.takePicture()}
+                                style={[styles.messageBoxIconCamera]}
+                            >
+                                <AntDesign name='camerao' color={this.state.color} size={25} />
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <TouchableOpacity
+                            onPress={() => this.sendMessage()}
+                            style={[styles.messageBoxActionBounder]}>
+                            <Ionicons style={[styles.messageBoxIconCamera]} name='send' color={this.state.color} size={25} />
                         </TouchableOpacity>
-
-                        <Icon
-                            name='send'
-                            size={35}
-                            color="black"
-                            onPress={() => this.onPressSend()}
-                            style={{ marginLeft: Utils.scale(8, Const.Horizontal), marginRight: Utils.scale(10, Const.Horizontal) }} />
-                    </View>
+                    )}
                 </View>
-            </View >
+                <Modal
+                    visible={isShowModalImage}
+                    onRequestClose={() => this.setState({ isShowModalImage: false })}
+                >
+                    <View style={[styles.modalContainer]}>
+                        <Image
+                            source={{ uri: Const.assets_domain + currentShowImage }}
+                            style={[styles.modalImage]}
+                        />
+                    </View>
+                </Modal>
+            </View>
         )
     }
 }
+const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem, nextIndex, onPressImage }) => {
+    let disTime = diffTime(data.time, nextIndex.time);
+    disTime = disTime ? disTime : 100000000;
+    return (
+        <View style={[styles.messageItemBounder,
+        (nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? styles.separator : null
+        ]}>
+            {data.isShowDetail ? (
+                <View style={[styles.messageMoreDetailBounder]}>
+                    <Text style={[styles.messageMoreDetailTime]}>{getMessageTime(data.time)}</Text>
+                </View>) : (<View></View>)}
+            <View style={[data.isMyMessage ? styles.messageItemSend : styles.messageItemReceive]}>
+                {!data.isMyMessage && (nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? (<View>
+                    <Image
+                        source={{ uri: Const.assets_domain + friendAccount.avatarUri }}
+                        style={[styles.messageItemFriendAvatar]}
+                    />
+                </View>) : (<View></View>)}
+                <View style={[styles.messageItemContentBounder]}>
+                    {data.imageUrl ? (
+                        <View
+                            style={[data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva]}>
+                            <TouchableWithoutFeedback
+                                onPress={() => onPressImage(data.imageUrl)}
+                            >
+                                <Image
+                                    source={{ uri: Const.assets_domain + data.imageUrl }}
+                                    style={[styles.messageContentImage]}
+                                />
+                            </TouchableWithoutFeedback>
+                        </View>) : (<View></View>)}
+                    {data.content.length > 0 ? (
+                        <TouchableWithoutFeedback
+                            activeOpacity={0.9}
+                            onPress={() => onPressMessageItem(index)}
+                        >
+                            <View style={[
+                                data.isMyMessage ? styles.messageSendContentBounder : styles.messageReceiveContentBounder,
+                                { backgroundColor: bounderColor },
+                                data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva
+                            ]}>
+                                <Text style={[styles.messageContentText]}>{data.content}</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    ) : (<View></View>)}
+
+                </View>
+            </View>
+
+            {data.isShowDetail ? (
+                <View style={[styles.messageMoreDetailBounder]}>
+                    <Text style={[styles.messageMoreDetailTime]}>{data.isRead ? 'Đã xem' : 'Chưa xem'}</Text>
+                </View>) : (<View></View>)}
+        </View>
+    )
+}
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    header: {
+        flexDirection: 'row',
+        paddingVertical: scale(7, Vertical),
+        paddingHorizontal: scale(20, Horizontal),
+        elevation: 10,
+    },
+    headerChatFriend: {
+        flexDirection: 'row'
+    },
+    headerChatFriendAvatar: {
+        height: scale(45, Horizontal),
+        width: scale(45, Horizontal),
+        resizeMode: 'cover',
+        borderRadius: 50,
+        backgroundColor: 'gray'
+    },
+    headerChatFriendInfo: {
+        marginLeft: scale(10, Horizontal)
+    },
+    headerChatFriendInfoName: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+        fontFamily: 'Segoe UI'
+    },
+    headerChatFriendInfoActiveTime: {
+        color: 'white',
+        fontSize: 12,
+        fontFamily: 'Segoe UI'
+    },
+    headerActionBounder: {
+        flexDirection: 'row',
+        marginLeft: 'auto',
+        alignItems: 'center'
+    },
+    headerActionVideoIcon: {
+        marginRight: scale(10, Horizontal)
+    },
+    headerActionPhoneIcon: {
+        marginRight: scale(20, Horizontal)
+    },
+    listMessageArea: {
+        height: scale(600, Vertical)
+    },
+    messageItemBounder: {
+        marginRight: 'auto',
+        width: scale(400, Horizontal)
+    },
+    separator: {
+        marginTop: scale(5, Vertical)
+    },
+    messageItemReceive: {
+        flexDirection: 'row',
+        marginTop: scale(2, Vertical),
+        marginLeft: scale(10, Horizontal),
+        marginRight: 'auto'
+    },
+    messageItemSend: {
+        flexDirection: 'row',
+        marginTop: scale(2, Vertical),
+        marginRight: scale(10, Horizontal),
+        marginLeft: 'auto'
+    },
+    messageItemContentBounder: {
+    },
+    messageSendContentBounder: {
+        alignSelf: 'flex-end',
+        maxWidth: scale(280, Horizontal),
+        minHeight: scale(30, Vertical),
+        borderRadius: 25,
+        justifyContent: 'center',
+        paddingHorizontal: scale(10, Horizontal),
+        paddingVertical: scale(6, Vertical),
+        marginLeft: scale(5, Horizontal)
+    },
+    messageReceiveContentBounder: {
+        alignSelf: 'flex-start',
+        maxWidth: scale(280, Horizontal),
+        minHeight: scale(30, Vertical),
+        borderRadius: 25,
+        justifyContent: 'center',
+        paddingHorizontal: scale(10, Horizontal),
+        paddingVertical: scale(10, Vertical),
+    },
+    messageReceiveContentBounderWithAva: {
+        marginLeft: scale(5, Horizontal)
+    },
+    messageReceiveContentBounderWithoutAva: {
+        marginLeft: scale(35, Horizontal)
+    },
+    messageContentImage: {
+        width: scale(200, Horizontal),
+        height: scale(100, Vertical),
+        resizeMode: 'cover',
+        borderRadius: 10,
+        marginBottom: scale(2, Vertical),
+        marginLeft: scale(5, Horizontal)
+    },
+    messageContentText: {
+        alignSelf: 'flex-start',
+        color: 'white',
+        fontFamily: 'Segoe UI',
+        fontSize: 15,
+    },
+    messageItemFriendAvatar: {
+        width: scale(30, Horizontal),
+        height: scale(30, Horizontal),
+        resizeMode: 'cover',
+        borderRadius: 50
+    },
+    messageMoreDetailBounder: {
+        alignItems: 'center'
+    },
+    messageMoreDetailTime: {
+        fontFamily: 'Segeo UI',
+        fontSize: 10
+    },
+    messageBoxBounder: {
+        width: scale(400, Horizontal),
+        paddingHorizontal: scale(20, Horizontal),
+        paddingVertical: scale(5, Vertical)
+    },
+    messageBoxIconEmotion: {
+        position: 'absolute',
+        top: scale(15, Vertical),
+        left: scale(10, Horizontal)
+    },
+    messageBoxInput: {
+        marginLeft: scale(30, Horizontal),
+        width: scale(340, Horizontal),
+        maxHeight: scale(100, Vertical),
+        backgroundColor: 'white',
+        borderRadius: 15,
+        borderWidth: 0.8,
+        borderColor: 'gray'
+    },
+    messageBoxActionBounder: { position: 'absolute', flexDirection: 'row', right: scale(20, Horizontal), top: scale(15, Vertical) },
+    messageBoxIconImage: {
+        marginRight: scale(10, Horizontal)
+    },
+    messageBoxIconCamera: {
+        marginRight: scale(10, Horizontal)
+    },
+    modalContainer: {
+        width: scale(400, Horizontal),
+        height: scale(711, Vertical)
+    },
+    modalImage: {
+        width: null,
+        height: null,
+        flex: 1,
+        resizeMode: 'contain'
+    }
+
+})
+

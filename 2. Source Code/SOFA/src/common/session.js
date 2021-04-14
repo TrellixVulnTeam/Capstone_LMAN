@@ -4,6 +4,7 @@ export default class Session {
     token = '';
     account = {};
     currentUserChat = 0;
+    settings = {};
 
     static getInstance() {
         if (Session._instance == null) {

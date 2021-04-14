@@ -13,6 +13,17 @@ const scale = (unit, direction) => {
     return result;
 };
 
+const getMessageTime = (time) => {
+    let sendTime = new Date(time);
+    return sendTime.toLocaleTimeString() + ', ' + sendTime.toLocaleDateString();
+}
+const diffTime = (time1, time2) => {
+    let t1 = new Date(time1);
+    let t2 = new Date(time2);
+    let df = Math.abs(t1 - t2);
+    return df;
+}
+
 const calculateTime = (time) => {
     let currentTime = new Date();
     let postTime = new Date(time);
@@ -125,4 +136,4 @@ const getContentDemo = (content) => {
     }
 }
 
-export { scale, calculateTime, getData, storeData, isInteger, requestPermission, getContentDemo };
+export { scale, calculateTime, getData, storeData, isInteger, requestPermission, getContentDemo, getMessageTime, diffTime };
