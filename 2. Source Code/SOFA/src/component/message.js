@@ -51,7 +51,7 @@ export default class Message extends Component {
     }
   };
   getListCoversation() {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     this.getData('token')
       .then((result) => {
         if (result) {
@@ -112,7 +112,7 @@ export default class Message extends Component {
         console.log('failed');
         this.props.navigation.navigate('Login');
       });
-      this.setState({ isLoading: false });
+    this.setState({isLoading: false});
   }
   componentWillUnmount() {}
 
@@ -221,7 +221,6 @@ export default class Message extends Component {
   }
 }
 class MyLisConversation extends Message {
-
   ConversationDetail = () => {
     this.props.navigate('Conversation', {
       uid1: this.props.accountId,
@@ -230,9 +229,9 @@ class MyLisConversation extends Message {
   };
   formatTime(dataDate) {
     let time = new Date(dataDate);
-    let date =  time.getDate() + "/" + parseInt(time.getMonth() + 1) ;
+    let date = time.getDate() + '/' + parseInt(time.getMonth() + 1);
     return date;
-}
+  }
   render() {
     const swipeSetting = {
       autoClose: true,
@@ -284,7 +283,7 @@ class MyLisConversation extends Message {
                                 response.code &&
                                 response.code == Const.REQUEST_CODE_SUCCESSFULLY
                               ) {
-                                alert("Delete success!!!")
+                                alert('Delete success!!!');
                               } else {
                                 this.props.navigation.navigate('Login');
                               }
@@ -313,7 +312,7 @@ class MyLisConversation extends Message {
       rowId: this.props.index,
       SelectionId: 1,
     };
-    
+    console.log(Const.assets_domain+ this.props.chatWithAvatarUri)
     return (
       <Swipeout {...swipeSetting}>
         <TouchableOpacity onPress={this.ConversationDetail}>
@@ -323,10 +322,8 @@ class MyLisConversation extends Message {
             }}>
             <View>
               <Image
-                source={
-                  this.props.chatWithAvatarUri &&
-                  this.props.chatWithAvatarUri > 0
-                    ? {uri: avatarUri}
+                source={( this.props.chatWithAvatarUri && this.props.chatWithAvatarUri.length > 0)
+                    ? {uri: Const.assets_domain + this.props.chatWithAvatarUri}
                     : AVATAR
                 }
                 resizeMode={'cover'}
@@ -355,7 +352,8 @@ class MyLisConversation extends Message {
                 style={{
                   fontSize: Utils.scale(20, Const.Horizontal),
                 }}>
-                {this.props.lastMessage}   {this.formatTime(this.props.timeUpdate)}
+                {this.props.lastMessage}{' '}
+                {this.formatTime(this.props.timeUpdate)}
               </Text>
             </View>
           </View>

@@ -172,7 +172,7 @@ class ListMessageSearch extends Component {
       }}>
           <View>
           <Image 
-              source={(this.props.avatarUri && this.props.avatarUri.length > 0) ? { uri: this.props.avatarUri } : AVATAR}
+              source={(this.props.avatarUri && this.props.avatarUri.length > 0) ? { uri: Const.assets_domain + this.props.avatarUri } : AVATAR}
               resizeMode={"cover"}
               style={{
                   height: Utils.scale(40, Const.Horizontal),
