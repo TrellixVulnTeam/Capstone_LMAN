@@ -33,10 +33,17 @@ import Support from '../component/support';
 import SupportRequestDetail from '../component/supportRequestDetail';
 const Stack = createStackNavigator();
 
-export default function Navigation() {
+export const navigationRef = React.createRef();
+
+export function navigate(name, params) {
+    navigationRef.current?.navigate(name, params);
+}
+export function Navigation() {
 
     return (
-        <NavigationContainer>
+        <NavigationContainer
+            ref={navigationRef}
+        >
             <Stack.Navigator initialRouteName='Intro' >
                 <Stack.Screen name='Intro' component={Introduction} options={{ headerShown: false }} />
                 <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />

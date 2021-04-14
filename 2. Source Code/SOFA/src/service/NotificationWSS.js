@@ -49,6 +49,7 @@ export default class NotificationWSS {
                                         channelId: 'Thông báo',
                                         title: "Thông báo",
                                         message: data.fromAccountName + ' ' + data.content,
+                                        invokeApp: false,
                                     });
                                 }
                             }

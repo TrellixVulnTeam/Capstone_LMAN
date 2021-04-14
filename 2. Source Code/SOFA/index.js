@@ -5,7 +5,7 @@ import ReactNativeForegroundService from '@supersami/rn-foreground-service';
 import 'react-native-gesture-handler';
 import { AppRegistry, PermissionsAndroid } from 'react-native';
 import CameraRoll from "@react-native-community/cameraroll";
-import Navigation from './src/navigation/InitNavigation';
+import { Navigation, navigate } from './src/navigation/InitNavigation';
 import { name as appName } from './app.json';
 import { typography } from './utils/typography';
 import PushNotification from 'react-native-push-notification';
@@ -14,6 +14,8 @@ import MessageWSS from './src/service/messageWSS';
 import { getData, requestPermission, storeData } from './src/common/utils';
 
 import Session from './src/common/session';
+
+import * as RootNavigation from './src/navigation/rootNavigation';
 
 typography();
 
@@ -43,6 +45,22 @@ PushNotification.configure({
     },
     onNotification: function (notification) {
         console.log('NOTIFICATION:', notification);
+        if (notification.channelId == 'Tin nhắn') {
+            navigate('Message')
+        }
+        if (notification.channelId == 'Thông báo') {
+            navigate('Notification')
+        }
+        //notification.finish(PushNotificationIOS.FetchResult.NoData);
+    },
+    onAction: function (notification) {
+        console.log('noti action:', notification);
+        if (notification.channelId == 'Tin nhắn') {
+            navigate('Message')
+        }
+        if (notification.channelId == 'Thông báo') {
+            navigate('Notification')
+        }
         //notification.finish(PushNotificationIOS.FetchResult.NoData);
     },
     permissions: {
