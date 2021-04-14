@@ -129,7 +129,7 @@ export default class Profile extends Component {
     }
 
     onPressSupprot() {
-        alert('Click Support');
+        this.props.navigation.navigate('Support');
     }
 
     componentWillUnmount() {
