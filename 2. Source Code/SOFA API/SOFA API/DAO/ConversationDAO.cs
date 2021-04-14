@@ -129,6 +129,30 @@ namespace SOFA_API.DAO
             }
             return viewModelOut;
         }
+        public ListSearchConversationViewModelOut GetAllUserSearch(int accountId)
+        {
+            ListSearchConversationViewModelOut viewModelOut = new ListSearchConversationViewModelOut();
+            List<SearchCoversationViewModelOut> searchConversation = new List<SearchCoversationViewModelOut>();
+            try
+            {
+                string sql = "exec [dbo].[GetAllUserSearch] @AccountID ";
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        searchConversation.Add(new SearchCoversationViewModelOut(row, accountId));
+                    }
+                    viewModelOut = new ListSearchConversationViewModelOut(searchConversation);
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+            return viewModelOut;
+        }
         public int DeleteConvsersation(int accountId, int chatWithAccountId)
         {
             int result = 0;

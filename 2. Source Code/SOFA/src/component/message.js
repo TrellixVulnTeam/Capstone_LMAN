@@ -24,10 +24,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Swipeout from 'react-native-swipeout';
 import {SearchBar} from 'react-native-elements';
 
+
 export default class Message extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      listConversations:[],
       activeRowkey: null,
       isLoading: false,
     };
@@ -126,12 +128,10 @@ export default class Message extends Component {
 
   render() {
     const {
-      accountId,
-      firstName,
-      lastName,
-      avatarUri,
       listConversations,
+      isLoading
     } = this.state;
+    const count=1;
     return (
       <SafeAreaView>
         <StatusBar hidden={false} backgroundColor={'#300808'} />
@@ -284,7 +284,7 @@ class MyLisConversation extends Message {
                                 response.code &&
                                 response.code == Const.REQUEST_CODE_SUCCESSFULLY
                               ) {
-                                alert('Delete success!!!');
+                                this.getListCoversation();
                               } else {
                                 this.props.navigation.navigate('Login');
                               }
@@ -313,53 +313,74 @@ class MyLisConversation extends Message {
       rowId: this.props.index,
       SelectionId: 1,
     };
-    console.log(Const.assets_domain+ this.props.chatWithAvatarUri)
     return (
       <Swipeout {...swipeSetting}>
-        <TouchableOpacity onPress={this.ConversationDetail}>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
-            <View>
+        <TouchableOpacity onPress={this.ConversationDetail}  style={styles.container} >
+       
+           
               <Image
                 source={( this.props.chatWithAvatarUri && this.props.chatWithAvatarUri.length > 0)
                     ? {uri: Const.assets_domain + this.props.chatWithAvatarUri}
                     : AVATAR
                 }
-                resizeMode={'cover'}
-                style={{
-                  height: Utils.scale(50, Const.Horizontal),
-                  width: Utils.scale(50, Const.Horizontal),
-                  borderRadius: Utils.scale(20, Const.Horizontal),
-                  borderWidth: 1,
-                  overflow: 'hidden',
-                }}
+                style={styles.image}
               />
-            </View>
-            <View
-              style={{
-                marginLeft: Utils.scale(10, Const.Horizontal),
-              }}>
-              <Text
-                style={{
-                  fontSize: Utils.scale(19, Const.Horizontal),
-                  fontWeight: 'bold',
-                }}>
+                          <View style={{marginLeft:10}}>
+
+              <Text style={styles.username} >
                 {this.props.chatWithFirstName} {this.props.chatWithLastName}
               </Text>
 
-              <Text
-                style={{
-                  fontSize: Utils.scale(20, Const.Horizontal),
-                }}>
-                {this.props.lastMessage}{' '}
-                {this.formatTime(this.props.timeUpdate)}
+              <Text style={styles.text}>
+                {this.props.lastMessage}
               </Text>
-            </View>
-          </View>
+              </View>
+
+              <Text style={styles.duration}>{this.formatTime(this.props.timeUpdate)}</Text>
         </TouchableOpacity>
       </Swipeout>
     );
   }
 }
+const styles = StyleSheet.create({
+  container:{
+      flexDirection:'row',
+      paddingHorizontal:20,
+      alignItems:'center',
+      marginTop:30
+  },
+  gradientStyle:{
+     height:20,
+     width:20,
+     borderRadius:10,
+     alignItems:'center',
+     justifyContent:'center',
+     marginRight:20 
+  },
+  count:{
+      color:'#fff',
+      fontFamily:'Montserrat_700Bold',
+  },
+  image:{
+      width:60,
+      height:60,
+      borderRadius:30
+  },
+  text:{
+      color:'#b6b6b6',
+      fontFamily:'Montserrat_600SemiBold',
+      fontSize:11
+  },
+  duration:{
+      color:'#000119',
+      fontSize:12,
+      flex:1,
+      marginLeft:280,
+      position:'absolute',
+      fontFamily:'Montserrat_600SemiBold'
+  },
+  username:{
+      color:'#000119',
+      fontFamily:'Montserrat_700Bold'
+  }
+})

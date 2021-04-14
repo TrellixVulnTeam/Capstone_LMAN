@@ -71,10 +71,9 @@ export default class MessageSearch extends Component {
             Authorization:
               'Bearer ' + result.toString().substr(1, result.length - 2),
           };
-          let url = Const.domain + 'api/Conversation/SearchConversation';
+          let url = Const.domain + 'api/Conversation/getAllUserSearch';
           let data = new FormData();
-          data.append('searchValue', 'A');
-          Request.Post(url, header, data)
+          Request.Get(url, header)
             .then((response) => {
               if (
                 response &&
