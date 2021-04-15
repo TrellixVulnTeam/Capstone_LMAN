@@ -9,25 +9,25 @@ namespace SOFA_API.DTO
     public class ReportReason
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public int ReportID { get; set; }
+        public int ReasonID { get; set; }
 
         public ReportReason()
         {
         }
 
-        public ReportReason(int iD, string name, string description)
+        public ReportReason(int iD, int reportID, int reasonID)
         {
             ID = iD;
-            Name = name;
-            Description = description;
+            ReportID = reportID;
+            ReasonID = reasonID;
         }
 
         public ReportReason(DataRow row)
         {
-            ID = (int)row["iD"];
-            Name = row["name"].ToString();
-            Description = row["description"].ToString();
+            ID = (int)row["Id"];
+            ReportID = (int)row["reportID"];
+            ReasonID = (int)row["reasonID"];
         }
     }
 }

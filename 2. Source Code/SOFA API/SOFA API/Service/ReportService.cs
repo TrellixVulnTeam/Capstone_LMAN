@@ -100,6 +100,40 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
+        internal ReportViewModelOut CreateReport(ReportViewModelIn reportViewModelIn)
+        {
+            ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
+
+            try
+            {
+                ReportModelOut reportModelOut = new ReportModelOut();
+                Report report = ReportDAO.Instance.CreateReport(reportViewModelIn.FromAccount, reportViewModelIn.ToAccount, reportViewModelIn.ToPost, reportViewModelIn.ToComment, reportViewModelIn.TypeReport, reportViewModelIn.ReportContent);
+                if (report.ID > 0)
+                {
+                    reportModelOut.SetReport(report);
+                    reportModelOut.TypeReport = ReportDAO.Instance.GetReportTypeByID(report.TypeReport);
+                    foreach (int reasonID in reportViewModelIn.ListReason)
+                    {
+                        ReportReason reportReason = ReportDAO.Instance.AddReasonForReport(report.ID, reasonID);
+                    }
+                    reportModelOut.ListReason = ReportDAO.Instance.GetAllReasonOfReport(report.ID);
+                    reportViewModelOut.ListReport.Add(reportModelOut);
+                }
+                else
+                {
+                    reportViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                reportViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                reportViewModelOut.ErrorMessage = e.ToString();
+            }
+
+            return reportViewModelOut;
+        }
+
         internal ReportViewModelOut GetAllReportToAccount(int accountID)
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();

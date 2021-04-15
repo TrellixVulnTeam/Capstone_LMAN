@@ -239,6 +239,23 @@ BEGIN
 END
 GO
 
+DROP PROC IF EXISTS UpdateReport
+GO
+CREATE PROC UpdateReport
+@reportID INT, @fromAccount INT, @toAccount INT, @toPost INT, @toComment INT, @typeReport INT, @reportContent NVARCHAR(MAX), @isProcessed INT
+AS
+BEGIN
+	UPDATE dbo.Report SET 
+	FromAccount = @fromAccount, 
+	ToAccount = @toAccount, 
+	ToPost = @toPost, 
+	TypeReport = @typeReport, 
+	ReportContent = @reportContent
+	WHERE Id = @reportID
+END
+GO
+
+
 DROP PROC IF EXISTS AddReasonForReport
 GO
 CREATE PROC AddReasonForReport
@@ -285,3 +302,8 @@ EXEC dbo.AddReason @name = N'Khủng bố', -- nvarchar(max)
 
 
 
+EXEC dbo.GetAllReport
+EXEC dbo.GetAllreasonOfReport @reportID = 1 -- int
+
+DELETE FROM dbo.Report
+DELETE FROM dbo.ReportReason

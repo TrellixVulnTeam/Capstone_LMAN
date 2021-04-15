@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SOFA_API.Common;
 using SOFA_API.Service;
 using SOFA_API.ViewModel.Report;
 using System;
@@ -67,6 +68,14 @@ namespace SOFA_API.Controllers
         public ActionResult GetAllReportComment()
         {
             ReportViewModelOut reportViewModelOut = ReportService.Instance.GetAllReportComment();
+            return Ok(reportViewModelOut);
+        }
+        [HttpPost("CreateReport")]
+        public ActionResult CreateReport([FromForm] ReportViewModelIn reportViewModelIn)
+        {
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            reportViewModelIn.FromAccount = userID;
+            ReportViewModelOut reportViewModelOut = ReportService.Instance.CreateReport(reportViewModelIn);
             return Ok(reportViewModelOut);
         }
     }
