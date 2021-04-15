@@ -118,6 +118,7 @@ namespace SOFA_API.Service
                     }
                     reportModelOut.ListReason = ReportDAO.Instance.GetAllReasonOfReport(report.ID);
                     reportViewModelOut.ListReport.Add(reportModelOut);
+                    reportViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 }
                 else
                 {
