@@ -16,5 +16,13 @@ namespace SOFA_API.ViewModel.Account
         public AdminDashboardModelOut()
         {
         }
+
+        public AdminDashboardModelOut(int totalUser, int numberOfUserActive, int totalPost, int numberOfPostVerified) : base()
+        {
+            TotalUser = totalUser;
+            NumberOfUserActive = numberOfUserActive;
+            TotalPost = totalPost;
+            NumberOfPostVerified = numberOfPostVerified;
+        }
     }
 }

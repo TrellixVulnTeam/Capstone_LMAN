@@ -35,6 +35,19 @@ namespace SOFA_API.ViewModel.Info
             SkinColor = skinColor;
             Name = name;
         }
+
+        public InfoViewModelIn(int accountID, double height, double weight, double bustSize, double waistSize, double hipSize, int skinColor, string name)
+        {
+            AccountID = accountID;
+            Height = height;
+            Weight = weight;
+            BustSize = bustSize;
+            WaistSize = waistSize;
+            HipSize = hipSize;
+            SkinColor = skinColor;
+            Name = name;
+        }
+
         public InfoViewModelIn(DTO.Info info) : base()
         {
             ID = info.ID;

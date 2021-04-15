@@ -31,6 +31,29 @@ namespace SOFA_API.ViewModel.Account
         {
         }
 
+        public AdminUserDetailViewModelOut(int id, string userName, bool isActive, DateTime dateCreated, DateTime doB, 
+            string firstName, string lastName, bool gender, string email, string phone, string address, string avatar, 
+            double height, double weight, double bustSize, double waistSize, double hipSize)
+        {
+            Id = id;
+            UserName = userName;
+            IsActive = isActive;
+            DateCreated = dateCreated;
+            DoB = doB;
+            FirstName = firstName;
+            LastName = lastName;
+            Gender = gender;
+            Email = email;
+            Phone = phone;
+            Address = address;
+            Avatar = avatar;
+            Height = height;
+            Weight = weight;
+            BustSize = bustSize;
+            WaistSize = waistSize;
+            HipSize = hipSize;
+        }
+
         public AdminUserDetailViewModelOut(DataRow row)
         {
             Id = (int)row["Id"];

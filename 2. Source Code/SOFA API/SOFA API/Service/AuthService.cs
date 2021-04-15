@@ -104,7 +104,7 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="accountViewModel">Data that client send to server</param>
         /// <returns>valid information</returns>
-        private AccountViewModelIn AccountValidation(AccountViewModelIn loginViewModelIn)
+        public AccountViewModelIn AccountValidation(AccountViewModelIn loginViewModelIn)
         {
             // check username is not null
             if (!string.IsNullOrEmpty(loginViewModelIn.Username))
@@ -155,7 +155,7 @@ namespace SOFA_API.Service
         /// </summary>
         /// <param name="password"the password send from client></param>
         /// <returns>hashed password string</returns>
-        private string HashPassword(string password)
+        public string HashPassword(string password)
         {
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
@@ -166,7 +166,7 @@ namespace SOFA_API.Service
         /// <param name="password">he password send from client</param>
         /// <param name="hashedPassword">the code hashed get from db</param>
         /// <returns>true/false</returns>
-        private bool VerifyPassword(string password, string hashedPassword)
+        public bool VerifyPassword(string password, string hashedPassword)
         {
             return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
         }
@@ -574,13 +574,15 @@ namespace SOFA_API.Service
                     {
                         throw new Exception("Mật khẩu bao gồm 6 ký tự trở lên");
                     }
+
+                    // update
+                    AccountDAO.Instance.UpdateUserPassword(loginViewModelIn.Username, loginViewModelIn.NewPassword);
+                    loginViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    loginViewModelOut.Username = loginViewModelIn.Username;
+                } else
+                {
+                    throw new Exception("Account không tồn tại");
                 }
-
-                // update
-                AccountDAO.Instance.UpdateUserPassword(loginViewModelIn.Username, loginViewModelIn.NewPassword);
-                loginViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
-                loginViewModelOut.Username = loginViewModelIn.Username;
-
                 return loginViewModelOut;
             }
             catch (Exception e)

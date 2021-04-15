@@ -27,6 +27,22 @@ namespace SOFA_API.ViewModel.Account
         {
         }
 
+        public AccountViewModelOut(int id, string username, string password, int roleId, string roleName, string email, 
+            string phone, bool isActive, string token, string firstname, string lastname)
+        {
+            Id = id;
+            Username = username;
+            Password = password;
+            RoleId = roleId;
+            RoleName = roleName;
+            Email = email;
+            Phone = phone;
+            IsActive = isActive;
+            Token = token;
+            Firstname = firstname;
+            Lastname = lastname;
+        }
+
         public AccountViewModelOut(DataRow row) : base()
         {
             Id = Int32.Parse(row["Id"].ToString());

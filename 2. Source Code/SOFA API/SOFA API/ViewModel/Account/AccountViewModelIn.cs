@@ -26,13 +26,44 @@ namespace SOFA_API.ViewModel.Account
         {
         }
 
+        public AccountViewModelIn(string username, string password, string newPassword)
+        {
+            Username = username;
+            Password = password;
+            NewPassword = newPassword;
+        }
+
+        public AccountViewModelIn(string username, string password, string newPassword, string phone, bool isAfterReset)
+        {
+            Username = username;
+            Password = password;
+            NewPassword = newPassword;
+            Phone = phone;
+            IsAfterReset = isAfterReset;
+        }
+
+        public AccountViewModelIn(string username, string password, bool isApplicationAccess)
+        {
+            Username = username;
+            Password = password;
+            IsApplicationAccess = isApplicationAccess;
+        }
+
+        public AccountViewModelIn(string username, string password, string firstname, string lastname)
+        {
+            Username = username;
+            Password = password;
+            Firstname = firstname;
+            Lastname = lastname;
+        }
+
         public AccountViewModelIn(string username, string password, string newPassword, string email, string phone, bool isApplicationAccess, 
             int transactionId, int code, bool isAfterReset, int roleId, string firstname, string lastname):base()
         {
             Username = username;
             Password = password;
             NewPassword = NewPassword;
-            Email = Email;
+            Email = email;
             Phone = phone;
             IsApplicationAccess = isApplicationAccess;
             TransactionId = transactionId;

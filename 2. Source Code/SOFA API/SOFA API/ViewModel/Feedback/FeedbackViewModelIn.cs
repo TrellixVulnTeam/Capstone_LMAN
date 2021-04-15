@@ -19,6 +19,16 @@ namespace SOFA_API.ViewModel.Feedback
         {
 
         }
+
+        public FeedbackViewModelIn(string title, string content, int userFeedbackId, string lastUpdated, int status)
+        {
+            Title = title;
+            Content = content;
+            UserFeedbackId = userFeedbackId;
+            LastUpdated = lastUpdated;
+            Status = status;
+        }
+
         public FeedbackViewModelIn(int id, string title, string content, int userFeedbackId, string lastUpdated, int status) : base()
         {
             this.Id = id;

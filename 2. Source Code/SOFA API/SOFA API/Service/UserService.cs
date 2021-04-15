@@ -69,7 +69,7 @@ namespace SOFA_API.Service
 
         public AccountViewModelOut BanUser(int accountId)
         {
-            AccountViewModelOut user = new AccountViewModelOut();
+            AccountViewModelOut user = null;
 
             try
             {
@@ -88,6 +88,7 @@ namespace SOFA_API.Service
             }
             catch (Exception e)
             {
+                user = new AccountViewModelOut();
                 Utils.Instance.SaveLog(e.ToString());
                 user.Code = Const.REQUEST_CODE_FAILED;
                 user.ErrorMessage = e.Message;
@@ -97,7 +98,7 @@ namespace SOFA_API.Service
 
         public AccountViewModelOut UnbanUser(int accountId)
         {
-            AccountViewModelOut user = new AccountViewModelOut();
+            AccountViewModelOut user = null;
 
             try
             {
@@ -115,6 +116,7 @@ namespace SOFA_API.Service
             }
             catch (Exception e)
             {
+                user = new AccountViewModelOut();
                 Utils.Instance.SaveLog(e.ToString());
                 user.Code = Const.REQUEST_CODE_FAILED;
                 user.ErrorMessage = e.Message;

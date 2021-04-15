@@ -16,5 +16,14 @@ namespace UnitTestSOFAAPI.VirtualService
         {
             return UserService.Instance.GetAllUser();
         }
+        public virtual AdminUserDetailViewModelOut GetUserDetailById(int accountId)
+        {
+            return UserService.Instance.GetUserDetailById(accountId);
+        }
+        public virtual AccountViewModelOut BanUser(int accountId)
+        {
+            return UserService.Instance.BanUser(accountId);
+        }
+
     }
 }

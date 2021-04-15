@@ -120,6 +120,7 @@ namespace SOFA_API.Service
                     result = NotificationDAO.Instance.CreateNotification(modelIn);
                 }
 
+                notificationViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 notificationViewModelOut.TypeNotification = modelIn.TypeNotification;
                 notificationViewModelOut.IsRead = false;
                 notificationViewModelOut.PostId = modelIn.PostId;
@@ -157,6 +158,7 @@ namespace SOFA_API.Service
 
                 int result = NotificationDAO.Instance.CreateNotification(modelIn);
 
+                notificationViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 notificationViewModelOut.TypeNotification = modelIn.TypeNotification;
                 notificationViewModelOut.IsRead = false;
                 notificationViewModelOut.PostId = modelIn.PostId;
@@ -251,6 +253,7 @@ namespace SOFA_API.Service
 
                     int result = NotificationDAO.Instance.AddNewNotificationFeedback(modelIn);
 
+                    notificationViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                     notificationViewModelOut.TypeNotification = modelIn.TypeNotification;
                     notificationViewModelOut.IsRead = false;
                     notificationViewModelOut.Content = modelIn.Content;
