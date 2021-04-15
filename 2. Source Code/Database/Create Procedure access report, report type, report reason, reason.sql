@@ -72,18 +72,20 @@ GO
 DROP PROC IF EXISTS AddReason
 GO
 CREATE PROC AddReason
-@name NVARCHAR(MAX), @des NVARCHAR(MAX)
+@name NVARCHAR(MAX), @des NVARCHAR(MAX), @reportTypeID INT
 AS
 BEGIN
 	INSERT dbo.Reason
 	(
 	    Name,
-	    Description
+	    Description,
+		ReportTypeID
 	)
 	OUTPUT Inserted.*
 	VALUES
 	(   @name, -- Name - nvarchar(50)
-	    @des  -- Description - nvarchar(max)
+	    @des,  -- Description - nvarchar(max)
+		@reportTypeID
 	    )
 END
 GO
@@ -298,12 +300,13 @@ EXEC dbo.AddReason @name = N'Bán hàng trái phép', -- nvarchar(max)
 EXEC dbo.AddReason @name = N'Khủng bố', -- nvarchar(max)
                    @des = N'Ngôn ngữ gây thù địch, có nội dung khủng bố'   -- nvarchar(max)
 
-
-
+EXEC dbo.AddReason @name = N'Giả mạo người khác', -- nvarchar(max)
+                   @des = N'Tài khoản này giả mạo người khác'   -- nvarchar(max)
 
 
 EXEC dbo.GetAllReport
 EXEC dbo.GetAllreasonOfReport @reportID = 1 -- int
+EXEC dbo.GetAllReason
 
 DELETE FROM dbo.Report
 DELETE FROM dbo.ReportReason
