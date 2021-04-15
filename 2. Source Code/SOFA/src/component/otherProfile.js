@@ -227,7 +227,7 @@ export default class Profile extends Component {
                     Request.Get(url, header)
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                this.props.navigation.navigate('Conversation', { 'uid1': accountID, 'uid2': response.accountID });
+                                this.props.navigation.navigate('Conversation', { 'uid2': accountID, 'uid1': response.accountID });
                             } else {
                                 this.props.navigation.navigate('Login')
                             }
