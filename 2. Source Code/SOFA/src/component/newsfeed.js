@@ -718,6 +718,8 @@ export default class Newsfeed extends Component {
                             onPressBuyPlace={(post) => {
                                 this.props.navigation.navigate("SellPlace", { 'post': post });
                             }}
+                            onPressReportPost={(postID) => this.props.navigation.navigate('Report', { toPostID: postID, reportType: 1 })}
+                            onPressReportUser={(accountID) => this.props.navigation.navigate('Report', { toAccountID: accountID, reportType: 2 })}
                         />
                         <ViewImageModal
                             image={this.state.currentShowImage}

@@ -113,8 +113,7 @@ export default class PostMenu extends Component {
             title: () => 'Báo cáo bài viết này',
             detail: () => 'Tôi lo ngại về bài viết này',
             onPress: () => {
-                console.log('report post', this.props.post.id);
-                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
+                this.props.onPressReportPost(this.props.post.id);
                 this.props.onRequestClose()
             }
         },
@@ -170,8 +169,7 @@ export default class PostMenu extends Component {
             title: () => 'Báo cáo ' + this.props.post.lastName,
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
-                console.log('report user', this.props.post.id);
-                ToastAndroid.show("Tính năng này đang trong quá trình phát triển!", ToastAndroid.LONG);
+                this.props.onPressReportPost(this.props.post.accountID);
                 this.props.onRequestClose()
             }
         },

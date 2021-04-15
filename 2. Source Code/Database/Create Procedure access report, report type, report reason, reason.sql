@@ -208,7 +208,7 @@ CREATE PROC GetAllreasonOfReport
 @reportID INT
 AS
 BEGIN
-	SELECT Reason.Id, Name, Description FROM dbo.ReportReason
+	SELECT Reason.Id, Name, Description, ReportTypeID FROM dbo.ReportReason
 	INNER JOIN dbo.Reason ON Reason.Id=ReasonId
 	WHERE ReportId = @reportID
 END
@@ -277,35 +277,27 @@ BEGIN
 END
 GO
 
-EXEC dbo.AddReportType @name = N'Post', -- nvarchar(max)
-                       @des = N'Report đối với bài đăng'   -- nvarchar(max)
-EXEC dbo.AddReportType @name = N'User', -- nvarchar(max)
-                       @des = N'Report đối với người dùng'   -- nvarchar(max)
-EXEC dbo.AddReportType @name = N'Comment', -- nvarchar(max)
-                       @des = N'Report đối với bình luận'   -- nvarchar(max)
-EXEC dbo.AddReason @name = N'Nội dung không phù hợp', -- nvarchar(max)
-                   @des = N'Nội dung không liên quan đến thời trang'   -- nvarchar(max)
-EXEC dbo.AddReason @name = N'Ảnh khỏa thân', -- nvarchar(max)
-                   @des = N'Nội dung khỏa thân'   -- nvarchar(max)
-EXEC dbo.AddReason @name = N'Bạo lực', -- nvarchar(max)
-                   @des = N'Nội dung bạo lực'   -- nvarchar(max)
-EXEC dbo.AddReason @name = N'Quấy rối', -- nvarchar(max)
-                   @des = N'Có hành vi quấy rối người khác'   -- nvarchar(max)
-EXEC dbo.AddReason @name = N'Gây thương tích', -- nvarchar(max)
-                   @des = N'Gây thương tích cho người hoặc động vật'   -- nvarchar(max)
-EXEC dbo.AddReason @name = N'Thông tin sai sự thật', -- nvarchar(max)
-                   @des = N'Chứa thông tin không đúng sự thật'   -- nvarchar(max)
-EXEC dbo.AddReason @name = N'Bán hàng trái phép', -- nvarchar(max)
-                   @des = N'Bài viết bán hàng không đúng quy định'   -- nvarchar(max)
-EXEC dbo.AddReason @name = N'Khủng bố', -- nvarchar(max)
-                   @des = N'Ngôn ngữ gây thù địch, có nội dung khủng bố'   -- nvarchar(max)
+DROP PROC IF EXISTS ExistsReportPost
+GO
+CREATE PROC ExistsReportPost
+@accountID INT, @postID INT
+AS
+BEGIN
+	SELECT * FROM dbo.Report 
+	WHERE FromAccount = 13 AND ToPost = 85
+
+END
+GO
 
 EXEC dbo.AddReason @name = N'Giả mạo người khác', -- nvarchar(max)
-                   @des = N'Tài khoản này giả mạo người khác'   -- nvarchar(max)
-
+                   @des = N'Tài khoản này giả mạo người khác',   -- nvarchar(max)
+				   @reportTypeID = 2
+EXEC dbo.AddReason @name = N'Đăng nội dung không phù hợp', -- nvarchar(max)
+                   @des = N'Tài khoản này đăng nội dung không đúng quy định',   -- nvarchar(max)
+				   @reportTypeID = 2
 
 EXEC dbo.GetAllReport
-EXEC dbo.GetAllreasonOfReport @reportID = 1 -- int
+EXEC dbo.GetAllreasonOfReport @reportID = 9 -- int
 EXEC dbo.GetAllReason
 
 DELETE FROM dbo.Report

@@ -32,4 +32,8 @@ export const REGISTER = "REGISTER";
 export const FORGOT_PASSWORD = "FORGOT_PASSWORD";
 export const CHANGE_EMAIL = "CHANGE_EMAIL";
 
+export const REPORT_TYPE_POST = 1;
+export const REPORT_TYPE_USER = 2;
+export const REPORT_TYPE_COMMENT = 3;
+
 

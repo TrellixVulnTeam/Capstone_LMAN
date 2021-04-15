@@ -710,6 +710,8 @@ export default class PostDetail extends Component {
                             onPressBuyPlace={(postRes) => {
                                 this.props.navigation.navigate("SellPlace", { 'post': postRes });
                             }}
+                            onPressReportPost={(postID) => this.props.navigation.navigate('Report', { toPostID: postID, reportType: 1 })}
+                            onPressReportUser={(accountID) => this.props.navigation.navigate('Report', { toAccountID: accountID, reportType: 2 })}
                         />
                         <ViewImageModal
                             image={this.state.currentShowImage}
