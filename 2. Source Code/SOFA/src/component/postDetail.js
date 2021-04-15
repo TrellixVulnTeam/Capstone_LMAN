@@ -704,6 +704,12 @@ export default class PostDetail extends Component {
                             onPressDeletePost={response => {
                                 this.deletePost(post.id);
                             }}
+                            onPressEditPost={(postID) => {
+                                this.props.navigation.navigate('EditPost', { 'postID': postID })
+                            }}
+                            onPressBuyPlace={(postRes) => {
+                                this.props.navigation.navigate("SellPlace", { 'post': postRes });
+                            }}
                         />
                         <ViewImageModal
                             image={this.state.currentShowImage}
