@@ -25,6 +25,7 @@ import * as PostService from '../service/postService';
 import * as AuthService from '../service/authService';
 import * as MarkupPostService from '../service/markupPostService';
 import * as NotificationService from '../service/notificationService';
+import * as MessageService from '../service/messageService';
 import * as FollowService from '../service/followService';
 import Session from "../common/session";
 
@@ -50,360 +51,36 @@ export default class Newsfeed extends Component {
             currentShowImage: {},
             isShowImage: false,
             numberUnreadNotification: 0,
+            numberUnreadMessage: 0
         };
     }
 
     postMenu = createRef();
-    // notificationWSS = NotificationWSS.getInstance();
-
-    actionArticleNotOwn = [
-        {
-            key: 'savepost',
-            icon: () => (
-                <Ionicons
-                    name="ios-bookmark-outline"
-                    size={scale(30, Horizontal)}
-                    color={'black'}
-                />
-            ),
-            title: () =>
-                !this.state.currentPostSelect.isMarked
-                    ? 'Lưu bài viết'
-                    : 'Bỏ lưu bài viết',
-            detail: () =>
-                !this.state.currentPostSelect.isMarked
-                    ? 'Thêm vào danh sách các mục đã lưu'
-                    : 'Xóa khỏi danh sách các mục đã lưu',
-            onPress: () => {
-                if (!this.state.currentPostSelect.isMarked) {
-                    MarkupPostService.markupPost(this.state.currentPostSelect.id)
-                        .then((response) => {
-                            if (
-                                response &&
-                                response.code &&
-                                response.code == Const.REQUEST_CODE_SUCCESSFULLY
-                            ) {
-                                this.updatePostByID(
-                                    response.listMarkup[0].postID,
-                                    'isMarked',
-                                    true,
-                                );
-                                ToastAndroid.show(
-                                    'Đã lưu bài viết này. Bạn có thể tim trong danh sách bài viết đã lưu.',
-                                    ToastAndroid.LONG,
-                                );
-                            } else {
-                                console.log(response.errorMessage);
-                                ToastAndroid.show(
-                                    'Lưu bài viết không thành công!',
-                                    ToastAndroid.SHORT,
-                                );
-                            }
-                        })
-                        .catch((reason) => {
-                            console.log(reason);
-                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                                ToastAndroid.show(
-                                    'Hãy đăng nhập để thực hiện việc này',
-                                    ToastAndroid.LONG,
-                                );
-                            } else {
-                                ToastAndroid.show(
-                                    'Lưu bài viết không thành công!',
-                                    ToastAndroid.SHORT,
-                                );
-                            }
-                        });
-                } else {
-                    MarkupPostService.unmarkupPost(this.state.currentPostSelect.id)
-                        .then((response) => {
-                            if (
-                                response &&
-                                response.code &&
-                                response.code == Const.REQUEST_CODE_SUCCESSFULLY
-                            ) {
-                                this.updatePostByID(
-                                    response.listMarkup[0].postID,
-                                    'isMarked',
-                                    false,
-                                );
-                                ToastAndroid.show(
-                                    'Đã xóa bài viết khỏi danh sách.',
-                                    ToastAndroid.LONG,
-                                );
-                            } else {
-                                console.log(response.errorMessage);
-                                ToastAndroid.show(
-                                    'Xóa bài viết khỏi danh sách không thành công! Hãy thử lại!',
-                                    ToastAndroid.LONG,
-                                );
-                            }
-                        })
-                        .catch((reason) => {
-                            console.log(reason);
-                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                                ToastAndroid.show(
-                                    'Hãy đăng nhập để thực hiện việc này',
-                                    ToastAndroid.LONG,
-                                );
-                            } else {
-                                ToastAndroid.show(
-                                    'Xóa bài viết không thành công!',
-                                    ToastAndroid.SHORT,
-                                );
-                            }
-                        });
-                }
-                this.setState({ isShowMenu: false });
-            },
-        },
-        {
-            key: 'hidepost',
-            icon: () => (
-                <AntDesign
-                    name="closesquareo"
-                    size={scale(30, Horizontal)}
-                    color={'black'}
-                />
-            ),
-            title: () => 'Ẩn bài viết',
-            detail: () => 'Ẩn bài viết này khỏi newsfeed của bạn',
-            onPress: () => {
-                ToastAndroid.show(
-                    'Tính năng này đang trong quá trình phát triển!',
-                    ToastAndroid.LONG,
-                );
-            },
-        },
-        {
-            key: 'reportpost',
-            icon: () => (
-                <Octicons name="report" size={scale(30, Horizontal)} color={'black'} />
-            ),
-            title: () => 'Báo cáo bài viết này',
-            detail: () => 'Tôi lo ngại về bài viết này',
-            onPress: () => {
-                ToastAndroid.show(
-                    'Tính năng này đang trong quá trình phát triển!',
-                    ToastAndroid.LONG,
-                );
-                this.setState({ isShowMenu: false });
-            },
-        },
-        {
-            key: 'followuserpost',
-            icon: () => (
-                <SimpleLineIcons
-                    name="user-follow"
-                    size={scale(30, Horizontal)}
-                    color={'black'}
-                />
-            ),
-            title: () => 'Theo dõi ' + this.state.currentPostSelect.lastName,
-            detail: () => 'Xem những bài viết từ người này',
-            onPress: () => {
-                FollowService.followSomeone(this.state.currentPostSelect.accountPost)
-                    .then((response) => {
-                        if (
-                            response &&
-                            response.code &&
-                            response.code == Const.REQUEST_CODE_SUCCESSFULLY
-                        ) {
-                            ToastAndroid.show(
-                                'Đã thêm ' +
-                                this.state.currentPostSelect.lastName +
-                                ' vào danh sách follow',
-                                ToastAndroid.LONG,
-                            );
-                        } else {
-                            console.log(response.errorMessage);
-                            ToastAndroid.show(
-                                'Thêm ' +
-                                this.state.currentPostSelect.lastName +
-                                ' vào danh sách follow Không thành công',
-                                ToastAndroid.LONG,
-                            );
-                        }
-                    })
-                    .catch((reason) => {
-                        console.log(reason);
-                        if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                            ToastAndroid.show(
-                                'Hãy đăng nhập để thực hiện việc này',
-                                ToastAndroid.LONG,
-                            );
-                        } else {
-                            ToastAndroid.show(
-                                'Thêm ' +
-                                this.state.currentPostSelect.lastName +
-                                ' vào danh sách follow Không thành công',
-                                ToastAndroid.LONG,
-                            );
-                        }
-                    });
-                this.setState({ isShowMenu: false });
-            },
-        },
-        {
-            key: 'reportuser',
-            icon: () => (
-                <MaterialIcons
-                    name="report"
-                    size={scale(30, Horizontal)}
-                    color={'black'}
-                />
-            ),
-            title: () => 'Báo cáo ' + this.state.currentPostSelect.lastName,
-            detail: () => 'Tôi lo ngại về người dùng này',
-            onPress: () => {
-                ToastAndroid.show(
-                    'Tính năng này đang trong quá trình phát triển!',
-                    ToastAndroid.LONG,
-                );
-                this.setState({ isShowMenu: false });
-            },
-        },
-    ];
-    actionArticleOwn = [
-        {
-            key: 'savepost',
-            icon: () => (
-                <Ionicons
-                    name="ios-bookmark-outline"
-                    size={scale(30, Horizontal)}
-                    color={'black'}
-                />
-            ),
-            title: () =>
-                !this.state.currentPostSelect.isMarked
-                    ? 'Lưu bài viết'
-                    : 'Bỏ lưu bài viết',
-            detail: () =>
-                !this.state.currentPostSelect.isMarked
-                    ? 'Thêm vào danh sách các mục đã lưu'
-                    : 'Xóa khỏi danh sách các mục đã lưu',
-            onPress: () => {
-                if (!this.state.currentPostSelect.isMarked) {
-                    MarkupPostService.markupPost(this.state.currentPostSelect.id)
-                        .then((response) => {
-                            if (
-                                response &&
-                                response.code &&
-                                response.code == Const.REQUEST_CODE_SUCCESSFULLY
-                            ) {
-                                this.updatePostByID(
-                                    response.listMarkup[0].postID,
-                                    'isMarked',
-                                    true,
-                                );
-                                ToastAndroid.show(
-                                    'Đã lưu bài viết này. Bạn có thể tim trong danh sách bài viết đã lưu.',
-                                    ToastAndroid.LONG,
-                                );
-                            } else {
-                                console.log(response.errorMessage);
-                                ToastAndroid.show(
-                                    'Lưu bài viết không thành công!',
-                                    ToastAndroid.SHORT,
-                                );
-                            }
-                        })
-                        .catch((reason) => {
-                            console.log(reason);
-                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                                ToastAndroid.show(
-                                    'Hãy đăng nhập để thực hiện việc này',
-                                    ToastAndroid.LONG,
-                                );
-                            } else {
-                                ToastAndroid.show(
-                                    'Lưu bài viết không thành công!',
-                                    ToastAndroid.SHORT,
-                                );
-                            }
-                        });
-                } else {
-                    MarkupPostService.unmarkupPost(this.state.currentPostSelect.id)
-                        .then((response) => {
-                            if (
-                                response &&
-                                response.code &&
-                                response.code == Const.REQUEST_CODE_SUCCESSFULLY
-                            ) {
-                                this.updatePostByID(
-                                    response.listMarkup[0].postID,
-                                    'isMarked',
-                                    false,
-                                );
-                                ToastAndroid.show(
-                                    'Đã xóa bài viết khỏi danh sách.',
-                                    ToastAndroid.LONG,
-                                );
-                            } else {
-                                console.log(response.errorMessage);
-                                ToastAndroid.show(
-                                    'Xóa bài viết khỏi danh sách không thành công! Hãy thử lại!',
-                                    ToastAndroid.LONG,
-                                );
-                            }
-                        })
-                        .catch((reason) => {
-                            console.log(reason);
-                            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                                ToastAndroid.show(
-                                    'Hãy đăng nhập để thực hiện việc này',
-                                    ToastAndroid.LONG,
-                                );
-                            } else {
-                                ToastAndroid.show(
-                                    'Xóa bài viết khỏi danh sách không thành công! Hãy thử lại!',
-                                    ToastAndroid.LONG,
-                                );
-                            }
-                        });
-                }
-                this.setState({ isShowMenu: false });
-            },
-        },
-        {
-            key: 'deletepost',
-            icon: () => (
-                <AntDesign name="delete" size={scale(30, Horizontal)} color={'black'} />
-            ),
-            title: () => 'Xóa bài viết',
-            detail: () => 'Xóa bài viết này khỏi danh sách bài viết của bạn',
-            onPress: () => {
-                this.setState({ isShowMenu: false });
-                this.deletePost(this.state.currentPostSelect.id);
-            },
-        },
-        {
-            key: 'editpost',
-            icon: () => (
-                <MaterialIcons
-                    name="mode-edit"
-                    size={scale(30, Horizontal)}
-                    color={'black'}
-                />
-            ),
-            title: () => 'Chỉnh sửa bài viết',
-            detail: () => 'Chỉnh sửa nội dung của bài viết',
-            onPress: () => {
-                this.setState({ isShowMenu: false });
-            },
-        },
-    ];
 
     loadUnreadNotification() {
         NotificationService.getUnreadNotification(1, 100)
             .then((response) => {
                 this.setState({ numberUnreadNotification: response.listNoti.length });
-                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification);
+                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
                 this.notificationConnection();
             })
             .catch((reason) => {
                 console.log(reason);
             });
+        MessageService.getNumberUnreadMessage()
+            .then(response => {
+                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.setState({ numberUnreadMessage: response.numberUnreadMessage });
+                    PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
+                    this.messageConnectionHub();
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                }
+            })
     }
 
     notificationConnection() {
@@ -433,7 +110,41 @@ export default class Newsfeed extends Component {
                                     numberUnreadNotification:
                                         this.state.numberUnreadNotification + 1,
                                 });
-                                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification);
+                                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
+                            }
+                        });
+                    }
+                }
+            })
+            .catch((reason) => {
+                console.log(reason);
+            });
+    }
+    messageConnectionHub() {
+        getData('token')
+            .then((result) => {
+                if (result) {
+                    let token = result.toString().substr(1, result.length - 2);
+                    if (typeof this.messageConnection === 'undefined') {
+                        this.messageConnection = new signalR.HubConnectionBuilder()
+                            .withUrl(Const.domain + 'message', {
+                                accessTokenFactory: () => token,
+                                skipNegotiation: true,
+                                transport: signalR.HttpTransportType.WebSockets,
+                            })
+                            .withAutomaticReconnect()
+                            .build();
+                        this.messageConnection
+                            .start()
+                            .then(() => {
+                            })
+                            .catch(function (err) {
+                                return console.error(err.toString());
+                            });
+                        this.messageConnection.on('NewMessage', (data) => {
+                            if (data) {
+                                this.setState({ numberUnreadMessage: this.state.numberUnreadMessage + 1 });
+                                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
                             }
                         });
                     }
@@ -502,13 +213,16 @@ export default class Newsfeed extends Component {
             }
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
+            if (this.connection) {
+                this.connection.stop();
+            }
+            if (this.messageConnection) {
+                this.messageConnection.stop();
+            }
         });
     }
 
     componentWillUnmount() {
-        if (this.connection) {
-            this.connection.stop();
-        }
     }
 
     removePost(postID) {
@@ -943,6 +657,15 @@ export default class Newsfeed extends Component {
                                 color={'white'}
                                 size={30}
                             />
+                            {this.state.numberUnreadMessage > 0 ? (
+                                <Badge
+                                    value={this.state.numberUnreadMessage}
+                                    status="error"
+                                    containerStyle={{ position: 'absolute', top: -4, right: 1 }}
+                                />
+                            ) : (
+                                <View></View>
+                            )}
                         </TouchableOpacity>
                     </View>
                     <View style={Style.newsfeed.listArticle}>

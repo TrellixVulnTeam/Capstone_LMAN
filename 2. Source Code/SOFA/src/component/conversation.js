@@ -149,7 +149,7 @@ export default class Conversation extends Component {
     sendMessage() {
         const { friendAccount, listMessage, content, imageBase64 } = this.state;
         if (content.length > 0 || imageBase64.length > 0) {
-            MessageService.sendMessage(friendAccount.accountID, content, imageBase64, listMessage[0].conversationId)
+            MessageService.sendMessage(friendAccount.accountID, content, imageBase64, (listMessage[0] && listMessage[0].conversationId) ? listMessage[0].conversationId : 0)
                 .then(response => {
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                         let messageRes = response;

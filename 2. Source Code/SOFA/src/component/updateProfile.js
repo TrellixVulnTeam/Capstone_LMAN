@@ -249,24 +249,43 @@ export default class UpdateProfile extends Component {
                         ToastAndroid.show('Vui lòng không để trống Địa chỉ', ToastAndroid.SHORT);
                     }
                     else {
-                        Request.Post(url, header, data)
-                            .then(response => {
-                                console.log(response);
-                                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                    ToastAndroid.show('Update thành công!', ToastAndroid.SHORT);
-                                    console.log(response);
-                                    this.props.navigation.goBack();
-                                } else {
-                                    if (response.code == Const.REQUEST_CODE_FAILED) {
-                                        ToastAndroid.show('Update không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
-                                        console.log(response);
+
+                        Alert.alert(
+                            "Cập nhật",
+                            "Bạn có muốn chỉnh sửa không?",
+                            [
+                                {
+                                    text: "Không",
+                                    onPress: () => console.log("Cancel Pressed"),
+                                    style: "cancel"
+                                },
+                                {
+                                    text: "Có", onPress: () => {
+                                        Request.Post(url, header, data)
+                                            .then(response => {
+                                                console.log(response);
+                                                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                                    ToastAndroid.show('Update thành công!', ToastAndroid.SHORT);
+                                                    console.log(response);
+                                                    this.props.navigation.goBack();
+                                                } else {
+                                                    if (response.code == Const.REQUEST_CODE_FAILED) {
+                                                        ToastAndroid.show('Update không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
+                                                        console.log(response);
+                                                    }
+                                                }
+                                            })
+                                            .catch(reason => {
+                                                console.log('Lỗi rồi!');
+                                                console.log(reason);
+                                            });
                                     }
                                 }
-                            })
-                            .catch(reason => {
-                                console.log('Lỗi rồi!');
-                                console.log(reason);
-                            });
+                            ]
+                        );
+
+
+
 
                     }
                 } else {

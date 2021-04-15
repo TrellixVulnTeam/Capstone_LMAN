@@ -135,7 +135,7 @@ export const newsfeed = StyleSheet.create({
     },
     notificationIcon: {
 
-        marginRight: scale(5, Horizontal)
+        marginRight: scale(10, Horizontal)
     },
     listArticle: {
         // height: scale(661, Vertical)

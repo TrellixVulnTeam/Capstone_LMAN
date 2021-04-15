@@ -180,6 +180,16 @@ export default class PostMenu extends Component {
     ]
     actionArticleOwn = [
         {
+            key: 'buyplace',
+            icon: () => <MaterialIcons name='place' size={scale(30, Horizontal)} color={'black'} />,
+            title: () => 'Tìm shop',
+            detail: () => 'Tìm shop có bán sản phẩm này',
+            onPress: () => {
+                this.props.onPressBuyPlace(this.props.post);
+                this.props.onRequestClose();
+            }
+        },
+        {
             key: 'savepost',
             icon: () => <Ionicons name='ios-bookmark-outline' size={scale(30, Horizontal)} color={'black'} />,
             title: () => !this.props.post.isMarked ? 'Lưu bài viết' : 'Bỏ lưu bài viết',
