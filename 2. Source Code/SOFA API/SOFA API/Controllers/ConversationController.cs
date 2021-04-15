@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-
+using SOFA_API.Common;
 
 namespace SOFA_API.Controllers
 {
@@ -59,6 +59,13 @@ namespace SOFA_API.Controllers
             int accountId = Int32.Parse(idClaim.Value.Trim());
             ListSearchConversationViewModelOut modelOut = ConversationService.Instance.GetAllUserSearch(accountId);
             return Ok(modelOut);
+        }
+        [HttpGet("GetNumberUnreadMessage")]
+        public ActionResult GetNumberUnreadMessage()
+        {
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            ListConversationViewModelOut messageViewModelOut = ConversationService.Instance.GetNumberUnreadMessage(userID);
+            return Ok(messageViewModelOut);
         }
     }
 }

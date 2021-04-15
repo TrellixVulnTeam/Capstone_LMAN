@@ -38,9 +38,9 @@ namespace SOFA_API.Service
             {
                 List<int> listChatwith = ConversationDAO.Instance.GetListAccountChat(accountId);
                 listConversation = ConversationDAO.Instance.GetListConversation(accountId, listChatwith);
-                listConversation.Code= Const.REQUEST_CODE_SUCCESSFULLY;
+                listConversation.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Utils.Instance.SaveLog(ex.ToString());
                 listConversation.Code = Const.REQUEST_CODE_FAILED;
@@ -88,6 +88,26 @@ namespace SOFA_API.Service
             }
             return listSearch;
         }
+
+        public ListConversationViewModelOut GetNumberUnreadMessage(int userID)
+        {
+            ListConversationViewModelOut listConversationViewModelOut = new ListConversationViewModelOut();
+
+            try
+            {
+                listConversationViewModelOut.NumberUnreadMessage = ConversationDAO.Instance.GetNumberUnreadMessage(userID);
+                listConversationViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                listConversationViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                listConversationViewModelOut.ErrorMessage = e.ToString();
+            }
+
+            return listConversationViewModelOut;
+        }
+
         public ConversationViewModelOut DeleteConversation(int accountId, int chatWithAccountId)
         {
             ConversationViewModelOut newConversation = new ConversationViewModelOut();
@@ -110,6 +130,6 @@ namespace SOFA_API.Service
                 newConversation.Code = Const.REQUEST_CODE_FAILED;
             }
             return newConversation;
-        } 
+        }
     }
 }

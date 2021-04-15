@@ -15,13 +15,14 @@ namespace SOFA_API.ViewModel.Conversation
         public string AvatarUri { get; set; }
         public string Avatar { get; set; }
         public string UserName { get; set; }
+        public int NumberUnreadMessage { get; set; }
         public List<ConversationViewModelOut> listConversation { get; set; }
 
         public ListConversationViewModelOut() : base()
         {
         }
 
-        public ListConversationViewModelOut(int accountId, string firstName, string lastName, string avatarUri, string avatar, string userName, List<ConversationViewModelOut> listConversation)
+        public ListConversationViewModelOut(int accountId, string firstName, string lastName, string avatarUri, string avatar, string userName, List<ConversationViewModelOut> listConversation, int numberUnreadMessage)
         {
             AccountId = accountId;
             FirstName = firstName;
@@ -30,6 +31,7 @@ namespace SOFA_API.ViewModel.Conversation
             Avatar = avatar;
             UserName = userName;
             this.listConversation = listConversation;
+            this.NumberUnreadMessage = numberUnreadMessage;
         }
     }
 }

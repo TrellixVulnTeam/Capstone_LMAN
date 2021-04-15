@@ -41,7 +41,7 @@ namespace SOFA_API.DAO
                 {
                     foreach (DataRow row in data.Rows)
                     {
-                            chatWithListAccount.Add((int)row["withAccountId"]);
+                        chatWithListAccount.Add((int)row["withAccountId"]);
                     }
                 }
             }
@@ -82,7 +82,7 @@ namespace SOFA_API.DAO
                         {
                             string sqlgetLastMessage = "EXEC  dbo.[getLatMessage] @AccountID , @ChatWithAccountId ";
                             DataTable getLastMessage = DataProvider.Instance.ExecuteQuery(sqlgetLastMessage, new object[] { accountId, chatWithAccount });
-                            foreach(DataRow row in getLastMessage.Rows)
+                            foreach (DataRow row in getLastMessage.Rows)
                             {
                                 listConversation.Add(new ConversationViewModelOut(row));
                             }
@@ -112,15 +112,15 @@ namespace SOFA_API.DAO
             try
             {
                 string sql = "exec [dbo].[SearchConversation] @AccountID , @searchValue ";
-                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId , searchValue });
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId, searchValue });
                 if (data.Rows.Count > 0)
                 {
                     foreach (DataRow row in data.Rows)
                     {
                         searchConversation.Add(new SearchCoversationViewModelOut(row, accountId));
                     }
-                    viewModelOut = new ListSearchConversationViewModelOut( searchConversation);
-                    }
+                    viewModelOut = new ListSearchConversationViewModelOut(searchConversation);
+                }
             }
             catch (Exception e)
             {
@@ -160,14 +160,23 @@ namespace SOFA_API.DAO
             {
                 string sql = "EXEc [dbo].[DeleteCoversation] @AccountID , @ChatWithAccountId";
                 result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountId, chatWithAccountId });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Utils.Instance.SaveLog(ex.ToString());
                 throw ex;
             }
             return result;
         }
+        public int GetNumberUnreadMessage(int userID)
+        {
+            int res = 0;
 
+            string sql = "EXEC GetNumberUnreadMessage @userID";
+            res = (int)DataProvider.Instance.ExecuteScalar(sql, new object[] { userID });
+
+            return res;
+        }
 
     }
 }
