@@ -61,5 +61,8 @@ namespace SOFA_API.Common
         public const int POST_TYPE_NORMAL = 0;
         public const int POST_TYPE_PRODUCT = 1;
 
+        public const int REPORT_TYPE_POST = 1;
+        public const int REPORT_TYPE_USER = 2;
+        public const int REPORT_TYPE_COMMENT = 3;
     }
 }
