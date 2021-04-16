@@ -77,9 +77,6 @@ export default class Newsfeed extends Component {
             })
             .catch(reason => {
                 console.log(reason);
-                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
-                }
             })
     }
 
