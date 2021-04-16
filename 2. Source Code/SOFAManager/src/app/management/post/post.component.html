@@ -44,7 +44,7 @@
                         currentPage: page,
                         totalItems: totalRecord }">
                             <th scope="row">{{post.id}}</th>
-                            <td>{{post.content}}</td>
+                            <td>{{truncateChar(post.content)}}</td>
                             <td><img style="max-height: 40px; max-width: 40px;"
                                     src="{{assetsDonmain + post.postImageUri}}"></td>
                             <td>{{post.postedBy}}</td>

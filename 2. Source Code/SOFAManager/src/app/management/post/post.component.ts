@@ -62,6 +62,18 @@ export class PostComponent implements OnInit {
       }
     }
   }
+
+  truncateChar(text: string): string {
+    let charlimit = 120;
+    if (!text || text.length <= charlimit) {
+      return text;
+    }
+
+    let without_html = text.replace(/<(?:.|\n)*?>/gm, '');
+    let shortened = without_html.substring(0, charlimit) + "...";
+    return shortened;
+  }
+
   selectOption(){
     this.search();
   }
