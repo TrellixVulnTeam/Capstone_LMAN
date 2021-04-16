@@ -96,7 +96,6 @@ export default class ViewImageModal extends Component {
         const { visible, post, image, onRequestClose } = this.props;
         return (
             <View>
-                <StatusBar hidden={true} />
                 <Modal
                     visible={visible}
                     onRequestClose={() => onRequestClose()}

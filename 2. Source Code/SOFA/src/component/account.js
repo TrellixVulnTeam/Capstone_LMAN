@@ -171,7 +171,7 @@ export default class Profile extends Component {
                 <View style={{
                     alignSelf: 'center'
                 }}>
-                    <StatusBar hidden={false} backgroundColor='#fbb897' />
+                    <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                     <Text style={{
                         marginTop: Utils.scale(100, Const.Vertical),
                         fontWeight: 'bold',
@@ -219,7 +219,7 @@ export default class Profile extends Component {
 
                         </View>
                     </View>
-                    <StatusBar hidden={false} backgroundColor='#fbb897' />
+
                     <View style={{
                         marginLeft: Utils.scale(15, Const.Horizontal),
                         marginTop: Utils.scale(13, Const.Vertical),

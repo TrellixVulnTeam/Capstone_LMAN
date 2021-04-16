@@ -32,7 +32,7 @@ export default class Report extends Component {
             reasons: [],
             reportType: 1,
             toAccountID: 0,
-            toPostID: 85,
+            toPostID: 0,
             toCommentID: 0,
             reportContent: '',
             reasonCount: 0
@@ -90,6 +90,7 @@ export default class Report extends Component {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     ToastAndroid.show("Chúng tôi cảm ơn sự đóng góp của bạn!", ToastAndroid.LONG);
                     this.setState({ isLoading: false });
+                    this.props.navigation.goBack();
                 } else {
                     ToastAndroid.show("Báo cáo không thành công!", ToastAndroid.LONG);
                     this.setState({ isLoading: false });
@@ -111,6 +112,7 @@ export default class Report extends Component {
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.setState({ isLoading: true });
             const { reportType, toAccountID, toPostID, toCommentID } = this.props.route.params;
+            this.setState({ reportType: reportType });
             switch (reportType) {
                 case Const.REPORT_TYPE_POST:
                     this.setState({ toPostID: toPostID });
@@ -125,6 +127,16 @@ export default class Report extends Component {
             this.getAllReason();
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
+            this.setState({
+                isLoading: false,
+                reasons: [],
+                reportType: 1,
+                toAccountID: 0,
+                toPostID: 0,
+                toCommentID: 0,
+                reportContent: '',
+                reasonCount: 0
+            })
         });
     }
     componentWillUnmount() {

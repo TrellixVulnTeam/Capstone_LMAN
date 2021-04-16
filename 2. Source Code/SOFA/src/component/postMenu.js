@@ -169,7 +169,7 @@ export default class PostMenu extends Component {
             title: () => 'Báo cáo ' + this.props.post.lastName,
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
-                this.props.onPressReportPost(this.props.post.accountID);
+                this.props.onPressReportUser(this.props.post.accountID);
                 this.props.onRequestClose()
             }
         },

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StatusBar, Image, Alert, FlatList, TouchableWithoutFeedback, StyleSheet, TextInput, ActivityIndicator, TouchableHighlight, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StatusBar, Image, Alert, FlatList, TouchableWithoutFeedback, StyleSheet, TextInput, ActivityIndicator, TouchableHighlight, Modal, TouchableOpacity, ScrollView, ToastAndroid } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -101,70 +101,40 @@ export default class CreatePost extends Component {
                             } else {
                                 this.setState({ isLoading: false });
                                 this.setState({ account: {}, isLogin: false, token: '' });
-                                Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
-                                    [
-                                        {
-                                            text: 'Đăng nhập',
-                                            onPress: () => this.props.navigation.navigate('Login')
-                                        },
-                                        {
-                                            text: 'Lần sau',
-                                            onPress: () => this.props.navigation.navigate('Newsfeed')
-                                        }
-                                    ]
-                                )
+                                ToastAndroid.show(
+                                    'Hãy đăng nhập để thực hiện việc này',
+                                    ToastAndroid.LONG,
+                                );
+                                this.props.navigation.goBack();
                             }
                         })
                         .catch(reason => {
                             this.setState({ isLoading: false });
                             this.setState({ account: {}, isLogin: false, token: '' });
-                            Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
-                                [
-                                    {
-                                        text: 'Đăng nhập',
-                                        onPress: () => this.props.navigation.navigate('Login')
-                                    },
-                                    {
-                                        text: 'Lần sau',
-                                        onPress: () => this.props.navigation.navigate('Newsfeed')
-                                    }
-                                ]
-                            )
+                            ToastAndroid.show(
+                                'Hãy đăng nhập để thực hiện việc này',
+                                ToastAndroid.LONG,
+                            );
+                            this.props.navigation.goBack();
                         })
                 } else {
                     this.setState({ isLoading: false });
-                    Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
-                        [
-                            {
-                                text: 'Đăng nhập',
-                                onPress: () => this.props.navigation.navigate('Login')
-                            },
-                            {
-                                text: 'Lần sau',
-                                onPress: () => this.props.navigation.navigate('Newsfeed')
-                            }
-                        ]
-                    )
+                    ToastAndroid.show(
+                        'Hãy đăng nhập để thực hiện việc này',
+                        ToastAndroid.LONG,
+                    );
+                    this.props.navigation.goBack();
                 }
             })
             .catch(reason => {
                 this.setState({ isLoading: false });
                 this.setState({ token: '' });
                 console.log(reason);
-                Alert.alert('Thông báo', 'Bạn hãy đăng nhập để tạo bài viết mới',
-                    [
-                        {
-                            text: 'Đăng nhập',
-                            onPress: () => this.props.navigation.navigate('Login'),
-                            style: 'default'
-                        },
-                        {
-                            text: 'Lần sau',
-                            onPress: () => this.props.navigation.navigate('Newsfeed'),
-                            style: 'cancel'
-                        }
-                    ]
-                )
+                ToastAndroid.show(
+                    'Hãy đăng nhập để thực hiện việc này',
+                    ToastAndroid.LONG,
+                );
+                this.props.navigation.goBack();
             })
     }
 
@@ -358,6 +328,7 @@ export default class CreatePost extends Component {
             });
         });
         this._screenFocus = this.props.navigation.addListener('blur', () => {
+            this.setState({ isShowIntro: false });
             this.props.navigation.dangerouslyGetParent().setOptions({
                 tabBarVisible: false
             });
@@ -637,7 +608,8 @@ export default class CreatePost extends Component {
                     (<View></View>)}
                 <Modal
                     transparent={true}
-                    visible={this.state.showIntro}
+                    visible={this.state.isShowIntro}
+                    onRequestClose={() => this.setState({ isShowIntro: false })}
                 >
                     <View style={{
                         height: scale(400, Vertical),
@@ -664,7 +636,7 @@ export default class CreatePost extends Component {
                         }}                        >Dạng 2: Bài viết giới thiệu sản phẩm cho việc kinh doanh là bài viết đăng thông tin sản phẩm thời trang. Với loại bài đăng này bạn sẽ mất phí. Người dùng sẽ dế tìm thấy sản phẩm của qua tính năng tìm nơi bán</Text>
                         <Text>Lưu ý: Trong bài viết yêu cầu phải có hình ảnh và tiêu đề. Nội dung sẽ được kiểm định, chỉ được phép đăng nội dung về thời trang và hợp lệ.</Text>
                         <TouchableOpacity
-                            onPress={() => this.setState({ showIntro: false })}
+                            onPress={() => this.setState({ isShowIntro: false })}
                             style={{
                                 height: scale(30, Vertical),
                                 width: scale(80, Horizontal),
