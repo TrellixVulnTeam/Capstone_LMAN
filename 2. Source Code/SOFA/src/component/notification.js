@@ -110,6 +110,7 @@ export default class Notification extends Component {
             .catch(reason => {
                 console.log(reason);
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    this.props.navigation.goBack();
                     ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                 } else {
                     ToastAndroid.show('Tải thông báo không thành công!', ToastAndroid.LONG);
@@ -147,6 +148,7 @@ export default class Notification extends Component {
             .catch(reason => {
                 console.log(reason);
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    this.props.navigation.goBack();
                     ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                 } else {
                     ToastAndroid.show('Đánh dấu đã đọc không thành công!', ToastAndroid.LONG);
@@ -166,6 +168,7 @@ export default class Notification extends Component {
             .catch(reason => {
                 console.log(reason);
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    this.props.navigation.goBack();
                     ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                 } else {
                     ToastAndroid.show('Đánh dấu đã đọc không thành công!', ToastAndroid.LONG);
