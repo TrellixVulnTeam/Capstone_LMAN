@@ -136,7 +136,7 @@ export default class Profile extends Component {
     }
 
     onPressSetting() {
-        alert('Click Setting');
+        this.props.navigation.navigate('Settings');
     }
 
     onPressFeedback() {

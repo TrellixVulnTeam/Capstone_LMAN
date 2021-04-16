@@ -45,7 +45,7 @@ export default class MessageWSS {
                         this._connection.on("NewMessage", data => {
                             if (data) {
                                 console.log('MessageWSS', data);
-                                if (Session.getInstance().currentUserChat != data.fromAccountId) {
+                                if (Session.getInstance().settings.isOnMessageNotification && Session.getInstance().currentUserChat != data.fromAccountId) {
                                     ProfileService.getOtherProfile(data.fromAccountId)
                                         .then(response => {
                                             console.log('MessageWSS', response);

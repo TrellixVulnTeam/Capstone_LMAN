@@ -200,6 +200,7 @@ export default class Conversation extends Component {
 
     componentDidMount() {
         this._screenFocus = this.props.navigation.addListener('focus', () => {
+            console.log('Message', Session.getInstance().settings.chatColor)
             const { uid2 } = this.props.route.params;
             Session.getInstance().currentUserChat = uid2;
             this.setState({ account: Session.getInstance().account, token: Session.getInstance().token });

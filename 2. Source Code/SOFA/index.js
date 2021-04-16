@@ -28,16 +28,20 @@ getData('settings')
         if (result) {
             let temp = JSON.parse(result);
             Session.getInstance().settings = temp;
+            if (typeof temp.isOnNotification === 'undefined') {
+                Session.getInstance().settings.isOnNotification = true;
+            }
+            if (typeof temp.isOnMessageNotification === 'undefined') {
+                Session.getInstance().settings.isOnMessageNotification = true;
+            }
+            if (typeof temp.chatColor === 'undefined') {
+                Session.getInstance().settings.chatColor = '#46AA4A';
+            }
         }
     })
     .catch(reason => {
         console.log(reason);
     });
-storeData('settings', { chatColor: '#46AA4A' })
-    .then(result => {
-        console.log(result);
-    })
-    .catch(reason => console.log(reason));
 
 PushNotification.configure({
     onRegister: function (token) {

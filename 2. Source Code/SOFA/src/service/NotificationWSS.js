@@ -44,7 +44,7 @@ export default class NotificationWSS {
                     if (!isNewfeed) {
                         this._connection.on("NewNotification", data => {
                             if (data) {
-                                if (Session.getInstance().account.accountID != data.fromAccount) {
+                                if (Session.getInstance().settings.isOnNotification && Session.getInstance().account.accountID != data.fromAccount) {
                                     PushNotification.localNotification({
                                         channelId: 'Thông báo',
                                         title: "Thông báo",
