@@ -163,14 +163,17 @@ export default class Search extends Component {
                         value={searchText}
                         onSubmitEditing={() => {
                             this.setState({ currentTextSearch: searchText });
-                            this.searchPost(1);
-                            this.searchUser(1);
+                            if (searchText.trim().length > 0) {
+                                this.searchPost(1);
+                                this.searchUser(1);
+                            }
                         }}
                         returnKeyType={'search'}
                         style={[styles.searchBox]}
                         placeholder={'Từ khóa tìm kiếm'}
                     />
                     <TouchableOpacity
+                        disabled={searchText.trim().length == 0}
                         style={styles.searchIcon}
                     >
                         <Ionicons name={'search-sharp'} color={'#C7C7C7'} size={30}
