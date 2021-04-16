@@ -45,9 +45,9 @@ namespace SOFA_API.DAO
         /// <param name="page">Current page</param>
         /// <param name="rowsOfPage">Number items in one page</param>
         /// <returns>List markup post</returns>
-        public List<MarkupPost> GetAllMarkupPost(int page, int rowsOfPage)
+        public List<Post> GetAllMarkupPost(int page, int rowsOfPage)
         {
-            List<MarkupPost> markupPosts = new List<MarkupPost>();
+            List<Post> markupPosts = new List<Post>();
 
             string sql = "EXEC dbo.GetAllMarkupPost @page , @rowsOfPage";
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { page, rowsOfPage });
@@ -55,7 +55,7 @@ namespace SOFA_API.DAO
             {
                 foreach (DataRow row in data.Rows)
                 {
-                    markupPosts.Add(new MarkupPost(row));
+                    markupPosts.Add(new Post(row));
                 }
             }
             return markupPosts;
@@ -67,9 +67,9 @@ namespace SOFA_API.DAO
         /// <param name="page">Current page</param>
         /// <param name="rowsOfPage">Number items in one page</param>
         /// <returns>List markup post</returns>
-        public List<MarkupPost> GetMarkupPostOfUser(int accountID, int page, int rowsOfPage)
+        public List<Post> GetMarkupPostOfUser(int accountID, int page, int rowsOfPage)
         {
-            List<MarkupPost> markupPosts = new List<MarkupPost>();
+            List<Post> markupPosts = new List<Post>();
 
             string sql = "EXEC dbo.GetMarkupPostOfUser @accountID , @page , @rowsOfPage";
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountID, page, rowsOfPage });
@@ -77,7 +77,7 @@ namespace SOFA_API.DAO
             {
                 foreach (DataRow row in data.Rows)
                 {
-                    markupPosts.Add(new MarkupPost(row));
+                    markupPosts.Add(new Post(row));
                 }
             }
             return markupPosts;

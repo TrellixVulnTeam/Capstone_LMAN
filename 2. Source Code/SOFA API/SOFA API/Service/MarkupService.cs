@@ -86,53 +86,81 @@ namespace SOFA_API.Service
             return markupViewModelOut;
         }
 
-        public MarkupViewModelOut GetUserMarkupPost(int userID, int page, int rowsOfPage)
+        public PostViewModelOut GetUserMarkupPost(int userID, int page, int rowsOfPage)
         {
-            MarkupViewModelOut markupViewModelOut = new MarkupViewModelOut();
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
 
             try
             {
-                List<MarkupPost> markupPosts = MarkupPostDAO.Instance.GetMarkupPostOfUser(userID, page, rowsOfPage);
-                foreach (MarkupPost markupPost in markupPosts)
+                List<Post> listAllPost = MarkupPostDAO.Instance.GetMarkupPostOfUser(userID, page, rowsOfPage);
+
+                foreach (Post item in listAllPost)
                 {
-                    MarkupModelOut markupModelOut = new MarkupModelOut();
-                    markupModelOut.SetMarkupPost(markupPost);
-                    markupViewModelOut.ListMarkup.Add(markupModelOut);
+                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
+                    PostModelOut postModelOut = new PostModelOut();
+                    postModelOut.SetPostDetail(item);
+                    postModelOut.SetAccountPost(profile);
+                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
+                    postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
+                    postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
+                    postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                    if (userID != 0)
+                    {
+                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
+                        Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
+                        postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                        MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
+                        postModelOut.IsMarked = markupPost != null ? true : false;
+                    }
+                    postViewModelOut.ListPost.Add(postModelOut);
                 }
-                markupViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
             catch (Exception e)
             {
                 Utils.Instance.SaveLog(e.ToString());
-                markupViewModelOut.Code = Const.REQUEST_CODE_FAILED;
-                markupViewModelOut.ErrorMessage = e.ToString();
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
             }
-
-            return markupViewModelOut;
+            return postViewModelOut;
         }
-        public MarkupViewModelOut GetAllMarkupPost(int page, int rowsOfPage)
+        public PostViewModelOut GetAllMarkupPost(int userID, int page, int rowsOfPage)
         {
-            MarkupViewModelOut markupViewModelOut = new MarkupViewModelOut();
+            PostViewModelOut postViewModelOut = new PostViewModelOut();
 
             try
             {
-                List<MarkupPost> markupPosts = MarkupPostDAO.Instance.GetAllMarkupPost(page, rowsOfPage);
-                foreach (MarkupPost markupPost in markupPosts)
+                List<Post> listAllPost = MarkupPostDAO.Instance.GetAllMarkupPost(page, rowsOfPage);
+
+                foreach (Post item in listAllPost)
                 {
-                    MarkupModelOut markupModelOut = new MarkupModelOut();
-                    markupModelOut.SetMarkupPost(markupPost);
-                    markupViewModelOut.ListMarkup.Add(markupModelOut);
+                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
+                    PostModelOut postModelOut = new PostModelOut();
+                    postModelOut.SetPostDetail(item);
+                    postModelOut.SetAccountPost(profile);
+                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
+                    postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
+                    postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
+                    postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                    if (userID != 0)
+                    {
+                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
+                        Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
+                        postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                        MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
+                        postModelOut.IsMarked = markupPost != null ? true : false;
+                    }
+                    postViewModelOut.ListPost.Add(postModelOut);
                 }
-                markupViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
             catch (Exception e)
             {
                 Utils.Instance.SaveLog(e.ToString());
-                markupViewModelOut.Code = Const.REQUEST_CODE_FAILED;
-                markupViewModelOut.ErrorMessage = e.ToString();
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                postViewModelOut.ErrorMessage = e.Message;
             }
-
-            return markupViewModelOut;
+            return postViewModelOut;
         }
     }
 }

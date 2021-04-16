@@ -37,13 +37,14 @@ namespace SOFA_API.Controllers
         public ActionResult GetUserMarkupPost(int page, int rowsOfPage)
         {
             int userID = Utils.Instance.GetUserID(User.Claims);
-            MarkupViewModelOut markupViewModelOut = MarkupService.Instance.GetUserMarkupPost(userID, page, rowsOfPage);
+            PostViewModelOut markupViewModelOut = MarkupService.Instance.GetUserMarkupPost(userID, page, rowsOfPage);
             return Ok(markupViewModelOut);
         }
         [HttpGet("GetAllMarkupPost")]
         public ActionResult GetAllMarkupPost(int page, int rowsOfPage)
         {
-            MarkupViewModelOut markupViewModelOut = MarkupService.Instance.GetAllMarkupPost(page, rowsOfPage);
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            PostViewModelOut markupViewModelOut = MarkupService.Instance.GetAllMarkupPost(userID, page, rowsOfPage);
             return Ok(markupViewModelOut);
         }
     }

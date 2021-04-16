@@ -422,8 +422,9 @@ CREATE PROC GetAllMarkupPost
 @page INT, @rowsOfPage INT
 AS
 BEGIN
-	SELECT * FROM MarkupPost
-	ORDER BY ID ASC
+	SELECT Post.* FROM MarkupPost
+	INNER JOIN Post ON Post.Id = MarkupPost.PostID
+	ORDER BY MarkupPost.id ASC
 	OFFSET (@page-1)*@rowsOfPage ROWS
 	FETCH NEXT @rowsOfPage ROWS ONLY
 END
@@ -435,8 +436,10 @@ CREATE PROC GetMarkupPostOfUser
 @accountID INT, @page INT, @rowsOfPage INT
 AS
 BEGIN
-	SELECT * FROM MarkupPost WHERE AccountID = @accountID
-	ORDER BY ID ASC
+	SELECT Post.* FROM MarkupPost
+	INNER JOIN Post ON Post.Id = MarkupPost.PostID
+	WHERE AccountId = @accountID
+	ORDER BY MarkupPost.id ASC
 	OFFSET (@page-1)*@rowsOfPage ROWS
 	FETCH NEXT @rowsOfPage ROWS ONLY
 END
