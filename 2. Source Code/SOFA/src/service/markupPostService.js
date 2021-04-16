@@ -73,7 +73,7 @@ export const getUserMarkupPost = (page) => {
                         "Accept": 'application/json',
                         "Authorization": 'Bearer ' + token,
                     };
-                    let uri = Const.domain + 'api/markup/GetUserMarkupPost';
+                    let uri = Const.domain + 'api/markup/GetUserMarkupPost?page=' + page + '&rowsOfPage=' + Const.NEWSFEED_ROWS_OF_PAGE;
                     Request.Get(uri, header)
                         .then(response => {
                             resolve(response);

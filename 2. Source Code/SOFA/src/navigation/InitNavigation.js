@@ -32,6 +32,7 @@ import Search from '../component/search';
 import Support from '../component/support';
 import SupportRequestDetail from '../component/supportRequestDetail';
 import Report from '../component/report';
+import ListMarkupPost from '../component/listMarkupPost';
 const Stack = createStackNavigator();
 
 export const navigationRef = React.createRef();
@@ -76,6 +77,7 @@ export function Navigation() {
                 <Stack.Screen name='Support' component={Support} options={{ headerShown: false }} />
                 <Stack.Screen name='SupportRequestDetail' component={SupportRequestDetail} options={{ headerShown: false }} />
                 <Stack.Screen name='Report' component={Report} options={{ headerShown: false }} />
+                <Stack.Screen name='ListMarkupPost' component={ListMarkupPost} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

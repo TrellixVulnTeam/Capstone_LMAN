@@ -128,7 +128,7 @@ export default class Profile extends Component {
     }
 
     onPressMarkup() {
-        alert('Click Markup');
+        this.props.navigation.navigate('ListMarkupPost');
     }
 
     onPressPrivacy() {
