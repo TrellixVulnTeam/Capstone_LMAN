@@ -53,6 +53,8 @@ namespace SOFA_API.ViewModel.Account
             Email = row["email"].ToString();
             Phone = row["phone"].ToString();
             IsActive = Boolean.Parse(row["IsActive"].ToString());
+            Firstname = Convert.IsDBNull(row["FirstName"]) ? "" : row["FirstName"].ToString();
+            Lastname = Convert.IsDBNull(row["LastName"]) ? "" : row["LastName"].ToString();
         }
     }
 }

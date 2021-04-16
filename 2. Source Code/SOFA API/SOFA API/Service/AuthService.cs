@@ -525,6 +525,9 @@ namespace SOFA_API.Service
 
                         loginViewModelIn.Username = account.Username;
                         loginViewModelIn.NewPassword = HashPassword("123456");
+                        loginViewModelIn.Email = account.Email;
+                        loginViewModelIn.Firstname = account.Firstname;
+                        loginViewModelIn.Lastname = account.Lastname;
                     }
                     else
                     {
@@ -538,6 +541,10 @@ namespace SOFA_API.Service
 
                 // update
                 AccountDAO.Instance.UpdateUserPassword(loginViewModelIn.Username, loginViewModelIn.NewPassword);
+                Utils.Instance.SendMail(loginViewModelIn.Email, "SOFA - Thay đổi mật khẩu", "<b>Xin chào " + loginViewModelIn.Firstname + " " + loginViewModelIn.Lastname + ",</b><br><p> Mật khẩu của bạn đã được reset về mặc định</p>" +
+                    "<p>Dưới đây là mật khẩu mặc định của bạn. Để đảm bảo an toàn, vui lòng không cung cấp mật khẩu cho bất kỳ ai khác.</p>" +
+                    "<p> Mật khẩu mặc định là: <b> 123456 </b> </p><p> Để tăng cường bảo mật, vui lòng truy cập lại SOFA để đổi lại mật khẩu của bạn </p>" +
+                    "SOFA team,");
                 loginViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 loginViewModelOut.Username = loginViewModelIn.Username;
 
