@@ -45,12 +45,12 @@ export default class UpdateProfile extends Component {
         }
     }
 
-    getDataX(){
-        var {supportRequest} = this.props.route.params;
-        if(supportRequest.requestType == 1){
-            this.setState({titleScreen: 'Bạn đã đăng kí trở thành fashionista rồi! Đây là chi tiết yêu cầu của bạn'});
-        }else{
-            this.setState({titleScreen: 'Bạn đã đăng kí khóa tài khoản rồi! Đây là chi tiết yêu cầu của bạn'});
+    getDataX() {
+        var { supportRequest } = this.props.route.params;
+        if (supportRequest.requestType == 1) {
+            this.setState({ titleScreen: 'Bạn đã đăng kí trở thành fashionista rồi! Đây là chi tiết yêu cầu của bạn' });
+        } else {
+            this.setState({ titleScreen: 'Bạn đã đăng kí khóa tài khoản rồi! Đây là chi tiết yêu cầu của bạn' });
         }
     }
 
@@ -76,7 +76,7 @@ export default class UpdateProfile extends Component {
                         fontSize: Utils.scale(20, Const.Horizontal),
                         color: '#000066',
                     }}>{titleScreen}</Text>
-                    <StatusBar hidden={false} backgroundColor='#fbb897' />
+                    <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                     <View style={{
                         marginTop: Utils.scale(15, Const.Vertical),
                     }}>
@@ -148,7 +148,7 @@ export default class UpdateProfile extends Component {
                                 marginLeft: Utils.scale(5, Const.Horizontal),
                                 fontSize: Utils.scale(17, Const.Horizontal),
                             }}
-                            >{(supportRequest.respone != null && supportRequest.respone.length > 0 ) ? supportRequest : 'Hệ thống chưa có phản hồi. Bạn vui lòng chờ nhé'}</Text>
+                            >{(supportRequest.respone != null && supportRequest.respone.length > 0) ? supportRequest : 'Hệ thống chưa có phản hồi. Bạn vui lòng chờ nhé'}</Text>
                         </View>
                     </View>
                 </View>

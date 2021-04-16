@@ -100,7 +100,7 @@ export default class UpdateProfile extends Component {
                         fontWeight: 'bold',
                         fontSize: Utils.scale(25, Const.Horizontal),
                     }}>Chi tiết feedback</Text>
-                    <StatusBar hidden={false} backgroundColor='#fbb897' />
+                    <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                     <View style={{
                         marginTop: Utils.scale(10, Const.Vertical),
                     }}>

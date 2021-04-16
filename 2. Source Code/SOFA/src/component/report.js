@@ -135,6 +135,7 @@ export default class Report extends Component {
         const { isLoading, reasons, reportContent, reasonCount } = this.state;
         return (
             <View style={[styles.container]}>
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 {!isLoading ? (
                     <View>
                         <View style={[styles.header]}>

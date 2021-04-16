@@ -132,7 +132,7 @@ export default class Search extends Component {
     }
 
     navigateProfile(accountID) {
-        const account =  Session.getInstance().account;
+        const account = Session.getInstance().account;
         if (account && account.accountID && account.accountID == accountID) {
             this.props.navigation.navigate('Profile');
         } else {
@@ -153,7 +153,7 @@ export default class Search extends Component {
         const { listPost, listUser, searchText, postTabLoading, userTabLoading } = this.state;
         return (
             <View style={[styles.container]}>
-
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <Text style={[styles.title, { color: 'white', position: 'absolute', top: -2, left: -2 }]}>Tìm kiếm</Text>
                 <Text style={[styles.title]}>Tìm kiếm</Text>
 

@@ -212,12 +212,13 @@ export default class Profile extends Component {
         } else {
             return (
                 <ScrollView>
-                    <Text style={{
-                        marginTop: Utils.scale(5, Const.Vertical),
-                        marginLeft: Utils.scale(15, Const.Vertical),
-                        fontWeight: 'bold',
-                        fontSize: Utils.scale(23, Const.Horizontal),
-                    }}>Account</Text>
+                    <View style={[Style.newsfeed.Header]}>
+                        <View>
+                            <Text style={[Style.newsfeed.SofaTitle, { color: 'white', position: 'absolute', top: -2, left: -2 }]}>Account</Text>
+                            <Text style={Style.newsfeed.SofaTitle}>Account</Text>
+
+                        </View>
+                    </View>
                     <StatusBar hidden={false} backgroundColor='#fbb897' />
                     <View style={{
                         marginLeft: Utils.scale(15, Const.Horizontal),

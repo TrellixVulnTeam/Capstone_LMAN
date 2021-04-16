@@ -1,10 +1,10 @@
-import React, {Component} from 'react';  
-import {StyleSheet, Text, View,StatusBar} from 'react-native';  
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, StatusBar } from 'react-native';
 import { Header } from 'react-native/Libraries/NewAppScreen';
-import {createAppContainer} from 'react-navigation';   
+import { createAppContainer } from 'react-navigation';
 import * as Style from '../style/style';
-import VoucherNavigator from '../tabs/VoucherRouter';  
-const AppIndex = createAppContainer(VoucherNavigator)  ;
+import VoucherNavigator from '../tabs/VoucherRouter';
+const AppIndex = createAppContainer(VoucherNavigator);
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -15,11 +15,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 
 
-export default class Voucher extends Component{  
-  render(){  
-      return(  
-          <View style={{flex:1}} >  
-              <StatusBar hidden={false} backgroundColor={'#300808'} />
+export default class Voucher extends Component {
+    render() {
+        return (
+            <View style={{ flex: 1 }} >
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <View style={[Style.newsfeed.Header]}>
                     <Text style={{ fontFamily: '20db', fontSize: 30, color: '#fef4ca' }}>SOFA</Text>
                     <Ionicons
@@ -39,21 +39,21 @@ export default class Voucher extends Component{
                         }}
                         name={'message-text-outline'} color={'#fef4ca'} size={30} />
                 </View>
-              <AppIndex/>  
-          </View>  
-      )  
-  }  
-}  
-const styles = StyleSheet.create({  
-  wrapper: {  
-      flex: 1,  
-  },  
-  header:{  
-      flexDirection: 'row',  
-      alignItems: 'center',  
-      justifyContent: 'space-between',  
-      paddingHorizontal: 18,  
-      backgroundColor: 'red',  
-      paddingTop: 5,  
-  }  
-});  
+                <AppIndex />
+            </View>
+        )
+    }
+}
+const styles = StyleSheet.create({
+    wrapper: {
+        flex: 1,
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 18,
+        backgroundColor: 'red',
+        paddingTop: 5,
+    }
+});

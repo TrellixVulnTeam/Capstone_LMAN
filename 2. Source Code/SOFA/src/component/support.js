@@ -252,7 +252,7 @@ export default class UpdateProfile extends Component {
                     fontWeight: 'bold',
                     fontSize: Utils.scale(28, Const.Horizontal),
                 }}>Hỗ trợ</Text>
-                <StatusBar hidden={false} backgroundColor='#fbb897' />
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <View style={{
                     marginLeft: Utils.scale(3, Const.Horizontal),
                 }}>
