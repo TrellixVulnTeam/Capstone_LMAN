@@ -13,7 +13,6 @@ namespace SOFA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ReportController : ControllerBase
     {
         [HttpGet("GetAllReport")]
@@ -76,6 +75,12 @@ namespace SOFA_API.Controllers
             int userID = Utils.Instance.GetUserID(User.Claims);
             reportViewModelIn.FromAccount = userID;
             ReportViewModelOut reportViewModelOut = ReportService.Instance.CreateReport(reportViewModelIn);
+            return Ok(reportViewModelOut);
+        }
+        [HttpGet("AdminGetAllReport")]
+        public ActionResult AdminGetAllReport()
+        {
+            ReportViewModelOut reportViewModelOut = ReportService.Instance.AdminGetAllReport();
             return Ok(reportViewModelOut);
         }
     }

@@ -10,7 +10,9 @@ namespace SOFA_API.ViewModel.Report
     {
         public int ID { get; set; }
         public int FromAccount { get; set; }
+        public string FromAccountName { get; set; }
         public int ToAccount { get; set; }
+        public string ToAccountName { get; set; }
         public int ToPost { get; set; }
         public int ToComment { get; set; }
         public ReportType TypeReport { get; set; }

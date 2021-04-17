@@ -271,5 +271,16 @@ namespace SOFA_API.DAO
 
             return res;
         }
+        public AdminPostInfoModel GetPostInfo(int postId)
+        {
+            AdminPostInfoModel res = null;
+            string sql = "EXEC dbo.GetPostByID @postID";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postId });
+            if (data.Rows.Count > 0)
+            {
+                res = new AdminPostInfoModel(data.Rows[0]);
+            }
+            return res;
+        }
     }
 }

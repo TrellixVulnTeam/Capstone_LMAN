@@ -47,5 +47,19 @@ namespace SOFA_API.Controllers
             SupportRequestViewModelOut newRequest = SupportService.Instance.CheckFashionista(userId);
             return Ok(newRequest);
         }
+
+        [HttpGet("getdetailusersupport")]
+        public ActionResult GetDetailUserSupport(int supportType)
+        {
+            DetailUserSupportModelOut modelOut = SupportService.Instance.GetAllUserSupportRequest();
+            return Ok(modelOut);
+        }
+
+        [HttpPost("setuserfashionista")]
+        public ActionResult SetUserFashionista([FromForm] int userId)
+        {
+            DetailUserSupportModelOut modelOut = SupportService.Instance.SetUserFashionistaRequest(userId);
+            return Ok(modelOut);
+        }
     }
 }

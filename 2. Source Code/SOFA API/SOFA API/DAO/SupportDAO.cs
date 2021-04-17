@@ -97,5 +97,44 @@ namespace SOFA_API.DAO
             }
             return isFashionista;
         }
+
+        public List<DetailUserSupportModel> GetAllUserSupportRequest()
+        {
+            List<DetailUserSupportModel> list = new List<DetailUserSupportModel>();
+            string sql = "EXEC GetDetailUserSupport";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] {});
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        list.Add(new DetailUserSupportModel(row));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                throw e;
+            }
+            return list;
+        }
+
+        public int SetUserFashionistaRequest(int userId)
+        {
+            int result = 0;
+            try
+            {
+                string sql = "EXEc [dbo].[SetUserIsFashionista] @userId";
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { userId });
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+            return result;
+        }
     }
 }

@@ -107,5 +107,57 @@ namespace SOFA_API.Service
             }
             return support;
         }
+
+        public DetailUserSupportModelOut GetAllUserSupportRequest()
+        {
+            DetailUserSupportModelOut modelOut = new DetailUserSupportModelOut();
+            try
+            {
+                modelOut.ListUserSupport = SupportDAO.Instance.GetAllUserSupportRequest();
+                if (modelOut != null)
+                {
+                    modelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                {
+                    modelOut = new DetailUserSupportModelOut();
+                    modelOut.Code = Const.REQUEST_CODE_FAILED;
+                    throw new Exception("Get user support failed!");
+                }
+            }
+            catch (Exception e)
+            {
+                modelOut = new DetailUserSupportModelOut();
+                modelOut.ErrorMessage = e.ToString();
+                modelOut.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return modelOut;
+        }
+
+        public DetailUserSupportModelOut SetUserFashionistaRequest(int userId)
+        {
+            DetailUserSupportModelOut modelOut = new DetailUserSupportModelOut();
+            try
+            {
+                int result = SupportDAO.Instance.SetUserFashionistaRequest(userId);
+                if (result > 0)
+                {
+                    modelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                {
+                    modelOut = new DetailUserSupportModelOut();
+                    modelOut.Code = Const.REQUEST_CODE_FAILED;
+                    throw new Exception("Set user support failed!");
+                }
+            }
+            catch (Exception e)
+            {
+                modelOut = new DetailUserSupportModelOut();
+                modelOut.ErrorMessage = e.ToString();
+                modelOut.Code = Const.REQUEST_CODE_FAILED;
+            }
+            return modelOut;
+        }
     }
 }

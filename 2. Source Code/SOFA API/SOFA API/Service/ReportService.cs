@@ -1,6 +1,8 @@
 ﻿using SOFA_API.Common;
 using SOFA_API.DAO;
 using SOFA_API.DTO;
+using SOFA_API.ViewModel.Account;
+using SOFA_API.ViewModel.PostViewModel;
 using SOFA_API.ViewModel.Report;
 using System;
 using System.Collections.Generic;
@@ -41,6 +43,44 @@ namespace SOFA_API.Service
                     reportViewModelOut.ListReport.Add(reportModelOut);
                 }
                 reportViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                reportViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                reportViewModelOut.ErrorMessage = e.ToString();
+            }
+
+            return reportViewModelOut;
+        }
+
+        internal ReportViewModelOut AdminGetAllReport()
+        {
+            ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
+
+            try
+            {
+                reportViewModelOut = GetAllReport();
+                for (int i = 0; i < reportViewModelOut.ListReport.Count; i++)
+                {
+                    AccountViewModelOut account = AccountDAO.Instance.GetUserById(reportViewModelOut.ListReport[i].FromAccount);
+                    if (account != null)
+                    {
+                        reportViewModelOut.ListReport[i].FromAccountName = account.Firstname + " " + account.Lastname;
+                    }
+                    if (reportViewModelOut.ListReport[i].ToAccount != 0)
+                    {
+                        AccountViewModelOut toAccount = AccountDAO.Instance.GetUserById(reportViewModelOut.ListReport[i].ToAccount);
+                        reportViewModelOut.ListReport[i].ToAccountName = toAccount.Firstname + " " + toAccount.Lastname;
+                    }
+                    if (reportViewModelOut.ListReport[i].ToPost != 0)
+                    {
+                        AdminPostInfoModel postInfo = PostDAO.Instance.GetPostInfo(reportViewModelOut.ListReport[i].ToPost);
+                        reportViewModelOut.ListReport[i].ToAccountName = postInfo.Firstname + " " + postInfo.Lastname;
+                        reportViewModelOut.ListReport[i].ToAccount = postInfo.AccountPost;
+                    }
+                }
+                return reportViewModelOut;
             }
             catch (Exception e)
             {
