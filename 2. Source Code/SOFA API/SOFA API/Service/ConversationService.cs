@@ -108,6 +108,24 @@ namespace SOFA_API.Service
             return listConversationViewModelOut;
         }
 
+        internal ListConversationViewModelOut MarkConversationIsReaded(int fromAccount, int toAccount)
+        {
+            ListConversationViewModelOut listConversationViewModelOut = new ListConversationViewModelOut();
+            try
+            {
+                int res = ConversationDAO.Instance.MarkConversationIsReaded(fromAccount, toAccount);
+                listConversationViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                listConversationViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                listConversationViewModelOut.ErrorMessage = e.ToString();
+            }
+
+            return listConversationViewModelOut;
+        }
+
         public ConversationViewModelOut DeleteConversation(int accountId, int chatWithAccountId)
         {
             ConversationViewModelOut newConversation = new ConversationViewModelOut();

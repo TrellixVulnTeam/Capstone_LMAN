@@ -177,6 +177,14 @@ namespace SOFA_API.DAO
 
             return res;
         }
+        public int MarkConversationIsReaded(int fromAccount, int toAccount)
+        {
+            int res = 0;
 
+            string sql = "EXEC MarkConversationIsReaded @fromAccount , @toAccount";
+            res = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { fromAccount, toAccount });
+
+            return res;
+        }
     }
 }

@@ -67,5 +67,13 @@ namespace SOFA_API.Controllers
             ListConversationViewModelOut messageViewModelOut = ConversationService.Instance.GetNumberUnreadMessage(userID);
             return Ok(messageViewModelOut);
         }
+        [HttpGet("MarkConversationIsReaded")]
+        [Authorize]
+        public ActionResult MarkConversationIsReaded(int fromAccount)
+        {
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            ListConversationViewModelOut messageViewModelOut = ConversationService.Instance.MarkConversationIsReaded(fromAccount, userID);
+            return Ok(messageViewModelOut);
+        }
     }
 }
