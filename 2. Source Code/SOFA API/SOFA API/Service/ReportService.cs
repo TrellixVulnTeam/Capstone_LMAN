@@ -76,8 +76,15 @@ namespace SOFA_API.Service
                     if (reportViewModelOut.ListReport[i].ToPost != 0)
                     {
                         AdminPostInfoModel postInfo = PostDAO.Instance.GetPostInfo(reportViewModelOut.ListReport[i].ToPost);
-                        reportViewModelOut.ListReport[i].ToAccountName = postInfo.Firstname + " " + postInfo.Lastname;
-                        reportViewModelOut.ListReport[i].ToAccount = postInfo.AccountPost;
+                        if (postInfo != null)
+                        {
+                            reportViewModelOut.ListReport[i].ToAccountName = postInfo.Firstname + " " + postInfo.Lastname;
+                            reportViewModelOut.ListReport[i].ToAccount = postInfo.AccountPost;
+                        } else
+                        {
+                            reportViewModelOut.ListReport[i].ToAccountName = "deleted post";
+                            reportViewModelOut.ListReport[i].ToAccount = 0;
+                        }
                     }
                 }
                 return reportViewModelOut;
@@ -326,6 +333,58 @@ namespace SOFA_API.Service
                     reportViewModelOut.ListReport.Add(reportModelOut);
                 }
                 reportViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                reportViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                reportViewModelOut.ErrorMessage = e.ToString();
+            }
+
+            return reportViewModelOut;
+        }
+
+        internal ReportViewModelOut HandleUserReport(int reportId, int userId)
+        {
+            ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
+
+            try
+            {
+                int flag = AccountDAO.Instance.BanUser(userId);
+                if (flag > 0)
+                {
+                    int result = ReportDAO.Instance.UpdateReportStatus(reportId);
+                    if (result > 0)
+                    {
+                        reportViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                reportViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                reportViewModelOut.ErrorMessage = e.ToString();
+            }
+
+            return reportViewModelOut;
+        }
+
+        internal ReportViewModelOut HandlePostReport(int reportId, int postId)
+        {
+            ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
+
+            try
+            {
+                int flag = PostDAO.Instance.DeletePostByPostID(postId);
+                if (flag > 0)
+                {
+                    int result = ReportDAO.Instance.UpdateReportStatus(reportId);
+                    if (result > 0)
+                    {
+                        reportViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    }
+                }
             }
             catch (Exception e)
             {

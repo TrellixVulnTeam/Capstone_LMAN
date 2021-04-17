@@ -1,4 +1,5 @@
-﻿using SOFA_API.DTO;
+﻿using SOFA_API.Common;
+using SOFA_API.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -307,6 +308,22 @@ namespace SOFA_API.DAO
             }
 
             return reason;
+        }
+
+        public int UpdateReportStatus(int reportId)
+        {
+            int result = 0;
+            try
+            {
+                string sql = "EXEC UpdateReportStatus @reportId";
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { reportId });
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+            return result;
         }
     }
 }

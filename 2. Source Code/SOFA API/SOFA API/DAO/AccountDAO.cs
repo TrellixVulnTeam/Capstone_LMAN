@@ -165,16 +165,36 @@ namespace SOFA_API.DAO
             return null;
         }
 
-        public void BanUser(int accountId)
+        public int BanUser(int accountId)
         {
-            string query = "EXEC BanUser @AccountId";
-            DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { accountId });
+            int result = 0;
+            try
+            {
+                string sql = "EXEC BanUser @AccountId";
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountId });
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+            return result;
         }
 
-        public void UnbanUser(int accountId)
+        public int UnbanUser(int accountId)
         {
-            string query = "EXEC UnbanUser @AccountId";
-            DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { accountId });
+            int result = 0;
+            try
+            {
+                string sql = "EXEC UnbanUser @AccountId";
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountId });
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+            return result;
         }
     }
 }
