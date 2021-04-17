@@ -197,7 +197,6 @@ export default class Conversation extends Component {
                     this.setState({ listMessage: [data, ...this.state.listMessage] })
                     MessageService.markMessageIsReaded(data.id)
                         .then(response => {
-                            console.log(response);
                         })
                         .catch(reason => console.log(reason));
                 }
@@ -221,7 +220,6 @@ export default class Conversation extends Component {
             }
             MessageService.markConversationIsReaded(uid2)
                 .then(response => {
-                    console.log(response);
                 })
                 .catch(reason => console.log(reason));
             ProfileService.getOtherProfile(uid2)
