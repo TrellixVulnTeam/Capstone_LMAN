@@ -76,10 +76,15 @@ namespace SOFA_API.Service
                 user = AccountDAO.Instance.GetUserById(accountId);
                 if (user != null)
                 {
-                    AccountDAO.Instance.BanUser(accountId);
-
-                    user.IsActive = false;
-                    user.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                   int result = AccountDAO.Instance.BanUser(accountId);
+                    if (result > 0)
+                    {
+                        user.IsActive = false;
+                        user.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    } else
+                    {
+                        throw new Exception("Ban không thành công");
+                    }
                 }
                 else
                 {
@@ -105,10 +110,16 @@ namespace SOFA_API.Service
                 user = AccountDAO.Instance.GetUserById(accountId);
                 if (user != null)
                 {
-                    AccountDAO.Instance.UnbanUser(accountId);
-
-                    user.IsActive = true;
-                    user.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    int result = AccountDAO.Instance.UnbanUser(accountId);
+                    if (result > 0)
+                    {
+                        user.IsActive = true;
+                        user.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    } 
+                    else
+                    {
+                        throw new Exception("Unban không thành công");
+                    }
                 } else
                 {
                     throw new Exception("AccountId không tồn tại");

@@ -116,3 +116,20 @@ Begin
 	SET IsFashionista = 1
 	WHERE Profile.AccountId = @UserId
 End
+------------------------------
+Create PROCEDURE [dbo].[UpdateReportStatus] @ReportId int
+AS
+Begin
+	UPDATE Report
+	SET IsProcessed = 1
+	WHERE Id = @ReportId
+End
+
+----------------------
+Create PROCEDURE [dbo].[UpdateReportStatus] @ReportId int
+AS
+Begin
+	UPDATE Report
+	SET IsProcessed = 1
+	WHERE Id = @ReportId
+End

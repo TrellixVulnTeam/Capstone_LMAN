@@ -18,6 +18,7 @@ namespace SOFA_API.ViewModel.Report
         public ReportType TypeReport { get; set; }
         public List<Reason> ListReason { get; set; }
         public string ReportContent { get; set; }
+        public bool IsProcessed { get; set; }
 
         public ReportModelOut()
         {
@@ -43,6 +44,7 @@ namespace SOFA_API.ViewModel.Report
             ToPost = report.ToPost;
             ToComment = report.ToComment;
             ReportContent = report.ReportContent;
+            IsProcessed = report.IsProcessed;
         }
     }
 }

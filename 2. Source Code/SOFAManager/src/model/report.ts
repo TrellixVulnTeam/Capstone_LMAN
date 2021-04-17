@@ -12,4 +12,5 @@ export class Report {
   typeReport: ReportType;
   listReason: Array<ReportReason> = new Array<ReportReason>();
   reportContent: '';
+  isProcessed: boolean;
 }
