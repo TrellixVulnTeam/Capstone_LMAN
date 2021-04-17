@@ -31,7 +31,7 @@
           <div *ngIf="isChangePassword" class="form-group">
             <label for="rePassword">Nhập lại mật khẩu mới</label>
             <input type="password" class="form-control" id="rePassword" [(ngModel)]="cfNewPassword"
-              (change)="invalidLogin=false" required />
+              (change)="invalid=false" required />
             <div style="color: red;" *ngIf="invalid" class="help-block">{{errorMessage}}</div>
           </div>
           <div *ngIf="isChangePassword" class="form-group" style="display: inline-block;">
