@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Data;
 using SOFA_API.ViewModel.Conversation;
 using SOFA_API.Common;
+using SOFA_API.DTO;
 
 namespace SOFA_API.DAO
 {
@@ -185,6 +186,27 @@ namespace SOFA_API.DAO
             res = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { fromAccount, toAccount });
 
             return res;
+        }
+        public int MarkMessageIsReaded(int messID)
+        {
+            int res = 0;
+
+            string sql = "EXEC MarkMessageIsReaded @messID";
+            res = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { messID });
+
+            return res;
+        }
+        public Message GetMessageByID(int messID)
+        {
+            Message message = null;
+
+            string sql = "EXEC GetMessageByID @messID";
+            DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { messID });
+            if (data.Rows.Count > 0)
+            {
+                message = new Message(data.Rows[0]);
+            }
+            return message;
         }
     }
 }

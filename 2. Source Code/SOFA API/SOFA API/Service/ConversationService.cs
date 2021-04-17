@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SOFA_API.DAO;
 using SOFA_API.Common;
+using SOFA_API.DTO;
 
 namespace SOFA_API.Service
 {
@@ -97,6 +98,43 @@ namespace SOFA_API.Service
             {
                 listConversationViewModelOut.NumberUnreadMessage = ConversationDAO.Instance.GetNumberUnreadMessage(userID);
                 listConversationViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                listConversationViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                listConversationViewModelOut.ErrorMessage = e.ToString();
+            }
+
+            return listConversationViewModelOut;
+        }
+
+        internal ListConversationViewModelOut MarkMessageIsReaded(int messageID, int userID)
+        {
+            ListConversationViewModelOut listConversationViewModelOut = new ListConversationViewModelOut();
+            try
+            {
+                Message message = ConversationDAO.Instance.GetMessageByID(messageID);
+                if (message != null && message.ID > 0)
+                {
+                    if (message.ToAccountId == userID)
+                    {
+                        int res = ConversationDAO.Instance.MarkMessageIsReaded(messageID);
+                        if (res > 0)
+                        {
+                            listConversationViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                        }
+                        else
+                        {
+                            listConversationViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                        }
+                    }
+                    else
+                    {
+                        listConversationViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                        listConversationViewModelOut.ErrorMessage = MessageUtils.ERROR_DONT_HAVE_PERMISSION;
+                    }
+                }
             }
             catch (Exception e)
             {
