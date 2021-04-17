@@ -225,6 +225,12 @@ namespace SOFA_API.Service
                     // check username and status
                     if (account != null && account.IsActive)
                     {
+                        // check ignore case
+                        if (!loginViewModelIn.Username.Equals(account.Username))
+                        {
+                            throw new Exception("Tên tài khoản hoặc mật khẩu không đúng");
+                        }
+
                         // check password
                         if (!VerifyPassword(loginViewModelIn.Password, account.Password))
                         {
