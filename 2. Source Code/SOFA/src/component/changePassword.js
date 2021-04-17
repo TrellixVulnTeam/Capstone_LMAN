@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Alert } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
-import * as Style from '../style/style';
 import * as Request from '../common/request'
-import { LOGO_ICON, GOOGLE_ICON, FACEBOOK_ICON } from '../../image/index';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
+import NotificationWSS from '../service/NotificationWSS';
+import PushNotification from 'react-native-push-notification';
 
 export default class ChangePassword extends Component {
     constructor(props) {
@@ -40,6 +40,15 @@ export default class ChangePassword extends Component {
                 this.setState({ isValidUser: false, errMsg: 'Mật khẩu bao gồm 6 ký tự trở lên' })
                 return false;
             }
+            if (this.state.password == this.state.newPassword) {
+                this.setState({ isValidUser: false, errMsg: 'Mật khẩu mới không trùng với mật khẩu cũ' })
+                return false;
+            }
+            if (this.state.newPassword !== this.state.confirmNewPassword) {
+                this.setState({ isValidUser: false, errMsg: 'Xác nhận mật khẩu không đúng' })
+                return false;
+            }
+            return true;
         }
         if (this.state.newPassword.length < 6) {
             this.setState({ isValidUser: false, errMsg: 'Mật khẩu bao gồm 6 ký tự trở lên' })
@@ -65,32 +74,42 @@ export default class ChangePassword extends Component {
             let data = new FormData();
             // not tested yet - change password
             if (!this.state.isResetPassword) {
+                data.append('isAfterReset', false);
                 data.append('password', password);
                 data.append('newPassword', newPassword);
-                AsyncStorage.getItem('user').then(user => {
-                    if (user) {
-                        email = user.email;
-                        data.append('email', email);
-                        data.append('newPassword', newPassword);
-                        // Transaction ID, code
-
-                        let url = Const.domain + 'api/auth/reset-password';
-                        Request.Post(url, header, data)
-                            .then(response => {
-                                this.setState({ isLoading: false });
-                                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                    this.props.navigation.navigate('Login');
-                                } else {
-                                    if (response.code == Const.REQUEST_CODE_FAILED) {
-                                        this.setState({ isValidUser: false, errMsg: response.errorMessage })
+                data.append('phone', phone);
+                let url = Const.domain + 'api/auth/reset-password';
+                Request.Post(url, header, data)
+                    .then(response => {
+                        this.setState({ isLoading: false });
+                        if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                            Alert.alert(
+                                "Đổi mật khẩu",
+                                "Đổi mật khẩu thành công",
+                                [
+                                    {
+                                        text: "OK", onPress: () => {
+                                            AsyncStorage.removeItem('token');
+                                            AsyncStorage.removeItem('user');
+                                            let notificationWSS = NotificationWSS.getInstance(false);
+                                            if (notificationWSS.getConnection()) {
+                                                notificationWSS.getConnection().stop();
+                                                PushNotification.setApplicationIconBadgeNumber(0)
+                                            }
+                                            this.props.navigation.navigate('Login');
+                                        }
                                     }
-                                }
-                            })
-                            .catch(reason => {
-                                console.log(reason);
-                            });
-                    }
-                })
+                                ]
+                            );
+                        } else {
+                            if (response.code == Const.REQUEST_CODE_FAILED) {
+                                this.setState({ isValidUser: false, errMsg: response.errorMessage })
+                            }
+                        }
+                    })
+                    .catch(reason => {
+                        console.log(reason);
+                    });
             }
             // reset pw
             else {
@@ -110,10 +129,10 @@ export default class ChangePassword extends Component {
                                     'Đổi mật khẩu thành công',
                                     '',
                                     [
-                                      {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
+                                        { text: 'OK', onPress: () => this.props.navigation.navigate('Login') },
                                     ],
-                                    {cancelable: false},
-                                  );
+                                    { cancelable: false },
+                                );
                             })
                         } else {
                             if (response.code == Const.REQUEST_CODE_FAILED) {
@@ -180,7 +199,7 @@ export default class ChangePassword extends Component {
                     </Animatable.View>
                 }
                 <View style={styles.registerContainer}>
-                    <TouchableOpacity style={styles.registerTouch} onPress={() => this.onConfirm()} disabled={this.state.isLoading}>
+                    <TouchableOpacity style={styles.registerTouch} onPress={() => this.onConfirm()}>
                         <LinearGradient
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
