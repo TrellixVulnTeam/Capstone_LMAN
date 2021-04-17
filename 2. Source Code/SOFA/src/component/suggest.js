@@ -835,6 +835,7 @@ export default class Suggest extends Component {
                                 <ScrollView>
                                     {infoFields.map(item => (
                                         <InfoField
+                                            editable={false}
                                             key={item.id}
                                             name={item.name}
                                             id={item.id}

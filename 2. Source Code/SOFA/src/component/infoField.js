@@ -9,7 +9,7 @@ export default class InfoField extends Component {
     }
 
     render() {
-        const { onChange, name, value, unit, keyboardType } = this.props;
+        const { onChange, name, value, unit, keyboardType, editable } = this.props;
         return (
             <View style={{
                 flexDirection: 'row',
@@ -19,6 +19,7 @@ export default class InfoField extends Component {
             }}>
                 <Text>{name}</Text>
                 <TextInput
+                    editable={editable ? editable : false}
                     keyboardType={keyboardType}
                     value={value + ''}
                     onChangeText={(text) => {

@@ -532,6 +532,7 @@ export default class CreatePost extends Component {
                             <ScrollView>
                                 {infoFields.map(item => (
                                     <InfoField
+                                        editable={false}
                                         key={item.id}
                                         name={item.name}
                                         id={item.id}
@@ -668,7 +669,7 @@ const styles = (props) => StyleSheet.create({
         flexDirection: 'row'
     },
     IconClose: { marginLeft: scale(15, Horizontal) },
-    HeaderText: { marginLeft: 'auto' },
+    HeaderText: { marginLeft: 'auto', marginRight: 'auto' },
     ButtonPost: {
         borderRadius: 5,
         paddingVertical: scale(3, Vertical),

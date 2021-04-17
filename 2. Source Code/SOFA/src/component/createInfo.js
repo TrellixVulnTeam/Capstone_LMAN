@@ -314,6 +314,7 @@ export default class CreateInfo extends Component {
                         <ScrollView>
                             {infoFields.map(item => (
                                 <InfoField
+                                    editable={true}
                                     key={item.id}
                                     name={item.name}
                                     id={item.id}
