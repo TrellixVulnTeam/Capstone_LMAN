@@ -146,7 +146,7 @@ CREATE PROC UpdatePost
 AS
 BEGIN
 	UPDATE dbo.Post 
-	SET Content = @content, PrivacyID = @privacyID, Time = GETDATE(), IsVerified = @isVerified, BodyInfoID = @bodyInfoID
+	SET Content = @content, PrivacyID = @privacyID, Time = @time, IsVerified = @isVerified, BodyInfoID = @bodyInfoID
 	WHERE Id = @postId
 END
 GO
