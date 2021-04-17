@@ -103,7 +103,7 @@ export default class PhoneRegister extends Component {
                     </Animatable.View>
                 }
                 <View style={styles.registerContainer}>
-                    <TouchableOpacity style={styles.registerTouch} onPress={() => this.onRegister()} disabled={this.state.isLoading}>
+                    <TouchableOpacity style={styles.registerTouch} onPress={() => this.onRegister()} >
                         <LinearGradient
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
