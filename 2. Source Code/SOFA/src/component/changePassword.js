@@ -35,6 +35,11 @@ export default class ChangePassword extends Component {
     }
 
     checkValidPassword() {
+        let trimPW = this.state.newPassword.trim();
+        if(trimPW != this.state.newPassword || /\s/.test(this.state.newPassword.trim())){
+            this.setState({ isValidUser: false, errMsg: 'Mật khẩu không bao gồm dấu cách' })
+            return false;
+        }
         if (!this.state.isResetPassword) {
             if (this.state.password.length < 6) {
                 this.setState({ isValidUser: false, errMsg: 'Mật khẩu bao gồm 6 ký tự trở lên' })

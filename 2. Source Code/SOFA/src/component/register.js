@@ -36,6 +36,11 @@ export default class Register extends Component {
     }
 
     validateUser() {
+        let trimPW = this.state.password.trim();
+        if(trimPW != this.state.password || /\s/.test(this.state.password.trim())){
+            this.setState({ isValidUser: false, errMsg: 'Mật khẩu không bao gồm dấu cách' })
+            return false;
+        }
         if (this.state.username.length < 6 || this.state.password.length < 6) {
             this.setState({ isValidUser: false, errMsg: 'Tên tài khoản và mật khẩu bao gồm 6 ký tự trở lên' })
             return false;
