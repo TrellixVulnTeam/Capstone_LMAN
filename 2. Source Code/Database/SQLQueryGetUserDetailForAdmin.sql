@@ -97,4 +97,22 @@ BEGIN
 	SET Status = 2, LastUpdated = @lastUpdated
 	WHERE Id = @feedbackId
 END
+----------------
+CREATE PROCEDURE [dbo].[GetDetailUserSupport]
+AS
+	SELECT c.Id as UserId, c.UserName, p.Email, p.Phone, p.FirstName, p.LastName, sr.id as RequestId, sr.TimeCreate, sr.Status
+	FROM Profile p inner join Account c on p.AccountId = c.Id inner join AccountRole ar on c.Id = ar.AccountId 
+	inner join Role r on ar.RoleId = r.Id
+	inner join SupportRequest sr on c.id = sr.UserRequestId
+---------------------
+Create PROCEDURE [dbo].[SetUserIsFashionista] @UserId int
+AS
+Begin
+	UPDATE SupportRequest
+	SET Status = 1
+	WHERE SupportRequest.UserRequestId = @UserId
 
+	UPDATE Profile
+	SET IsFashionista = 1
+	WHERE Profile.AccountId = @UserId
+End
