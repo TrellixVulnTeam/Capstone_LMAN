@@ -389,13 +389,12 @@ export default class CreatePost extends Component {
                     <TouchableHighlight
                         style={[
                             styles().ButtonPost,
-                            listPrimaryImage.length > 0 && content.length > 0 ? styles().ButtonPostActiveColor : styles().ButtonPostInactiveColor
+                            listPrimaryImage.length > 0 && content.trim().length > 0 ? styles().ButtonPostActiveColor : styles().ButtonPostInactiveColor
                         ]}
                         underlayColor={'#0000FF'}
-                        disabled={isLoading || listPrimaryImage.length == 0 || content.length == 0}
+                        disabled={isLoading || listPrimaryImage.length == 0 || content.trim().length == 0}
                         onPress={() => this.onPressPostButton()}>
                         <View>
-
                             <Text style={styles().ButtonPostText}>Đăng</Text>
                         </View>
                     </TouchableHighlight>
@@ -671,8 +670,6 @@ const styles = (props) => StyleSheet.create({
     IconClose: { marginLeft: scale(15, Horizontal) },
     HeaderText: { marginLeft: 'auto' },
     ButtonPost: {
-        marginLeft: 'auto',
-        marginRight: scale(15, Horizontal),
         borderRadius: 5,
         paddingVertical: scale(3, Vertical),
         paddingHorizontal: scale(10, Horizontal)
