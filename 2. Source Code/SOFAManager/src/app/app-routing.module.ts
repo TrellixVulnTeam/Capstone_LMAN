@@ -20,6 +20,7 @@ import { RecommendationDataComponent } from './management/recommendation-data/re
 import { UserDetailComponent } from './management/user-detail/user-detail.component';
 import { PostDetailComponent } from './management/post-detail/post-detail.component';
 import { FeedbackComponent } from './management/feedback/feedback.component';
+import { SupportComponent } from './management/support/support.component';
 
 export function tokenGetter() {
   return localStorage.getItem('jwt')
@@ -43,7 +44,8 @@ const routes: Routes = [
       { path: 'recommendation', component: RecommendationDataComponent, data: { title: 'Recommentdation management' }, canActivate: [AuthGuardService] },
       { path: 'user-detail/:id', component: UserDetailComponent, data: { title: 'User detail' }, canActivate: [AuthGuardService] },
       { path: 'post-detail/:id', component: PostDetailComponent, data: { title: 'Post Detail' }, canActivate: [AuthGuardService] },
-      { path: 'feedbacks', component: FeedbackComponent, data: { title: 'User feedback' }, canActivate: [AuthGuardService] }
+      { path: 'feedbacks', component: FeedbackComponent, data: { title: 'User feedback' }, canActivate: [AuthGuardService] },
+      { path: 'support', component: SupportComponent, data: { title: 'Support user' }, canActivate: [AuthGuardService] }
     ]
   },
   { path: 'login', component: LoginComponent, data: { title: 'Đăng nhập' } },

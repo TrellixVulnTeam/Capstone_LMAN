@@ -69,8 +69,8 @@
                         <tbody>
                             <tr *ngFor="let balance of userBalance.listBalance | paginate: { id: 'balance',
                             itemsPerPage: 5,
-                            currentPage: page,
-                            totalItems: totalRecord }">
+                            currentPage: pageBalance,
+                            totalItems: totalRecordBalance }">
                                 <th scope="row">{{balance.id}}</th>
                                 <td>{{balance.amount}}</td>
                                 <td>{{balance.type == 1 ? "Topup" : "Other"}}</td>
@@ -89,7 +89,7 @@
 </div>
 <div *ngIf="userBalance.listBalance.length > 0" style="text-align:center">
     <pagination-controls class="justify-content-center" id="balance"
-    (pageChange)="page = $event"
+    (pageChange)="pageBalance = $event"
     maxSize="5"
     directionLinks="true"
     autoHide="true"
@@ -126,8 +126,8 @@
                         <tbody>
                             <tr *ngFor="let post of userPost | paginate: { id: 'post',
                             itemsPerPage: 10,
-                            currentPage: page,
-                            totalItems: totalRecord }">
+                            currentPage: pagePost,
+                            totalItems: totalRecordPost }">
                                 <th scope="row">{{post.id}}</th>
                                 <td>{{post.content}}</td>
                                 <td><img style="max-height: 40px; max-width: 40px;" src="{{assetsDonmain + post.postImageUri}}"></td>
@@ -151,7 +151,7 @@
 </div>
 <div *ngIf="userPost.length > 0" style="text-align:center">
     <pagination-controls class="justify-content-center" id="post"
-    (pageChange)="page = $event"
+    (pageChange)="pagePost = $event"
     maxSize="5"
     directionLinks="true"
     autoHide="true"

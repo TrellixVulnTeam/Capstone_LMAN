@@ -24,8 +24,10 @@ export class UserDetailComponent implements OnInit {
   userBalance: UserBalance = new UserBalance();
   userPost: Array<Post> = new Array<Post>();
   assetsDonmain = CONST.assets_domain;
-  totalRecord: number;
-  page: 1;
+  totalRecordBalance: number;
+  pageBalance: 1;
+  totalRecordPost: number;
+  pagePost: 1;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -45,8 +47,9 @@ export class UserDetailComponent implements OnInit {
     forkJoin([userDetail, userBalance, userPost]).subscribe(results => {
       this.userDetail = <any>results[0];
       this.userBalance = <any>results[1];
-      this.totalRecord = this.userBalance.listBalance.length;
+      this.totalRecordBalance = this.userBalance.listBalance.length;
       this.userPost = <any>results[2]["listPost"];
+      this.totalRecordPost = this.userPost.length;
     });
   }
 

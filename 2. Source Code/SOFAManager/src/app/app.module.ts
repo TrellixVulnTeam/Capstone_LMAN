@@ -41,6 +41,7 @@ import { MatDialogConfirmComponent } from './management/mat-dialog-confirm/mat-d
 import {MatButtonModule} from '@angular/material/button';
 import { PostDetailComponent } from './management/post-detail/post-detail.component';
 import { FeedbackComponent } from './management/feedback/feedback.component';
+import { SupportComponent } from './management/support/support.component';
 
 
 @NgModule({
@@ -70,7 +71,8 @@ import { FeedbackComponent } from './management/feedback/feedback.component';
     UserDetailComponent,
     MatDialogConfirmComponent,
     PostDetailComponent,
-    FeedbackComponent
+    FeedbackComponent,
+    SupportComponent
   ],
   entryComponents: [MatDialogConfirmComponent],
   imports: [
