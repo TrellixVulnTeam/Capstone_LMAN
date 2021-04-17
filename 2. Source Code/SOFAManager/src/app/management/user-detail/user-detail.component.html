@@ -86,7 +86,7 @@
         </div>
     </div>
 </div>
-<div style="text-align:center">
+<div *ngIf="userBalance.listBalance.length > 0" style="text-align:center">
     <pagination-controls class="justify-content-center" id="balance"
     (pageChange)="page = $event"
     maxSize="5"
@@ -148,7 +148,7 @@
         </div>
     </div>
 </div>
-<div style="text-align:center">
+<div *ngIf="userPost.length > 0" style="text-align:center">
     <pagination-controls class="justify-content-center" id="post"
     (pageChange)="page = $event"
     maxSize="5"
