@@ -17,6 +17,8 @@
                                 <th>To post</th>
                                 <th>Posted by</th>
                                 <th>Reason</th>
+                                <th>Status</th>
+                                <th>Detail</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -28,9 +30,14 @@
                                 <th scope="row">{{rp.id}}</th>
                                 <td><a [routerLink]="['/user-detail', rp.fromAccount]">{{rp.fromAccountName}}</a></td>
                                 <td>{{rp.toPost}}</td>
-                                <td><a [routerLink]="['/user-detail', rp.toAccount]">{{rp.toAccountName}}</a></td>
+                                <td *ngIf="rp.toAccount != 0"><a [routerLink]="['/user-detail', rp.toAccount]">{{rp.toAccountName}}</a></td>
+                                <td *ngIf="rp.toAccount == 0">{{rp.toAccountName}}</td>
                                 <td><p *ngFor="let rs of rp.listReason"><strong>{{rs.name}}</strong></p></td>
+                                <td *ngIf="!rp.isProcessed && rp.toAccount != 0">pending</td>
+                                <td *ngIf="rp.isProcessed || rp.toAccount == 0">processed</td>
                                 <td><a [routerLink]="['/post-detail', rp.toPost]">detail</a></td>
+                                <td *ngIf="!rp.isProcessed && rp.toAccount != 0"><a [routerLink]="" (click)="handlePostReport(rp.id, rp.toPost)">delete</a></td>
+                                <td *ngIf="rp.isProcessed || rp.toAccount == 0">deleted</td>
                             </tr>
                         </tbody>
                     </table>
@@ -73,6 +80,8 @@
                                 <th>From account</th>
                                 <th>To Account</th>
                                 <th>Reason</th>
+                                <th>Status</th>
+                                <th>Detail</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -85,7 +94,11 @@
                             <td><a [routerLink]="['/user-detail', user.fromAccount]">{{user.fromAccountName}}</a></td>
                             <td><a [routerLink]="['/user-detail', user.toAccount]">{{user.toAccountName}}</a></td>
                             <td><p *ngFor="let rs of user.listReason"><strong>{{rs.name}}</strong></p></td>
+                            <td *ngIf="!user.isProcessed && user.toAccount != 0">pending</td>
+                            <td *ngIf="user.isProcessed || user.toAccount == 0">processed</td>
                             <td><a [routerLink]="['/user-detail', user.toAccount]">detail</a></td>
+                            <td *ngIf="!user.isProcessed && user.toAccount != 0"><a [routerLink]="" (click)="handleUserReport(user.id, user.toAccount)">ban</a></td>
+                            <td *ngIf="user.isProcessed || user.toAccount == 0">baned</td>
                             </tr>
                         </tbody>
                     </table>
