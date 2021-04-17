@@ -134,9 +134,9 @@
                                 <td>{{post.dateCreated | date }}</td>
                                 <td *ngIf="post.isActive">Active</td>
                                 <td *ngIf="!post.isActive">Inactive</td>
-                                <td><a href="#">
-                                        edit
-                                  </a></td>
+                                <td><a [routerLink]="['/post-detail', post.id]">
+                                    Detail
+                                </a></td>
                             </tr>
                         </tbody>
                     </table>
