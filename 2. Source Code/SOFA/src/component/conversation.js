@@ -43,6 +43,7 @@ export default class Conversation extends Component {
             inputHeight: 40,
             isShowModalImage: false,
             currentShowImage: '',
+            token: ''
         }
     }
     concatList(list1, list2) {
@@ -106,6 +107,7 @@ export default class Conversation extends Component {
                 console.log(reason);
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                     ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                    this.props.navigation.goBack();
                 } else {
                     ToastAndroid.show('Tải tin nhắn bị lỗi!', ToastAndroid.SHORT);
                     this.setState({ isLoading: false, isSelectImage: true })
@@ -193,6 +195,11 @@ export default class Conversation extends Component {
             this.connection.on('NewMessage', (data) => {
                 if (data.fromAccountId == friendAccount.accountID) {
                     this.setState({ listMessage: [data, ...this.state.listMessage] })
+                    MessageService.markMessageIsReaded(data.id)
+                        .then(response => {
+                            console.log(response);
+                        })
+                        .catch(reason => console.log(reason));
                 }
             });
         }
@@ -204,9 +211,19 @@ export default class Conversation extends Component {
             const { uid2 } = this.props.route.params;
             Session.getInstance().currentUserChat = uid2;
             this.setState({ account: Session.getInstance().account, token: Session.getInstance().token });
+            console.log(Session.getInstance().account);
+            if (!Session.getInstance().token || Session.getInstance().token.length == 0) {
+                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                this.props.navigation.goBack();
+            }
             if (Session.getInstance().settings && Session.getInstance().settings.chatColor) {
                 this.setState({ color: Session.getInstance().settings.chatColor });
             }
+            MessageService.markConversationIsReaded(uid2)
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(reason => console.log(reason));
             ProfileService.getOtherProfile(uid2)
                 .then(response => {
                     this.setState({ friendAccount: response });
