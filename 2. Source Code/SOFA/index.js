@@ -27,6 +27,7 @@ getData('settings')
     .then(result => {
         if (result) {
             let temp = JSON.parse(result);
+            console.log(temp);
             Session.getInstance().settings = temp;
             if (typeof temp.isOnNotification === 'undefined') {
                 Session.getInstance().settings.isOnNotification = true;
@@ -36,6 +37,12 @@ getData('settings')
             }
             if (typeof temp.chatColor === 'undefined') {
                 Session.getInstance().settings.chatColor = '#46AA4A';
+            }
+            if (typeof temp.createPostIntro === 'undefined') {
+                Session.getInstance().settings.createPostIntro = true;
+            }
+            if (typeof temp.appBackground === 'undefined') {
+                Session.getInstance().settings.appBackground = '';
             }
         }
     })

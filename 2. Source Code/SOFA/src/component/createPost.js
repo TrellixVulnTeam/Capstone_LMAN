@@ -17,13 +17,15 @@ import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
-import { scale } from '../common/utils';
+import { scale, storeData } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import { AVATAR, ADD_PRIMARY_IMAGE, BACKGROUND, OCEAN_BACKGROUND } from '../../image/index';
 import InfoField from './infoField';
 
 import * as PostService from '../service/postService';
+
+import Session from '../common/session';
 
 export default class CreatePost extends Component {
     constructor(props) {
@@ -319,9 +321,22 @@ export default class CreatePost extends Component {
         }
     }
 
+    onPressDontShowAgain() {
+        this.setState({ isShowIntro: false });
+        Session.getInstance().settings.createPostIntro = false;
+        storeData('settings', Session.getInstance().settings)
+            .then(result => console.log('Saved!'))
+            .catch(reason => console.log(reason));
+    }
+
     componentDidMount() {
         this.checkLoginToken();
         this._screenFocus = this.props.navigation.addListener('focus', () => {
+            console.log(Session.getInstance().settings.createPostIntro)
+            if (Session.getInstance().settings) {
+                this.setState({ isShowIntro: Session.getInstance().settings.createPostIntro ? Session.getInstance().settings.createPostIntro : false });
+                console.log(this.state.isShowIntro);
+            }
             this.checkLoginToken();
             this.props.navigation.dangerouslyGetParent().setOptions({
                 tabBarVisible: false
@@ -611,45 +626,69 @@ export default class CreatePost extends Component {
                     visible={this.state.isShowIntro}
                     onRequestClose={() => this.setState({ isShowIntro: false })}
                 >
-                    <View style={{
-                        height: scale(400, Vertical),
-                        width: scale(300, Horizontal),
-                        backgroundColor: 'white',
-                        marginLeft: 'auto',
-                        marginRight: 'auto',
-                        marginTop: 'auto',
-                        marginBottom: 'auto',
-                        borderRadius: 10,
-                        elevation: 10,
-                        paddingHorizontal: scale(20, Horizontal),
-                        paddingVertical: scale(20, Vertical),
-                    }}>
-                        <Text style={{ fontWeight: 'bold' }}>Thông báo này chỉ hiển thị lần đầu</Text>
-                        <Text>Có 2 dạng bài viết:</Text>
-                        <Text style={{
-                            marginLeft: scale(10, Horizontal),
-                            marginTop: scale(5, Vertical),
-                        }}>Dạng 1: Bài viết chia sẻ cá nhân là bài đăng thông thường chia sẻ phong cách thời trang của bạn.</Text>
-                        <Text style={{
-                            marginLeft: scale(10, Horizontal),
-                            marginTop: scale(5, Vertical),
-                        }}                        >Dạng 2: Bài viết giới thiệu sản phẩm cho việc kinh doanh là bài viết đăng thông tin sản phẩm thời trang. Với loại bài đăng này bạn sẽ mất phí. Người dùng sẽ dế tìm thấy sản phẩm của qua tính năng tìm nơi bán</Text>
-                        <Text>Lưu ý: Trong bài viết yêu cầu phải có hình ảnh và tiêu đề. Nội dung sẽ được kiểm định, chỉ được phép đăng nội dung về thời trang và hợp lệ.</Text>
-                        <TouchableOpacity
-                            onPress={() => this.setState({ isShowIntro: false })}
-                            style={{
-                                height: scale(30, Vertical),
-                                width: scale(80, Horizontal),
-                                backgroundColor: '#2a7ea0',
-                                borderRadius: 10,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginTop: scale(10, Vertical),
-                                marginLeft: 'auto',
-                                marginRight: scale(0, Horizontal)
-                            }}
-                        ><Text style={{ color: 'white' }}>Đã đọc</Text></TouchableOpacity>
-                    </View>
+                    <TouchableOpacity
+                        onPressOut={() => this.setState({ isShowIntro: false })}
+                        style={{ flex: 1 }}
+                    >
+                        <View style={{
+                            height: scale(400, Vertical),
+                            width: scale(300, Horizontal),
+                            backgroundColor: 'white',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                            marginTop: 'auto',
+                            marginBottom: 'auto',
+                            borderRadius: 10,
+                            elevation: 10,
+                            paddingHorizontal: scale(20, Horizontal),
+                            paddingVertical: scale(20, Vertical),
+                        }}>
+                            <Text style={{ fontWeight: 'bold' }}>Thông báo này chỉ hiển thị lần đầu</Text>
+                            <Text>Có 2 dạng bài viết:</Text>
+                            <Text style={{
+                                marginLeft: scale(10, Horizontal),
+                                marginTop: scale(5, Vertical),
+                            }}>Dạng 1: Bài viết chia sẻ cá nhân là bài đăng thông thường chia sẻ phong cách thời trang của bạn.</Text>
+                            <Text style={{
+                                marginLeft: scale(10, Horizontal),
+                                marginTop: scale(5, Vertical),
+                            }}                        >Dạng 2: Bài viết giới thiệu sản phẩm cho việc kinh doanh là bài viết đăng thông tin sản phẩm thời trang. Với loại bài đăng này bạn sẽ mất phí. Người dùng sẽ dế tìm thấy sản phẩm của qua tính năng tìm nơi bán</Text>
+                            <Text>Lưu ý: Trong bài viết yêu cầu phải có hình ảnh và tiêu đề. Nội dung sẽ được kiểm định, chỉ được phép đăng nội dung về thời trang và hợp lệ.</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity
+                                    onPress={() => this.setState({ isShowIntro: false })}
+                                    style={{
+                                        height: scale(30, Vertical),
+                                        // width: scale(110, Horizontal),
+                                        paddingHorizontal: scale(5, Horizontal),
+                                        backgroundColor: '#2a7ea0',
+                                        borderRadius: 10,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        marginTop: scale(10, Vertical),
+                                        marginLeft: 'auto',
+                                        marginRight: 'auto',
+                                    }}
+                                ><Text style={{ color: 'white' }}>Nhắc lại sau</Text></TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => this.onPressDontShowAgain()}
+                                    style={{
+                                        height: scale(30, Vertical),
+                                        // width: scale(110, Horizontal),
+                                        paddingHorizontal: scale(5, Horizontal),
+
+                                        backgroundColor: '#2a7ea0',
+                                        borderRadius: 10,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        marginTop: scale(10, Vertical),
+                                        marginLeft: 'auto',
+                                        marginRight: 'auto',
+                                    }}
+                                ><Text style={{ color: 'white' }}>Không nhắc lại</Text></TouchableOpacity>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 </Modal>
             </View >
         )

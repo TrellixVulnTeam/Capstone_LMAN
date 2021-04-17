@@ -38,6 +38,7 @@ export default class Settings extends Component {
                 isOnMessageNotification: false,
                 chatColor: '#46AA4A',
                 appBackground: '',
+                createPostIntro: true
             },
             isShowModalSelectChatColor: false,
         }
@@ -50,6 +51,10 @@ export default class Settings extends Component {
         settings.isOnMessageNotification = session.settings.isOnMessageNotification ? true : false;
         settings.chatColor = session.settings.chatColor ? session.settings.chatColor : '#46AA4A';
         settings.appBackground = session.settings.appBackground ? session.settings.appBackground : ''
+        if (typeof session.createPostIntro === 'undefined') {
+            session.settings.createPostIntro = true;
+            settings.createPostIntro = true;
+        }
         this.setState({ settings: settings });
     }
 
