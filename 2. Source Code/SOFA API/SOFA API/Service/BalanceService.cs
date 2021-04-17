@@ -80,19 +80,27 @@ namespace SOFA_API.Service
         {
             TopUpAccountModelOut topUpAccountModelOut = new TopUpAccountModelOut();
             int result = 0;
-            result = BalanceDAO.Instance.TopUpAccount(topUpAccountModelIn);
-            if (result > 0)
-            {
-                topUpAccountModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
-                topUpAccountModelOut.AccountId = topUpAccountModelIn.AccountId;
-                topUpAccountModelOut.AdminId = topUpAccountModelIn.AdminId;
-                topUpAccountModelOut.Amount = topUpAccountModelIn.Amount;
-                topUpAccountModelOut.Description = topUpAccountModelIn.Description;
-            }
-            else
+            if(topUpAccountModelIn.Amount <= 0)
             {
                 topUpAccountModelOut.Code = Const.REQUEST_CODE_FAILED;
                 topUpAccountModelOut.ErrorMessage = MessageUtils.ERROR_TOPUP_FAILED;
+            }
+            else
+            {
+                result = BalanceDAO.Instance.TopUpAccount(topUpAccountModelIn);
+                if (result > 0)
+                {
+                    topUpAccountModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    topUpAccountModelOut.AccountId = topUpAccountModelIn.AccountId;
+                    topUpAccountModelOut.AdminId = topUpAccountModelIn.AdminId;
+                    topUpAccountModelOut.Amount = topUpAccountModelIn.Amount;
+                    topUpAccountModelOut.Description = topUpAccountModelIn.Description;
+                }
+                else
+                {
+                    topUpAccountModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    topUpAccountModelOut.ErrorMessage = MessageUtils.ERROR_TOPUP_FAILED;
+                }
             }
             return topUpAccountModelOut;
         }
