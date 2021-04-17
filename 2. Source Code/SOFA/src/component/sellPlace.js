@@ -39,6 +39,7 @@ export default class SellPlace extends Component {
             currentImage: {},
             postQuery: {},
             listPost: [],
+            newRequestScreen: true
         }
     }
 
@@ -89,11 +90,17 @@ export default class SellPlace extends Component {
     componentDidMount() {
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.setState({ isLoading: true });
-            const { post } = this.props.route.params;
-            if (post.id == 0) {
-                this.setState({ isError: true, errorMessage: 'Lỗi không xác định', isLoading: false });
+            const { post, newRequest } = this.props.route.params;
+            const { newRequestScreen } = this.state;
+            console.log(post, newRequest);
+            if (newRequestScreen) {
+                if (post.id == 0) {
+                    this.setState({ isError: true, errorMessage: 'Lỗi không xác định', isLoading: false });
+                } else {
+                    this.setState({ isSelectImage: true, isLoading: false, postQuery: post, newRequestScreen: false });
+                }
             } else {
-                this.setState({ isSelectImage: true, isLoading: false, postQuery: post });
+                this.setState({ isLoading: false })
             }
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
@@ -101,6 +108,7 @@ export default class SellPlace extends Component {
     }
 
     componentWillUnmount() {
+        this.setState({ newRequestScreen: true });
     }
 
     Article = ({ data }) => {

@@ -705,8 +705,8 @@ export default class PostDetail extends Component {
                             onPressEditPost={(postID) => {
                                 this.props.navigation.navigate('EditPost', { 'postID': postID })
                             }}
-                            onPressBuyPlace={(postRes) => {
-                                this.props.navigation.navigate("SellPlace", { 'post': postRes });
+                            onPressBuyPlace={(post) => {
+                                this.props.navigation.navigate("SellPlace", { 'post': post, 'newRequest': true });
                             }}
                             onPressReportPost={(postID) => this.props.navigation.navigate('Report', { toPostID: postID, reportType: 1 })}
                             onPressReportUser={(accountID) => this.props.navigation.navigate('Report', { toAccountID: accountID, reportType: 2 })}
