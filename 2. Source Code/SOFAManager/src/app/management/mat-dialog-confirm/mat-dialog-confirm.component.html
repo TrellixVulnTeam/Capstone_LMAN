@@ -3,7 +3,7 @@
   <h4 *ngIf="!data.isGetInput">{{data.content}}</h4>
   <mat-form-field *ngIf="data.isGetInput">
     <mat-label>VNĐ</mat-label>
-    <input matInput [(ngModel)]="inputData" type="number">
+    <input matInput [(ngModel)]="inputData" type="number" >
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
