@@ -175,6 +175,13 @@ export default class Search extends Component {
                     <TouchableOpacity
                         disabled={searchText.trim().length == 0}
                         style={styles.searchIcon}
+                        onPress={() => {
+                            this.setState({ currentTextSearch: searchText });
+                            if (searchText.trim().length > 0) {
+                                this.searchPost(1);
+                                this.searchUser(1);
+                            }
+                        }}
                     >
                         <Ionicons name={'search-sharp'} color={'#C7C7C7'} size={30}
                         />
