@@ -14,7 +14,6 @@ import * as Utils from "../common/utils";
 
 import { USER_ICON, GOOGLE_ICON, FACEBOOK_ICON } from '../../image/index';
 import { TextInput } from 'react-native-gesture-handler';
-import { thisExpression } from '@babel/types';
 
 export default class Verification extends Component {
   constructor(props) {
