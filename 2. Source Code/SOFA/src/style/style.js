@@ -423,9 +423,9 @@ export const verification = StyleSheet.create({
     content: {
         marginTop: Utils.scale(20, Const.Vertical),
         backgroundColor: 'white',
-        marginLeft: Utils.scale(30, Const.Horizontal),
-        width: Utils.scale(340, Const.Horizontal),
-        height: Utils.scale(350, Const.Vertical),
+        marginLeft: Utils.scale(20, Const.Horizontal),
+        width: Utils.scale(360, Const.Horizontal),
+        height: Utils.scale(300, Const.Vertical),
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         borderBottomLeftRadius: 10,
@@ -433,11 +433,11 @@ export const verification = StyleSheet.create({
     },
 
     labelTitle: {
+        marginTop: Utils.scale(20, Const.Vertical),
         fontSize: Utils.scale(40, Const.Horizontal),
         color: 'black',
         fontFamily: 'OpenSansCondensed-Light',
         paddingBottom: Utils.scale(10, Const.Vertical),
-        paddingLeft: Utils.scale(70, Const.Horizontal),
     },
 
     phone: {
