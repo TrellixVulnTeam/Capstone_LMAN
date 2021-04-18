@@ -36,17 +36,14 @@ export default class Verification extends Component {
     clearInterval(this.timeCall);
   }
 
-  checkOTP = async () => {
+  checkOTP = () => {
 
     if (this.state.code == undefined || this.state.code.trim().length == 0 || this.state.code == 0) {
       this.setState({ isValidInput: false, errMsg: 'Vui lòng nhập OTP' })
     }
     else {
       const { transactionID, code } = this.state;
-      if (this.state.preScreen == Const.FORGOT_PASSWORD) {
-        this.props.navigation.navigate('ChangePassword', { phone: this.state.phone, isResetPassword: true, transactionID: transactionID, code: code });
-        return;
-      }
+      
       let header = {
         "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
         "Content-Type": "multipart/form-data",
@@ -57,7 +54,7 @@ export default class Verification extends Component {
       data.append('Code', code);
       console.log(transactionID);
       let url = Const.domain + 'api/verification/Verify';
-
+      console.log(this.state);
       Request.Post(url, header, data)
         .then(response => {
           console.log(response);
@@ -68,9 +65,14 @@ export default class Verification extends Component {
               if (this.state.preScreen == Const.REGISTER) {
                 this.props.navigation.navigate('Register', { phone: this.state.phone });
               }
+              if (this.state.preScreen == Const.FORGOT_PASSWORD) {
+                this.props.navigation.navigate('ChangePassword', { phone: this.state.phone, isResetPassword: true, transactionID: transactionID, code: code });
+                return;
+              }
             }
           }
           else {
+            console.log('failed')
             this.setState({ isValidInput: false, errMsg: 'Mã OTP không tồn tại hoặc đã hết hạn' })
           }
         })
