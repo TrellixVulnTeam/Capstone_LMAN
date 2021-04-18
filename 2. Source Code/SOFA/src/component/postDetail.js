@@ -456,212 +456,238 @@ export default class PostDetail extends Component {
             }}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 {post.accountPost && post.accountPost != 0 ? (
-                    <View>
-                        <FlatList
-                            ListHeaderComponent={(
-                                <View
-                                    style={{
-                                        backgroundColor: 'white',
-                                        borderTopLeftRadius: 10,
-                                        borderBottomLeftRadius: 10,
-                                        paddingVertical: scale(10, Vertical),
-                                    }}
-                                >
-                                    <View style={Style.common.flexRow}>
-                                        <TouchableWithoutFeedback
-                                            onPress={() => this.navigateProfile(post.accountPost)}
-                                        >
-                                            <Image
-                                                source={post.avatar && post.avatar.length > 0 ?
-                                                    { uri: Const.assets_domain + post.avatar } : AVATAR}
-                                                style={Style.newsfeed.ArticleAvatar} />
-                                        </TouchableWithoutFeedback>
+                    <View style={{ flex: 1 }}>
+                        <View style={{ height: scale(661, Vertical) }}>
 
-                                        <View style={Style.newsfeed.ArticleHeader}>
-                                            <Text
-                                                onPress={() => this.navigateProfile(post.accountPost)}
-                                                style={{ fontFamily: 'SanFranciscoText-Bold' }}>{post.firstName + ' ' + post.lastName}</Text>
-                                            <Text style={{ fontFamily: 'SanFranciscoText-Regular' }}>{Utils.calculateTime(post.time)}</Text>
-                                        </View>
-                                        <MaterialCommunityIcons
-                                            onPress={() => {
-                                                this.setState({ isShowMenu: true });
-                                                this.postMenu.onPrepare();
-                                            }}
-                                            style={Style.newsfeed.ArticleMenu}
-                                            name='dots-horizontal' size={30} color={'black'} />
-
-                                    </View>
-                                    <View style={Style.newsfeed.ArticleCaption}>
-                                        <Text style={{
-                                            fontSize: 16,
-                                            textAlignVertical: 'center',
-                                            marginLeft: scale(20, Horizontal),
-                                            marginRight: scale(10, Horizontal),
-                                            marginTop: scale(10, Horizontal),
-                                            color: 'black'
-                                        }}>{post.content}</Text>
-                                    </View>
-                                    <View style={{
-                                        height: scale(400, Vertical),
-                                        marginTop: scale(20, Vertical),
-                                        marginLeft: 'auto',
-                                        marginRight: 'auto',
-                                    }}>
-                                        <FlatList
-                                            showsVerticalScrollIndicator={false}
-                                            showsHorizontalScrollIndicator={false}
-                                            horizontal
-                                            data={post.listImage}
-                                            keyExtractor={item => item.id + ''}
-                                            pagingEnabled={true}
-                                            renderItem={({ item }) => {
-                                                return (
-                                                    <TouchableWithoutFeedback
-                                                        onPress={() => this.onPressImage(post, item)}
-                                                    >
-                                                        <View style={Style.newsfeed.ArticleImageStyle}>
-                                                            <Image
-                                                                style={{
-                                                                    flex: 1,
-                                                                    height: scale(400, Horizontal),
-                                                                    width: scale(400, Horizontal),
-                                                                    resizeMode: 'cover',
-                                                                    borderRadius: 20,
-                                                                }}
-                                                                source={{ uri: Const.assets_domain + item.url }} />
-                                                        </View>
-                                                    </TouchableWithoutFeedback>
-                                                )
-                                            }}
-                                        />
-
-                                    </View>
-                                    <View style={[Style.newsfeed.ArtileMore]}>
-                                        <View style={
-                                            {
-                                                borderTopWidth: 0.5,
-                                                borderBottomWidth: 0.5,
-                                                marginTop: scale(5, Vertical),
-                                                paddingVertical: scale(5, Vertical),
-                                                flexDirection: 'row',
-                                                width: scale(400, Horizontal),
-                                                borderRadius: 10
-                                            }}>
-                                            <TouchableOpacity
-                                                style={{
-                                                    flexDirection: 'row',
-                                                    marginLeft: 'auto',
-                                                    marginRight: 'auto',
-                                                }}
-                                                activeOpacity={0.2}
-                                                onPress={() => this.onPressLikePost(post)}
-                                            >
-                                                <MaterialCommunityIcons
-                                                    name={post.isLiked ? 'heart' : 'heart-outline'}
-                                                    size={30}
-                                                    color={post.isLiked ? 'rgba(48,128,153,1)' : '#232323'} />
-                                                <Text style={Style.newsfeed.ArticleNumberOfReact}>Yêu thích</Text>
-                                            </TouchableOpacity>
-                                            <View
-                                                style={{
-                                                    marginLeft: 'auto',
-                                                    marginRight: 'auto',
-                                                    flexDirection: 'row'
-                                                }}
-                                            >
-                                                <Rating
-                                                    ratingCount={5}
-                                                    imageSize={30}
-                                                    type='custom'
-                                                    ratingColor='rgba(48,128,153,1)'
-                                                    tintColor='white'
-                                                    readonly={!this.state.isLogin}
-                                                    ratingBackgroundColor='#FFF2D1'
-                                                    onFinishRating={(rating) => this.ratingCompleted(post, rating)}
-                                                    startingValue={post.myRatePoint}
-                                                />
-                                                <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.rateAverage + '/5'}</Text>
-                                            </View>
-                                        </View>
-                                        <View>
-                                            {post.listLike.length > 0 ? (
-                                                <View style={{ flexDirection: 'row', marginLeft: scale(20, Horizontal) }}>
-                                                    <MaterialCommunityIcons
-                                                        name={'heart'}
-                                                        size={16}
-                                                        color={'rgba(48,128,153,1)'} />
-                                                    <Text>{post.listLike[post.listLike.length - 1].firstName + ' ' + post.listLike[post.listLike.length - 1].lastName}</Text>
-                                                    {post.listLike.length > 1 ? (
-                                                        <View>
-                                                            <Text>{' và ' + (post.numberOfLike - 1) + ' Người khác '}</Text>
-                                                        </View>
-                                                    ) : (<View></View>)}
-                                                </View>
-                                            ) : (<View></View>)}
-                                        </View>
-                                    </View>
-                                    {post.numberOfComment > post.listComment.length ?
-                                        (
-                                            <TouchableOpacity
-                                                disabled={isLoadMoreComment}
-                                                onPress={() => this.loadMoreComment()}
-                                            >
-                                                <View>
-                                                    {!isLoadMoreComment ? (
-                                                        <View>
-                                                            <Text style={[{
-                                                                color: '#787878'
-                                                            }, styles.CommentItemBounder]}>Xem thêm bình luần</Text>
-                                                        </View>
-                                                    ) : (<View>
-                                                        <ActivityIndicator size="small" color="rgb(48,128,153)" />
-                                                    </View>)}
-                                                </View>
-                                            </TouchableOpacity>
-                                        ) : (<View></View>)}
-                                </View>
-
-                            )}
-                            ListFooterComponent={(
-                                <View>
-
-                                </View>
-
-                            )}
-                            data={post.listComment}
-                            keyExtractor={(item, index) => item.id + ''}
-                            renderItem={({ item }) => {
-                                return (
-                                    <View style={styles.CommentItemBounder}>
-                                        <View style={{ flexDirection: 'row' }}>
+                            <FlatList
+                                ListHeaderComponent={(
+                                    <View
+                                        style={{
+                                            backgroundColor: 'white',
+                                            borderTopLeftRadius: 10,
+                                            borderBottomLeftRadius: 10,
+                                            paddingVertical: scale(10, Vertical),
+                                        }}
+                                    >
+                                        <View style={Style.common.flexRow}>
                                             <TouchableWithoutFeedback
-                                                onPress={() => this.navigateProfile(item.accountID)}
+                                                onPress={() => this.navigateProfile(post.accountPost)}
                                             >
                                                 <Image
-                                                    style={styles.CommentAvatar}
-                                                    source={item.avatar && item.avatar.length > 0 ? { uri: Const.assets_domain + item.avatar } : { AVATAR }} />
+                                                    source={post.avatar && post.avatar.length > 0 ?
+                                                        { uri: Const.assets_domain + post.avatar } : AVATAR}
+                                                    style={Style.newsfeed.ArticleAvatar} />
                                             </TouchableWithoutFeedback>
-                                            <View style={styles.CommentItem}>
+
+                                            <View style={Style.newsfeed.ArticleHeader}>
                                                 <Text
-                                                    style={styles.CommentAuthor}
-                                                    onPress={() => this.navigateProfile(item.accountID)}>{item.firstName + " " + item.lastName}
-                                                </Text>
-                                                <Text style={styles.CommentContent}>{item.content}</Text>
+                                                    onPress={() => this.navigateProfile(post.accountPost)}
+                                                    style={{ fontFamily: 'SanFranciscoText-Bold' }}>{post.firstName + ' ' + post.lastName}</Text>
+                                                <Text style={{ fontFamily: 'SanFranciscoText-Regular' }}>{Utils.calculateTime(post.time)}</Text>
+                                            </View>
+                                            <MaterialCommunityIcons
+                                                onPress={() => {
+                                                    this.setState({ isShowMenu: true });
+                                                    this.postMenu.onPrepare();
+                                                }}
+                                                style={Style.newsfeed.ArticleMenu}
+                                                name='dots-horizontal' size={30} color={'black'} />
+
+                                        </View>
+                                        <View style={Style.newsfeed.ArticleCaption}>
+                                            <Text style={{
+                                                fontSize: 16,
+                                                textAlignVertical: 'center',
+                                                marginLeft: scale(20, Horizontal),
+                                                marginRight: scale(10, Horizontal),
+                                                marginTop: scale(10, Horizontal),
+                                                color: 'black'
+                                            }}>{post.content}</Text>
+                                        </View>
+                                        <View style={{
+                                            height: scale(400, Vertical),
+                                            marginTop: scale(20, Vertical),
+                                            marginLeft: 'auto',
+                                            marginRight: 'auto',
+                                        }}>
+                                            <FlatList
+                                                showsVerticalScrollIndicator={false}
+                                                showsHorizontalScrollIndicator={false}
+                                                horizontal
+                                                data={post.listImage}
+                                                keyExtractor={item => item.id + ''}
+                                                pagingEnabled={true}
+                                                renderItem={({ item }) => {
+                                                    return (
+                                                        <TouchableWithoutFeedback
+                                                            onPress={() => this.onPressImage(post, item)}
+                                                        >
+                                                            <View style={Style.newsfeed.ArticleImageStyle}>
+                                                                <Image
+                                                                    style={{
+                                                                        flex: 1,
+                                                                        height: scale(400, Horizontal),
+                                                                        width: scale(400, Horizontal),
+                                                                        resizeMode: 'cover',
+                                                                        borderRadius: 20,
+                                                                    }}
+                                                                    source={{ uri: Const.assets_domain + item.url }} />
+                                                            </View>
+                                                        </TouchableWithoutFeedback>
+                                                    )
+                                                }}
+                                            />
+
+                                        </View>
+                                        <View style={[Style.newsfeed.ArtileMore]}>
+                                            <View style={
+                                                {
+                                                    borderTopWidth: 0.5,
+                                                    borderBottomWidth: 0.5,
+                                                    marginTop: scale(5, Vertical),
+                                                    paddingVertical: scale(5, Vertical),
+                                                    flexDirection: 'row',
+                                                    width: scale(400, Horizontal),
+                                                    borderRadius: 10
+                                                }}>
+                                                <TouchableOpacity
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        marginLeft: 'auto',
+                                                        marginRight: 'auto',
+                                                    }}
+                                                    activeOpacity={0.2}
+                                                    onPress={() => this.onPressLikePost(post)}
+                                                >
+                                                    <MaterialCommunityIcons
+                                                        name={post.isLiked ? 'heart' : 'heart-outline'}
+                                                        size={30}
+                                                        color={post.isLiked ? 'rgba(48,128,153,1)' : '#232323'} />
+                                                    <Text style={Style.newsfeed.ArticleNumberOfReact}>Yêu thích</Text>
+                                                </TouchableOpacity>
+                                                <View
+                                                    style={{
+                                                        marginLeft: 'auto',
+                                                        marginRight: 'auto',
+                                                        flexDirection: 'row'
+                                                    }}
+                                                >
+                                                    <Rating
+                                                        ratingCount={5}
+                                                        imageSize={30}
+                                                        type='custom'
+                                                        ratingColor='rgba(48,128,153,1)'
+                                                        tintColor='white'
+                                                        readonly={!this.state.isLogin}
+                                                        ratingBackgroundColor='#FFF2D1'
+                                                        onFinishRating={(rating) => this.ratingCompleted(post, rating)}
+                                                        startingValue={post.myRatePoint}
+                                                    />
+                                                    <Text style={Style.newsfeed.ArticleNumberOfReact}>{post.rateAverage + '/5'}</Text>
+                                                </View>
+                                            </View>
+                                            <View>
+                                                {post.listLike.length > 0 ? (
+                                                    <View style={{ flexDirection: 'row', marginLeft: scale(20, Horizontal) }}>
+                                                        <MaterialCommunityIcons
+                                                            name={'heart'}
+                                                            size={16}
+                                                            color={'rgba(48,128,153,1)'} />
+                                                        <Text>{post.listLike[post.listLike.length - 1].firstName + ' ' + post.listLike[post.listLike.length - 1].lastName}</Text>
+                                                        {post.listLike.length > 1 ? (
+                                                            <View>
+                                                                <Text>{' và ' + (post.numberOfLike - 1) + ' Người khác '}</Text>
+                                                            </View>
+                                                        ) : (<View></View>)}
+                                                    </View>
+                                                ) : (<View></View>)}
+                                            </View>
+                                        </View>
+                                        {post.numberOfComment > post.listComment.length ?
+                                            (
+                                                <TouchableOpacity
+                                                    disabled={isLoadMoreComment}
+                                                    onPress={() => this.loadMoreComment()}
+                                                >
+                                                    <View>
+                                                        {!isLoadMoreComment ? (
+                                                            <View>
+                                                                <Text style={[{
+                                                                    color: '#787878'
+                                                                }, styles.CommentItemBounder]}>Xem thêm bình luần</Text>
+                                                            </View>
+                                                        ) : (<View>
+                                                            <ActivityIndicator size="small" color="rgb(48,128,153)" />
+                                                        </View>)}
+                                                    </View>
+                                                </TouchableOpacity>
+                                            ) : (<View></View>)}
+                                    </View>
+
+                                )}
+                                ListFooterComponent={(
+                                    <View>
+
+                                    </View>
+
+                                )}
+                                data={post.listComment}
+                                keyExtractor={(item, index) => item.id + ''}
+                                renderItem={({ item }) => {
+                                    return (
+                                        <View style={styles.CommentItemBounder}>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <TouchableWithoutFeedback
+                                                    onPress={() => this.navigateProfile(item.accountID)}
+                                                >
+                                                    <Image
+                                                        style={styles.CommentAvatar}
+                                                        source={item.avatar && item.avatar.length > 0 ? { uri: Const.assets_domain + item.avatar } : { AVATAR }} />
+                                                </TouchableWithoutFeedback>
+                                                <View style={styles.CommentItem}>
+                                                    <Text
+                                                        style={styles.CommentAuthor}
+                                                        onPress={() => this.navigateProfile(item.accountID)}>{item.firstName + " " + item.lastName}
+                                                    </Text>
+                                                    <Text style={styles.CommentContent}>{item.content}</Text>
+
+                                                </View>
+                                            </View>
+                                            <View style={styles.CommentAction}>
+                                                <Text style={{ fontSize: 13 }}>{calculateTime(item.time)}</Text>
+                                                <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Thích</Text>
+                                                <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Trả lời</Text>
 
                                             </View>
                                         </View>
-                                        <View style={styles.CommentAction}>
-                                            <Text style={{ fontSize: 13 }}>{calculateTime(item.time)}</Text>
-                                            <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Thích</Text>
-                                            <Text style={{ marginLeft: scale(30, Horizontal), fontSize: 13 }}>Trả lời</Text>
-
-                                        </View>
-                                    </View>
-                                )
-                            }}
-                            refreshing={this.state.isRefresing}
-                        />
+                                    )
+                                }}
+                                refreshing={this.state.isRefresing}
+                            />
+                        </View>
+                        <View style={[{
+                            position: 'absolute',
+                            backgroundColor: 'white',
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            width: scale(400, Horizontal),
+                            bottom: 0,
+                            paddingVertical: scale(5, Vertical),
+                            elevation: 10,
+                            flexDirection: 'row'
+                        }]}>
+                            <Image
+                                style={[styles.CommentAvatar, { marginLeft: scale(10, Horizontal) }]}
+                                source={account.avatarUri && account.avatarUri.length > 0 ? { uri: Const.assets_domain + account.avatarUri } : { AVATAR }} />
+                            <TextInput
+                                placeholder={'Viết bình luận'}
+                                returnKeyType={'send'}
+                                value={commentText}
+                                onChangeText={text => this.setState({ commentText: text })}
+                                onSubmitEditing={() => this.onPressComment(post.id, commentText)}
+                                style={[styles.CommentTextBox]}
+                            />
+                        </View>
                         <PostMenu
                             ref={child => { this.postMenu = child }}
                             post={post}
@@ -696,29 +722,7 @@ export default class PostDetail extends Component {
                                 this.setState({ currentShowImage: {} })
                             }}
                         />
-                        <View style={[{
-                            position: 'absolute',
-                            backgroundColor: 'white',
-                            borderTopLeftRadius: 10,
-                            borderTopRightRadius: 10,
-                            width: scale(400, Horizontal),
-                            bottom: 0,
-                            paddingVertical: scale(5, Vertical),
-                            elevation: 10,
-                            flexDirection: 'row'
-                        }]}>
-                            <Image
-                                style={[styles.CommentAvatar, { marginLeft: scale(10, Horizontal) }]}
-                                source={account.avatarUri && account.avatarUri.length > 0 ? { uri: Const.assets_domain + account.avatarUri } : { AVATAR }} />
-                            <TextInput
-                                placeholder={'Viết bình luận'}
-                                returnKeyType={'send'}
-                                value={commentText}
-                                onChangeText={text => this.setState({ commentText: text })}
-                                onSubmitEditing={() => this.onPressComment(post.id, commentText)}
-                                style={[styles.CommentTextBox]}
-                            />
-                        </View>
+
                     </View>) : (
                     <View style={{
                         alignItems: 'center',
