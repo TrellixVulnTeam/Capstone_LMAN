@@ -18,6 +18,7 @@ namespace SOFA_API.ViewModel.Notification
         public string Content { get; set; }
         public int FromAccount { get; set; }
         public string FromAccountName { get; set; }
+        public string FromAccountAvatar { get; set; }
         public int ToAccount { get; set; }
         public string ToAccountName { get; set; }
         public DateTime DateCreated { get; set; }
@@ -46,9 +47,9 @@ namespace SOFA_API.ViewModel.Notification
             FromAccount = Convert.IsDBNull(row["FromAccount"]) ? 0 : (int)row["FromAccount"]; ;
             ToAccount = (int)row["ToAccount"];
             Content = row["Content"].ToString();
-            IsRead = Convert.IsDBNull(row["IsRead"]) ? false: (bool)row["Isread"];
+            IsRead = Convert.IsDBNull(row["IsRead"]) ? false : (bool)row["Isread"];
             DateCreated = (DateTime)row["DateCreated"];
-            FromAccountName = GetProfileFullName(FromAccount);
+            SetFromProfile(FromAccount);
             ToAccountName = GetProfileFullName(ToAccount);
         }
 
@@ -57,15 +58,38 @@ namespace SOFA_API.ViewModel.Notification
             if (accountID == 0)
             {
                 return "Hệ thống";
-            } else
+            }
+            else
             {
                 DTO.Profile profile = ProfileDAO.Instance.GetProfileByAccountID(accountID);
                 if (profile != null)
                 {
                     return profile.FirstName + " " + profile.LastName;
-                } else
+                }
+                else
                 {
                     return "";
+                }
+            }
+        }
+        private void SetFromProfile(int accountID)
+        {
+            if (accountID == 0)
+            {
+                FromAccountName = "Quản trị viên";
+            }
+            else
+            {
+                DTO.Profile profile = ProfileDAO.Instance.GetProfileByAccountID(accountID);
+                if (profile != null)
+                {
+                    FromAccountName = profile.FirstName + " " + profile.LastName;
+                    FromAccountAvatar = profile.AvatarUri;
+                }
+                else
+                {
+                    FromAccountName = "";
+                    FromAccountAvatar = "";
                 }
             }
         }
