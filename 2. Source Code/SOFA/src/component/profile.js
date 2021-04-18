@@ -72,7 +72,7 @@ export default class Profile extends Component {
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                 this.setState({ account: response });
-                                this.setState({ avatarUri: Const.assets_domain + response.avatarUri + '?time=' + new Date() });
+                                this.setState({ avatarUri: Const.assets_domain + response.avatarUri });
                             } else {
                                 this.props.navigation.navigate('Login')
                             }
