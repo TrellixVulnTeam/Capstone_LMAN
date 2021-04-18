@@ -61,7 +61,7 @@ export default class Profile extends Component {
         }
     }
 
-    
+
     getProfile() {
         const AccountID = this.props.route.params;
         console.log('Get Profile');
@@ -142,8 +142,8 @@ export default class Profile extends Component {
         FollowService.followSomeone(accountID)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({numberFollower : this.state.numberFollower + 1});
-                    this.setState({followText : 'UNFOLLOW'});
+                    this.setState({ numberFollower: this.state.numberFollower + 1 });
+                    this.setState({ followText: 'UNFOLLOW' });
                     this.checkFollow();
                 } else {
                     console.log(response.errorMessage);
@@ -165,8 +165,8 @@ export default class Profile extends Component {
         FollowService.unfollowSomeone(accountID)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({numberFollower : this.state.numberFollower - 1});
-                    this.setState({followText : 'FOLLOW'});
+                    this.setState({ numberFollower: this.state.numberFollower - 1 });
+                    this.setState({ followText: 'FOLLOW' });
                     this.checkFollow();
                 } else {
                     console.log(response.errorMessage);
@@ -183,31 +183,31 @@ export default class Profile extends Component {
             })
     }
 
-    checkFollow(){
+    checkFollow() {
         const accountID = this.props.route.params.accountID;
         FollowService.checkFollowed(accountID)
-        .then(response => {
-            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                this.setState({isFollowed : response.isFollowed});
-                if(response.isFollowed == true){
-                    this.setState({followText : 'UNFOLLOW'});
-                }else{
-                    this.setState({followText : 'FOLLOW'});
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    this.setState({ isFollowed: response.isFollowed });
+                    if (response.isFollowed == true) {
+                        this.setState({ followText: 'UNFOLLOW' });
+                    } else {
+                        this.setState({ followText: 'FOLLOW' });
+                    }
+
+                } else {
+                    console.log(response.errorMessage);
+                    ToastAndroid.show("Check follow không thành công", ToastAndroid.LONG);
                 }
-                
-            } else {
-                console.log(response.errorMessage);
-                ToastAndroid.show("Check follow không thành công", ToastAndroid.LONG);
-            }
-        })
-        .catch(reason => {
-            console.log(reason);
-            if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
-            } else {
-                ToastAndroid.show("Check follow không thành công", ToastAndroid.LONG);
-            }
-        })
+            })
+            .catch(reason => {
+                console.log(reason);
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                } else {
+                    ToastAndroid.show("Check follow không thành công", ToastAndroid.LONG);
+                }
+            })
     }
     onPressBlock() {
         console.log('Press Block');
@@ -324,9 +324,9 @@ export default class Profile extends Component {
 
                                         <View style={Style.profile.button}>
                                             <Button style={Style.profile.singleButton} color='#ff7878' onPress={() => {
-                                                if(this.state.isFollowed == true){
+                                                if (this.state.isFollowed == true) {
                                                     this.onPressUnfollow();
-                                                }else{
+                                                } else {
                                                     this.onPressFollow();
                                                 }
                                             }} title={this.state.followText} />
@@ -381,16 +381,20 @@ export default class Profile extends Component {
                         numColumns={3}
                         keyExtractor={(item) => item.id + ''}
                         renderItem={({ item, index }) => {
-                            return (<Image
-                                style={{
-                                    marginLeft: index % 3 == 0 ? Utils.scale(33.5, Const.Horizontal) : Utils.scale(0, Const.Horizontal),
-                                    height: Utils.scale(100, Const.Vertical),
-                                    width: Utils.scale(100, Const.Vertical),
-                                    borderWidth: 0.5,
-                                    borderColor: 'black',
-                                }}
-                                source={{ uri: Const.assets_domain + item.url }}
-                            />)
+                            return (
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('PostDetail', { postID: item.postID })}>
+                                    <Image
+                                        style={{
+                                            marginLeft: index % 3 == 0 ? Utils.scale(33.5, Const.Horizontal) : Utils.scale(0, Const.Horizontal),
+                                            height: Utils.scale(100, Const.Vertical),
+                                            width: Utils.scale(100, Const.Vertical),
+                                            borderWidth: 0.5,
+                                            borderColor: 'black',
+                                        }}
+                                        source={{ uri: Const.assets_domain + item.url }}
+                                    />
+                                </TouchableOpacity>
+                            )
                         }
                         }
                     />
