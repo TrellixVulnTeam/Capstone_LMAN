@@ -308,11 +308,11 @@ namespace SOFA_API.Service
                 if (loginViewModelIn.IsAfterReset)
                 {
                     // verify code
-                    if (!VerificationService.Instance.VerifyCode(loginViewModelIn.TransactionId, loginViewModelIn.Code))
-                    {
-                        loginViewModelOut.Code = Const.REQUEST_CODE_FAILED;
-                        throw new Exception("Code không hợp lệ");
-                    }
+                    //if (!VerificationService.Instance.VerifyCode(loginViewModelIn.TransactionId, loginViewModelIn.Code))
+                    //{
+                    //    loginViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    //    throw new Exception("Code không hợp lệ");
+                    //}
 
                     if (!string.IsNullOrEmpty(loginViewModelIn.NewPassword) && loginViewModelIn.NewPassword.Length >= 6)
                     {
