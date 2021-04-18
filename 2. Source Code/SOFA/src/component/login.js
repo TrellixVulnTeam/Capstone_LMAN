@@ -9,6 +9,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import { GoogleSignin } from '@react-native-community/google-signin'
 import NotificationWSS from '../service/NotificationWSS';
+import MessageWSS from '../service/messageWSS';
 import * as signalR from '@microsoft/signalr';
 
 export default class Login extends Component {
@@ -41,7 +42,7 @@ export default class Login extends Component {
         await AsyncStorage.getItem('token')
             .then(value => {
                 if (value != null) {
-                    this.props.navigation.navigate('BottomNav');
+                    this.props.navigation.navigate('Intro');
                     // AsyncStorage.clear();
                     // this.setState({ isLoading: false })
                 }
@@ -91,16 +92,27 @@ export default class Login extends Component {
                                         this.setState({ isLoading: false });
 
                                         let instance = NotificationWSS.getInstance(false);
-                                            instance.setConnection(new signalR.HubConnectionBuilder()
-                                                .withUrl(Const.domain + 'notification', {
-                                                    accessTokenFactory: () => response.token,
-                                                    skipNegotiation: true,
-                                                    transport: signalR.HttpTransportType.WebSockets
-                                                })
-                                                .build());
-                                            instance.pushNotification();
+                                        instance.setConnection(new signalR.HubConnectionBuilder()
+                                            .withUrl(Const.domain + 'notification', {
+                                                accessTokenFactory: () => response.token,
+                                                skipNegotiation: true,
+                                                transport: signalR.HttpTransportType.WebSockets
+                                            })
+                                            .withAutomaticReconnect()
+                                            .build());
+                                        instance.pushNotification();
+                                        let messInstance = MessageWSS.getInstance(false);
+                                        messInstance.setConnection(new signalR.HubConnectionBuilder()
+                                            .withUrl(Const.domain + 'message', {
+                                                accessTokenFactory: () => response.token,
+                                                skipNegotiation: true,
+                                                transport: signalR.HttpTransportType.WebSockets
+                                            })
+                                            .withAutomaticReconnect()
+                                            .build());
+                                        messInstance.pushNotification();
 
-                                        this.props.navigation.navigate('BottomNav');
+                                        this.props.navigation.navigate('Intro');
                                         this.props.navigation.goBack();
                                     });
                             });
@@ -138,7 +150,7 @@ export default class Login extends Component {
                                     this.storeData('user', user)
                                         .then(res => {
                                             this.setState({ isLoading: false });
-                                            this.props.navigation.navigate('BottomNav');
+                                            this.props.navigation.navigate('Intro');
                                             this.props.navigation.goBack();
                                         });
                                 });
@@ -148,13 +160,13 @@ export default class Login extends Component {
                                     "Thông báo",
                                     "Hãy đăng ký với địa chỉ email của bạn",
                                     [
-                                      {
-                                        text: "Hủy",
-                                        style: "cancel"
-                                      },
-                                      { text: "OK", onPress: () => this.props.navigation.navigate('PhoneRegister', { isResetPassword: false }) }
+                                        {
+                                            text: "Hủy",
+                                            style: "cancel"
+                                        },
+                                        { text: "OK", onPress: () => this.props.navigation.navigate('PhoneRegister', { isResetPassword: false }) }
                                     ]
-                                  );
+                                );
                             }
                         }
                     })

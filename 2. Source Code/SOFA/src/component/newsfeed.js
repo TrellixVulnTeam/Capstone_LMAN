@@ -81,90 +81,88 @@ export default class Newsfeed extends Component {
     }
 
     notificationConnection() {
-        getData('token')
-            .then((result) => {
-                if (result) {
-                    let token = result.toString().substr(1, result.length - 2);
-                    if (typeof this.connection === 'undefined') {
-                        this.connection = new signalR.HubConnectionBuilder()
-                            .withUrl(Const.domain + 'notification', {
-                                accessTokenFactory: () => token,
-                                skipNegotiation: true,
-                                transport: signalR.HttpTransportType.WebSockets,
-                            })
-                            .withAutomaticReconnect()
-                            .build();
-                        this.connection
-                            .start()
-                            .then(() => {
-                            })
-                            .catch(function (err) {
-                                return console.error(err.toString());
-                            });
-                        this.connection.on('NewNotification', (data) => {
-                            if (data) {
-                                this.setState({
-                                    numberUnreadNotification:
-                                        this.state.numberUnreadNotification + 1,
-                                });
+        let token = Session.getInstance().token;
+        if (token) {
+            if (typeof this.connection === 'undefined') {
+                this.connection = new signalR.HubConnectionBuilder()
+                    .withUrl(Const.domain + 'notification', {
+                        accessTokenFactory: () => token,
+                        skipNegotiation: true,
+                        transport: signalR.HttpTransportType.WebSockets,
+                    })
+                    .withAutomaticReconnect()
+                    .build();
+                this.connection
+                    .start()
+                    .then(() => {
+                        console.log('NotificationWSS', 'Connected from Newsfeed');
+                    })
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                this.connection.on('NewNotification', (data) => {
+                    if (data) {
+                        NotificationService.getUnreadNotification(1, 100)
+                            .then((response) => {
+                                this.setState({ numberUnreadNotification: response.listNoti.length });
                                 PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
-                            }
-                        });
+                            })
+                            .catch((reason) => {
+                                console.log(reason);
+                            });
                     }
-                }
-            })
-            .catch((reason) => {
-                console.log(reason);
-            });
+                });
+            }
+        }
     }
     messageConnectionHub() {
-        getData('token')
-            .then((result) => {
-                if (result) {
-                    let token = result.toString().substr(1, result.length - 2);
-                    if (typeof this.messageConnection === 'undefined') {
-                        this.messageConnection = new signalR.HubConnectionBuilder()
-                            .withUrl(Const.domain + 'message', {
-                                accessTokenFactory: () => token,
-                                skipNegotiation: true,
-                                transport: signalR.HttpTransportType.WebSockets,
+        let token = Session.getInstance().token;
+        if (token) {
+            if (typeof this.messageConnection === 'undefined') {
+                this.messageConnection = new signalR.HubConnectionBuilder()
+                    .withUrl(Const.domain + 'message', {
+                        accessTokenFactory: () => token,
+                        skipNegotiation: true,
+                        transport: signalR.HttpTransportType.WebSockets,
+                    })
+                    .withAutomaticReconnect()
+                    .build();
+                this.messageConnection
+                    .start()
+                    .then(() => {
+                        console.log('MessageWSS', 'Connected from Newsfeed');
+                    })
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                this.messageConnection.on('NewMessage', (data) => {
+                    console.log('Newsfeed', data);
+                    if (data) {
+                        MessageService.getNumberUnreadMessage()
+                            .then(response => {
+                                console.log('Newsfeed', response);
+                                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                    this.setState({ numberUnreadMessage: response.numberUnreadMessage });
+                                    PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
+                                }
                             })
-                            .withAutomaticReconnect()
-                            .build();
-                        this.messageConnection
-                            .start()
-                            .then(() => {
+                            .catch(reason => {
+                                console.log(reason);
                             })
-                            .catch(function (err) {
-                                return console.error(err.toString());
-                            });
-                        this.messageConnection.on('NewMessage', (data) => {
-                            if (data) {
-                                this.setState({ numberUnreadMessage: this.state.numberUnreadMessage + 1 });
-                                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
-                            }
-                        });
                     }
-                }
-            })
-            .catch((reason) => {
-                console.log(reason);
-            });
+                });
+            }
+        }
     }
 
     checkLoginToken = async () => {
-        AuthService.getProfile()
-            .then((response) => {
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({ account: response, isLogin: true });
-                } else {
-                    this.setState({ account: {}, isLogin: false });
-                }
-            })
-            .catch((reason) => {
-                console.log(reason);
-                this.setState({ account: {}, isLogin: false });
-            });
+        let account = Session.getInstance().account;
+        let token = Session.getInstance().token;
+        if (token && token.length > 0) {
+            this.setState({ account: account, isLogin: true });
+        } else {
+            this.setState({ account: {}, isLogin: false });
+        }
     };
 
     getAllPost = async (page) => {
@@ -212,14 +210,22 @@ export default class Newsfeed extends Component {
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
             if (this.connection) {
                 this.connection.stop();
+                this.connection = undefined;
             }
             if (this.messageConnection) {
                 this.messageConnection.stop();
+                this.messageConnection = undefined;
             }
         });
     }
 
     componentWillUnmount() {
+        if (this.connection) {
+            this.connection.stop();
+        }
+        if (this.messageConnection) {
+            this.messageConnection.stop();
+        }
     }
 
     removePost(postID) {
@@ -280,12 +286,13 @@ export default class Newsfeed extends Component {
                 }
             })
             .catch((reason) => {
-                console.log(reason);
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                     ToastAndroid.show(
                         'Hãy đăng nhập để thực hiện việc này',
                         ToastAndroid.LONG,
                     );
+                } else {
+                    console.log(reason);
                 }
             });
     }
@@ -330,12 +337,13 @@ export default class Newsfeed extends Component {
                     }
                 })
                 .catch((reason) => {
-                    console.log(reason);
-                    if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
+                    if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                         ToastAndroid.show(
                             'Hãy đăng nhập để thực hiện việc này',
                             ToastAndroid.LONG,
                         );
+                    } else {
+                        console.log(reason);
                     }
                 });
         } else {
@@ -365,12 +373,13 @@ export default class Newsfeed extends Component {
                     }
                 })
                 .catch((reason) => {
-                    console.log(reason);
-                    if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
+                    if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                         ToastAndroid.show(
                             'Hãy đăng nhập để thực hiện việc này',
                             ToastAndroid.LONG,
                         );
+                    } else {
+                        console.log(reason);
                     }
                 });
         }
@@ -407,12 +416,13 @@ export default class Newsfeed extends Component {
                 }
             })
             .catch((reason) => {
-                console.log(reason);
-                if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                     ToastAndroid.show(
                         'Hãy đăng nhập để thực hiện việc này',
                         ToastAndroid.LONG,
                     );
+                } else {
+                    console.log(reason);
                 }
             });
     }

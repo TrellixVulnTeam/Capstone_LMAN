@@ -18,9 +18,6 @@ import * as Const from "../common/const";
 import * as Utils from "../common/utils";
 import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
-import NotificationViewModel from "../Model/notificationViewModel";
-import { HOANG } from '../../image/index';
-import PushNotification from "react-native-push-notification";
 import * as NotificationService from '../service/notificationService';
 
 
@@ -129,7 +126,15 @@ export default class Notification extends Component {
 
     onPressNotification(noti) {
         this.setIsRead(noti)
-        this.props.navigation.navigate('PostDetail', { postID: noti.postId });
+        if (noti.fromAccount != 0) {
+            switch (noti.typeNotification) {
+                case Const.NOTIFICATION_TYPE_FOLLOW:
+                    this.props.navigation.navigate('OtherProfile', { accountID: noti.fromAccount });
+                    break;
+                default:
+                    this.props.navigation.navigate('PostDetail', { postID: noti.postId });
+            }
+        }
     }
 
     setIsRead(noti) {

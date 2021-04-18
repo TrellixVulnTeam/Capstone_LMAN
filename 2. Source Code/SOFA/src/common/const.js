@@ -36,4 +36,17 @@ export const REPORT_TYPE_POST = 1;
 export const REPORT_TYPE_USER = 2;
 export const REPORT_TYPE_COMMENT = 3;
 
+export const NOTIFICATION_TYPE_LIKE = 1;
+export const NOTIFICATION_TYPE_COMMENT = 2;
+export const NOTIFICATION_TYPE_RATE = 3;
+export const NOTIFICATION_TYPE_FOLLOW = 4;
+export const NOTIFICATION_TYPE_INVALID_IMAGE = 5;
+export const NOTIFICATION_TYPE_FEEDBACK = 5;
 
+export const SETTINGS_DEFAULT = {
+    isOnNotification: true,
+    isOnMessageNotification: true,
+    chatColor: '#46AA4A',
+    createPostIntro: true,
+    appBackground: '',
+}

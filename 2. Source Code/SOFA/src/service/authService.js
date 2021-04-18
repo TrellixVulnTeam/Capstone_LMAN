@@ -18,9 +18,7 @@ export const getProfile = () => {
                     var uri = Const.domain + 'api/profile';
                     Request.Get(uri, header)
                         .then(response => {
-                            Session.getInstance().account = response;
-                            Session.getInstance().token = token;
-                            resolve(response);
+                            resolve({ ...response, token: token });
                         })
                         .catch(reason => {
                             reject(reason);

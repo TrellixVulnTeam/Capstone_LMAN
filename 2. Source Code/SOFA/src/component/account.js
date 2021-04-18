@@ -25,7 +25,9 @@ import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON, MORE_ICON
 import { TextInput } from 'react-native-gesture-handler';
 import { acc, color } from 'react-native-reanimated';
 import NotificationWSS from '../service/NotificationWSS';
+import MessageWSS from '../service/messageWSS';
 import PushNotification from 'react-native-push-notification';
+import Session from '../common/session';
 
 export default class Profile extends Component {
     constructor(props) {
@@ -105,11 +107,20 @@ export default class Profile extends Component {
                 },
                 {
                     text: "Có", onPress: () => {
+                        Session.getInstance().token = '';
+                        Session.getInstance().account = {};
+                        Session.getInstance().currentChatUser = 0;
+                        Session.getInstance().settings = {};
                         AsyncStorage.removeItem('token');
                         AsyncStorage.removeItem('user');
                         let notificationWSS = NotificationWSS.getInstance(false);
                         if (notificationWSS.getConnection()) {
                             notificationWSS.getConnection().stop();
+                            PushNotification.setApplicationIconBadgeNumber(0)
+                        }
+                        let messageWSS = MessageWSS.getInstance(false);
+                        if (messageWSS.getConnection()) {
+                            messageWSS.getConnection().stop();
                             PushNotification.setApplicationIconBadgeNumber(0)
                         }
                         this.props.navigation.navigate('Login');

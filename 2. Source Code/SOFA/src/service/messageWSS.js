@@ -84,4 +84,36 @@ export default class MessageWSS {
     setStarted(started) {
         this._started = started;
     }
+    pushNotification() {
+        if (this._started) {
+            this._connection.stop();
+        }
+        this._connection.start().then(() => {
+            this._started = true;
+            console.log('Connected from MessageWSS.js');
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+        this._connection.on("NewMessage", data => {
+            if (data) {
+                console.log('MessageWSS', data);
+                if (Session.getInstance().settings.isOnMessageNotification && Session.getInstance().currentUserChat != data.fromAccountId) {
+                    ProfileService.getOtherProfile(data.fromAccountId)
+                        .then(response => {
+                            console.log('MessageWSS', response);
+                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                                PushNotification.localNotification({
+                                    channelId: 'Tin nhắn',
+                                    title: response.firstName + ' ' + response.lastName,
+                                    message: data.content,
+                                });
+                            }
+                        })
+                        .catch(reason => {
+
+                        })
+                }
+            }
+        });
+    }
 }
