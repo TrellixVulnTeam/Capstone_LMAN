@@ -21,30 +21,15 @@ import * as PostService from '../service/postService';
 import * as AuthService from '../service/authService';
 import * as MarkupPostService from '../service/markupPostService';
 
+import Session from '../common/session';
+
 
 export default class PostDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLogin: false,
-            account: {
-                accountID: 0,
-                username: '',
-                AccountID: 0,
-                FirstName: '',
-                LastName: '',
-                Gender: true,
-                DOB: '',
-                Email: '',
-                Phone: '',
-                Address: '',
-                AvatarUri: '',
-                Avatar: '',
-                followerNumber: 0,
-                postNumber: 0,
-                UserName: 0,
-                Role: '',
-            },
+            account: {},
             post: {
                 id: 0,
                 content: '',
@@ -266,16 +251,13 @@ export default class PostDetail extends Component {
 
 
     checkLoginToken = () => {
-        AuthService.getProfile()
-            .then(response => {
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({ account: response, isLogin: true });
-                }
-            })
-            .catch(reason => {
-                this.setState({ account: response, isLogin: false });
-                console.log(reason);
-            });
+        let account = Session.getInstance().account;
+        let token = Session.getInstance().token;
+        if (token && token.length > 0) {
+            this.setState({ account: account, isLogin: true });
+        } else {
+            this.setState({ account: {}, isLogin: false });
+        }
     }
 
     getPostDetail(postID) {
@@ -454,6 +436,8 @@ export default class PostDetail extends Component {
 
     componentDidMount() {
         this.checkLoginToken();
+        this.setState({ post: { id: 85 } });
+        this.getPostDetail(85);
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.setState({ isLoading: true });
             this.checkLoginToken()
@@ -464,7 +448,7 @@ export default class PostDetail extends Component {
     }
 
     render() {
-        const { post, isShowImage, currentShowImage, commentText, isLoading, isLoadMoreComment } = this.state;
+        const { post, isShowImage, currentShowImage, commentText, isLoading, isLoadMoreComment, account } = this.state;
         return (
             <View style={{
                 flex: 1,
@@ -641,15 +625,7 @@ export default class PostDetail extends Component {
                             )}
                             ListFooterComponent={(
                                 <View>
-                                    <TextInput
-                                        placeholder={'Viết bình luận'}
-                                        returnKeyLabel={'Gửi'}
-                                        returnKeyType={'send'}
-                                        value={commentText}
-                                        onChangeText={text => this.setState({ commentText: text })}
-                                        onSubmitEditing={() => this.onPressComment(post.id, commentText)}
-                                        style={[styles.CommentTextBox]}
-                                    />
+
                                 </View>
 
                             )}
@@ -712,15 +688,6 @@ export default class PostDetail extends Component {
                             onPressReportUser={(accountID) => this.props.navigation.navigate('Report', { toAccountID: accountID, reportType: 2 })}
                         />
                         <ViewImageModal
-                            image={this.state.currentShowImage}
-                            post={this.state.currentShowImagePost}
-                            visible={this.state.isShowImage}
-                            onRequestClose={() => {
-                                this.setState({ isShowImage: false });
-                                this.setState({ currentShowImage: {}, currentShowImagePost: {} })
-                            }}
-                        />
-                        <ViewImageModal
                             image={currentShowImage}
                             post={post}
                             visible={isShowImage}
@@ -729,6 +696,29 @@ export default class PostDetail extends Component {
                                 this.setState({ currentShowImage: {} })
                             }}
                         />
+                        <View style={[{
+                            position: 'absolute',
+                            backgroundColor: 'white',
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            width: scale(400, Horizontal),
+                            bottom: 0,
+                            paddingVertical: scale(5, Vertical),
+                            elevation: 10,
+                            flexDirection: 'row'
+                        }]}>
+                            <Image
+                                style={[styles.CommentAvatar, { marginLeft: scale(10, Horizontal) }]}
+                                source={account.avatarUri && account.avatarUri.length > 0 ? { uri: Const.assets_domain + account.avatarUri } : { AVATAR }} />
+                            <TextInput
+                                placeholder={'Viết bình luận'}
+                                returnKeyType={'send'}
+                                value={commentText}
+                                onChangeText={text => this.setState({ commentText: text })}
+                                onSubmitEditing={() => this.onPressComment(post.id, commentText)}
+                                style={[styles.CommentTextBox]}
+                            />
+                        </View>
                     </View>) : (
                     <View style={{
                         alignItems: 'center',
@@ -759,7 +749,8 @@ const styles = StyleSheet.create({
         width: scale(300, Horizontal),
         minHeight: scale(50, Vertical),
         borderRadius: 10,
-        backgroundColor: '#E6E6E6'
+        backgroundColor: '#E6E6E6',
+        marginLeft: scale(5, Horizontal)
     },
     CommentAvatar: {
         width: scale(40, Horizontal),
@@ -775,10 +766,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#E6E6E6',
         borderRadius: 10,
         width: scale(300, Horizontal),
-        minHeight: scale(50, Vertical),
-        marginLeft: scale(50, Horizontal),
-        marginTop: scale(10, Vertical),
-        marginBottom: scale(10, Vertical)
+        height: scale(40, Vertical),
+        marginLeft: scale(5, Horizontal),
     },
     CommentAction: {
         marginTop: scale(5, Vertical),
