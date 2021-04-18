@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
 
   registerContainer: {
     marginTop: Utils.scale(30, Const.Horizontal),
+    marginBottom: Utils.scale(30, Const.Horizontal),
     alignItems: 'center',
   },
   registerTouch: {

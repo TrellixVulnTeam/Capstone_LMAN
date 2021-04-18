@@ -425,7 +425,7 @@ export const verification = StyleSheet.create({
         backgroundColor: 'white',
         marginLeft: Utils.scale(20, Const.Horizontal),
         width: Utils.scale(360, Const.Horizontal),
-        height: Utils.scale(300, Const.Vertical),
+        height: 'auto',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         borderBottomLeftRadius: 10,
