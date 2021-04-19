@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
 import RadioButtonRN from 'radio-buttons-react-native';

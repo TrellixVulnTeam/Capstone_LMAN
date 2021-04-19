@@ -43,6 +43,14 @@ export const NOTIFICATION_TYPE_FOLLOW = 4;
 export const NOTIFICATION_TYPE_INVALID_IMAGE = 5;
 export const NOTIFICATION_TYPE_FEEDBACK = 5;
 
+export const IMAGE_SIZE_WITDH_AVATAR = 600
+export const IMAGE_SIZE_HEIGHT_AVATAR = 600
+
+export const IMAGE_SIZE_WITDH_POST = 900
+export const IMAGE_SIZE_HEIGHT_POST = 1200
+export const IMAGE_SIZE_MAX_WITDH_POST = 600
+export const IMAGE_SIZE_MAX_HEIGHT_POST = 600
+
 export const SETTINGS_DEFAULT = {
     isOnNotification: true,
     isOnMessageNotification: true,

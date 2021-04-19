@@ -8,6 +8,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Feather from 'react-native-vector-icons/Feather';
 import DropDownPicker from 'react-native-dropdown-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import LinearGradient from 'react-native-linear-gradient'
@@ -20,7 +21,7 @@ import * as Const from "../common/const";
 import { scale, storeData } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
-import { AVATAR, ADD_PRIMARY_IMAGE, BACKGROUND, OCEAN_BACKGROUND } from '../../image/index';
+import { AVATAR, OCEAN_BACKGROUND } from '../../image/index';
 import InfoField from './infoField';
 
 import * as PostService from '../service/postService';
@@ -80,8 +81,7 @@ export default class CreatePost extends Component {
             console.log(e);
         }
     }
-    imageHeight = 1200;
-    imageWidth = 900;
+
 
     checkLoginToken = async () => {
         this.setState({ isLoading: true });
@@ -224,10 +224,10 @@ export default class CreatePost extends Component {
 
     selectImage = (imageType) => {
         ImagePicker.openPicker({
-            width: this.imageWidth,
-            height: this.imageHeight,
-            compressImageMaxHeight: this.imageHeight,
-            compressImageMaxWidth: this.imageWidth,
+            width: Const.IMAGE_SIZE_WITDH_POST,
+            height: Const.IMAGE_SIZE_HEIGHT_POST,
+            compressImageMaxHeight: Const.IMAGE_SIZE_HEIGHT_POST,
+            compressImageMaxWidth: Const.IMAGE_SIZE_WITDH_POST,
             includeBase64: true,
             cropping: true
         })
@@ -375,12 +375,12 @@ export default class CreatePost extends Component {
             {
                 value: 0,
                 label: 'Chia sẻ cá nhân',
-                icon: () => <FontAwesome5 name='user-shield' size={20} color={'#9E9E9E'} />
+                icon: () => <Ionicons name='person' size={20} color={'#9E9E9E'} />
             },
             {
                 value: 1,
                 label: 'Đăng sản phẩm',
-                icon: () => <FontAwesome5 name='user-friends' size={20} color={'#9E9E9E'} />
+                icon: () => <Feather name='shopping-cart' size={20} color={'#9E9E9E'} />
 
             }
         ]
@@ -404,7 +404,8 @@ export default class CreatePost extends Component {
                     <TouchableHighlight
                         style={[
                             styles().ButtonPost,
-                            listPrimaryImage.length > 0 && content.trim().length > 0 ? styles().ButtonPostActiveColor : styles().ButtonPostInactiveColor
+                            listPrimaryImage.length > 0 && content.trim().length > 0 ? styles().ButtonPostActiveColor : styles().ButtonPostInactiveColor,
+                            { marginRight: scale(10, Horizontal) }
                         ]}
                         underlayColor={'#0000FF'}
                         disabled={isLoading || listPrimaryImage.length == 0 || content.trim().length == 0}
