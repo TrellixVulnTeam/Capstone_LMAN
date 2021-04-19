@@ -10,6 +10,7 @@ namespace SOFA_API.ViewModel.Support
     {
         public int UserId { get; set; }
         public int RequestId { get; set; }
+        public int RequestType { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
@@ -26,6 +27,7 @@ namespace SOFA_API.ViewModel.Support
         {
             UserId = (int)row["UserId"];
             RequestId = (int)row["RequestId"];
+            RequestType = (int)row["RequestType"];
             Username = row["Username"].ToString();
             Email  = row["Email"].ToString();
             Phone = row["Phone"].ToString();

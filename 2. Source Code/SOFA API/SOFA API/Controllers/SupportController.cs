@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using SOFA_API.Common;
+using SOFA_API.Hubs;
 using SOFA_API.Service;
+using SOFA_API.ViewModel.Notification;
 using SOFA_API.ViewModel.Support;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +19,13 @@ namespace SOFA_API.Controllers
     [ApiController]
     public class SupportController : ControllerBase
     {
+
+        protected readonly IHubContext<NotificationHub> notificationHub;
+        public SupportController([NotNull] IHubContext<NotificationHub> notificationHub)
+        {
+            this.notificationHub = notificationHub;
+        }
+
         [HttpPost("createsupportrequest")]
         [Authorize]
         public ActionResult CreateRequest([FromForm] SupportRequestViewModelIn requestIn)
@@ -56,9 +68,47 @@ namespace SOFA_API.Controllers
         }
 
         [HttpPost("setuserfashionista")]
-        public ActionResult SetUserFashionista([FromForm] int userId)
+        public ActionResult SetUserFashionista([FromForm] int requestId, [FromForm] int userId)
         {
-            DetailUserSupportModelOut modelOut = SupportService.Instance.SetUserFashionistaRequest(userId);
+            DetailUserSupportModelOut modelOut = SupportService.Instance.SetUserFashionistaRequest(requestId, userId);
+            if (modelOut.Code == Const.REQUEST_CODE_SUCCESSFULLY)
+            {
+                //notification
+                NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_APPROVE_SUPPORT,
+                    Const.NOTIFICATION_CONTENT_APPROVE_FASHIONISTA_SUPPORT, 0, userId);
+                NotificationViewModelOut notiModelOut = NotificationService.Instance.CreatedNotificationForSupportRequest(modelIn);
+                notificationHub.Clients.User(notiModelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+            }
+            return Ok(modelOut);
+        }
+
+        [HttpPost("setuserlockaccount")]
+        public ActionResult SetUserLockAccount([FromForm] int requestId, [FromForm] int userId)
+        {
+            DetailUserSupportModelOut modelOut = SupportService.Instance.SetUserLockAccountRequest(requestId, userId);
+            return Ok(modelOut);
+        }
+
+        [HttpPost("rejectsupportrequest")]
+        public ActionResult RejectSupportRequest([FromForm] int requestId,[FromForm] int requestType, [FromForm] int userId)
+        {
+            DetailUserSupportModelOut modelOut = SupportService.Instance.RejectSupportRequest(requestId);
+            if (modelOut.Code == Const.REQUEST_CODE_SUCCESSFULLY)
+            {
+                NotificationViewModelIn modelIn = new NotificationViewModelIn();
+                if (requestType == Const.SUPPORT_TYPE_FASHIONISTA)
+                {
+                    modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_REJECT_SUPPORT,
+                    Const.NOTIFICATION_CONTENT_REJECT_FASHIONISTA_SUPPORT, 0, userId);
+                }
+                if (requestType == Const.SUPPORT_TYPE_LOCKACCOUNT)
+                {
+                    modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_REJECT_SUPPORT,
+                    Const.NOTIFICATION_CONTENT_REJECT_LOCKACCOUNT_SUPPORT, 0, userId);
+                }
+                NotificationViewModelOut notiModelOut = NotificationService.Instance.CreatedNotificationForSupportRequest(modelIn);
+                notificationHub.Clients.User(notiModelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
+            }
             return Ok(modelOut);
         }
     }
