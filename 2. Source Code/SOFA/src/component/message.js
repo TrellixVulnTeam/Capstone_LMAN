@@ -187,7 +187,7 @@ const ConversationItem = ({ data, navigation, deleteConversation }) => {
                 />
                 <View style={[styles.conversationItemContent]}>
                     <Text style={[styles.conversationItemContentUserName]}>{data.chatWithFirstName + ' ' + data.chatWithLastName}</Text>
-                    <Text style={[styles.conversationItemContentLastMess]}>{data.lastMessage}</Text>
+                    <Text style={[styles.conversationItemContentLastMess]}>{Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')}</Text>
                 </View>
                 <Text style={[styles.conversationItemUpdateTime]}>{calculateTime(data.timeUpdate) + ' trước'}</Text>
             </TouchableOpacity>

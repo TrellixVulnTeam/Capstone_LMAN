@@ -38,7 +38,7 @@ export default class SearchPostTab extends Component {
                             )
                         }}
                     />
-                    <Text style={[styles.articleTitle]}>{getContentDemo(data.content).content}</Text>
+                    <Text style={[styles.articleTitle]}>{getContentDemo(data.content, 30).content + (getContentDemo(data.content, 30).canShowMore ? '...' : '')}</Text>
                 </View>
             </TouchableOpacity>
         )
