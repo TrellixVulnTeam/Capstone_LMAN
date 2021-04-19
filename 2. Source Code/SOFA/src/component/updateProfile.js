@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, ToastAndroid, PermissionsAndroid, FlatList, TouchableOpacity, KeyboardAvoidingView, ScrollView, LogBox } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import DatePicker from 'react-native-datepicker'
+
+import Entypo from 'react-native-vector-icons/Entypo';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -15,7 +18,7 @@ import * as Const from "../common/const";
 import * as Utils from "../common/utils";
 import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON } from '../../image/index';
 import { TextInput } from 'react-native-gesture-handler';
-import { acc } from 'react-native-reanimated';
+import Session from '../common/session';
 
 export default class UpdateProfile extends Component {
     constructor(props) {
@@ -48,54 +51,22 @@ export default class UpdateProfile extends Component {
     }
 
     chooseFile = (callback) => {
-        const { account, token } = this.state;
-        let options = {
-            title: 'Select Image',
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-            includeBase64: true
-        };
-        launchImageLibrary(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log(
-                    'User tapped custom button: ',
-                    response.customButton
-                );
-                ToastAndroid.show(response.customButton, ToastAndroid.LONG);
-            } else {
-                let source = response;
-                this.setState({ avatarUri: source.uri });
-                if (source.base64) {
-                    var header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                    };
-                    console.log(header);
-                    let data = new FormData();
-                    data.append('Avatar', source.base64);
-                    data.append('username', account.userName);
-                    let url = Const.domain + 'api/account';
-                    Request.Post(url, header, data)
-                        .then(response => {
-                            if (response && response.code && response.code == 'SUCCESSFULY') {
-                                ToastAndroid.show('Avatar', 'Đổi ảnh đại diện thành công!!!', ToastAndroid.SHORT);
-
-                            }
-                        })
-                        .catch(reason => {
-                            console.log(reason);
-                        });
+        ImagePicker.openPicker({
+            width: 600,
+            height: 600,
+            cropping: true,
+            cropperCircleOverlay: true,
+            includeBase64: true,
+        })
+            .then(result => {
+                if (result.data) {
+                    this.setState({ avatarUri: result.path });
+                    callback({ base64: result.data });
                 }
-                callback(source);
-
-            }
-        });
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
     }
 
     requestCameraPermission = async () => {
@@ -121,98 +92,58 @@ export default class UpdateProfile extends Component {
     };
 
     takePicture = (callback) => {
-        const { account, token } = this.state;
-        let options = {
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-            includeBase64: true
-        };
-        this.requestCameraPermission()
-            .then(response => {
-                launchCamera(options, (response) => {
-                    console.log(response);
-                    if (response.didCancel) {
-                        console.log('User cancelled image picker');
-                    } else if (response.error) {
-                        console.log('ImagePicker Error: ', response.error);
-                    } else {
-                        let source = response;
-                        this.setState({ avatarUri: source.uri });
-                        if (source.base64) {
-                            var header = {
-                                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                                "Accept": 'application/json',
-                            };
-                            console.log(header);
-                            let data = new FormData();
-                            data.append('Avatar', source.base64);
-                            data.append('username', account.userName);
-                            let url = Const.domain + 'api/account';
-                            Request.Post(url, header, data)
-                                .then(response => {
-                                    if (response && response.code && response.code == 'SUCCESSFULY') {
-                                        ToastAndroid.show('Avatar', 'Đổi ảnh đại diện thành công!!!', ToastAndroid.SHORT);
-                                    }
-                                })
-                                .catch(reason => {
-                                    console.log(reason);
-                                });
-                        }
-                        callback(source);
 
-                    }
-                });
-            });
+        ImagePicker.openCamera({
+            width: 600,
+            height: 600,
+            cropping: true,
+            cropperCircleOverlay: true,
+            includeBase64: true,
+            multiple: false
+        })
+            .then(result => {
+                if (result.data) {
+                    this.setState({ avatarUri: result.path });
+                    callback({ base64: result.data });
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
     }
 
     updateAvatar() {
         const { account } = this.state;
-        this.getData('token')
-            .then(result => {
-                if (result) {
-                    let header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Content-Type": "multipart/form-data",
-                        "Host": "chientranhvietnam.org",
-                        "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2),
-                    };
-                    let data = new FormData();
+        const token = Session.getInstance().token;
+        if (token) {
+            let header = {
+                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                "Content-Type": "multipart/form-data",
+                "Host": "chientranhvietnam.org",
+                "Authorization": 'Bearer ' + token,
+            };
+            let data = new FormData();
 
-                    data.append('Avatar', account.avatar);
-                    console.log("Update avatar!");
+            data.append('Avatar', account.avatar);
+            console.log("Update avatar!");
+            let url = Const.domain + 'api/profile/updateavatar';
+            Request.Post(url, header, data)
+                .then(response => {
+                    console.log(response);
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        ToastAndroid.show('Update avatar thành công!', ToastAndroid.SHORT);
+                    } else {
+                        ToastAndroid.show('Update avatar không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
+                    }
+                })
+                .catch(reason => {
+                    ToastAndroid.show('Update avatar không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
+                    console.log(reason);
+                });
 
-                    console.log(account);
-                    let url = Const.domain + 'api/profile/updateavatar';
-
-                    Request.Post(url, header, data)
-                        .then(response => {
-                            console.log(response);
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                ToastAndroid.show('Update Successfully', 'Update avatar thành công!', ToastAndroid.SHORT);
-                                console.log(response);
-                                //this.props.navigation.goBack();               
-                            } else {
-                                if (response.code == Const.REQUEST_CODE_FAILED) {
-                                    ToastAndroid.show('Update Failed', 'Update avatar không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
-                                    console.log(response);
-                                }
-                            }
-                        })
-                        .catch(reason => {
-                            console.log('Lỗi rồi!');
-                            console.log(reason);
-                        });
-
-                } else {
-                    this.props.navigation.navigate('Login')
-                }
-            })
-            .catch(reason => {
-                console.log('failed');
-                this.props.navigation.navigate('Login')
-            })
+        } else {
+            this.props.navigation.navigate('Login')
+        }
     }
 
 
@@ -301,11 +232,9 @@ export default class UpdateProfile extends Component {
 
 
     componentWillUnmount() {
-        //this._unsubcribe();
     }
 
     componentDidMount() {
-        //this.getProfile();
         const { account, avatarUri } = this.props.route.params;
         this.setState({ avatarUri: avatarUri });
         this.setState({ account: account })
@@ -313,10 +242,8 @@ export default class UpdateProfile extends Component {
 
     render() {
         const { avatarUri, account } = this.state;
-        LogBox.ignoreAllLogs();
-        LogBox.ignoreLogs['componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.'];
         const data = [
-            { label: 'Nam                                ', value: 1 },
+            { label: 'Nam', value: 1 },
             { label: 'Nữ', value: 2 },
         ];
         return (
@@ -338,15 +265,16 @@ export default class UpdateProfile extends Component {
                                     //marginLeft: Utils.scale(149, Const.Horizontal),
                                 }} />
                             <View style={{
-                                marginTop: Utils.scale(10, Const.Vertical),
                                 height: Utils.scale(70, Const.Vertical),
                                 width: Utils.scale(200, Const.Horizontal),
-                                alignSelf: 'center',
+                                position: 'absolute',
+                                top: Utils.scale(90, Const.Horizontal),
+                                left: Utils.scale(230, Const.Horizontal)
                             }}>
                                 <MenuProvider>
                                     <Menu>
                                         <MenuTrigger >
-                                            <Text style={Style.updateProfile.updateAvaText}>Thay đổi ảnh đại diện</Text>
+                                            <Entypo name='camera' size={30} color={'white'} />
                                         </MenuTrigger>
                                         <MenuOptions>
                                             <MenuOption onSelect={() => this.takePicture(source => {
@@ -396,7 +324,7 @@ export default class UpdateProfile extends Component {
                             <View></View>
                             <RadioForm
                                 radio_props={data}
-                                initial={account.gender == true ? 0 : 1 }
+                                initial={account.gender == true ? 0 : 1}
                                 formHorizontal={true}
                                 labelHorizontal={true}
                                 buttonColor={'#F0054D'}
