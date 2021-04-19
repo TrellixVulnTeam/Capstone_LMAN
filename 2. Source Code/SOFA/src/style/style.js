@@ -341,7 +341,7 @@ export const updateProfile = StyleSheet.create({
     },
 
     updateItemSecond: {
-        marginTop: Utils.scale(20, Const.Vertical),
+        marginTop: Utils.scale(10, Const.Vertical),
         marginLeft: Utils.scale(15, Const.Horizontal),
     },
 

@@ -438,15 +438,23 @@ export default class UpdateProfile extends Component {
                         <View style={Style.updateProfile.updateItemSecond}>
                             <Text style={Style.updateProfile.updateLabel}>Email</Text>
                             <TouchableOpacity onPress={() => ToastAndroid.show(
-                                'Bạn có thể thay đổi Email tại Account -> Cập nhật bảo mật', ToastAndroid.LONG
+                                'Bạn có thể thay đổi tại mục cài đặt bảo mật', ToastAndroid.LONG
                             )}>
                                 <TextInput defaultValue={account.email}
                                     editable={false}
                                     selectTextOnFocus={false}
-                                    onChangeText={text => {
-                                        account.phone = text;
-                                        this.setState({ account: account });
-                                    }}
+                                    style={Style.updateProfile.updateInput}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={Style.updateProfile.updateItemSecond}>
+                            <Text style={Style.updateProfile.updateLabel}>Điện thoại</Text>
+                            <TouchableOpacity onPress={() => ToastAndroid.show(
+                                'Bạn có thể thay đổi tại mục cài đặt bảo mật', ToastAndroid.LONG
+                            )}>
+                                <TextInput defaultValue={account.phone}
+                                    editable={false}
+                                    selectTextOnFocus={false}
                                     style={Style.updateProfile.updateInput}
                                 />
                             </TouchableOpacity>

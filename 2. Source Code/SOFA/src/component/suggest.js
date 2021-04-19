@@ -224,7 +224,6 @@ export default class Suggest extends Component {
         const { similarInfoID } = this.state;
         for (let i = 0; i < similarInfoID.length; i++) {
             console.log('get recommend post', similarInfoID[i])
-
             PostService.getPostRecommend(similarInfoID[i].itemID, page)
                 .then(response => {
                     console.log('get recommend post', response.listPost);
@@ -249,6 +248,7 @@ export default class Suggest extends Component {
                     }
                 })
                 .catch(reason => {
+                    this.setState({ listPostRefreshing: false });
                     console.log(reason);
                     if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                         ToastAndroid.show('Bạn phải đăng nhập để sử dụng tính năng này!', ToastAndroid.LONG,);
@@ -269,9 +269,12 @@ export default class Suggest extends Component {
                     console.log(this.state.similarInfoID);
                     this.setState({ isLoading: false });
                     this.getAllRecommendPost(1);
+                } else {
+                    this.setState({ isLoading: false });
                 }
             })
             .catch(reason => {
+                this.setState({ isLoading: false });
                 console.log('Get similar', reason);
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                     ToastAndroid.show('Bạn phải đăng nhập để sử dụng tính năng này!', ToastAndroid.LONG,);

@@ -103,7 +103,7 @@ AS
 BEGIN
 	SELECT dbo.Post.* FROM dbo.Post
 	INNER JOIN dbo.Profile ON AccountPost = AccountId
-	WHERE (Content LIKE '%' + @keyWord + '%') OR (CONCAT(FirstName, ' ', LastName) LIKE '%' + @keyWord + '%')
+	WHERE IsVerified = 1 AND (Content LIKE '%' + @keyWord + '%') OR (CONCAT(FirstName, ' ', LastName) LIKE '%' + @keyWord + '%')
 	ORDER BY Time DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
 	FETCH NEXT @rowsOfPage ROWS ONLY

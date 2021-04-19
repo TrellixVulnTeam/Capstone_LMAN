@@ -1,24 +1,5 @@
-import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  StatusBar,
-  Button,
-  Image,
-  TouchableHighlight,
-  Alert,
-  PermissionsAndroid,
-  FlatList,
-  ScrollView,
-} from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {MenuProvider} from 'react-native-popup-menu';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import React, { Component } from 'react';
+import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView, } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import RadioButtonRN from 'radio-buttons-react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -36,89 +17,89 @@ import * as Style from '../style/style';
 import * as Const from '../common/const';
 import * as Utils from '../common/utils';
 import {
-  AVATAR,
-  ADDRESS_ICON,
-  BIRTHDAY_ICON,
-  PHONE_ICON,
-  GENDER_ICON,
-  MORE_ICON,
+    AVATAR,
+    ADDRESS_ICON,
+    BIRTHDAY_ICON,
+    PHONE_ICON,
+    GENDER_ICON,
+    MORE_ICON,
 } from '../../image/index';
-import {TextInput} from 'react-native-gesture-handler';
-import {acc} from 'react-native-reanimated';
+import { TextInput } from 'react-native-gesture-handler';
+import { acc } from 'react-native-reanimated';
 
 export default class Profile extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      account: {},
-      avatarUri: '',
-      token: '',
-      listImageAll: [],
+    constructor(props) {
+        super(props);
+        this.state = {
+            account: {},
+            avatarUri: '',
+            token: '',
+            listImageAll: [],
+        };
+    }
+    getData = async (key) => {
+        try {
+            const value = await AsyncStorage.getItem(key);
+            if (value !== null) {
+                return value;
+            }
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
     };
-  }
-  getData = async (key) => {
-    try {
-      const value = await AsyncStorage.getItem(key);
-      if (value !== null) {
-        return value;
-      }
-    } catch (e) {
-      console.log(e);
-      return null;
+    storeData = async (key, value) => {
+        try {
+            const jsonValue = JSON.stringify(value);
+            await AsyncStorage.setItem(key, jsonValue);
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    logout() {
+        AsyncStorage.removeItem('token');
+        this.props.navigation.navigate('Login');
     }
-  };
-  storeData = async (key, value) => {
-    try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem(key, jsonValue);
-    } catch (e) {
-      console.log(e);
+
+    componentWillUnmount() {
+        //this._unsubcribe();
     }
-  };
 
-  logout() {
-    AsyncStorage.removeItem('token');
-    this.props.navigation.navigate('Login');
-  }
+    componentDidMount() {
+        // this.getProfile();
+        // this.getListImage();
+        // this._unsubcribe = this.props.navigation.addListener('focus', () => {
+        //     this.setState({ account: {}, avatarUri: ''});
+        //     this.getProfile();
+        //     this.getListImage();
+        // });
+    }
 
-  componentWillUnmount() {
-    //this._unsubcribe();
-  }
+    render() {
+        const { account, avatarUri } = this.state;
+        return (
+            <View>
+                <Button
+                    style={Style.profile.singleButton}
+                    color="#ff7878"
+                    title="Logout"
+                    onPress={() => this.logout()}
+                />
+                <Button
+                    style={Style.profile.singleButton}
+                    color="#ff7878"
+                    title="View balance"
+                    onPress={() => this.props.navigation.navigate('Balance')}
+                />
 
-  componentDidMount() {
-    // this.getProfile();
-    // this.getListImage();
-    // this._unsubcribe = this.props.navigation.addListener('focus', () => {
-    //     this.setState({ account: {}, avatarUri: ''});
-    //     this.getProfile();
-    //     this.getListImage();
-    // });
-  }
-
-  render() {
-    const {account, avatarUri} = this.state;
-    return (
-      <View>
-        <Button
-          style={Style.profile.singleButton}
-          color="#ff7878"
-          title="Logout"
-          onPress={() => this.logout()}
-        />
-        <Button
-          style={Style.profile.singleButton}
-          color="#ff7878"
-          title="View balance"
-          onPress={() => this.props.navigation.navigate('Balance')}
-        />
-
-        <Button
-          style={Style.profile.singleButton}
-          color="#ff7878"
-          title="View Voucher"
-          onPress={() => this.props.navigation.navigate('Voucher')}
-        />
-      </View>
-    );
-  }
+                <Button
+                    style={Style.profile.singleButton}
+                    color="#ff7878"
+                    title="View Voucher"
+                    onPress={() => this.props.navigation.navigate('Voucher')}
+                />
+            </View>
+        );
+    }
 }

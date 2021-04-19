@@ -25,6 +25,7 @@ import { AVATAR, OCEAN_BACKGROUND } from '../../image/index';
 import InfoField from './infoField';
 
 import * as PostService from '../service/postService';
+import * as InfoService from '../service/infoService';
 
 import Session from '../common/session';
 
@@ -142,13 +143,7 @@ export default class CreatePost extends Component {
 
     getListInfo = () => {
         const { token } = this.state;
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json',
-            "Authorization": 'Bearer ' + token,
-        };
-        var uri = Const.domain + 'api/info';
-        Request.Get(uri, header)
+        InfoService.getListInfo()
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     let listItem = [];
@@ -165,6 +160,26 @@ export default class CreatePost extends Component {
                     }
                     this.setState({ listInfo: listItem });
                 }
+            })
+            .catch(reason => {
+                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                    this.props.navigation.goBack();
+                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                } else {
+                    ToastAndroid.show('Tải số đo không thành công!', ToastAndroid.LONG);
+                    console.log(reason);
+                }
+            })
+
+        var header = {
+            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+            "Accept": 'application/json',
+            "Authorization": 'Bearer ' + token,
+        };
+        var uri = Const.domain + 'api/info';
+        Request.Get(uri, header)
+            .then(response => {
+
             })
             .catch(reason => {
                 console.log(reason);

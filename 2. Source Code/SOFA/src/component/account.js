@@ -141,7 +141,7 @@ export default class Profile extends Component {
     }
 
     onPressPrivacy() {
-        alert('Click Privacy');
+        this.props.navigation.navigate('ListInfo');
     }
 
     onPressSetting() {
@@ -323,9 +323,8 @@ export default class Profile extends Component {
                                 <View style={{
                                     flexDirection: 'row',
                                 }}>
-                                    <MaterialIcons name='security' size={30} color={'black'} style={{
+                                    <Entypo name='info-with-circle' size={30} color={'black'} style={{
                                         marginTop: Utils.scale(15, Const.Horizontal),
-
                                     }} />
                                     <Text style={{
                                         marginLeft: Utils.scale(15, Const.Horizontal),
@@ -333,7 +332,7 @@ export default class Profile extends Component {
                                         alignSelf: 'center',
                                         fontSize: Utils.scale(17, Const.Horizontal),
                                         fontWeight: 'bold'
-                                    }}>Cài đặt bảo mật</Text>
+                                    }}>Chỉ số cá nhân</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
