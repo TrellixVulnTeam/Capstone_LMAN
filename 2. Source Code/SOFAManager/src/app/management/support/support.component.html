@@ -29,8 +29,8 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>User Id</th>
                             <th>Request Id</th>
+                            <th>Request Type</th>
                             <th>Username</th>
                             <th>Fullname</th>
                             <th>Email</th>
@@ -38,7 +38,8 @@
                             <th>Time Create</th>
                             <th>Status</th>
                             <th>Detail</th>
-                            <th>Option</th>
+                            <th>Approve</th>
+                            <th>Reject</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,19 +47,25 @@
                         itemsPerPage: 10,
                         currentPage: page,
                         totalItems: totalRecord }">
-                            <th scope="row">{{user.userId}}</th>
-                            <td>{{user.requestId}}</td>
+                            <th scope="row">{{user.requestId}}</th>
+                            <td><strong>{{user.requestType == 1 ? "Nâng cấp Fashionista" : "Khóa tài khoản"}}</strong></td>
                             <td>{{user.username}}</td>
                             <td>{{user.firstname + ' ' + user.lastname}}</td>
                             <td>{{user.email}}</td>
                             <td>{{user.phone}}</td>
                             <td>{{user.timeCreate | date }}</td>
-                            <td>{{user.status == 1 ? "approved" : "pending"}}</td>
+                            <td *ngIf="user.status == 1">approved</td>
+                            <td *ngIf="user.status == 2">pending</td>
+                            <td *ngIf="user.status == 3">rejected</td>
                             <td><a [routerLink]="['/user-detail', user.userId]">
                                 detail
                             </a></td>
-                            <td *ngIf="user.status == 2"><a [routerLink]="" (click)="approveRequest(user.userId)">approve</a></td>
+                            <td *ngIf="user.status == 2"><a [routerLink]="" (click)="approveRequest(user.requestId, user.userId, user.requestType)">approve</a></td>
                             <td *ngIf="user.status == 1">approved</td>
+                            <td *ngIf="user.status == 3">rejected</td>
+                            <td *ngIf="user.status == 2"><a [routerLink]="" (click)="rejectRequest(user.requestId, user.requestType, user.userId)">reject</a></td>
+                            <td *ngIf="user.status == 1">approved</td>
+                            <td *ngIf="user.status == 3">rejected</td>
                         </tr>
                     </tbody>
                 </table>

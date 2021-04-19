@@ -1,6 +1,7 @@
 export class UserSupport{
     userId: number;
     requestId: number;
+    requestType: number;
     username: string;
     email: string;
     phone: string;
