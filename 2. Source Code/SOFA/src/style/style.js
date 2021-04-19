@@ -326,37 +326,37 @@ export const updateProfile = StyleSheet.create({
     },
 
     updateInputFirst: {
-        backgroundColor: 'pink',
-        height: Utils.scale(40, Const.Vertical),
-        width: Utils.scale(175, Const.Horizontal),
-        borderColor: 'gray',
-        borderWidth: 0,
-        borderRadius: 10,
-        paddingLeft: 10,
-        fontSize: Utils.scale(20, Const.Horizontal),
+        minWidth: Utils.scale(175, Const.Horizontal),
+        borderColor: 'white',
+        borderBottomWidth: 0.8,
+        fontSize: 18,
+        color: 'white',
+        textAlign: 'center'
     },
 
     updateName: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        marginTop: 'auto',
+        marginBottom: scale(10, Vertical)
     },
 
     updateItemSecond: {
-        marginTop: Utils.scale(5, Const.Vertical),
+        marginTop: Utils.scale(20, Const.Vertical),
         marginLeft: Utils.scale(15, Const.Horizontal),
     },
 
     updateLabel: {
-        marginLeft: Utils.scale(15, Const.Horizontal),
+        // marginLeft: Utils.scale(15, Const.Horizontal),
+        marginBottom: scale(10, Vertical),
         fontSize: Utils.scale(15, Const.Horizontal),
-        color: '#D81B54'
+        color: 'gray',
     },
 
     updateInput: {
-        backgroundColor: 'pink',
         height: Utils.scale(40, Const.Vertical),
         width: Utils.scale(365, Const.Horizontal),
         borderColor: 'gray',
-        borderWidth: 0,
+        borderWidth: 0.5,
         borderRadius: 10,
         paddingLeft: 10,
         fontSize: Utils.scale(20, Const.Horizontal),
@@ -364,11 +364,11 @@ export const updateProfile = StyleSheet.create({
 
 
     updateInputDate: {
-        backgroundColor: 'pink',
+        backgroundColor: 'white',
         height: Utils.scale(40, Const.Vertical),
-        width: Utils.scale(365, Const.Horizontal),
+        width: Utils.scale(200, Const.Horizontal),
         borderColor: 'gray',
-        borderWidth: 0,
+        borderWidth: 0.5,
         borderRadius: 10,
         paddingLeft: 10,
         fontSize: Utils.scale(20, Const.Horizontal),
@@ -376,28 +376,31 @@ export const updateProfile = StyleSheet.create({
 
 
     appButtonContainer: {
-        marginTop: Utils.scale(25, Const.Vertical),
-        elevation: 8,
-        backgroundColor: "#E34242",
-        borderRadius: 10,
+        backgroundColor: "#2a7ea0",
+        borderRadius: 5,
         paddingVertical: 10,
         paddingHorizontal: 12,
-        width: scale(130, Horizontal),
-        alignSelf: "center",
-        flex: 0.3,
+        width: scale(365, Horizontal),
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: 'auto',
+        marginBottom: 'auto'
     },
 
     appButtonText: {
-        fontSize: 18,
+        fontSize: 16,
         color: "#fff",
-        fontWeight: "bold",
+        // fontWeight: "bold",
         alignSelf: "center",
         textTransform: "uppercase"
     },
 
     buttonAll: {
-        flexDirection: 'row',
-        alignSelf: "center",
+        position: 'absolute',
+        bottom: scale(0, Vertical),
+        width: scale(400, Horizontal),
+        height: scale(50, Vertical),
+        elevation: 10
     },
 
     buttonEmpty: {
@@ -673,5 +676,5 @@ export const messageSearch = StyleSheet.create({
         borderRadius: 16,
         paddingHorizontal: 16,
         fontSize: 15
-      },
+    },
 });
