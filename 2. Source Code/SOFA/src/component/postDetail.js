@@ -458,7 +458,6 @@ export default class PostDetail extends Component {
                 {post.accountPost && post.accountPost != 0 ? (
                     <View style={{ flex: 1 }}>
                         <View style={{ height: scale(661, Vertical) }}>
-
                             <FlatList
                                 ListHeaderComponent={(
                                     <View
@@ -469,6 +468,10 @@ export default class PostDetail extends Component {
                                             paddingVertical: scale(10, Vertical),
                                         }}
                                     >
+                                        {post.isVerified ? (<View></View>) : (
+                                            <View style={{ backgroundColor: 'orange', alignItems: 'center' }}>
+                                                <Text style={{ color: 'white' }}>!!!Bài viết này chứa nội dung không hợp lệ!!!</Text>
+                                            </View>)}
                                         <View style={Style.common.flexRow}>
                                             <TouchableWithoutFeedback
                                                 onPress={() => this.navigateProfile(post.accountPost)}
