@@ -43,7 +43,9 @@ export default class Conversation extends Component {
             inputHeight: 40,
             isShowModalImage: false,
             currentShowImage: '',
-            token: ''
+            token: '',
+            isShowMessageMenu: false,
+            selectedMessage: {}
         }
     }
     concatList(list1, list2) {
@@ -145,6 +147,29 @@ export default class Conversation extends Component {
             })
             .catch(reason => {
                 console.log(reason);
+            })
+    }
+
+    deleteMessage(message) {
+        var { friendAccount, listMessage } = this.state;
+        let isSenderDelete = false;
+        if (friendAccount.accountID != message.fromAccountId) {
+            isSenderDelete = true;
+        }
+        MessageService.deleteMessage(message.id, isSenderDelete)
+            .then(response => {
+                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                    var array = [...listMessage];
+                    var index = array.indexOf(message)
+                    if (index !== -1) {
+                        array.splice(index, 1);
+                        this.setState({ listMessage: array });
+                    }
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+                ToastAndroid.show('Xóa tin nhắn không thành công!', ToastAndroid.LONG);
             })
     }
 
@@ -262,12 +287,14 @@ export default class Conversation extends Component {
     }
 
     render() {
-        const { account, friendAccount, listMessage, keyboardHeight, page, canLoadMore, refreshingList, inputHeight, content, isShowModalImage, currentShowImage } = this.state;
+        const { account, friendAccount, listMessage, keyboardHeight, page, canLoadMore, refreshingList, inputHeight, content, isShowModalImage, currentShowImage, isShowMessageMenu, selectedMessage } = this.state;
         return (
             <View style={[styles.container]}>
                 <StatusBar backgroundColor={this.state.color} />
                 <View style={[styles.header, { backgroundColor: this.state.color }]}>
-                    <View style={[styles.headerChatFriend]}>
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.navigate('OtherProfile', { accountID: friendAccount.accountID })}
+                        style={[styles.headerChatFriend]}>
                         <Image
                             source={friendAccount.avatarUri && friendAccount.avatarUri.length > 0 ? { uri: Const.assets_domain + friendAccount.avatarUri } : AVATAR}
                             style={[styles.headerChatFriendAvatar]}
@@ -276,7 +303,7 @@ export default class Conversation extends Component {
                             <Text style={[styles.headerChatFriendInfoName]}>{friendAccount.firstName + ' ' + friendAccount.lastName}</Text>
                             <Text style={[styles.headerChatFriendInfoActiveTime]}>{'3 phút trước'}</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                     <View style={[styles.headerActionBounder]}>
                         <Ionicons style={[styles.headerActionPhoneIcon]} name='call' size={25} color='white' />
                         <Ionicons style={[styles.headerActionVideoIcon]} name='videocam' size={25} color='white' />
@@ -296,6 +323,9 @@ export default class Conversation extends Component {
                                 onPressMessageItem={(index) => this.onPressMessageItem(index)}
                                 nextIndex={index < listMessage.length - 1 ? listMessage[index + 1] : { fromAccountId: 0 }}
                                 onPressImage={(url) => this.setState({ currentShowImage: url, isShowModalImage: true })}
+                                onLongPress={() => {
+                                    this.setState({ isShowMessageMenu: true, selectedMessage: item });
+                                }}
                             />}
                         onEndReachedThreshold={0.5}
 
@@ -355,6 +385,7 @@ export default class Conversation extends Component {
                     )}
                 </View>
                 <Modal
+                    animationType='slide'
                     visible={isShowModalImage}
                     onRequestClose={() => this.setState({ isShowModalImage: false })}
                 >
@@ -365,11 +396,60 @@ export default class Conversation extends Component {
                         />
                     </View>
                 </Modal>
+                <Modal
+                    transparent={true}
+                    onRequestClose={() => this.setState({ isShowMessageMenu: false })}
+                    visible={isShowMessageMenu}
+                >
+
+                    <TouchableOpacity
+                        onPressOut={() => this.setState({ isShowMessageMenu: false })}
+                        style={{ flex: 1 }}
+                    >
+                        <View style={{
+                            position: 'absolute',
+                            bottom: scale(30, Vertical),
+                            width: scale(400, Horizontal),
+                            alignItems: 'center'
+                        }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.setState({ isShowMessageMenu: false });
+                                    this.deleteMessage(selectedMessage);
+                                }}
+                                style={{
+                                    backgroundColor: '#AAAAAA',
+                                    width: scale(300, Horizontal),
+                                    marginBottom: scale(30, Vertical),
+                                    height: scale(35, Vertical),
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 10
+                                }}>
+                                <Text style={{color:'white'}}>Xóa tin nhắn</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.setState({ isShowMessageMenu: false })
+                                }}
+                                style={{
+                                    backgroundColor: '#AAAAAA',
+                                    width: scale(300, Horizontal),
+                                    height: scale(35, Vertical),
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 10
+                                }}>
+                                <Text style={{color:'white'}}>Hủy</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
+                </Modal>
             </View>
         )
     }
 }
-const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem, nextIndex, onPressImage }) => {
+const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem, nextIndex, onPressImage, onLongPress }) => {
     let disTime = diffTime(data.time, nextIndex.time);
     disTime = disTime ? disTime : 100000000;
     return (
@@ -392,6 +472,7 @@ const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem,
                         <View
                             style={[data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva]}>
                             <TouchableWithoutFeedback
+                                onLongPress={() => onLongPress()}
                                 onPress={() => onPressImage(data.imageUrl)}
                             >
                                 <Image
@@ -404,6 +485,7 @@ const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem,
                         <TouchableWithoutFeedback
                             activeOpacity={0.9}
                             onPress={() => onPressMessageItem(index)}
+                            onLongPress={() => onLongPress()}
                         >
                             <View style={[
                                 data.isMyMessage ? styles.messageSendContentBounder : styles.messageReceiveContentBounder,

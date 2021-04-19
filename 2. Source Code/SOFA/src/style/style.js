@@ -360,6 +360,7 @@ export const updateProfile = StyleSheet.create({
         borderRadius: 10,
         paddingLeft: 10,
         fontSize: Utils.scale(20, Const.Horizontal),
+        backgroundColor: 'white'
     },
 
 
