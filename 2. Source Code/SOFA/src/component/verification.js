@@ -20,13 +20,20 @@ export default class Verification extends Component {
       code: this.props.route.params.otpCode,
       timer: 60,
       errMsg: '',
-      isValidUser: true,
+      isValidInput: true,
+      isResendOTP: false,
     }
   }
   componentDidMount() {
+    this.timerCounter();
+  }
+
+  timerCounter() {
     this.timeCall = setInterval(() => {
-      if (this.state.timer === 0)
+      if (this.state.timer === 0) {
         clearInterval(this.timeCall)
+        this.setState({ isResendOTP: true })
+      }
       else
         this.setState((prevstate) => ({ timer: prevstate.timer - 1 }));
     }, 1000);
@@ -36,6 +43,39 @@ export default class Verification extends Component {
     clearInterval(this.timeCall);
   }
 
+  resendOTP() {
+    let header = {
+      "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+      "Content-Type": "multipart/form-data",
+      "Host": "chientranhvietnam.org"
+    };
+    let data = new FormData();
+    let api = '';
+    if (this.state.preScreen == Const.FORGOT_PASSWORD) {
+      api = 'api/verification/reset';
+      data.append('method', Const.VERIFICATION_METHOD_PHONE);
+    } else {
+      api = 'api/verification/register';
+    }
+    data.append('phoneNumber', this.state.phone);
+    let url = Const.domain + api;
+    Request.Post(url, header, data)
+      .then(response => {
+        this.setState({ isLoading: false });
+        if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+          this.setState({ isResendOTP: false, timer: 60 });
+          this.timerCounter();
+        } else {
+          if (response.code == Const.REQUEST_CODE_FAILED) {
+            this.setState({ isValidInput: false, errMsg: response.errorMessage })
+          }
+        }
+      })
+      .catch(reason => {
+        console.log(reason);
+      });
+  }
+
   checkOTP = () => {
 
     if (this.state.code == undefined || this.state.code.trim().length == 0 || this.state.code == 0) {
@@ -43,7 +83,7 @@ export default class Verification extends Component {
     }
     else {
       const { transactionID, code } = this.state;
-      
+
       let header = {
         "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
         "Content-Type": "multipart/form-data",
@@ -111,15 +151,27 @@ export default class Verification extends Component {
             </Animatable.View>
           }
           <View style={styles.registerContainer}>
-            <TouchableOpacity style={styles.registerTouch} onPress={() => this.checkOTP()} disabled={this.state.timer == 0}>
-              <LinearGradient
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                colors={['#fbb897', '#ff8683']}
-                style={styles.registerBtn}>
-                <Text style={styles.registerText}>XÁC NHẬN</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+            {this.state.isResendOTP ?
+              <TouchableOpacity style={styles.registerTouch} onPress={() => this.resendOTP()}>
+                <LinearGradient
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  colors={['#fbb897', '#ff8683']}
+                  style={styles.registerBtn}>
+                  <Text style={styles.registerText}>Gửi lại mã</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              :
+              <TouchableOpacity style={styles.registerTouch} onPress={() => this.checkOTP()}>
+                <LinearGradient
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  colors={['#fbb897', '#ff8683']}
+                  style={styles.registerBtn}>
+                  <Text style={styles.registerText}>XÁC NHẬN</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            }
           </View>
         </View>
       </View>
