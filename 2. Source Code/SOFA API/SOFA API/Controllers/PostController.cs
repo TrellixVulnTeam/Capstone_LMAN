@@ -33,6 +33,13 @@ namespace SOFA_API.Controllers
             PostViewModelOut listAllPost = PostService.Instance.GetAllPost(myID, page, rowsOfPage);
             return Ok(listAllPost);
         }
+        [HttpGet("GetFashionistaPost")]
+        public ActionResult GetFashionistaPost(int page, int rowsOfPage)
+        {
+            int myID = Utils.Instance.GetUserID(User.Claims);
+            PostViewModelOut listAllPost = PostService.Instance.GetFashionistaPost(myID, page, rowsOfPage);
+            return Ok(listAllPost);
+        }
 
         [HttpGet("GetUserPublicPost")]
         public ActionResult GetUserPublicPost(int accountPost, int page, int rowsOfPage)
@@ -43,7 +50,6 @@ namespace SOFA_API.Controllers
             PostViewModelOut postViewModelOut = PostService.Instance.GetAllPublicPostOfUser(postViewModelIn, myID, page, rowsOfPage);
             return Ok(postViewModelOut);
         }
-
         [HttpGet("GetUserPost")]
         [Authorize]
         public ActionResult GetUserPost(int page, int rowsOfPage)
