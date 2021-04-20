@@ -71,7 +71,7 @@ export default class Hot extends Component {
     };
 
     getAllPost = async (page) => {
-        PostService.getAllPublicPost(page)
+        PostService.getFashionistaPost(page)
             .then((response) => {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     let listPostRes = response.listPost;
