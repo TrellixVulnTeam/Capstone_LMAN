@@ -90,10 +90,7 @@ export default class Message extends Component {
                         .then(response => {
                             if (response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                 let temp = this.state.listConversations;
-                                for (let i = index; i < temp.length; i++) {
-                                    temp[i] = temp[i++]
-                                }
-                                temp.pop();
+                                temp.splice(index, 1);
                                 this.setState({ listConversation: temp });
                             } else {
                                 ToastAndroid.show('Xóa cuộc trò chuyện không thành công!', ToastAndroid.LONG);
