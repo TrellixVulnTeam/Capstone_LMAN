@@ -79,6 +79,7 @@ export class FeedbackComponent implements OnInit {
         this.apiService.post(url, formData).subscribe(response => {
           if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
             this.notificationSuccess("Đã xác nhận feedback");
+            this.keyword = '';
             this.ngOnInit();
           }
           else {
