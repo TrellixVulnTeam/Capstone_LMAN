@@ -121,6 +121,7 @@ export default class Newsfeed extends Component {
     }
     messageConnectionHub() {
         let token = Session.getInstance().token;
+        let account = Session.getInstance().account;
         if (token) {
             if (typeof this.messageConnection === 'undefined') {
                 this.messageConnection = new signalR.HubConnectionBuilder()
@@ -135,6 +136,11 @@ export default class Newsfeed extends Component {
                     .start()
                     .then(() => {
                         console.log('MessageWSS', 'Connected from Newsfeed');
+                        this.messageConnection.invoke('OnlineChat', account.accountID)
+                            .then(result => {
+                                console.log(result);
+                            })
+                            .catch(reason => console.log(reason));
                     })
                     .catch(function (err) {
                         return console.error(err.toString());
@@ -229,6 +235,7 @@ export default class Newsfeed extends Component {
             this.connection = undefined;
         }
         if (this.messageConnection) {
+            this.messageConnection.invoke('OfflineChat', Session.getInstance().account.accountID);
             this.messageConnection.stop();
             this.messageConnection = undefined;
         }

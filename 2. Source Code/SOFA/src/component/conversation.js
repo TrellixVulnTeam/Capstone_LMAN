@@ -11,6 +11,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ImagePicker from 'react-native-image-crop-picker';
+import { Badge, Icon, withBadge } from 'react-native-elements';
 
 import * as signalR from '@microsoft/signalr';
 import * as Const from '../common/const';
@@ -22,6 +23,7 @@ import { AVATAR, WHITE_BACKGROUND, GALAXY_BACKGROUND, OCEAN_BACKGROUND } from '.
 import * as AuthService from '../service/authService';
 import * as ProfileService from '../service/profileService';
 import * as MessageService from '../service/messageService';
+import * as OnlineService from '../service/onlineService';
 
 import Session from '../common/session';
 
@@ -45,7 +47,8 @@ export default class Conversation extends Component {
             currentShowImage: '',
             token: '',
             isShowMessageMenu: false,
-            selectedMessage: {}
+            selectedMessage: {},
+            listOnline: []
         }
     }
     concatList(list1, list2) {
@@ -200,7 +203,7 @@ export default class Conversation extends Component {
     }
 
     onlineChat() {
-        const { account, token, friendAccount } = this.state;
+        const { token, friendAccount } = this.state;
         if (typeof this.connection === 'undefined') {
             this.connection = new signalR.HubConnectionBuilder()
                 .withUrl(Const.domain + 'message', {
@@ -226,6 +229,25 @@ export default class Conversation extends Component {
                         .catch(reason => console.log(reason));
                 }
             });
+            this.connection.on("ChangeStatus", (data) => {
+                console.log('Message', data);
+                if (data) {
+                    this.setState({ listOnline: data });
+                }
+            })
+        }
+    }
+
+    getListActiveAccount() {
+        let token = Session.getInstance().token;
+        if (token) {
+            OnlineService.getListInfo()
+                .then(response => {
+                    this.setState({ listOnline: response.listActiveAccount });
+                })
+                .catch(reason => {
+                    console.log(reason);
+                })
         }
     }
 
@@ -243,6 +265,7 @@ export default class Conversation extends Component {
             if (Session.getInstance().settings && Session.getInstance().settings.chatColor) {
                 this.setState({ color: Session.getInstance().settings.chatColor });
             }
+            this.getListActiveAccount();
             MessageService.markConversationIsReaded(uid2)
                 .then(response => {
                 })
@@ -263,6 +286,7 @@ export default class Conversation extends Component {
             Session.getInstance().currentUserChat = 0;
             if (this.connection) {
                 this.connection.stop();
+                this.connection = undefined;
             }
         });
 
@@ -287,7 +311,7 @@ export default class Conversation extends Component {
     }
 
     render() {
-        const { account, friendAccount, listMessage, keyboardHeight, page, canLoadMore, refreshingList, inputHeight, content, isShowModalImage, currentShowImage, isShowMessageMenu, selectedMessage } = this.state;
+        const { listOnline, friendAccount, listMessage, keyboardHeight, page, canLoadMore, refreshingList, inputHeight, content, isShowModalImage, currentShowImage, isShowMessageMenu, selectedMessage } = this.state;
         return (
             <View style={[styles.container]}>
                 <StatusBar backgroundColor={this.state.color} />
@@ -295,10 +319,21 @@ export default class Conversation extends Component {
                     <TouchableOpacity
                         onPress={() => this.props.navigation.navigate('OtherProfile', { accountID: friendAccount.accountID })}
                         style={[styles.headerChatFriend]}>
-                        <Image
-                            source={friendAccount.avatarUri && friendAccount.avatarUri.length > 0 ? { uri: Const.assets_domain + friendAccount.avatarUri } : AVATAR}
-                            style={[styles.headerChatFriendAvatar]}
-                        />
+                        <View>
+                            <Image
+                                source={friendAccount.avatarUri && friendAccount.avatarUri.length > 0 ? { uri: Const.assets_domain + friendAccount.avatarUri } : AVATAR}
+                                style={[styles.headerChatFriendAvatar]}
+                            />
+                            {listOnline.indexOf(friendAccount.accountID) != -1 ? (
+                                <Badge
+                                    status="success"
+                                    containerStyle={[styles.activeStatus]}
+                                    badgeStyle={{ width: scale(10, Horizontal), height: scale(10, Horizontal) }}
+                                />
+                            ) : (
+                                <View></View>
+                            )}
+                        </View>
                         <View style={[styles.headerChatFriendInfo]}>
                             <Text style={[styles.headerChatFriendInfoName]}>{friendAccount.firstName + ' ' + friendAccount.lastName}</Text>
                             <Text style={[styles.headerChatFriendInfoActiveTime]}>{'3 phút trước'}</Text>
@@ -426,7 +461,7 @@ export default class Conversation extends Component {
                                     justifyContent: 'center',
                                     borderRadius: 10
                                 }}>
-                                <Text style={{color:'white'}}>Xóa tin nhắn</Text>
+                                <Text style={{ color: 'white' }}>Xóa tin nhắn</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => {
@@ -440,7 +475,7 @@ export default class Conversation extends Component {
                                     justifyContent: 'center',
                                     borderRadius: 10
                                 }}>
-                                <Text style={{color:'white'}}>Hủy</Text>
+                                <Text style={{ color: 'white' }}>Hủy</Text>
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>
@@ -663,6 +698,11 @@ const styles = StyleSheet.create({
         height: null,
         flex: 1,
         resizeMode: 'contain'
+    },
+    activeStatus: {
+        position: 'absolute',
+        top: scale(2, Vertical),
+        right: scale(2, Horizontal),
     }
 
 })

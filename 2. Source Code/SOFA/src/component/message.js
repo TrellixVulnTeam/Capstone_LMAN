@@ -11,6 +11,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImagePicker from 'react-native-image-crop-picker';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { Badge, Icon, withBadge } from 'react-native-elements';
 import { RectButton } from 'react-native-gesture-handler';
 
 import * as signalR from '@microsoft/signalr';
@@ -22,12 +23,14 @@ import { Horizontal, Vertical } from '../common/const';
 import { color } from 'react-native-reanimated';
 import { AVATAR, WHITE_BACKGROUND, GALAXY_BACKGROUND, OCEAN_BACKGROUND } from '../../image/index';
 import ViewImageModal from './viewImageModel';
+
 import * as PostService from '../service/postService';
 import * as AuthService from '../service/authService';
 import * as MarkupPostService from '../service/markupPostService';
 import * as NotificationService from '../service/notificationService';
 import * as FollowService from '../service/followService';
 import * as MessageService from '../service/messageService';
+import * as OnlineService from '../service/onlineService';
 
 import Session from '../common/session';
 
@@ -39,6 +42,8 @@ export default class Message extends Component {
             color: '#46AA4A',
             isRefreshing: false,
             listConversations: [],
+            listOnline: [],
+            account: {}
         }
     }
 
@@ -61,10 +66,12 @@ export default class Message extends Component {
                             chatWithLastName: item.chatWithLastName,
                             chatWithAvatarUri: item.chatWithAvatarUri,
                             chatWithAvatar: item.chatWithAvatar,
+                            isReaded: item.isReaded
                         };
                         tempArray.push(listdata);
                     });
                     this.setState({ listConversations: tempArray });
+                    this.getListActiveAccount();
                 } else {
                     ToastAndroid.show("Tải danh sách thất bại! Hãy thử lại!", ToastAndroid.LONG);
                 }
@@ -79,6 +86,68 @@ export default class Message extends Component {
                     ToastAndroid.show("Tải danh sách thất bại! Hãy thử lại!", ToastAndroid.LONG);
                 }
             })
+    }
+
+    getListActiveAccount() {
+        let token = Session.getInstance().token;
+        if (token) {
+            OnlineService.getListInfo()
+                .then(response => {
+                    this.setState({ listOnline: response.listActiveAccount });
+                })
+                .catch(reason => {
+                    console.log(reason);
+                })
+        }
+    }
+
+    updateWhenNewMessage(item) {
+        console.log('update', item)
+        const listTemp = this.state.listConversations;
+        for (let i = 0; i < listTemp.length; i++) {
+            if (listTemp[i].chatWithAccountId == item.fromAccountId) {
+                listTemp[i].lastMessage = item.content;
+                listTemp[i].isReaded = false;
+                listTemp[i].timeUpdate = calculateTime(item.time);
+            }
+        }
+        this.setState({ listConversation: listTemp });
+    }
+
+    messageConnectionHub() {
+        let token = Session.getInstance().token;
+        let account = Session.getInstance().account;
+        if (token) {
+            if (typeof this.messageConnection === 'undefined') {
+                this.messageConnection = new signalR.HubConnectionBuilder()
+                    .withUrl(Const.domain + 'message', {
+                        accessTokenFactory: () => token,
+                        skipNegotiation: true,
+                        transport: signalR.HttpTransportType.WebSockets,
+                    })
+                    .withAutomaticReconnect()
+                    .build();
+                this.messageConnection
+                    .start()
+                    .then(() => {
+                        console.log('MessageWSS', 'Connected from Message');
+                    })
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                this.messageConnection.on('NewMessage', (data) => {
+                    if (data) {
+                        this.updateWhenNewMessage(data);
+                    }
+                });
+                this.messageConnection.on("ChangeStatus", (data) => {
+                    console.log('Message', data);
+                    if (data) {
+                        this.setState({ listOnline: data });
+                    }
+                })
+            }
+        }
     }
 
     deleteConversation(index) {
@@ -109,10 +178,14 @@ export default class Message extends Component {
     }
 
     componentDidMount() {
+        this.messageConnectionHub();
+
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             if (!Session.getInstance().token || Session.getInstance().token.length == 0) {
                 ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                 this.props.navigation.goBack();
+            } else {
+                this.setState({ account: Session.getInstance().account });
             }
             if (Session.getInstance().settings && Session.getInstance().settings.chatColor) {
                 this.setState({ color: Session.getInstance().settings.chatColor });
@@ -123,9 +196,13 @@ export default class Message extends Component {
         });
     }
 
-    componentWillUnmount() { }
+    componentWillUnmount() {
+        if (this.messageConnection) {
+            this.messageConnection.stop();
+        }
+    }
     render() {
-        const { isLoading, isRefreshing, color, listConversations, activeRowkey } = this.state;
+        const { account, isLoading, isRefreshing, color, listConversations, activeRowkey, listOnline } = this.state;
         return (
             <View style={[styles.container]}>
                 <StatusBar hidden={false} backgroundColor={color} />
@@ -144,7 +221,14 @@ export default class Message extends Component {
                     <FlatList
                         data={listConversations}
                         keyExtractor={(item, index) => item.chatWithAccountId + ''}
-                        renderItem={({ item, index }) => <ConversationItem data={item} navigation={this.props.navigation} deleteConversation={() => this.deleteConversation(index)} />}
+                        renderItem={({ item, index }) =>
+                            <ConversationItem
+                                data={item}
+                                navigation={this.props.navigation}
+                                deleteConversation={() => this.deleteConversation(index)}
+                                listOnline={listOnline}
+                                account={account}
+                            />}
                         onRefresh={() => this.getListCoversation()}
                         refreshing={isRefreshing}
                     />
@@ -158,7 +242,7 @@ export default class Message extends Component {
         )
     }
 }
-const ConversationItem = ({ data, navigation, deleteConversation }) => {
+const ConversationItem = ({ data, navigation, deleteConversation, listOnline }) => {
     const rightActions = (progress, dragX) => {
         return (
             <TouchableOpacity
@@ -177,14 +261,25 @@ const ConversationItem = ({ data, navigation, deleteConversation }) => {
                     uid1: data.accountId,
                     uid2: data.chatWithAccountId,
                 })}
-                style={[styles.conversationItemBounder]}>
-                <Image
-                    source={{ uri: Const.assets_domain + data.chatWithAvatarUri }}
-                    style={[styles.conversationItemAvatar]}
-                />
+                style={[styles.conversationItemBounder, (!data.isReaded) && (data.lastSender != data.accountId) ? { backgroundColor: '#D1D1D1' } : {}]}>
+                <View>
+                    <Image
+                        source={{ uri: Const.assets_domain + data.chatWithAvatarUri }}
+                        style={[styles.conversationItemAvatar]}
+                    />
+                    {listOnline.indexOf(data.chatWithAccountId) != -1 ? (
+                        <Badge
+                            status="success"
+                            containerStyle={[styles.activeStatus]}
+                            badgeStyle={{ width: scale(10, Horizontal), height: scale(10, Horizontal) }}
+                        />
+                    ) : (
+                        <View></View>
+                    )}
+                </View>
                 <View style={[styles.conversationItemContent]}>
-                    <Text style={[styles.conversationItemContentUserName]}>{data.chatWithFirstName + ' ' + data.chatWithLastName}</Text>
-                    <Text style={[styles.conversationItemContentLastMess]}>{Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')}</Text>
+                    <Text style={[styles.conversationItemContentUserName, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'white' } : { color: 'black' }]}>{data.chatWithFirstName + ' ' + data.chatWithLastName}</Text>
+                    <Text style={[styles.conversationItemContentLastMess, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'white' } : { color: 'gray' }]}>{Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')}</Text>
                 </View>
                 <Text style={[styles.conversationItemUpdateTime]}>{calculateTime(data.timeUpdate) + ' trước'}</Text>
             </TouchableOpacity>
@@ -241,7 +336,6 @@ const styles = StyleSheet.create({
     conversationItemContentLastMess: {
         marginTop: 'auto',
         marginBottom: 'auto',
-        color: 'gray'
     },
     conversationItemUpdateTime: {
         alignSelf: 'center',
@@ -269,5 +363,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 10
-    }
+    },
+    activeStatus: {
+        position: 'absolute',
+        top: scale(5, Vertical),
+        right: scale(5, Horizontal),
+    },
 })
