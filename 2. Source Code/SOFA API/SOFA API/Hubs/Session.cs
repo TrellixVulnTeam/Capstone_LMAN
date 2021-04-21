@@ -11,6 +11,10 @@ namespace SOFA_API.Hubs
         public static List<int> ListUserActive { get; set; }
         public static void addUserActive(int userID)
         {
+            if (ListUserActive == null)
+            {
+                ListUserActive = new List<int>();
+            }
             if (ListUserActive.IndexOf(userID) == -1)
             {
                 ListUserActive.Add(userID);
@@ -18,6 +22,10 @@ namespace SOFA_API.Hubs
         }
         public static void removeUserActive(int userID)
         {
+            if (ListUserActive == null)
+            {
+                ListUserActive = new List<int>();
+            }
             if (ListUserActive.IndexOf(userID) != -1)
             {
                 ListUserActive.Remove(userID);
