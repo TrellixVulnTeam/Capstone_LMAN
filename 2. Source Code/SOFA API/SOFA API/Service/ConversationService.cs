@@ -39,6 +39,7 @@ namespace SOFA_API.Service
             {
                 List<int> listChatwith = ConversationDAO.Instance.GetListAccountChat(accountId);
                 listConversation = ConversationDAO.Instance.GetListConversation(accountId, listChatwith);
+                listConversation.listConversation = listConversation.listConversation.OrderByDescending(o => o.TimeUpdate).ToList();
                 listConversation.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
             catch (Exception ex)
