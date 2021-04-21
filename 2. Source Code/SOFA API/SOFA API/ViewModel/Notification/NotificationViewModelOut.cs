@@ -77,6 +77,7 @@ namespace SOFA_API.ViewModel.Notification
             if (accountID == 0)
             {
                 FromAccountName = "Quản trị viên";
+                FromAccountAvatar = "system/avatar/ava.png";
             }
             else
             {

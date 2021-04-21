@@ -111,6 +111,30 @@ namespace SOFA_API.DAO
             }
             return res;
         }
+
+        internal List<Post> GetFashionistaPost(int page, int rowsOfPage)
+        {
+            List<Post> listAllPost = new List<Post>();
+
+            String sql = "EXEC dbo.GetAllPublicPostOfFashionista @page , @rowsOfPage";
+            try
+            {
+                DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { page, rowsOfPage });
+                if (data.Rows.Count > 0)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        listAllPost.Add(new Post(row));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+            }
+            return listAllPost;
+        }
+
         /// <summary>
         /// Get all public post of an user
         /// </summary>

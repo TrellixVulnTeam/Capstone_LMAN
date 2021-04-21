@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, ToastAndroid, PermissionsAndroid, FlatList, TouchableOpacity, KeyboardAvoidingView, ScrollView, LogBox } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import DatePicker from 'react-native-datepicker'
+import DropDownPicker from 'react-native-dropdown-picker';
+
+
+import Entypo from 'react-native-vector-icons/Entypo';
+import Octicons from 'react-native-vector-icons/Octicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
@@ -15,7 +23,7 @@ import * as Const from "../common/const";
 import * as Utils from "../common/utils";
 import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON } from '../../image/index';
 import { TextInput } from 'react-native-gesture-handler';
-import { acc } from 'react-native-reanimated';
+import Session from '../common/session';
 
 export default class UpdateProfile extends Component {
     constructor(props) {
@@ -48,54 +56,23 @@ export default class UpdateProfile extends Component {
     }
 
     chooseFile = (callback) => {
-        const { account, token } = this.state;
-        let options = {
-            title: 'Select Image',
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-            includeBase64: true
-        };
-        launchImageLibrary(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log(
-                    'User tapped custom button: ',
-                    response.customButton
-                );
-                ToastAndroid.show(response.customButton, ToastAndroid.LONG);
-            } else {
-                let source = response;
-                this.setState({ avatarUri: source.uri });
-                if (source.base64) {
-                    var header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                    };
-                    console.log(header);
-                    let data = new FormData();
-                    data.append('Avatar', source.base64);
-                    data.append('username', account.userName);
-                    let url = Const.domain + 'api/account';
-                    Request.Post(url, header, data)
-                        .then(response => {
-                            if (response && response.code && response.code == 'SUCCESSFULY') {
-                                ToastAndroid.show('Avatar', 'Đổi ảnh đại diện thành công!!!', ToastAndroid.SHORT);
-
-                            }
-                        })
-                        .catch(reason => {
-                            console.log(reason);
-                        });
+        ImagePicker.openPicker({
+            width: 600,
+            height: 600,
+            cropping: true,
+            cropperCircleOverlay: true,
+            includeBase64: true,
+            multiple: false
+        })
+            .then(result => {
+                if (result.data) {
+                    this.setState({ avatarUri: result.path });
+                    callback({ base64: result.data });
                 }
-                callback(source);
-
-            }
-        });
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
     }
 
     requestCameraPermission = async () => {
@@ -121,98 +98,58 @@ export default class UpdateProfile extends Component {
     };
 
     takePicture = (callback) => {
-        const { account, token } = this.state;
-        let options = {
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-            includeBase64: true
-        };
-        this.requestCameraPermission()
-            .then(response => {
-                launchCamera(options, (response) => {
-                    console.log(response);
-                    if (response.didCancel) {
-                        console.log('User cancelled image picker');
-                    } else if (response.error) {
-                        console.log('ImagePicker Error: ', response.error);
-                    } else {
-                        let source = response;
-                        this.setState({ avatarUri: source.uri });
-                        if (source.base64) {
-                            var header = {
-                                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                                "Accept": 'application/json',
-                            };
-                            console.log(header);
-                            let data = new FormData();
-                            data.append('Avatar', source.base64);
-                            data.append('username', account.userName);
-                            let url = Const.domain + 'api/account';
-                            Request.Post(url, header, data)
-                                .then(response => {
-                                    if (response && response.code && response.code == 'SUCCESSFULY') {
-                                        ToastAndroid.show('Avatar', 'Đổi ảnh đại diện thành công!!!', ToastAndroid.SHORT);
-                                    }
-                                })
-                                .catch(reason => {
-                                    console.log(reason);
-                                });
-                        }
-                        callback(source);
 
-                    }
-                });
-            });
+        ImagePicker.openCamera({
+            width: 600,
+            height: 600,
+            cropping: true,
+            cropperCircleOverlay: true,
+            includeBase64: true,
+            multiple: false
+        })
+            .then(result => {
+                if (result.data) {
+                    this.setState({ avatarUri: result.path });
+                    callback({ base64: result.data });
+                }
+            })
+            .catch(reason => {
+                console.log(reason);
+            })
     }
 
     updateAvatar() {
         const { account } = this.state;
-        this.getData('token')
-            .then(result => {
-                if (result) {
-                    let header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Content-Type": "multipart/form-data",
-                        "Host": "chientranhvietnam.org",
-                        "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2),
-                    };
-                    let data = new FormData();
+        const token = Session.getInstance().token;
+        if (token) {
+            let header = {
+                "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                "Content-Type": "multipart/form-data",
+                "Host": "chientranhvietnam.org",
+                "Authorization": 'Bearer ' + token,
+            };
+            let data = new FormData();
 
-                    data.append('Avatar', account.avatar);
-                    console.log("Update avatar!");
+            data.append('Avatar', account.avatar);
+            console.log("Update avatar!");
+            let url = Const.domain + 'api/profile/updateavatar';
+            Request.Post(url, header, data)
+                .then(response => {
+                    console.log(response);
+                    if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        ToastAndroid.show('Update avatar thành công!', ToastAndroid.SHORT);
+                    } else {
+                        ToastAndroid.show('Update avatar không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
+                    }
+                })
+                .catch(reason => {
+                    ToastAndroid.show('Update avatar không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
+                    console.log(reason);
+                });
 
-                    console.log(account);
-                    let url = Const.domain + 'api/profile/updateavatar';
-
-                    Request.Post(url, header, data)
-                        .then(response => {
-                            console.log(response);
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                ToastAndroid.show('Update Successfully', 'Update avatar thành công!', ToastAndroid.SHORT);
-                                console.log(response);
-                                //this.props.navigation.goBack();               
-                            } else {
-                                if (response.code == Const.REQUEST_CODE_FAILED) {
-                                    ToastAndroid.show('Update Failed', 'Update avatar không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
-                                    console.log(response);
-                                }
-                            }
-                        })
-                        .catch(reason => {
-                            console.log('Lỗi rồi!');
-                            console.log(reason);
-                        });
-
-                } else {
-                    this.props.navigation.navigate('Login')
-                }
-            })
-            .catch(reason => {
-                console.log('failed');
-                this.props.navigation.navigate('Login')
-            })
+        } else {
+            this.props.navigation.navigate('Login')
+        }
     }
 
 
@@ -301,116 +238,193 @@ export default class UpdateProfile extends Component {
 
 
     componentWillUnmount() {
-        //this._unsubcribe();
     }
 
     componentDidMount() {
-        //this.getProfile();
         const { account, avatarUri } = this.props.route.params;
         this.setState({ avatarUri: avatarUri });
-        this.setState({ account: account })
+        this.setState({ account: account });
+        this._screenFocus = this.props.navigation.addListener('focus', () => {
+            this.props.navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible: false
+            });
+        });
+        this._screenFocus = this.props.navigation.addListener('blur', () => {
+            this.props.navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible: false
+            });
+        });
     }
 
     render() {
         const { avatarUri, account } = this.state;
-        LogBox.ignoreAllLogs();
-        LogBox.ignoreLogs['componentWillReceiveProps has been renamed, and is not recommended for use. See https://fb.me/react-unsafe-component-lifecycles for details.'];
+
         const data = [
-            { label: 'Nam                                ', value: 1 },
-            { label: 'Nữ', value: 2 },
+            {
+                value: 1,
+                label: 'Nam',
+                icon: () => <FontAwesome name='male' size={20} color={'#9E9E9E'} />
+            },
+            {
+                value: 0,
+                label: 'Nữ',
+                icon: () => <FontAwesome name='female' size={20} color={'#9E9E9E'} />
+
+            },
         ];
         return (
             <View style={[Style.common.container]}>
-                <ScrollView>
-                    <StatusBar hidden={false} backgroundColor='#fbb897' />
-                    <LinearGradient colors={['#fbb897', '#ff8683']}>
-                        <View style={Style.profile.firstHeader}>
-                            <Image
-                                source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
-                                resizeMode={"cover"}
-                                style={{
-                                    height: Utils.scale(110, Const.Horizontal),
-                                    width: Utils.scale(110, Const.Horizontal),
-                                    borderRadius: Utils.scale(55, Const.Horizontal),
-                                    borderWidth: 2,
-                                    overflow: 'hidden',
+                <View style={{ flex: 1 }}>
+                    <StatusBar hidden={false} backgroundColor='rgba(0,0,0,0.8)' />
+                    <View style={{
+                        height: Utils.scale(300, Const.Vertical),
+                        width: Utils.scale(400, Const.Horizontal),
+                        marginBottom: Utils.scale(20, Const.Vertical)
+                    }}>
+                        <Image
+                            source={{ uri: avatarUri }}
+                            style={{
+                                height: Utils.scale(300, Const.Vertical),
+                                width: Utils.scale(400, Const.Horizontal),
+                                resizeMode: 'cover',
+                                position: 'absolute'
+                            }}
+                        />
+                        <View style={{ backgroundColor: 'rgba(0,0,0,0.8)', flex: 1 }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity
+                                    onPress={() => this.props.navigation.goBack()}
+                                    style={{ marginLeft: Utils.scale(10, Const.Horizontal) }}
+                                >
+                                    <Octicons name='chevron-left' size={40} color='gray' />
+                                </TouchableOpacity>
+                                <Text style={{
+                                    color: 'white',
+                                    marginLeft: Utils.scale(85, Const.Horizontal),
+                                    marginRight: 'auto',
                                     alignSelf: 'center',
-                                    //marginLeft: Utils.scale(149, Const.Horizontal),
-                                }} />
-                            <View style={{
-                                marginTop: Utils.scale(10, Const.Vertical),
-                                height: Utils.scale(70, Const.Vertical),
-                                width: Utils.scale(200, Const.Horizontal),
-                                alignSelf: 'center',
-                            }}>
-                                <MenuProvider>
-                                    <Menu>
-                                        <MenuTrigger >
-                                            <Text style={Style.updateProfile.updateAvaText}>Thay đổi ảnh đại diện</Text>
-                                        </MenuTrigger>
-                                        <MenuOptions>
-                                            <MenuOption onSelect={() => this.takePicture(source => {
-                                                console.log('Take picture callback');
-                                                account.avatar = source.base64;
-                                                this.setState({ account: account });
-                                                this.updateAvatar();
-                                            })} text='Máy ảnh' />
-                                            <MenuOption onSelect={() => this.chooseFile(source => {
-                                                console.log('Choose file callback');
-                                                account.avatar = source.base64;
-                                                this.setState({ account: account });
-                                                this.updateAvatar();
-                                            })} text='Thư viện' />
-                                        </MenuOptions>
-                                    </Menu>
-                                </MenuProvider>
+                                    fontWeight: 'bold',
+                                    fontSize: 20
+                                }} >Chỉnh sửa thông tin</Text>
+                            </View>
+                            <View style={Style.profile.firstHeader}>
+
+                                <Image
+                                    source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
+                                    style={{
+                                        width: Utils.scale(150, Const.Horizontal),
+                                        height: Utils.scale(150, Const.Horizontal),
+                                        borderRadius: Utils.scale(70, Const.Horizontal),
+                                        resizeMode: 'cover'
+                                    }} />
+                                <View style={{
+                                    height: Utils.scale(70, Const.Vertical),
+                                    width: Utils.scale(200, Const.Horizontal),
+                                    position: 'absolute',
+                                    top: Utils.scale(130, Const.Horizontal),
+                                    left: Utils.scale(240, Const.Horizontal)
+                                }}>
+                                    <MenuProvider>
+                                        <Menu>
+                                            <MenuTrigger>
+                                                <View style={{
+                                                    height: Utils.scale(40, Const.Horizontal),
+                                                    width: Utils.scale(40, Const.Horizontal),
+                                                    backgroundColor: '#FF5151',
+                                                    borderRadius: 50,
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }}>
+                                                    <Entypo name='camera' size={20} color={'white'} />
+                                                </View>
+                                            </MenuTrigger>
+                                            <MenuOptions>
+                                                <MenuOption onSelect={() => this.takePicture(source => {
+                                                    console.log('Take picture callback');
+                                                    account.avatar = source.base64;
+                                                    this.setState({ account: account });
+                                                    this.updateAvatar();
+                                                })} text='Máy ảnh' />
+                                                <MenuOption onSelect={() => this.chooseFile(source => {
+                                                    console.log('Choose file callback');
+                                                    account.avatar = source.base64;
+                                                    this.setState({ account: account });
+                                                    this.updateAvatar();
+                                                })} text='Thư viện' />
+                                            </MenuOptions>
+                                        </Menu>
+                                    </MenuProvider>
+                                </View>
+
+                            </View>
+                            <View style={Style.updateProfile.updateName}>
+                                <View style={Style.updateProfile.updateItemFirst}>
+                                    <TextInput defaultValue={account.firstName}
+                                        onChangeText={text => {
+                                            account.firstName = text;
+                                            this.setState({ account: account });
+                                        }}
+                                        style={Style.updateProfile.updateInputFirst}
+                                    />
+                                </View>
+                                <View style={Style.updateProfile.updateItemFirst}>
+                                    <TextInput defaultValue={account.lastName}
+                                        onChangeText={text => {
+                                            account.lastName = text;
+                                            this.setState({ account: account });
+                                        }}
+                                        style={Style.updateProfile.updateInputFirst}
+                                    />
+                                </View>
                             </View>
                         </View>
-                    </LinearGradient>
+                    </View>
                     <View style={Style.updateProfile.updateInfo}>
-                        <View style={Style.updateProfile.updateName}>
-                            <View style={Style.updateProfile.updateItemFirst}>
-                                <Text style={Style.updateProfile.updateLabel}>Họ</Text>
-                                <TextInput defaultValue={account.firstName}
-                                    onChangeText={text => {
-                                        account.firstName = text;
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={Style.updateProfile.updateItemSecond}>
+                                <Text style={Style.updateProfile.updateLabel}>Ngày sinh</Text>
+                                <DatePicker
+                                    style={Style.updateProfile.updateInputDate}
+                                    date={account.dob}
+                                    mode="date"
+                                    placeholder="select date"
+                                    format="YYYY-MM-DD"
+                                    minDate="1950-01-01"
+                                    maxDate="2021-06-01"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    customStyles={{
+                                        dateIcon: {
+                                            position: 'absolute',
+                                            left: 0,
+                                            top: 4,
+                                            marginRight: 2
+                                        },
+                                        dateInput: {
+                                            borderWidth: 0,
+                                        }
+                                        // ... You can check the source to find the other keys.
+                                    }}
+                                    onDateChange={(date) => {
+                                        account.dob = date;
                                         this.setState({ account: account });
                                     }}
-                                    style={Style.updateProfile.updateInputFirst}
                                 />
                             </View>
-                            <View style={Style.updateProfile.updateItemFirst}>
-                                <Text style={Style.updateProfile.updateLabel}>Tên</Text>
-                                <TextInput defaultValue={account.lastName}
-                                    onChangeText={text => {
-                                        account.lastName = text;
+                            <View style={Style.updateProfile.updateItemSecond}>
+                                <Text style={Style.updateProfile.updateLabel}>Giới tính</Text>
+                                <DropDownPicker
+                                    defaultValue={account.gender ? 0 : 1}
+                                    containerStyle={{ width: Utils.scale(150, Const.Horizontal), height: Utils.scale(35, Const.Vertical) }}
+                                    items={data}
+                                    style={{}}
+                                    onChangeItem={({ value }) => {
+                                        account.gender = (value == 1 ? true : false);
                                         this.setState({ account: account });
                                     }}
-                                    style={Style.updateProfile.updateInputFirst}
                                 />
                             </View>
                         </View>
-
-                        <View style={Style.updateProfile.updateItemSecond}>
-                            <Text style={Style.updateProfile.updateLabel}>Giới tính</Text>
-                            <View></View>
-                            <RadioForm
-                                radio_props={data}
-                                initial={account.gender == true ? 0 : 1 }
-                                formHorizontal={true}
-                                labelHorizontal={true}
-                                buttonColor={'#F0054D'}
-                                selectedButtonColor={'red'}
-                                animation={true}
-                                onPress={(value) => {
-                                    account.gender = (value == 1 ? true : false);
-                                    this.setState({ account: account });
-                                }}
-                                labelStyle={{ fontSize: Utils.scale(15, Const.Horizontal), }}
-                            />
-
-                        </View>
-
                         <View style={Style.updateProfile.updateItemSecond}>
                             <Text style={Style.updateProfile.updateLabel}>Địa chỉ</Text>
                             <TextInput defaultValue={account.address}
@@ -422,63 +436,40 @@ export default class UpdateProfile extends Component {
                             />
                         </View>
                         <View style={Style.updateProfile.updateItemSecond}>
-                            <Text style={Style.updateProfile.updateLabel}>Ngày sinh</Text>
-                            <DatePicker
-                                style={Style.updateProfile.updateInputDate}
-                                date={account.dob}
-                                mode="date"
-                                placeholder="select date"
-                                format="YYYY-MM-DD"
-                                minDate="1950-01-01"
-                                maxDate="2021-06-01"
-                                confirmBtnText="Confirm"
-                                cancelBtnText="Cancel"
-                                customStyles={{
-                                    dateIcon: {
-                                        position: 'absolute',
-                                        left: 0,
-                                        top: 4,
-                                        marginRight: 2
-                                    },
-                                    dateInput: {
-                                        borderWidth: 0,
-                                    }
-                                    // ... You can check the source to find the other keys.
-                                }}
-                                onDateChange={(date) => {
-                                    account.dob = date;
-                                    this.setState({ account: account });
-                                }}
-                            />
-                        </View>
-                        <View style={Style.updateProfile.updateItemSecond}>
                             <Text style={Style.updateProfile.updateLabel}>Email</Text>
                             <TouchableOpacity onPress={() => ToastAndroid.show(
-                                'Bạn có thể thay đổi Email tại Account -> Cập nhật bảo mật', ToastAndroid.LONG
+                                'Bạn có thể thay đổi tại mục cài đặt bảo mật', ToastAndroid.LONG
                             )}>
                                 <TextInput defaultValue={account.email}
                                     editable={false}
                                     selectTextOnFocus={false}
-                                    onChangeText={text => {
-                                        account.phone = text;
-                                        this.setState({ account: account });
-                                    }}
                                     style={Style.updateProfile.updateInput}
                                 />
                             </TouchableOpacity>
                         </View>
-                        <View style={Style.updateProfile.buttonAll}>
-                            <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={Style.updateProfile.appButtonContainer}>
-                                <Text style={Style.updateProfile.appButtonText}>Hủy bỏ</Text>
-                            </TouchableOpacity>
-                            <View style={Style.updateProfile.buttonEmpty}></View>
-                            <TouchableOpacity onPress={() => this.updateInfomation()} style={Style.updateProfile.appButtonContainer}>
-                                <Text style={Style.updateProfile.appButtonText}>Cập nhật</Text>
+                        <View style={Style.updateProfile.updateItemSecond}>
+                            <Text style={Style.updateProfile.updateLabel}>Điện thoại</Text>
+                            <TouchableOpacity onPress={() => ToastAndroid.show(
+                                'Bạn có thể thay đổi tại mục cài đặt bảo mật', ToastAndroid.LONG
+                            )}>
+                                <TextInput defaultValue={account.phone}
+                                    editable={false}
+                                    selectTextOnFocus={false}
+                                    style={Style.updateProfile.updateInput}
+                                />
                             </TouchableOpacity>
                         </View>
-
                     </View>
-                </ScrollView>
+                    <View style={Style.updateProfile.buttonAll}>
+                        {/* <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={Style.updateProfile.appButtonContainer}>
+                                <Text style={Style.updateProfile.appButtonText}>Hủy bỏ</Text>
+                            </TouchableOpacity> */}
+                        {/* <View style={Style.updateProfile.buttonEmpty}></View> */}
+                        <TouchableOpacity onPress={() => this.updateInfomation()} style={Style.updateProfile.appButtonContainer}>
+                            <Text style={Style.updateProfile.appButtonText}>Cập nhật</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View >
         )
     }

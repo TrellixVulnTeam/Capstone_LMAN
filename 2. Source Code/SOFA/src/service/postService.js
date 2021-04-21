@@ -33,6 +33,36 @@ export const getAllPublicPost = (page) => {
             })
     })
 }
+export const getFashionistaPost = (page) => {
+    return new Promise((resolve, reject) => {
+        getData('token')
+            .then(result => {
+                var header = {
+                    "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                    "Accept": 'application/json',
+                };
+                if (result) {
+                    let token = result.toString().substr(1, result.length - 2);
+                    header = {
+                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+                        "Accept": 'application/json',
+                        "Authorization": 'Bearer ' + token,
+                    };
+                }
+                var uri = Const.domain + 'api/post/GetFashionistaPost?page=' + page + '&rowsOfPage=' + Const.NEWSFEED_ROWS_OF_PAGE;
+                Request.Get(uri, header)
+                    .then(response => {
+                        resolve(response);
+                    })
+                    .catch(reason => {
+                        reject(reason);
+                    })
+            })
+            .catch(reason => {
+                reject(reason);
+            })
+    })
+}
 export const getUserPublicPost = (accountPost, page) => {
     return new Promise((resolve, reject) => {
         var header = {

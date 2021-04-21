@@ -18,9 +18,6 @@ import * as Const from "../common/const";
 import * as Utils from "../common/utils";
 import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
-import NotificationViewModel from "../Model/notificationViewModel";
-import { HOANG } from '../../image/index';
-import PushNotification from "react-native-push-notification";
 import * as NotificationService from '../service/notificationService';
 
 
@@ -129,7 +126,15 @@ export default class Notification extends Component {
 
     onPressNotification(noti) {
         this.setIsRead(noti)
-        this.props.navigation.navigate('PostDetail', { postID: noti.postId });
+        if (noti.fromAccount != 0) {
+            switch (noti.typeNotification) {
+                case Const.NOTIFICATION_TYPE_FOLLOW:
+                    this.props.navigation.navigate('OtherProfile', { accountID: noti.fromAccount });
+                    break;
+                default:
+                    this.props.navigation.navigate('PostDetail', { postID: noti.postId });
+            }
+        }
     }
 
     setIsRead(noti) {
@@ -184,9 +189,9 @@ export default class Notification extends Component {
             <TouchableOpacity onPress={() => this.onPressNotification(noti)}>
                 <View style={[Style.noti.Article, { backgroundColor: (noti.isRead == true ? 'white' : '#d6faff'), }]} >
                     <View style={Style.noti.flexRow}>
-                        <Image source={HOANG} style={Style.noti.ArticleAvatar} />
+                        <Image source={{ uri: Const.assets_domain + data.fromAccountAvatar }} style={Style.noti.ArticleAvatar} />
                         <Text style={Style.noti.ArticleContent}><B>{noti.fromAccountName}</B>  {noti.content}
-                            <B> {noti.toAccountName}</B> {"\n"}{Utils.calculateTime(noti.dateCreated)} </Text>
+                            {"\n"}{Utils.calculateTime(noti.dateCreated)} </Text>
                     </View>
                 </View>
             </TouchableOpacity>

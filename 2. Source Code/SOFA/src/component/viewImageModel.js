@@ -68,10 +68,10 @@ export default class ViewImageModal extends Component {
 
     getContentDemo(content) {
         if (content) {
-            if (content.length > 40) {
+            if (content.length > 30) {
                 let res = {
                     canShowMore: true,
-                    content: content.substring(0, 40)
+                    content: content.substring(0, 30)
                 }
                 return res;
             }
@@ -142,24 +142,22 @@ export default class ViewImageModal extends Component {
                                 <View style={{
                                     paddingTop: scale(10, Vertical),
                                     flexDirection: 'row',
-                                    alignItems: 'flex-end'
                                 }}>
                                     <Text style={{
+                                        width: scale(280, Horizontal),
                                         color: 'white'
-                                    }}>{this.getContentDemo(post.content).content}</Text>
+                                    }}>{isShowMore ? post.content : this.getContentDemo(post.content).content}</Text>
                                     <TouchableHighlight
                                         underlayColor={'£9E9E9E'}
                                         onPress={() => this.setState({ isShowMore: !isShowMore })}
                                     >
-                                        <View style={{ flexDirection: 'row' }}>
-                                            {!isShowMore && this.getContentDemo(post.content).canShowMore ? (
-                                                <View>
-                                                    <Text style={{
-                                                        color: '#B8B8B8'
-                                                    }}> ...Xem thêm</Text>
-                                                </View>
-                                            ) : (<View></View>)}
-                                        </View>
+                                        {!isShowMore && this.getContentDemo(post.content).canShowMore ? (
+                                            <View>
+                                                <Text style={{
+                                                    color: '#B8B8B8'
+                                                }}> ...Xem thêm</Text>
+                                            </View>
+                                        ) : (<View></View>)}
                                     </TouchableHighlight>
                                 </View>
                             </TouchableWithoutFeedback>

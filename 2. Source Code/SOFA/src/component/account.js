@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { MenuProvider } from 'react-native-popup-menu';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
 import RadioButtonRN from 'radio-buttons-react-native';
@@ -25,7 +23,9 @@ import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON, MORE_ICON
 import { TextInput } from 'react-native-gesture-handler';
 import { acc, color } from 'react-native-reanimated';
 import NotificationWSS from '../service/NotificationWSS';
+import MessageWSS from '../service/messageWSS';
 import PushNotification from 'react-native-push-notification';
+import Session from '../common/session';
 
 export default class Profile extends Component {
     constructor(props) {
@@ -105,11 +105,20 @@ export default class Profile extends Component {
                 },
                 {
                     text: "Có", onPress: () => {
+                        Session.getInstance().token = '';
+                        Session.getInstance().account = {};
+                        Session.getInstance().currentChatUser = 0;
+                        Session.getInstance().settings = {};
                         AsyncStorage.removeItem('token');
                         AsyncStorage.removeItem('user');
                         let notificationWSS = NotificationWSS.getInstance(false);
                         if (notificationWSS.getConnection()) {
                             notificationWSS.getConnection().stop();
+                            PushNotification.setApplicationIconBadgeNumber(0)
+                        }
+                        let messageWSS = MessageWSS.getInstance(false);
+                        if (messageWSS.getConnection()) {
+                            messageWSS.getConnection().stop();
                             PushNotification.setApplicationIconBadgeNumber(0)
                         }
                         this.props.navigation.navigate('Login');
@@ -132,7 +141,7 @@ export default class Profile extends Component {
     }
 
     onPressPrivacy() {
-        alert('Click Privacy');
+        this.props.navigation.navigate('ListInfo');
     }
 
     onPressSetting() {
@@ -314,9 +323,8 @@ export default class Profile extends Component {
                                 <View style={{
                                     flexDirection: 'row',
                                 }}>
-                                    <MaterialIcons name='security' size={30} color={'black'} style={{
+                                    <Entypo name='info-with-circle' size={30} color={'black'} style={{
                                         marginTop: Utils.scale(15, Const.Horizontal),
-
                                     }} />
                                     <Text style={{
                                         marginLeft: Utils.scale(15, Const.Horizontal),
@@ -324,7 +332,7 @@ export default class Profile extends Component {
                                         alignSelf: 'center',
                                         fontSize: Utils.scale(17, Const.Horizontal),
                                         fontWeight: 'bold'
-                                    }}>Cài đặt bảo mật</Text>
+                                    }}>Chỉ số cá nhân</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>

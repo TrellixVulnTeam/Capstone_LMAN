@@ -83,11 +83,11 @@ const styles = StyleSheet.create({
     },
     sliderMinimumText: {
         color: 'white',
-        width: scale(33, Horizontal),
+        width: scale(40, Horizontal),
         textAlign: 'right'
     },
     sliderMaximumText: {
         color: 'white',
-        width: scale(45, Horizontal)
+        width: scale(50, Horizontal)
     }
 });

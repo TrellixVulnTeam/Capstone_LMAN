@@ -166,7 +166,7 @@ namespace SOFA_API.Service
                 notificationViewModelOut.FromAccount = modelIn.FromAccount;
                 notificationViewModelOut.ToAccount = modelIn.ToAccount;
                 notificationViewModelOut.DateCreated = modelIn.DateCreated;
-                notificationViewModelOut.FromAccountName = "";
+                notificationViewModelOut.FromAccountName = "Hệ thống";
 
                 ProfileViewModelOut profile = ProfileDAO.Instance.GetProfileModelByAccountID(modelIn.FromAccount);
 
@@ -174,6 +174,41 @@ namespace SOFA_API.Service
                 {
                     notificationViewModelOut.FromAccountName = profile.LastName + " " + profile.FirstName;
                 }
+            }
+            catch (Exception) { }
+
+            return notificationViewModelOut;
+        }
+
+        //typeNotification, content, fromAccount, toAccount
+        public NotificationViewModelOut CreatedNotificationForSupportRequest(NotificationViewModelIn modelIn)
+        {
+            NotificationViewModelOut notificationViewModelOut = new NotificationViewModelOut();
+            try
+            {
+                modelIn.PostId = 0;
+                modelIn.DateCreated = DateTime.Now;
+
+                int result = NotificationDAO.Instance.CreateNotification(modelIn);
+
+                if (result > 0)
+                {
+                    notificationViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    notificationViewModelOut.TypeNotification = modelIn.TypeNotification;
+                    notificationViewModelOut.IsRead = false;
+                    notificationViewModelOut.PostId = modelIn.PostId;
+                    notificationViewModelOut.Content = modelIn.Content;
+                    notificationViewModelOut.FromAccount = modelIn.FromAccount;
+                    notificationViewModelOut.ToAccount = modelIn.ToAccount;
+                    notificationViewModelOut.DateCreated = modelIn.DateCreated;
+                    notificationViewModelOut.FromAccountName = "Hệ thống";
+                }
+                else
+                {
+                    notificationViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    throw new Exception("Can't create Notification");
+                }
+                
             }
             catch (Exception) { }
 

@@ -90,10 +90,7 @@ export default class Message extends Component {
                         .then(response => {
                             if (response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                 let temp = this.state.listConversations;
-                                for (let i = index; i < temp.length; i++) {
-                                    temp[i] = temp[i++]
-                                }
-                                temp.pop();
+                                temp.splice(index, 1);
                                 this.setState({ listConversation: temp });
                             } else {
                                 ToastAndroid.show('Xóa cuộc trò chuyện không thành công!', ToastAndroid.LONG);
@@ -187,7 +184,7 @@ const ConversationItem = ({ data, navigation, deleteConversation }) => {
                 />
                 <View style={[styles.conversationItemContent]}>
                     <Text style={[styles.conversationItemContentUserName]}>{data.chatWithFirstName + ' ' + data.chatWithLastName}</Text>
-                    <Text style={[styles.conversationItemContentLastMess]}>{data.lastMessage}</Text>
+                    <Text style={[styles.conversationItemContentLastMess]}>{Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')}</Text>
                 </View>
                 <Text style={[styles.conversationItemUpdateTime]}>{calculateTime(data.timeUpdate) + ' trước'}</Text>
             </TouchableOpacity>

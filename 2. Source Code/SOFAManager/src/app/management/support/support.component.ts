@@ -81,22 +81,61 @@ export class SupportComponent implements OnInit {
     this.search();
   }
 
-  approveRequest(userId){
-    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Xác nhận", content: "Bạn muốn xác nhận người dùng này là Fashionista?" } });
+  approveRequest(requestId, userId, requestType){
+    let contentConfirm = '';
+    let url = '';
+    if(requestType == 1){
+      contentConfirm = 'Bạn muốn xác nhận người dùng này là Fashionista?';
+      url = 'support/setuserfashionista';
+    }
+    else {
+      contentConfirm = 'Bạn muốn xác nhận khóa tài khoản này?'
+      url = 'support/setuserlockaccount';
+    }
+    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Xác nhận", content: contentConfirm } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
         let formData = new FormData();
+        formData.append('requestId', requestId);
         formData.append('userId', userId);
-        let url = 'support/setuserfashionista';
         this.apiService.post(url, formData).subscribe(response => {
           if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
             this.listSupport.forEach(user => {
-              if(user.userId == userId){
+              if(user.requestId == requestId){
                 user.status = 1;
               }
             })
             this.notificationSuccess("Xác nhận thành công!");
+          }
+          else {
+
+          }
+        }, error => {
+          console.log((<any>error).code);
+        })
+      }
+    });
+  }
+
+  rejectRequest(requestId, requestType, userId){
+    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Xác nhận", content: "Bạn muốn từ chối yêu cầu hỗ trợ này?" } });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        let url = 'support/rejectsupportrequest'
+        let formData = new FormData();
+        formData.append('requestId', requestId);
+        formData.append('requestType', requestType);
+        formData.append('userId', userId);
+        this.apiService.post(url, formData).subscribe(response => {
+          if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
+            this.listSupport.forEach(user => {
+              if(user.requestId == requestId){
+                user.status = 3;
+              }
+            })
+            this.notificationSuccess("Từ chối thành công!");
           }
           else {
 

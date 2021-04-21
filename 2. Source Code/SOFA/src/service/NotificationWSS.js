@@ -75,7 +75,6 @@ export default class NotificationWSS {
     setStarted(started) {
         this._started = started;
     }
-
     pushNotification() {
         if (this._started) {
             this._connection.stop();

@@ -4,51 +4,20 @@
 import ReactNativeForegroundService from '@supersami/rn-foreground-service';
 import 'react-native-gesture-handler';
 import { AppRegistry, PermissionsAndroid } from 'react-native';
-import CameraRoll from "@react-native-community/cameraroll";
 import { Navigation, navigate } from './src/navigation/InitNavigation';
 import { name as appName } from './app.json';
 import { typography } from './utils/typography';
 import PushNotification from 'react-native-push-notification';
 import NotificationWSS from './src/service/NotificationWSS';
 import MessageWSS from './src/service/messageWSS';
-import { getData, requestPermission, storeData } from './src/common/utils';
+import { requestPermission } from './src/common/utils';
 
-import Session from './src/common/session';
-
-import * as RootNavigation from './src/navigation/rootNavigation';
 
 typography();
 
 requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
 requestPermission(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
 requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
-
-getData('settings')
-    .then(result => {
-        if (result) {
-            let temp = JSON.parse(result);
-            console.log(temp);
-            Session.getInstance().settings = temp;
-            if (typeof temp.isOnNotification === 'undefined') {
-                Session.getInstance().settings.isOnNotification = true;
-            }
-            if (typeof temp.isOnMessageNotification === 'undefined') {
-                Session.getInstance().settings.isOnMessageNotification = true;
-            }
-            if (typeof temp.chatColor === 'undefined') {
-                Session.getInstance().settings.chatColor = '#46AA4A';
-            }
-            if (typeof temp.createPostIntro === 'undefined') {
-                Session.getInstance().settings.createPostIntro = true;
-            }
-            if (typeof temp.appBackground === 'undefined') {
-                Session.getInstance().settings.appBackground = '';
-            }
-        }
-    })
-    .catch(reason => {
-        console.log(reason);
-    });
 
 PushNotification.configure({
     onRegister: function (token) {
@@ -91,7 +60,6 @@ ReactNativeForegroundService.start({
     message: 'you are online!',
 });
 
-//PushNotification.deleteChannel('NOTFICATIONCHANEL2212');
 PushNotification.channelExists('Thông báo', function (exists) {
     if (!exists) {
         PushNotification.createChannel(

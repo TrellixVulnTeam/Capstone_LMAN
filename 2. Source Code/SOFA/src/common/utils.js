@@ -111,12 +111,13 @@ const requestPermission = async (permission) => {
     }
 };
 
-const getContentDemo = (content) => {
+const getContentDemo = (content, max) => {
+    content = content.split('\n')[0];
     if (content) {
-        if (content.length > 40) {
+        if (content.length > max) {
             let res = {
                 canShowMore: true,
-                content: content.substring(0, 40)
+                content: content.substring(0, max)
             }
             return res;
         }

@@ -37,5 +37,12 @@ namespace SOFA_API.Controllers
             InfoViewModelOut infoViewModelOut = InfoService.Instance.CreateInfo(infoViewModelIn);
             return Ok(infoViewModelOut);
         }
+        [HttpGet("Delete")]
+        public ActionResult Delete(int infoID)
+        {
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            InfoViewModelOut infoViewModelOut = InfoService.Instance.Delete(infoID, userID);
+            return Ok(infoViewModelOut);
+        }
     }
 }

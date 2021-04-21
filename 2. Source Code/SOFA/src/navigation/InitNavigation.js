@@ -34,6 +34,8 @@ import SupportRequestDetail from '../component/supportRequestDetail';
 import Report from '../component/report';
 import ListMarkupPost from '../component/listMarkupPost';
 import Settings from '../component/settings';
+import ListInfo from '../component/infoList';
+import InfoDetail from '../component/infoDetail';
 const Stack = createStackNavigator();
 
 export const navigationRef = React.createRef();
@@ -80,6 +82,8 @@ export function Navigation() {
                 <Stack.Screen name='Report' component={Report} options={{ headerShown: false }} />
                 <Stack.Screen name='ListMarkupPost' component={ListMarkupPost} options={{ headerShown: false }} />
                 <Stack.Screen name='Settings' component={Settings} options={{ headerShown: false }} />
+                <Stack.Screen name='ListInfo' component={ListInfo} options={{ headerShown: false }} />
+                <Stack.Screen name='InfoDetail' component={InfoDetail} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

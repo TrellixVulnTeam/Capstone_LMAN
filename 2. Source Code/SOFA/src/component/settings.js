@@ -47,19 +47,21 @@ export default class Settings extends Component {
                 createPostIntro: true
             },
             isShowModalSelectChatColor: false,
+            account: {},
+            token: ''
         }
     }
 
     componentDidMount() {
         getData('user').then((result) => {
             if (result) {
-                this.setState({user: JSON.parse(result)})
+                this.setState({ user: JSON.parse(result) })
             }
         })
-        .catch((reason) => {
-            console.log(reason);
-        });
-        
+            .catch((reason) => {
+                console.log(reason);
+            });
+
         let session = Session.getInstance();
         let { settings } = this.state;
         settings.isOnNotification = session.settings.isOnNotification ? true : false;
@@ -90,7 +92,7 @@ export default class Settings extends Component {
 
     }
     render() {
-        const { isOnMessageNotification, isOnNotification, chatColor, appBackground } = this.state.settings;
+        const { isOnMessageNotification, isOnNotification, chatColor, appBackground, account, token } = this.state.settings;
         const { isShowModalSelectChatColor } = this.state;
         return (
             <View style={[styles.container]}>
@@ -107,14 +109,22 @@ export default class Settings extends Component {
                         <Text style={[styles.settingsAreaTitleText]}>Tài khoản</Text>
                     </View>
                     <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('Profile')}
+                        onPress={() => {
+
+                            this.props.navigation.navigate('UpdateProfile', {
+                                account: Session.getInstance().account,
+                                avatarUri: Const.assets_domain + Session.getInstance().account.avatarUri,
+                            });
+                        }}
                         style={[styles.settingItemBounder]}>
                         <Text style={[styles.settingItemText]}>Chỉnh sửa thông tin</Text>
                         <Octicons style={[styles.settingItemMoveIcon]} name='chevron-right' size={30} color='gray' />
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.settingItemBounder]}
-                        onPress={() => this.props.navigation.navigate('ChangePassword', { isResetPassword: false, phone: this.state.user.phone, 
-                                                                                            transactionID: -1, code: -1 })}>
+                        onPress={() => this.props.navigation.navigate('ChangePassword', {
+                            isResetPassword: false, phone: this.state.user.phone,
+                            transactionID: -1, code: -1
+                        })}>
                         <Text style={[styles.settingItemText]}>Đổi mật khẩu</Text>
                         <Octicons style={[styles.settingItemMoveIcon]} name='chevron-right' size={30} color='gray' />
                     </TouchableOpacity>

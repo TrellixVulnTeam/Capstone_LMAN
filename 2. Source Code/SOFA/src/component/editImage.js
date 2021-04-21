@@ -7,7 +7,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 import Filter from './filter';
 import { scale } from '../common/utils';
-import { Horizontal, Vertical } from '../common/const';
+import { Horizontal, Vertical, IMAGE_SIZE_HEIGHT_POST, IMAGE_SIZE_WITDH_POST } from '../common/const';
 
 const width = Dimensions.get('window').width;
 
@@ -212,8 +212,8 @@ export default class EditImage extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Surface style={{ width, height: width }} ref={ref => (this.image = ref)}>
-                    <ImageFilters {...this.state} width={width} height={width}>
+                <Surface style={{ width: scale(400, Horizontal), height: scale(400 * IMAGE_SIZE_HEIGHT_POST / IMAGE_SIZE_WITDH_POST, Horizontal) }} ref={ref => (this.image = ref)}>
+                    <ImageFilters {...this.state} width={scale(400, Horizontal)} height={scale(400 * (IMAGE_SIZE_HEIGHT_POST / IMAGE_SIZE_WITDH_POST), Horizontal)}>
                         {{ uri: this.state.filePath }}
                     </ImageFilters>
                 </Surface>
@@ -239,7 +239,7 @@ export default class EditImage extends Component {
 
                 </ScrollView>
                 <ScrollView
-                    style={styles.editArea}>
+                    style={{ height: scale(711, Vertical) - scale(90, Vertical) - scale(30, Vertical) - scale(400 * (IMAGE_SIZE_HEIGHT_POST / IMAGE_SIZE_WITDH_POST), Horizontal) }}>
                     {settings.map(filter => (
                         <Filter
                             ref={this.sliderRef[filter.name]}
@@ -270,7 +270,7 @@ export default class EditImage extends Component {
 const styles = StyleSheet.create({
     container: { backgroundColor: '#9E9E9E' },
     content: { marginTop: 20, marginHorizontal: 20 },
-    button: { marginVertical: 20, borderRadius: 0 },
+    button: { marginVertical: 20, borderRadius: 0, height: scale(30, Vertical) },
     presetArea: {
         height: scale(90, Vertical),
         backgroundColor: 'white'
@@ -285,5 +285,5 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 10,
         borderBottomLeftRadius: 15
     },
-    editArea: { height: scale(230, Vertical) }
+    editArea: { height: scale(90, Vertical) }
 });

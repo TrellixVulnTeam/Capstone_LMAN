@@ -49,7 +49,9 @@ namespace SOFA_API.Common
         public const int NOTIFICATION_TYPE_RATE = 3;
         public const int NOTIFICATION_TYPE_FOLLOW = 4;
         public const int NOTIFICATION_TYPE_INVALID_IMAGE = 5;
-        public const int NOTIFICATION_TYPE_FEEDBACK = 5;
+        public const int NOTIFICATION_TYPE_FEEDBACK = 6;
+        public const int NOTIFICATION_TYPE_APPROVE_SUPPORT = 7;
+        public const int NOTIFICATION_TYPE_REJECT_SUPPORT = 8;
 
         public const string NOTIFICATION_CONTENT_LIKE = "đã thích bài đăng của bạn";
         public const string NOTIFICATION_CONTENT_COMMENT = "đã bình luận về bài đăng của bạn";
@@ -57,6 +59,9 @@ namespace SOFA_API.Common
         public const string NOTIFICATION_CONTENT_FOLLOW = "đã theo dõi bạn";
         public const string NOTIFICATION_CONTENT_INVALID_IMAGE = "Hình ảnh bạn vừa tải lên có nội dung không phù hợp! Mọi người sẽ không thể nhìn thầy bài viết này!";
         public const string NOTIFICATION_CONTENT_FEEDBACK = "Feedback của bạn đã được ghi nhận, cảm ơn bạn đã đóng góp cho SOFA";
+        public const string NOTIFICATION_CONTENT_APPROVE_FASHIONISTA_SUPPORT = "Yêu cầu trở thành Fashionista của bạn đã được chấp nhận";
+        public const string NOTIFICATION_CONTENT_REJECT_FASHIONISTA_SUPPORT = "Yêu cầu trở thành Fashionista của bạn đã bị từ chối";
+        public const string NOTIFICATION_CONTENT_REJECT_LOCKACCOUNT_SUPPORT = "Yêu cầu khóa tài khoản của bạn đã bị từ chối";
 
         public const int POST_TYPE_NORMAL = 0;
         public const int POST_TYPE_PRODUCT = 1;
@@ -64,5 +69,12 @@ namespace SOFA_API.Common
         public const int REPORT_TYPE_POST = 1;
         public const int REPORT_TYPE_USER = 2;
         public const int REPORT_TYPE_COMMENT = 3;
+
+        public const int SUPPORT_STATUS_APPROVE = 1;
+        public const int SUPPORT_STATUS_PENDING = 2;
+        public const int SUPPORT_STATUS_REJECT = 3;
+
+        public const int SUPPORT_TYPE_FASHIONISTA = 1;
+        public const int SUPPORT_TYPE_LOCKACCOUNT = 2;
     }
 }

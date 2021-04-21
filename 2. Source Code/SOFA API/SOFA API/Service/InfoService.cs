@@ -49,6 +49,48 @@ namespace SOFA_API.Service
 
             return infoViewModelOut;
         }
+
+        internal InfoViewModelOut Delete(int infoID, int userID)
+        {
+            InfoViewModelOut infoViewModelOut = new InfoViewModelOut();
+            try
+            {
+                Info info = InfoDAO.Instance.GetInfoByID(infoID);
+                if (info != null && info.ID > 0)
+                {
+                    if (info.AccountID == userID)
+                    {
+                        int res = InfoDAO.Instance.DeleteInfoByID(infoID);
+                        if (res > 0)
+                        {
+                            infoViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                        }
+                        else
+                        {
+                            infoViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                        }
+                    }
+                    else
+                    {
+                        infoViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                        infoViewModelOut.ErrorMessage = MessageUtils.ERROR_DONT_HAVE_PERMISSION;
+                    }
+                }
+                else
+                {
+                    infoViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                infoViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                infoViewModelOut.ErrorMessage = e.ToString();
+            }
+
+            return infoViewModelOut;
+        }
+
         /// <summary>
         /// Service of get info of user
         /// </summary>

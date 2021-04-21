@@ -121,13 +121,45 @@ namespace SOFA_API.DAO
             return list;
         }
 
-        public int SetUserFashionistaRequest(int userId)
+        public int SetUserFashionistaRequest(int requestId, int userId)
         {
             int result = 0;
             try
             {
-                string sql = "EXEc [dbo].[SetUserIsFashionista] @userId";
-                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { userId });
+                string sql = "EXEc [dbo].[SetUserIsFashionista] @RequestId , @userId";
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { requestId, userId });
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+            return result;
+        }
+
+        public int SetUserLockAccountRequest(int requestId, int userId)
+        {
+            int result = 0;
+            try
+            {
+                string sql = "EXEc [dbo].[SetUserLockAcount] @RequestId , @userId";
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { requestId, userId });
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+            return result;
+        }
+
+        public int RejectSupportRequest(int requestId)
+        {
+            int result = 0;
+            try
+            {
+                string sql = "EXEc [dbo].[RejectSupportRequest] @RequestId";
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { requestId});
             }
             catch (Exception ex)
             {
