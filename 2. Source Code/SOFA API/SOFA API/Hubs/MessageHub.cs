@@ -9,15 +9,15 @@ namespace SOFA_API.Hubs
 {
     public class MessageHub : Hub
     {
-        public Task OnlineChat(int userID)
+        public async Task OnlineChat(int userID)
         {
             Session.addUserActive(userID);
-            return Clients.All.SendAsync("ChangeStatus", Session.ListUserActive);
+            await Clients.All.SendAsync("ChangeStatus", Session.ListUserActive);
         }
-        public Task OfflineChat(int userID)
+        public async Task OfflineChat(int userID)
         {
             Session.removeUserActive(userID);
-            return Clients.All.SendAsync("ChangeStatus", Session.ListUserActive);
+            await Clients.All.SendAsync("ChangeStatus", Session.ListUserActive);
         }
     }
 }
