@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using SOFA_API.Common;
 using SOFA_API.DAO;
+using SOFA_API.Hubs;
 using SOFA_API.Service;
 using SOFA_API.ViewModel.Balance;
+using SOFA_API.ViewModel.Notification;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,10 +19,16 @@ namespace SOFA_API.Controllers
     [ApiController]
     public class BalanceController : ControllerBase
     {
-       /// <summary>
-       /// Get Balance By Id
-       /// </summary>
-       /// <returns></returns>
+
+        protected readonly IHubContext<NotificationHub> notificationHub;
+        public BalanceController([NotNull] IHubContext<NotificationHub> notificationHub)
+        {
+            this.notificationHub = notificationHub;
+        }
+        /// <summary>
+        /// Get Balance By Id
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult GetBalance()
         {
@@ -54,6 +65,14 @@ namespace SOFA_API.Controllers
         {
             topUp.Description = "Topup by admin";
             TopUpAccountModelOut topUpAccountModelOut = BalanceService.Instance.topUpAccount(topUp);
+            if (topUpAccountModelOut.Code == Const.REQUEST_CODE_SUCCESSFULLY)
+            {
+                //notification
+                NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_TOPUP_ACCOUNT,
+                    Const.NOTIFICATION_CONTENT_TOPUP_ACCOUNT + topUp.Amount + "vnđ", 0, topUp.AccountId);
+                NotificationViewModelOut notiModelOut = NotificationService.Instance.CreatedNotificationForSupportRequest(modelIn);
+                notificationHub.Clients.User(topUp.AccountId.ToString()).SendAsync("NewNotification", notiModelOut);
+            }
             return Ok(topUpAccountModelOut);
         }
 
