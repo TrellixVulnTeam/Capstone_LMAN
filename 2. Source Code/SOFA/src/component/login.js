@@ -12,6 +12,7 @@ import NotificationWSS from '../service/NotificationWSS';
 import MessageWSS from '../service/messageWSS';
 import * as signalR from '@microsoft/signalr';
 import CheckBox from '@react-native-community/checkbox';
+import * as OnlineService from '../service/onlineService';
 
 export default class Login extends Component {
     constructor(props) {
@@ -57,7 +58,11 @@ export default class Login extends Component {
             if (result != null) {
                 if(this.state.rememberMe == true){
                     var user = JSON.parse(result);
-                    this.setState({username: user.username, password: user.password})
+                    if(user.password){
+                        this.setState({username: user.username, password: user.password})
+                    } else {
+                        this.setState({rememberMe: false})
+                    }
                 }
             }
         })
@@ -135,7 +140,7 @@ export default class Login extends Component {
                                                 .withAutomaticReconnect()
                                                 .build());
                                             messInstance.pushNotification();
-
+                                            OnlineService.online();
                                             this.props.navigation.navigate('Intro');
                                             this.props.navigation.goBack();
                                         })
@@ -196,7 +201,7 @@ export default class Login extends Component {
                                                 .withAutomaticReconnect()
                                                 .build());
                                             messInstance.pushNotification();
-
+                                            OnlineService.online();
                                             this.props.navigation.navigate('Intro');
                                             this.props.navigation.goBack();
                                         });
