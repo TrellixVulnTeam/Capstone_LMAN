@@ -49,7 +49,7 @@ namespace SOFA_API.ViewModel.Conversation
             this.ChatWithLastName = row["ChatWithLastName"].ToString();
             this.ChatWithAvatarUri = row["ChatWithAvatarUri"].ToString();
             this.ChatWithAvatar = row["ChatWithAvatarUri"].ToString();
-            this.IsReaded = Convert.IsDBNull(row["IsRead"]) ? false : true;
+            this.IsReaded = Convert.IsDBNull(row["IsRead"]) ? false : (bool)row["IsRead"];
 
         }
     }
