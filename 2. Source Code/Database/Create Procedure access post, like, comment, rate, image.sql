@@ -15,6 +15,25 @@ BEGIN
 END
 GO
 
+DROP PROC IF EXISTS GetAllPublicPostOfFashionista
+GO
+CREATE PROC GetAllPublicPostOfFashionista
+@page INT, @rowsOfPage INT
+AS
+BEGIN
+	SELECT * FROM dbo.Post
+	INNER JOIN dbo.Profile ON AccountPost=AccountId AND IsFashionista=1
+	WHERE PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public') AND IsVerified = 1
+	ORDER BY [Time] DESC
+	OFFSET (@page-1)*@rowsOfPage ROWS
+	FETCH NEXT @rowsOfPage ROWS ONLY
+END
+GO
+
+EXEC dbo.GetAllPublicPostOfFashionista @page = 1,      -- int
+                                       @rowsOfPage = 10 -- int
+SELECT * FROM dbo.Image WHERE PostId = 98
+
 DROP PROC IF EXISTS GetPostByInfoID
 GO
 CREATE PROC GetPostByInfoID
