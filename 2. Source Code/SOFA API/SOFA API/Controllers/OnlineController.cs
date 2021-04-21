@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using SOFA_API.Common;
 using SOFA_API.Hubs;
 using SOFA_API.ViewModel.BaseModel;
+using SOFA_API.ViewModel.Online;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -21,6 +22,15 @@ namespace SOFA_API.Controllers
         public OnlineController([NotNull] IHubContext<MessageHub> messageHub)
         {
             this.messageHub = messageHub;
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetListOnline()
+        {
+
+            OnlineViewModelOut baseModelOut = new OnlineViewModelOut();
+            baseModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+            baseModelOut.ListActiveAccount = Session.ListUserActive;
+            return Ok(baseModelOut);
         }
         [HttpGet("Online")]
         public async Task<ActionResult> Online()
