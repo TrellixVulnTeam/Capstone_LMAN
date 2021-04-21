@@ -57,12 +57,14 @@ export default class Newsfeed extends Component {
 
     postMenu = createRef();
 
-    loadUnreadNotification() {
+    loadUnreadNotification(isStartConnection) {
         NotificationService.getUnreadNotification(1, 100)
             .then((response) => {
                 this.setState({ numberUnreadNotification: response.listNoti.length });
                 PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
-                this.notificationConnection();
+                if (isStartConnection) {
+                    this.notificationConnection();
+                }
             })
             .catch((reason) => {
                 console.log(reason);
@@ -72,7 +74,9 @@ export default class Newsfeed extends Component {
                 if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.setState({ numberUnreadMessage: response.numberUnreadMessage });
                     PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
-                    this.messageConnectionHub();
+                    if (isStartConnection) {
+                        this.messageConnectionHub();
+                    }
                 }
             })
             .catch(reason => {
@@ -199,32 +203,34 @@ export default class Newsfeed extends Component {
     componentDidMount() {
         this.checkLoginToken();
         this.getAllPost(1);
-        this.loadUnreadNotification();
+        this.loadUnreadNotification(true);
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.checkLoginToken();
-            this.loadUnreadNotification();
+            this.loadUnreadNotification(false);
             if (this.props.route && this.props.route.params && (this.props.route.params.preScreen == 'CreatePost' || this.props.route.params.isRefresh)) {
                 this.getAllPost(1);
             }
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
-            if (this.connection) {
-                this.connection.stop();
-                this.connection = undefined;
-            }
-            if (this.messageConnection) {
-                this.messageConnection.stop();
-                this.messageConnection = undefined;
-            }
+            // if (this.connection) {
+            //     this.connection.stop();
+            //     this.connection = undefined;
+            // }
+            // if (this.messageConnection) {
+            //     this.messageConnection.stop();
+            //     this.messageConnection = undefined;
+            // }
         });
     }
 
     componentWillUnmount() {
         if (this.connection) {
             this.connection.stop();
+            this.connection = undefined;
         }
         if (this.messageConnection) {
             this.messageConnection.stop();
+            this.messageConnection = undefined;
         }
     }
 
