@@ -357,6 +357,7 @@ export default class Conversation extends Component {
                                 index={index}
                                 onPressMessageItem={(index) => this.onPressMessageItem(index)}
                                 nextIndex={index < listMessage.length - 1 ? listMessage[index + 1] : { fromAccountId: 0 }}
+                                preIndex={index > 0 ? listMessage[index - 1] : { fromAccountId: 0 }}
                                 onPressImage={(url) => this.setState({ currentShowImage: url, isShowModalImage: true })}
                                 onLongPress={() => {
                                     this.setState({ isShowMessageMenu: true, selectedMessage: item });
@@ -463,20 +464,6 @@ export default class Conversation extends Component {
                                 }}>
                                 <Text style={{ color: 'white' }}>Xóa tin nhắn</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ isShowMessageMenu: false })
-                                }}
-                                style={{
-                                    backgroundColor: '#AAAAAA',
-                                    width: scale(300, Horizontal),
-                                    height: scale(35, Vertical),
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    borderRadius: 10
-                                }}>
-                                <Text style={{ color: 'white' }}>Hủy</Text>
-                            </TouchableOpacity>
                         </View>
                     </TouchableOpacity>
                 </Modal>
@@ -484,28 +471,30 @@ export default class Conversation extends Component {
         )
     }
 }
-const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem, nextIndex, onPressImage, onLongPress }) => {
-    let disTime = diffTime(data.time, nextIndex.time);
-    disTime = disTime ? disTime : 100000000;
+const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem, nextIndex, preIndex, onPressImage, onLongPress }) => {
+    let disTimeNext = diffTime(data.time, nextIndex.time);
+    disTimeNext = disTimeNext ? disTimeNext : 100000000;
+    let disTimePre = diffTime(data.time, preIndex.time);
+    disTimePre = disTimePre ? disTimePre : 100000000;
     return (
         <View style={[styles.messageItemBounder,
-        (nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? styles.separator : null
+        (nextIndex.fromAccountId != data.fromAccountId || disTimeNext > 60000) ? styles.separator : null
         ]}>
             {data.isShowDetail ? (
                 <View style={[styles.messageMoreDetailBounder]}>
                     <Text style={[styles.messageMoreDetailTime]}>{getMessageTime(data.time)}</Text>
                 </View>) : (<View></View>)}
             <View style={[data.isMyMessage ? styles.messageItemSend : styles.messageItemReceive]}>
-                {!data.isMyMessage && (nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? (<View>
+                {!data.isMyMessage && (nextIndex.fromAccountId != data.fromAccountId || disTimeNext > 60000) ? (<View>
                     <Image
-                        source={{ uri: Const.assets_domain + friendAccount.avatarUri }}
+                        source={friendAccount.avatarUri && friendAccount.avatarUri.length > 0 ? { uri: Const.assets_domain + friendAccount.avatarUri } : AVATAR}
                         style={[styles.messageItemFriendAvatar]}
                     />
                 </View>) : (<View></View>)}
                 <View style={[styles.messageItemContentBounder]}>
                     {data.imageUrl ? (
                         <View
-                            style={[data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva]}>
+                            style={[data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTimeNext > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva]}>
                             <TouchableWithoutFeedback
                                 onLongPress={() => onLongPress()}
                                 onPress={() => onPressImage(data.imageUrl)}
@@ -525,7 +514,12 @@ const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem,
                             <View style={[
                                 data.isMyMessage ? styles.messageSendContentBounder : styles.messageReceiveContentBounder,
                                 { backgroundColor: bounderColor },
-                                data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva
+                                data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTimeNext > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva,
+                                data.isMyMessage && (!nextIndex.isMyMessage || disTimeNext > 60000) ? styles.messageSendContentBounderEnd : {},
+                                data.isMyMessage && (!preIndex.isMyMessage || disTimePre > 60000) ? styles.messageSendContentBounderStart : {},
+                                !data.isMyMessage && (nextIndex.isMyMessage || disTimeNext > 60000) ? styles.messageReceiveContentBounderEnd : {},
+                                !data.isMyMessage && (preIndex.isMyMessage || disTimePre > 60000) ? styles.messageReceiveContentBounderStart : {},
+
                             ]}>
                                 <Text style={[styles.messageContentText]}>{data.content}</Text>
                             </View>
@@ -615,20 +609,35 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         maxWidth: scale(280, Horizontal),
         minHeight: scale(30, Vertical),
-        borderRadius: 25,
+        borderTopLeftRadius: 25,
+        borderBottomLeftRadius: 25,
         justifyContent: 'center',
         paddingHorizontal: scale(10, Horizontal),
         paddingVertical: scale(6, Vertical),
         marginLeft: scale(5, Horizontal)
     },
+    messageSendContentBounderEnd: {
+        borderTopRightRadius: 25,
+    },
+    messageSendContentBounderStart: {
+        borderBottomRightRadius: 25,
+    },
+
     messageReceiveContentBounder: {
         alignSelf: 'flex-start',
         maxWidth: scale(280, Horizontal),
         minHeight: scale(30, Vertical),
-        borderRadius: 25,
+        borderTopRightRadius: 25,
+        borderBottomRightRadius: 25,
         justifyContent: 'center',
         paddingHorizontal: scale(10, Horizontal),
         paddingVertical: scale(10, Vertical),
+    },
+    messageReceiveContentBounderStart: {
+        borderBottomLeftRadius: 25
+    },
+    messageReceiveContentBounderEnd: {
+        borderTopLeftRadius: 25
     },
     messageReceiveContentBounderWithAva: {
         marginLeft: scale(5, Horizontal)

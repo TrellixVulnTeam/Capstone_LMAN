@@ -279,7 +279,7 @@ const ConversationItem = ({ data, navigation, deleteConversation, listOnline }) 
                 </View>
                 <View style={[styles.conversationItemContent]}>
                     <Text style={[styles.conversationItemContentUserName, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'white' } : { color: 'black' }]}>{data.chatWithFirstName + ' ' + data.chatWithLastName}</Text>
-                    <Text style={[styles.conversationItemContentLastMess, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'white' } : { color: 'gray' }]}>{Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')}</Text>
+                    <Text style={[styles.conversationItemContentLastMess, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'white' } : { color: 'gray' }]}>{data.lastMessage.length>0? (Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')):'Hình ảnh'}</Text>
                 </View>
                 <Text style={[styles.conversationItemUpdateTime]}>{calculateTime(data.timeUpdate) + ' trước'}</Text>
             </TouchableOpacity>
