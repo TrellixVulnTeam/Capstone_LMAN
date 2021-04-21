@@ -11,8 +11,15 @@ namespace SOFA_API.Hubs
     {
         public async Task OnlineChat(int userID)
         {
-            Session.addUserActive(userID);
-            await Clients.All.SendAsync("ChangeStatus", Session.ListUserActive);
+            try
+            {
+                Session.addUserActive(userID);
+                await Clients.All.SendAsync("ChangeStatus", Session.ListUserActive);
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
         }
         public async Task OfflineChat(int userID)
         {
