@@ -178,13 +178,16 @@ export default class Conversation extends Component {
 
     sendMessage() {
         const { friendAccount, listMessage, content, imageBase64 } = this.state;
-        if (content.length > 0 || imageBase64.length > 0) {
-            MessageService.sendMessage(friendAccount.accountID, content, imageBase64, (listMessage[0] && listMessage[0].conversationId) ? listMessage[0].conversationId : 0)
+        let contentTemp = content;
+        let imageBase64Temp = imageBase64;
+        this.setState({ content: '', imageBase64: '' });
+        if (contentTemp.length > 0 || imageBase64Temp.length > 0) {
+            MessageService.sendMessage(friendAccount.accountID, contentTemp, imageBase64Temp, (listMessage[0] && listMessage[0].conversationId) ? listMessage[0].conversationId : 0)
                 .then(response => {
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                         let messageRes = response;
                         messageRes.isMyMessage = true;
-                        this.setState({ listMessage: [response, ...listMessage], content: '', imageBase64: '' });
+                        this.setState({ listMessage: [response, ...listMessage] });
                     } else {
                         ToastAndroid.show('Gửi tin nhắn bị lỗi!', ToastAndroid.SHORT);
                     }
@@ -198,6 +201,7 @@ export default class Conversation extends Component {
                         this.setState({ isLoading: false, isSelectImage: true })
                     }
                 })
+
         }
 
     }
@@ -336,7 +340,7 @@ export default class Conversation extends Component {
                         </View>
                         <View style={[styles.headerChatFriendInfo]}>
                             <Text style={[styles.headerChatFriendInfoName]}>{friendAccount.firstName + ' ' + friendAccount.lastName}</Text>
-                            <Text style={[styles.headerChatFriendInfoActiveTime]}>{'3 phút trước'}</Text>
+                            <Text style={[styles.headerChatFriendInfoActiveTime]}>{listOnline.indexOf(friendAccount.accountID) >= 0 ? 'Online' : 'Offline'}</Text>
                         </View>
                     </TouchableOpacity>
                     <View style={[styles.headerActionBounder]}>

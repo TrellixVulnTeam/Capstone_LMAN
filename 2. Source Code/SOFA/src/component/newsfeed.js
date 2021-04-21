@@ -455,7 +455,7 @@ export default class Newsfeed extends Component {
         this.setState({ isShowImage: true });
     }
 
-    Article = ({ data }) => {
+    Article = ({ data, }) => {
         const shadowOpt = {
             width: scale(380, Horizontal),
             height: scale(380, Horizontal),
@@ -469,8 +469,13 @@ export default class Newsfeed extends Component {
         };
         let post = data;
         return (
-            <View style={Style.newsfeed.Article}>
-                <View style={Style.common.flexRow}>
+            <View
+                style={Style.newsfeed.Article}>
+                <TouchableOpacity
+                    onPressOut={() =>
+                        this.props.navigation.navigate('PostDetail', { postID: post.id })
+                    }
+                    style={Style.common.flexRow}>
                     <TouchableWithoutFeedback
                         onPress={() => this.navigateProfile(post.accountPost)}>
                         <Image
@@ -509,7 +514,7 @@ export default class Newsfeed extends Component {
                         size={30}
                         color={'white'}
                     />
-                </View>
+                </TouchableOpacity>
                 <View style={Style.newsfeed.ArticleCaption}>
                     <Text style={Style.newsfeed.ArticleCaptionContent}>
                         {post.content}

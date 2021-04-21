@@ -26,7 +26,7 @@ import NotificationWSS from '../service/NotificationWSS';
 import MessageWSS from '../service/messageWSS';
 import PushNotification from 'react-native-push-notification';
 import Session from '../common/session';
-
+import * as OnlineService from '../service/onlineService';
 export default class Profile extends Component {
     constructor(props) {
         super(props);
@@ -110,6 +110,8 @@ export default class Profile extends Component {
                         Session.getInstance().currentChatUser = 0;
                         Session.getInstance().settings = {};
                         AsyncStorage.removeItem('token');
+                        AsyncStorage.removeItem('settings');
+                        OnlineService.offline();
                         let notificationWSS = NotificationWSS.getInstance(false);
                         if (notificationWSS.getConnection()) {
                             notificationWSS.getConnection().stop();
