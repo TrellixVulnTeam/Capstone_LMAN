@@ -110,7 +110,6 @@ export default class Profile extends Component {
                         Session.getInstance().currentChatUser = 0;
                         Session.getInstance().settings = {};
                         AsyncStorage.removeItem('token');
-                        AsyncStorage.removeItem('user');
                         let notificationWSS = NotificationWSS.getInstance(false);
                         if (notificationWSS.getConnection()) {
                             notificationWSS.getConnection().stop();

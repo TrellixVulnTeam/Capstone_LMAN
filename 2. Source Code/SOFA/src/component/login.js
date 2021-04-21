@@ -11,6 +11,7 @@ import { GoogleSignin } from '@react-native-community/google-signin'
 import NotificationWSS from '../service/NotificationWSS';
 import MessageWSS from '../service/messageWSS';
 import * as signalR from '@microsoft/signalr';
+import CheckBox from '@react-native-community/checkbox';
 
 export default class Login extends Component {
     constructor(props) {
@@ -21,6 +22,7 @@ export default class Login extends Component {
             isLoading: true,
             isValidUser: true,
             errMsg: 'Error',
+            rememberMe: false
         }
 
     }
@@ -39,12 +41,33 @@ export default class Login extends Component {
     };
 
     _getToken = async () => {
+        await AsyncStorage.getItem('isRememberMe').then(res => {
+            if (res != null) {
+                if(res == "false"){
+                    this.setState({rememberMe : false})
+                } else {
+                    this.setState({rememberMe : true})
+                }
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+        await AsyncStorage.getItem('user').then(result => {
+            if (result != null) {
+                if(this.state.rememberMe == true){
+                    var user = JSON.parse(result);
+                    this.setState({username: user.username, password: user.password})
+                }
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
         await AsyncStorage.getItem('token')
             .then(value => {
                 if (value != null) {
                     this.props.navigation.navigate('Intro');
-                    // AsyncStorage.clear();
-                    // this.setState({ isLoading: false })
                 }
                 else {
                     this.setState({ isLoading: false })
@@ -84,36 +107,38 @@ export default class Login extends Component {
             Request.Post(url, header, data)
                 .then(response => {
                     if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                        const user = { username: response.username, role: response.roleName, email: response.email, phone: response.phone };
+                        const user = { username: response.username, role: response.roleName, email: response.email, phone: response.phone, password: password };
                         this.storeData('token', response.token)
                             .then(res => {
                                 this.storeData('user', user)
                                     .then(res => {
-                                        this.setState({ isLoading: false });
+                                        this.storeData('isRememberMe', this.state.rememberMe).then(result => {
+                                            this.setState({ isLoading: false });
 
-                                        let instance = NotificationWSS.getInstance(false);
-                                        instance.setConnection(new signalR.HubConnectionBuilder()
-                                            .withUrl(Const.domain + 'notification', {
-                                                accessTokenFactory: () => response.token,
-                                                skipNegotiation: true,
-                                                transport: signalR.HttpTransportType.WebSockets
-                                            })
-                                            .withAutomaticReconnect()
-                                            .build());
-                                        instance.pushNotification();
-                                        let messInstance = MessageWSS.getInstance(false);
-                                        messInstance.setConnection(new signalR.HubConnectionBuilder()
-                                            .withUrl(Const.domain + 'message', {
-                                                accessTokenFactory: () => response.token,
-                                                skipNegotiation: true,
-                                                transport: signalR.HttpTransportType.WebSockets
-                                            })
-                                            .withAutomaticReconnect()
-                                            .build());
-                                        messInstance.pushNotification();
+                                            let instance = NotificationWSS.getInstance(false);
+                                            instance.setConnection(new signalR.HubConnectionBuilder()
+                                                .withUrl(Const.domain + 'notification', {
+                                                    accessTokenFactory: () => response.token,
+                                                    skipNegotiation: true,
+                                                    transport: signalR.HttpTransportType.WebSockets
+                                                })
+                                                .withAutomaticReconnect()
+                                                .build());
+                                            instance.pushNotification();
+                                            let messInstance = MessageWSS.getInstance(false);
+                                            messInstance.setConnection(new signalR.HubConnectionBuilder()
+                                                .withUrl(Const.domain + 'message', {
+                                                    accessTokenFactory: () => response.token,
+                                                    skipNegotiation: true,
+                                                    transport: signalR.HttpTransportType.WebSockets
+                                                })
+                                                .withAutomaticReconnect()
+                                                .build());
+                                            messInstance.pushNotification();
 
-                                        this.props.navigation.navigate('Intro');
-                                        this.props.navigation.goBack();
+                                            this.props.navigation.navigate('Intro');
+                                            this.props.navigation.goBack();
+                                        })
                                     });
                             });
                     } else {
@@ -151,29 +176,29 @@ export default class Login extends Component {
                                         .then(res => {
                                             this.setState({ isLoading: false });
 
-                                        let instance = NotificationWSS.getInstance(false);
-                                        instance.setConnection(new signalR.HubConnectionBuilder()
-                                            .withUrl(Const.domain + 'notification', {
-                                                accessTokenFactory: () => response.token,
-                                                skipNegotiation: true,
-                                                transport: signalR.HttpTransportType.WebSockets
-                                            })
-                                            .withAutomaticReconnect()
-                                            .build());
-                                        instance.pushNotification();
-                                        let messInstance = MessageWSS.getInstance(false);
-                                        messInstance.setConnection(new signalR.HubConnectionBuilder()
-                                            .withUrl(Const.domain + 'message', {
-                                                accessTokenFactory: () => response.token,
-                                                skipNegotiation: true,
-                                                transport: signalR.HttpTransportType.WebSockets
-                                            })
-                                            .withAutomaticReconnect()
-                                            .build());
-                                        messInstance.pushNotification();
+                                            let instance = NotificationWSS.getInstance(false);
+                                            instance.setConnection(new signalR.HubConnectionBuilder()
+                                                .withUrl(Const.domain + 'notification', {
+                                                    accessTokenFactory: () => response.token,
+                                                    skipNegotiation: true,
+                                                    transport: signalR.HttpTransportType.WebSockets
+                                                })
+                                                .withAutomaticReconnect()
+                                                .build());
+                                            instance.pushNotification();
+                                            let messInstance = MessageWSS.getInstance(false);
+                                            messInstance.setConnection(new signalR.HubConnectionBuilder()
+                                                .withUrl(Const.domain + 'message', {
+                                                    accessTokenFactory: () => response.token,
+                                                    skipNegotiation: true,
+                                                    transport: signalR.HttpTransportType.WebSockets
+                                                })
+                                                .withAutomaticReconnect()
+                                                .build());
+                                            messInstance.pushNotification();
 
-                                        this.props.navigation.navigate('Intro');
-                                        this.props.navigation.goBack();
+                                            this.props.navigation.navigate('Intro');
+                                            this.props.navigation.goBack();
                                         });
                                 });
                         } else {
@@ -199,6 +224,10 @@ export default class Login extends Component {
         } catch (error) {
             console.log(error);
         }
+    }
+    onRememberMe() {
+        this.setState({ rememberMe: !this.state.rememberMe })
+
     }
 
     render() {
@@ -227,13 +256,15 @@ export default class Login extends Component {
                                 <View style={styles.inputView} >
                                     <Text style={styles.inputTitle}>Tài khoản</Text>
                                     <TextInput
+                                        value={this.state.username}
                                         style={styles.inputText}
                                         placeholder='Tài khoản'
-                                        onChangeText={text => this.setState({ username: text, isValidUser: !this.stateisValidUser })} />
+                                        onChangeText={text => this.setState({ username: text, isValidUser: !this.stateisValidUser })}/>
                                 </View>
                                 <View style={styles.inputView} >
                                     <Text style={styles.inputTitle}>Mật khẩu</Text>
                                     <TextInput
+                                        value={this.state.password}
                                         secureTextEntry
                                         placeholder='Mật khẩu'
                                         style={styles.inputText}
@@ -245,7 +276,11 @@ export default class Login extends Component {
                                     <Text style={styles.errMsg}>{this.state.errMsg}</Text>
                                 </Animatable.View>
                             }
-                            <TouchableOpacity >
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: Utils.scale(35, Const.Horizontal) }}>
+                                <CheckBox value={this.state.rememberMe} onChange={() => this.onRememberMe()} tintColors={{ true: '#ff8683', false: '#C0C0C0' }}></CheckBox>
+                                <Text>Nhớ mật khẩu</Text>
+                            </View>
+                            <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 0 }}>
                                 <Text style={styles.forgot} onPress={() => navigate('PhoneRegister', { isResetPassword: true })}>Quên mật khẩu?</Text>
                             </TouchableOpacity>
                             <View style={styles.loginContainer}>
@@ -270,7 +305,7 @@ export default class Login extends Component {
                                     />
                                 </TouchableOpacity>
                             </View>
-                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignSelf: 'center', marginTop: Utils.scale(120, Const.Horizontal) }}>
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignSelf: 'center', marginTop: Utils.scale(100, Const.Horizontal) }}>
                                 <Text style={{ opacity: Utils.scale(0.4, Const.Horizontal), fontSize: Utils.scale(14, Const.Horizontal) }}>
                                     Bạn chưa có tài khoản?
                         </Text>
@@ -335,10 +370,9 @@ const styles = StyleSheet.create({
     },
     forgot: {
         color: "#ff8683",
-        textAlign: 'right',
         fontWeight: 'bold',
         paddingRight: Utils.scale(40, Const.Horizontal),
-        fontSize: Utils.scale(12, Const.Horizontal)
+        fontSize: Utils.scale(12, Const.Horizontal),
     },
     loginContainer: {
         marginTop: Utils.scale(30, Const.Horizontal),
