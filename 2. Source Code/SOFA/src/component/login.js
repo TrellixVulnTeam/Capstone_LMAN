@@ -150,8 +150,30 @@ export default class Login extends Component {
                                     this.storeData('user', user)
                                         .then(res => {
                                             this.setState({ isLoading: false });
-                                            this.props.navigation.navigate('Intro');
-                                            this.props.navigation.goBack();
+
+                                        let instance = NotificationWSS.getInstance(false);
+                                        instance.setConnection(new signalR.HubConnectionBuilder()
+                                            .withUrl(Const.domain + 'notification', {
+                                                accessTokenFactory: () => response.token,
+                                                skipNegotiation: true,
+                                                transport: signalR.HttpTransportType.WebSockets
+                                            })
+                                            .withAutomaticReconnect()
+                                            .build());
+                                        instance.pushNotification();
+                                        let messInstance = MessageWSS.getInstance(false);
+                                        messInstance.setConnection(new signalR.HubConnectionBuilder()
+                                            .withUrl(Const.domain + 'message', {
+                                                accessTokenFactory: () => response.token,
+                                                skipNegotiation: true,
+                                                transport: signalR.HttpTransportType.WebSockets
+                                            })
+                                            .withAutomaticReconnect()
+                                            .build());
+                                        messInstance.pushNotification();
+
+                                        this.props.navigation.navigate('Intro');
+                                        this.props.navigation.goBack();
                                         });
                                 });
                         } else {
