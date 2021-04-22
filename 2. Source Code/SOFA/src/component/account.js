@@ -24,6 +24,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import { acc, color } from 'react-native-reanimated';
 import NotificationWSS from '../service/NotificationWSS';
 import MessageWSS from '../service/messageWSS';
+import OnlineWSS from '../service/onlineWSS';
 import PushNotification from 'react-native-push-notification';
 import Session from '../common/session';
 import * as OnlineService from '../service/onlineService';
@@ -111,7 +112,6 @@ export default class Profile extends Component {
                         Session.getInstance().settings = {};
                         AsyncStorage.removeItem('token');
                         AsyncStorage.removeItem('settings');
-                        OnlineService.offline();
                         let notificationWSS = NotificationWSS.getInstance(false);
                         if (notificationWSS.getConnection()) {
                             notificationWSS.getConnection().stop();
@@ -121,6 +121,10 @@ export default class Profile extends Component {
                         if (messageWSS.getConnection()) {
                             messageWSS.getConnection().stop();
                             PushNotification.setApplicationIconBadgeNumber(0)
+                        }
+                        let onlineWSS = OnlineWSS.getInstance(false);
+                        if (onlineWSS.getConnection()) {
+                            onlineWSS.getConnection().stop();
                         }
                         this.props.navigation.navigate('Login');
                     }

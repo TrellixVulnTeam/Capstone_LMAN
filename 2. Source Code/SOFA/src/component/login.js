@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { StackActions } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Utils from '../common/utils';
 import * as Const from '../common/const';
@@ -13,6 +14,7 @@ import MessageWSS from '../service/messageWSS';
 import * as signalR from '@microsoft/signalr';
 import CheckBox from '@react-native-community/checkbox';
 import * as OnlineService from '../service/onlineService';
+import OnlineWSS from '../service/onlineWSS';
 
 export default class Login extends Component {
     constructor(props) {
@@ -44,35 +46,39 @@ export default class Login extends Component {
     _getToken = async () => {
         await AsyncStorage.getItem('isRememberMe').then(res => {
             if (res != null) {
-                if(res == "false"){
-                    this.setState({rememberMe : false})
+                if (res == "false") {
+                    this.setState({ rememberMe: false })
                 } else {
-                    this.setState({rememberMe : true})
+                    this.setState({ rememberMe: true })
                 }
             }
         })
-        .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => {
+                console.log(error);
+            });
         await AsyncStorage.getItem('user').then(result => {
             if (result != null) {
-                if(this.state.rememberMe == true){
+                if (this.state.rememberMe == true) {
                     var user = JSON.parse(result);
-                    if(user.password){
-                        this.setState({username: user.username, password: user.password})
+                    if (user.password) {
+                        this.setState({ username: user.username, password: user.password })
                     } else {
-                        this.setState({rememberMe: false})
+                        this.setState({ rememberMe: false })
                     }
                 }
             }
         })
-        .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => {
+                console.log(error);
+            });
         await AsyncStorage.getItem('token')
             .then(value => {
                 if (value != null) {
-                    this.props.navigation.navigate('Intro');
+                    this.props.navigation.dispatch(
+                        StackActions.replace('Intro', {
+                            isRefreshing: false
+                        })
+                    )
                 }
                 else {
                     this.setState({ isLoading: false })
@@ -140,9 +146,22 @@ export default class Login extends Component {
                                                 .withAutomaticReconnect()
                                                 .build());
                                             messInstance.pushNotification();
-                                            OnlineService.online();
-                                            this.props.navigation.navigate('Intro');
-                                            this.props.navigation.goBack();
+                                            let onlineInstance = OnlineWSS.getInstance(false);
+                                            onlineInstance.setConnection(new signalR.HubConnectionBuilder()
+                                                .withUrl(Const.domain + 'message', {
+                                                    accessTokenFactory: () => response.token,
+                                                    skipNegotiation: true,
+                                                    transport: signalR.HttpTransportType.WebSockets
+                                                })
+                                                .withAutomaticReconnect()
+                                                .build());
+                                            onlineInstance.pushNotification();
+                                            this.props.navigation.dispatch(
+                                                StackActions.replace('Intro', {
+                                                    isRefreshing: false
+                                                })
+                                            )
+                                            // this.props.navigation.goBack();
                                         })
                                     });
                             });
@@ -201,9 +220,13 @@ export default class Login extends Component {
                                                 .withAutomaticReconnect()
                                                 .build());
                                             messInstance.pushNotification();
-                                            OnlineService.online();
-                                            this.props.navigation.navigate('Intro');
-                                            this.props.navigation.goBack();
+                                            // OnlineService.online();
+                                            this.props.navigation.dispatch(
+                                                StackActions.replace('Intro', {
+                                                    isRefreshing: false
+                                                })
+                                            )
+                                            // this.props.navigation.goBack();
                                         });
                                 });
                         } else {
@@ -264,7 +287,7 @@ export default class Login extends Component {
                                         value={this.state.username}
                                         style={styles.inputText}
                                         placeholder='Tài khoản'
-                                        onChangeText={text => this.setState({ username: text, isValidUser: !this.stateisValidUser })}/>
+                                        onChangeText={text => this.setState({ username: text, isValidUser: !this.stateisValidUser })} />
                                 </View>
                                 <View style={styles.inputView} >
                                     <Text style={styles.inputTitle}>Mật khẩu</Text>

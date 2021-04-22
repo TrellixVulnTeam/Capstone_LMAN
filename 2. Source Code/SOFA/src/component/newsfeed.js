@@ -31,6 +31,7 @@ import Session from "../common/session";
 
 import PostMenu from './postMenu';
 import PushNotification from "react-native-push-notification";
+import OnlineWSS from '../service/onlineWSS';
 
 const BadgedIcon = withBadge(1)(Icon);
 
@@ -135,12 +136,8 @@ export default class Newsfeed extends Component {
                 this.messageConnection
                     .start()
                     .then(() => {
+                        this.messageConnection.invoke('OfflineChat');
                         console.log('MessageWSS', 'Connected from Newsfeed');
-                        this.messageConnection.invoke('OnlineChat', account.accountID)
-                            .then(result => {
-                                console.log(result);
-                            })
-                            .catch(reason => console.log(reason));
                     })
                     .catch(function (err) {
                         return console.error(err.toString());
@@ -210,6 +207,10 @@ export default class Newsfeed extends Component {
         this.checkLoginToken();
         this.getAllPost(1);
         this.loadUnreadNotification(true);
+        let onlineWSS = OnlineWSS.getInstance(false);
+        if (onlineWSS.getConnection() && !onlineWSS.isStarted()) {
+            onlineWSS.pushNotification();
+        }
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.checkLoginToken();
             this.loadUnreadNotification(false);
@@ -235,9 +236,13 @@ export default class Newsfeed extends Component {
             this.connection = undefined;
         }
         if (this.messageConnection) {
-            this.messageConnection.invoke('OfflineChat', Session.getInstance().account.accountID);
             this.messageConnection.stop();
             this.messageConnection = undefined;
+        }
+        let onlineWSS = OnlineWSS.getInstance(false);
+        if (onlineWSS.getConnection()) {
+            onlineWSS.getConnection().stop();
+            onlineWSS.setStarted(false);
         }
     }
 

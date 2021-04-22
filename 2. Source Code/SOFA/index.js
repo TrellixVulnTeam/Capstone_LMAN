@@ -10,6 +10,7 @@ import { typography } from './utils/typography';
 import PushNotification from 'react-native-push-notification';
 import NotificationWSS from './src/service/NotificationWSS';
 import MessageWSS from './src/service/messageWSS';
+import OnlineWSS from './src/service/onlineWSS';
 import { requestPermission } from './src/common/utils';
 
 
@@ -99,5 +100,4 @@ PushNotification.channelExists('Tin nhắn', function (exists) {
 
 NotificationWSS.getInstance(false);
 MessageWSS.getInstance(false);
-
 AppRegistry.registerComponent(appName, () => Navigation);

@@ -36,6 +36,7 @@ export default class MessageWSS {
                         .withAutomaticReconnect()
                         .build();
                     this._connection.start().then(() => {
+                        this._connection.invoke('OfflineChat');
                         this._started = true;
                         console.log('Connected from MessageWSS.js');
                     }).catch(function (err) {
@@ -91,6 +92,7 @@ export default class MessageWSS {
         this._connection.start().then(() => {
             this._started = true;
             console.log('Connected from MessageWSS.js');
+            this._connection.invoke('OfflineChat');
         }).catch(function (err) {
             return console.error(err.toString());
         });
