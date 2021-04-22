@@ -34,6 +34,7 @@ export default class VoucherDetail extends Component {
   };
   getVoucherDetail() {
     const {voucherDetail} = this.state;
+    const { voucherID } = this.props.route.params;
     this.getData('token')
       .then((result) => {
         if (result) {
@@ -46,7 +47,7 @@ export default class VoucherDetail extends Component {
           };
           let url = Const.domain + 'api/Voucher/getVoucherDetailByAccount';
           let data = new FormData();
-          data.append('ID', 2);
+          data.append('ID', voucherID);
           Request.Post(url, header, data)
             .then((response) => {
               if (
