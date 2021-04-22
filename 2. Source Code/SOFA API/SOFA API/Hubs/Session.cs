@@ -36,7 +36,7 @@ namespace SOFA_API.Hubs
 
         public void AddConnection(int userID, string connectionID)
         {
-            Utils.Instance.SaveLog("Add " + userID + " - " + connectionID);
+            //Utils.Instance.SaveLog("Add " + userID + " - " + connectionID);
             if (ListConnection.ContainsKey(userID))
             {
                 List<string> connections = (List<string>)ListConnection[userID];
@@ -53,7 +53,7 @@ namespace SOFA_API.Hubs
         }
         public void RemoveConnection(int userID, string connectionID)
         {
-            Utils.Instance.SaveLog("Remove "+userID + " - " + connectionID);
+            //Utils.Instance.SaveLog("Remove "+userID + " - " + connectionID);
             if (ListConnection.ContainsKey(userID))
             {
                 List<string> connections = (List<string>)ListConnection[userID];
