@@ -36,7 +36,7 @@ namespace SOFA_API.Hubs
 
         public void AddConnection(int userID, string connectionID)
         {
-            Utils.Instance.SaveLog(userID + " - " + connectionID);
+            Utils.Instance.SaveLog("Add " + userID + " - " + connectionID);
             if (ListConnection.ContainsKey(userID))
             {
                 List<string> connections = (List<string>)ListConnection[userID];
@@ -69,7 +69,12 @@ namespace SOFA_API.Hubs
         }
         public List<int> GetListActive()
         {
-            return (List<int>)ListConnection.Keys;
+            List<int> list = new List<int>();
+            foreach (object item in ListConnection.Keys)
+            {
+                list.Add((int)item);
+            }
+            return list;
         }
 
     }
