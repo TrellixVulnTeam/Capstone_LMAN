@@ -12,7 +12,6 @@ namespace SOFA_API.Hubs
         public string GetUserId(HubConnectionContext connection)
         {
             var idClaim = connection.User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
-            Utils.Instance.SaveLog("User connect - Connection ID: " + idClaim.Value);
             string id = idClaim.Value;
             return id;
         }

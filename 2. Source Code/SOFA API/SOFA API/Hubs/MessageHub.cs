@@ -9,10 +9,11 @@ namespace SOFA_API.Hubs
 {
     public class MessageHub : Hub
     {
-        public async Task OnlineChat(int userID)
+        public async Task OnlineChat()
         {
             try
             {
+                int userID = Utils.Instance.GetUserID(Context.User.Claims);
                 Session.Instance.AddConnection(userID, Context.ConnectionId);
                 await Clients.All.SendAsync("ChangeStatus", Session.Instance.GetListActive());
             }
@@ -21,10 +22,11 @@ namespace SOFA_API.Hubs
                 Utils.Instance.SaveLog(e.ToString());
             }
         }
-        public async Task OfflineChat(int userID)
+        public async Task OfflineChat()
         {
             try
             {
+                int userID = Utils.Instance.GetUserID(Context.User.Claims);
                 Session.Instance.RemoveConnection(userID, Context.ConnectionId);
                 await Clients.All.SendAsync("ChangeStatus", Session.Instance.GetListActive());
             }
