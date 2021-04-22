@@ -192,9 +192,10 @@ export default class EditPost extends Component {
                     <TouchableHighlight
                         style={[
                             styles().ButtonPost,
-                            post && post.listImage && post.content && post.listImage.length > 0 && post.content.length > 0 ?
+                            post && post.listImage && post.content && post.listImage.length > 0 && post.content.trim().length > 0 ?
                                 styles().ButtonPostActiveColor : styles().ButtonPostInactiveColor
                         ]}
+                        disabled={isLoading || post.content.trim().length == 0}
                         underlayColor={'#0000FF'}
                         // disabled={isLoading || post.listImage.length == 0 || post.content.length == 0}
                         onPress={() => this.postStatus()}>

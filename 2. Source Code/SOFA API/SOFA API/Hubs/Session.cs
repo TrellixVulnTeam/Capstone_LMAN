@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SOFA_API.Common;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,42 +9,68 @@ namespace SOFA_API.Hubs
 {
     public class Session
     {
-        private static int NumberUserActive { get; set; }
-        private static List<int> listUserActive;
-        public static List<int> ListUserActive
+        private Hashtable ListConnection;
+        private static Session instance;
+
+        public static Session Instance
         {
             get
             {
-                if (listUserActive == null) listUserActive = new List<int>();
-                return listUserActive;
+                if (instance == null)
+                {
+                    instance = new Session();
+                }
+                return instance;
             }
             private set
             {
-                listUserActive = value;
+                instance = value;
             }
         }
 
-        public static void addUserActive(int userID)
+        public Session()
         {
-            if (ListUserActive == null)
+            ListConnection = new Hashtable();
+        }
+
+
+        public void AddConnection(int userID, string connectionID)
+        {
+            Utils.Instance.SaveLog(userID + " - " + connectionID);
+            if (ListConnection.ContainsKey(userID))
             {
-                ListUserActive = new List<int>();
+                List<string> connections = (List<string>)ListConnection[userID];
+                connections.Add(connectionID);
+                ListConnection[userID] = connections;
             }
-            if (ListUserActive.IndexOf(userID) == -1)
+            else
             {
-                ListUserActive.Add(userID);
+                List<string> connections = new List<string>();
+                connections.Add(connectionID);
+                ListConnection.Add(userID, connections);
             }
         }
-        public static void removeUserActive(int userID)
+        public void RemoveConnection(int userID, string connectionID)
         {
-            if (ListUserActive == null)
+            Utils.Instance.SaveLog(userID + " - " + connectionID);
+            if (ListConnection.ContainsKey(userID))
             {
-                ListUserActive = new List<int>();
-            }
-            if (ListUserActive.IndexOf(userID) != -1)
-            {
-                ListUserActive.Remove(userID);
+                List<string> connections = (List<string>)ListConnection[userID];
+                connections.Remove(connectionID);
+                if (connections.Count == 0)
+                {
+                    ListConnection.Remove(userID);
+                }
+                else
+                {
+                    ListConnection[userID] = connections;
+                }
             }
         }
+        public List<int> GetListActive()
+        {
+            return (List<int>)ListConnection.Keys;
+        }
+
     }
 }

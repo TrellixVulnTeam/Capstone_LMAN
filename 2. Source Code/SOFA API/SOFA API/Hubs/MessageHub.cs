@@ -13,8 +13,8 @@ namespace SOFA_API.Hubs
         {
             try
             {
-                Session.addUserActive(userID);
-                await Clients.All.SendAsync("ChangeStatus", Session.ListUserActive);
+                Session.Instance.AddConnection(userID, Context.ConnectionId);
+                await Clients.All.SendAsync("ChangeStatus", Session.Instance.GetListActive());
             }
             catch (Exception e)
             {
@@ -23,8 +23,40 @@ namespace SOFA_API.Hubs
         }
         public async Task OfflineChat(int userID)
         {
-            Session.removeUserActive(userID);
-            await Clients.All.SendAsync("ChangeStatus", Session.ListUserActive);
+            Session.Instance.RemoveConnection(userID, Context.ConnectionId);
+            await Clients.All.SendAsync("ChangeStatus", Session.Instance.GetListActive());
+        }
+
+
+
+        public override Task OnConnectedAsync()
+        {
+            try
+            {
+                int userID = Utils.Instance.GetUserID(Context.User.Claims);
+                Session.Instance.AddConnection(userID, Context.ConnectionId);
+                return Clients.All.SendAsync("ChangeStatus", Session.Instance.GetListActive());
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            return base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            try
+            {
+                int userID = Utils.Instance.GetUserID(Context.User.Claims);
+                Session.Instance.AddConnection(userID, Context.ConnectionId);
+                return Clients.All.SendAsync("ChangeStatus", Session.Instance.GetListActive());
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+            return base.OnDisconnectedAsync(exception);
         }
     }
 }

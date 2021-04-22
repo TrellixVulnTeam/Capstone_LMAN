@@ -29,14 +29,14 @@ namespace SOFA_API.Controllers
 
             OnlineViewModelOut baseModelOut = new OnlineViewModelOut();
             baseModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
-            baseModelOut.ListActiveAccount = Session.ListUserActive;
+            baseModelOut.ListActiveAccount = Session.Instance.GetListActive();
             return Ok(baseModelOut);
         }
+        /**
         [HttpGet("Online")]
         public async Task<ActionResult> Online()
         {
             int userID = Utils.Instance.GetUserID(User.Claims);
-            Session.addUserActive(userID);
             await messageHub.Clients.All.SendAsync("ChangeStatus", Session.ListUserActive);
             BaseModelOut baseModelOut = new BaseModelOut();
             baseModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -51,6 +51,6 @@ namespace SOFA_API.Controllers
             BaseModelOut baseModelOut = new BaseModelOut();
             baseModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             return Ok(baseModelOut);
-        }
+        }**/
     }
 }
