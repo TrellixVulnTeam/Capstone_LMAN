@@ -237,6 +237,12 @@ namespace SOFA_API.Service
                             throw new Exception("Tên tài khoản hoặc mật khẩu không đúng");
                         }
 
+                        // check admin login in app
+                        if (loginViewModelIn.IsApplicationAccess && account.RoleId == Const.ADMIN_ROLE_ID)
+                        {
+                            throw new Exception("Tên tài khoản hoặc mật khẩu không đúng");
+                        }
+
                         // check admin login
                         if (!loginViewModelIn.IsApplicationAccess && account.RoleId != Const.ADMIN_ROLE_ID)
                         {
