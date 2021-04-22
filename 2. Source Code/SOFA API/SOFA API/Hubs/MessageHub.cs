@@ -55,7 +55,7 @@ namespace SOFA_API.Hubs
             try
             {
                 int userID = Utils.Instance.GetUserID(Context.User.Claims);
-                Session.Instance.AddConnection(userID, Context.ConnectionId);
+                Session.Instance.RemoveConnection(userID, Context.ConnectionId);
                 return Clients.All.SendAsync("ChangeStatus", Session.Instance.GetListActive());
             }
             catch (Exception e)
