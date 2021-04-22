@@ -11,6 +11,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ImagePicker from 'react-native-image-crop-picker';
+import { Badge, Icon, withBadge } from 'react-native-elements';
 
 import * as signalR from '@microsoft/signalr';
 import * as Const from '../common/const';
@@ -22,6 +23,7 @@ import { AVATAR, WHITE_BACKGROUND, GALAXY_BACKGROUND, OCEAN_BACKGROUND } from '.
 import * as AuthService from '../service/authService';
 import * as ProfileService from '../service/profileService';
 import * as MessageService from '../service/messageService';
+import * as OnlineService from '../service/onlineService';
 
 import Session from '../common/session';
 
@@ -45,7 +47,8 @@ export default class Conversation extends Component {
             currentShowImage: '',
             token: '',
             isShowMessageMenu: false,
-            selectedMessage: {}
+            selectedMessage: {},
+            listOnline: []
         }
     }
     concatList(list1, list2) {
@@ -175,13 +178,16 @@ export default class Conversation extends Component {
 
     sendMessage() {
         const { friendAccount, listMessage, content, imageBase64 } = this.state;
-        if (content.length > 0 || imageBase64.length > 0) {
-            MessageService.sendMessage(friendAccount.accountID, content, imageBase64, (listMessage[0] && listMessage[0].conversationId) ? listMessage[0].conversationId : 0)
+        let contentTemp = content;
+        let imageBase64Temp = imageBase64;
+        this.setState({ content: '', imageBase64: '' });
+        if (contentTemp.length > 0 || imageBase64Temp.length > 0) {
+            MessageService.sendMessage(friendAccount.accountID, contentTemp, imageBase64Temp, (listMessage[0] && listMessage[0].conversationId) ? listMessage[0].conversationId : 0)
                 .then(response => {
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                         let messageRes = response;
                         messageRes.isMyMessage = true;
-                        this.setState({ listMessage: [response, ...listMessage], content: '', imageBase64: '' });
+                        this.setState({ listMessage: [response, ...listMessage] });
                     } else {
                         ToastAndroid.show('Gửi tin nhắn bị lỗi!', ToastAndroid.SHORT);
                     }
@@ -195,12 +201,13 @@ export default class Conversation extends Component {
                         this.setState({ isLoading: false, isSelectImage: true })
                     }
                 })
+
         }
 
     }
 
     onlineChat() {
-        const { account, token, friendAccount } = this.state;
+        const { token, friendAccount } = this.state;
         if (typeof this.connection === 'undefined') {
             this.connection = new signalR.HubConnectionBuilder()
                 .withUrl(Const.domain + 'message', {
@@ -226,6 +233,25 @@ export default class Conversation extends Component {
                         .catch(reason => console.log(reason));
                 }
             });
+            this.connection.on("ChangeStatus", (data) => {
+                console.log('Message', data);
+                if (data) {
+                    this.setState({ listOnline: data });
+                }
+            })
+        }
+    }
+
+    getListActiveAccount() {
+        let token = Session.getInstance().token;
+        if (token) {
+            OnlineService.getListInfo()
+                .then(response => {
+                    this.setState({ listOnline: response.listActiveAccount });
+                })
+                .catch(reason => {
+                    console.log(reason);
+                })
         }
     }
 
@@ -243,6 +269,7 @@ export default class Conversation extends Component {
             if (Session.getInstance().settings && Session.getInstance().settings.chatColor) {
                 this.setState({ color: Session.getInstance().settings.chatColor });
             }
+            this.getListActiveAccount();
             MessageService.markConversationIsReaded(uid2)
                 .then(response => {
                 })
@@ -263,6 +290,7 @@ export default class Conversation extends Component {
             Session.getInstance().currentUserChat = 0;
             if (this.connection) {
                 this.connection.stop();
+                this.connection = undefined;
             }
         });
 
@@ -287,7 +315,7 @@ export default class Conversation extends Component {
     }
 
     render() {
-        const { account, friendAccount, listMessage, keyboardHeight, page, canLoadMore, refreshingList, inputHeight, content, isShowModalImage, currentShowImage, isShowMessageMenu, selectedMessage } = this.state;
+        const { listOnline, friendAccount, listMessage, keyboardHeight, page, canLoadMore, refreshingList, inputHeight, content, isShowModalImage, currentShowImage, isShowMessageMenu, selectedMessage } = this.state;
         return (
             <View style={[styles.container]}>
                 <StatusBar backgroundColor={this.state.color} />
@@ -295,13 +323,24 @@ export default class Conversation extends Component {
                     <TouchableOpacity
                         onPress={() => this.props.navigation.navigate('OtherProfile', { accountID: friendAccount.accountID })}
                         style={[styles.headerChatFriend]}>
-                        <Image
-                            source={friendAccount.avatarUri && friendAccount.avatarUri.length > 0 ? { uri: Const.assets_domain + friendAccount.avatarUri } : AVATAR}
-                            style={[styles.headerChatFriendAvatar]}
-                        />
+                        <View>
+                            <Image
+                                source={friendAccount.avatarUri && friendAccount.avatarUri.length > 0 ? { uri: Const.assets_domain + friendAccount.avatarUri } : AVATAR}
+                                style={[styles.headerChatFriendAvatar]}
+                            />
+                            {listOnline.indexOf(friendAccount.accountID) != -1 ? (
+                                <Badge
+                                    status="success"
+                                    containerStyle={[styles.activeStatus]}
+                                    badgeStyle={{ width: scale(10, Horizontal), height: scale(10, Horizontal) }}
+                                />
+                            ) : (
+                                <View></View>
+                            )}
+                        </View>
                         <View style={[styles.headerChatFriendInfo]}>
                             <Text style={[styles.headerChatFriendInfoName]}>{friendAccount.firstName + ' ' + friendAccount.lastName}</Text>
-                            <Text style={[styles.headerChatFriendInfoActiveTime]}>{'3 phút trước'}</Text>
+                            <Text style={[styles.headerChatFriendInfoActiveTime]}>{listOnline.indexOf(friendAccount.accountID) >= 0 ? 'Online' : 'Offline'}</Text>
                         </View>
                     </TouchableOpacity>
                     <View style={[styles.headerActionBounder]}>
@@ -322,6 +361,7 @@ export default class Conversation extends Component {
                                 index={index}
                                 onPressMessageItem={(index) => this.onPressMessageItem(index)}
                                 nextIndex={index < listMessage.length - 1 ? listMessage[index + 1] : { fromAccountId: 0 }}
+                                preIndex={index > 0 ? listMessage[index - 1] : { fromAccountId: 0 }}
                                 onPressImage={(url) => this.setState({ currentShowImage: url, isShowModalImage: true })}
                                 onLongPress={() => {
                                     this.setState({ isShowMessageMenu: true, selectedMessage: item });
@@ -426,21 +466,7 @@ export default class Conversation extends Component {
                                     justifyContent: 'center',
                                     borderRadius: 10
                                 }}>
-                                <Text style={{color:'white'}}>Xóa tin nhắn</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ isShowMessageMenu: false })
-                                }}
-                                style={{
-                                    backgroundColor: '#AAAAAA',
-                                    width: scale(300, Horizontal),
-                                    height: scale(35, Vertical),
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    borderRadius: 10
-                                }}>
-                                <Text style={{color:'white'}}>Hủy</Text>
+                                <Text style={{ color: 'white' }}>Xóa tin nhắn</Text>
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>
@@ -449,28 +475,30 @@ export default class Conversation extends Component {
         )
     }
 }
-const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem, nextIndex, onPressImage, onLongPress }) => {
-    let disTime = diffTime(data.time, nextIndex.time);
-    disTime = disTime ? disTime : 100000000;
+const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem, nextIndex, preIndex, onPressImage, onLongPress }) => {
+    let disTimeNext = diffTime(data.time, nextIndex.time);
+    disTimeNext = disTimeNext ? disTimeNext : 100000000;
+    let disTimePre = diffTime(data.time, preIndex.time);
+    disTimePre = disTimePre ? disTimePre : 100000000;
     return (
         <View style={[styles.messageItemBounder,
-        (nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? styles.separator : null
+        (nextIndex.fromAccountId != data.fromAccountId || disTimeNext > 60000) ? styles.separator : null
         ]}>
             {data.isShowDetail ? (
                 <View style={[styles.messageMoreDetailBounder]}>
                     <Text style={[styles.messageMoreDetailTime]}>{getMessageTime(data.time)}</Text>
                 </View>) : (<View></View>)}
             <View style={[data.isMyMessage ? styles.messageItemSend : styles.messageItemReceive]}>
-                {!data.isMyMessage && (nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? (<View>
+                {!data.isMyMessage && (nextIndex.fromAccountId != data.fromAccountId || disTimeNext > 60000) ? (<View>
                     <Image
-                        source={{ uri: Const.assets_domain + friendAccount.avatarUri }}
+                        source={friendAccount.avatarUri && friendAccount.avatarUri.length > 0 ? { uri: Const.assets_domain + friendAccount.avatarUri } : AVATAR}
                         style={[styles.messageItemFriendAvatar]}
                     />
                 </View>) : (<View></View>)}
                 <View style={[styles.messageItemContentBounder]}>
                     {data.imageUrl ? (
                         <View
-                            style={[data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva]}>
+                            style={[data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTimeNext > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva]}>
                             <TouchableWithoutFeedback
                                 onLongPress={() => onLongPress()}
                                 onPress={() => onPressImage(data.imageUrl)}
@@ -490,7 +518,12 @@ const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem,
                             <View style={[
                                 data.isMyMessage ? styles.messageSendContentBounder : styles.messageReceiveContentBounder,
                                 { backgroundColor: bounderColor },
-                                data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTime > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva
+                                data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTimeNext > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva,
+                                data.isMyMessage && (!nextIndex.isMyMessage || disTimeNext > 60000) ? styles.messageSendContentBounderEnd : {},
+                                data.isMyMessage && (!preIndex.isMyMessage || disTimePre > 60000) ? styles.messageSendContentBounderStart : {},
+                                !data.isMyMessage && (nextIndex.isMyMessage || disTimeNext > 60000) ? styles.messageReceiveContentBounderEnd : {},
+                                !data.isMyMessage && (preIndex.isMyMessage || disTimePre > 60000) ? styles.messageReceiveContentBounderStart : {},
+
                             ]}>
                                 <Text style={[styles.messageContentText]}>{data.content}</Text>
                             </View>
@@ -580,20 +613,35 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         maxWidth: scale(280, Horizontal),
         minHeight: scale(30, Vertical),
-        borderRadius: 25,
+        borderTopLeftRadius: 25,
+        borderBottomLeftRadius: 25,
         justifyContent: 'center',
         paddingHorizontal: scale(10, Horizontal),
         paddingVertical: scale(6, Vertical),
         marginLeft: scale(5, Horizontal)
     },
+    messageSendContentBounderEnd: {
+        borderTopRightRadius: 25,
+    },
+    messageSendContentBounderStart: {
+        borderBottomRightRadius: 25,
+    },
+
     messageReceiveContentBounder: {
         alignSelf: 'flex-start',
         maxWidth: scale(280, Horizontal),
         minHeight: scale(30, Vertical),
-        borderRadius: 25,
+        borderTopRightRadius: 25,
+        borderBottomRightRadius: 25,
         justifyContent: 'center',
         paddingHorizontal: scale(10, Horizontal),
         paddingVertical: scale(10, Vertical),
+    },
+    messageReceiveContentBounderStart: {
+        borderBottomLeftRadius: 25
+    },
+    messageReceiveContentBounderEnd: {
+        borderTopLeftRadius: 25
     },
     messageReceiveContentBounderWithAva: {
         marginLeft: scale(5, Horizontal)
@@ -663,6 +711,11 @@ const styles = StyleSheet.create({
         height: null,
         flex: 1,
         resizeMode: 'contain'
+    },
+    activeStatus: {
+        position: 'absolute',
+        top: scale(2, Vertical),
+        right: scale(2, Horizontal),
     }
 
 })

@@ -18,12 +18,13 @@ namespace SOFA_API.ViewModel.Conversation
         public string ChatWithLastName { get; set; }
         public string ChatWithAvatarUri { get; set; }
         public string ChatWithAvatar { get; set; }
+        public bool IsReaded { get; set; }
 
         public ConversationViewModelOut()
         {
         }
 
-        public ConversationViewModelOut(int accountId, int chatWithAccountId, DateTime timeUpdate, string lastMessage, int lastSender, string chatWithFirstName, string chatWithLastName, string chatWithAvatarUri, string chatWithAvatar)
+        public ConversationViewModelOut(int accountId, int chatWithAccountId, DateTime timeUpdate, string lastMessage, int lastSender, string chatWithFirstName, string chatWithLastName, string chatWithAvatarUri, string chatWithAvatar, bool isReaded)
         {
             AccountId = accountId;
             ChatWithAccountId = chatWithAccountId;
@@ -34,6 +35,7 @@ namespace SOFA_API.ViewModel.Conversation
             ChatWithLastName = chatWithLastName;
             ChatWithAvatarUri = chatWithAvatarUri;
             ChatWithAvatar = chatWithAvatar;
+            IsReaded = isReaded;
         }
 
         public ConversationViewModelOut(DataRow row) : base()
@@ -47,6 +49,8 @@ namespace SOFA_API.ViewModel.Conversation
             this.ChatWithLastName = row["ChatWithLastName"].ToString();
             this.ChatWithAvatarUri = row["ChatWithAvatarUri"].ToString();
             this.ChatWithAvatar = row["ChatWithAvatarUri"].ToString();
+            this.IsReaded = Convert.IsDBNull(row["IsRead"]) ? false : (bool)row["IsRead"];
+
         }
     }
 }

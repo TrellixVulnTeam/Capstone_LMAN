@@ -174,7 +174,7 @@ export const newsfeed = StyleSheet.create({
     },
     Article: {
         // backgroundColor: '#c0e9ea',
-        marginTop: scale(20, Vertical),
+        marginTop: scale(10, Vertical),
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10,
         paddingVertical: scale(10, Vertical),
