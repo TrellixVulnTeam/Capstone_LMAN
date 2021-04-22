@@ -37,8 +37,12 @@ export default class Register extends Component {
 
     validateUser() {
         let trimPW = this.state.password.trim();
-        if(trimPW != this.state.password || /\s/.test(this.state.password.trim())){
-            this.setState({ isValidUser: false, errMsg: 'Mật khẩu không bao gồm dấu cách' })
+        if(trimPW != this.state.password || /\s/.test(this.state.password.trim()) || /\s/.test(this.state.username.trim())){
+            this.setState({ isValidUser: false, errMsg: 'Tài khoản và Mật khẩu không bao gồm dấu cách' })
+            return false;
+        }
+        if (/[ẮẰẲẴẶĂẤẦẨẪẬÂÁÀÃẢẠĐẾỀỂỄỆÊÉÈẺẼẸÍÌỈĨỊỐỒỔỖỘÔỚỜỞỠỢƠÓÒÕỎỌỨỪỬỮỰƯÚÙỦŨỤÝỲỶỸỴ]/.test(this.state.username.toUpperCase())) {
+            this.setState({ isValidUser: false, errMsg: 'Tên tài khoản không hợp lệ' })
             return false;
         }
         if (this.state.username.length < 6 || this.state.password.length < 6) {
@@ -61,6 +65,7 @@ export default class Register extends Component {
             this.setState({ isValidUser: false, errMsg: 'Nhập họ của bạn' })
             return false;
         }
+        console.log(this.state.username);
         return true;
     }
 

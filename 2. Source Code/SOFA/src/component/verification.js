@@ -92,14 +92,11 @@ export default class Verification extends Component {
       let data = new FormData();
       data.append('ID', transactionID);
       data.append('Code', code);
-      console.log(transactionID);
       let url = Const.domain + 'api/verification/Verify';
-      console.log(this.state);
       Request.Post(url, header, data)
         .then(response => {
           console.log(response);
           if (response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-            if (response && response.verificationStatus && response.verificationStatus == Const.VERIFICATION_STATUS_MATCH) {
               ToastAndroid.show("Xác nhận OTP thành công!", ToastAndroid.LONG);
               console.log(response);
               if (this.state.preScreen == Const.REGISTER) {
@@ -109,15 +106,12 @@ export default class Verification extends Component {
                 this.props.navigation.navigate('ChangePassword', { phone: this.state.phone, isResetPassword: true, transactionID: transactionID, code: code });
                 return;
               }
-            }
           }
           else {
-            console.log('failed')
             this.setState({ isValidInput: false, errMsg: 'Mã OTP không tồn tại hoặc đã hết hạn' })
           }
         })
         .catch(reason => {
-          console.log('failed');
           this.props.navigation.navigate('Login')
         })
     }
