@@ -23,12 +23,16 @@ namespace SOFA_API.Hubs
         }
         public async Task OfflineChat(int userID)
         {
-            Session.Instance.RemoveConnection(userID, Context.ConnectionId);
-            await Clients.All.SendAsync("ChangeStatus", Session.Instance.GetListActive());
+            try
+            {
+                Session.Instance.RemoveConnection(userID, Context.ConnectionId);
+                await Clients.All.SendAsync("ChangeStatus", Session.Instance.GetListActive());
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
         }
-
-
-
         public override Task OnConnectedAsync()
         {
             try
