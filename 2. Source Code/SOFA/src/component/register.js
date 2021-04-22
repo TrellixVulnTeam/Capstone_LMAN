@@ -65,7 +65,6 @@ export default class Register extends Component {
             this.setState({ isValidUser: false, errMsg: 'Nhập họ của bạn' })
             return false;
         }
-        console.log(this.state.username);
         return true;
     }
 
