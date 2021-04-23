@@ -198,7 +198,7 @@ export default class Profile extends Component {
         LogBox.ignoreLogs(['source.uri should not be an empty string']);
         return (
             <View>
-                <StatusBar hidden={false} backgroundColor='#fbb897' />
+                <StatusBar hidden={false} backgroundColor='rgba(0,0,0,0.8)' />
 
                 <View style={{
                     height: Utils.scale(650, Const.Vertical),
@@ -206,7 +206,19 @@ export default class Profile extends Component {
                     <FlatList
                         ListHeaderComponent={(
                             <View >
-                                <LinearGradient colors={['#fbb897', '#ff8683']}>
+                                <View style={{
+                                    height: Utils.scale(300, Const.Vertical),
+                                    width: Utils.scale(400, Const.Horizontal),
+                                }}>
+                                    <Image
+                                        source={{ uri: avatarUri }}
+                                        style={{
+                                            height: Utils.scale(300, Const.Vertical),
+                                            width: Utils.scale(400, Const.Horizontal),
+                                            resizeMode: 'cover',
+                                            position: 'absolute'
+                                        }}
+                                    />
                                     <View style={Style.profile.firstHeader}>
                                         <View style={{
                                             flexDirection: 'row',
@@ -230,15 +242,20 @@ export default class Profile extends Component {
                                         </View>
                                         <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
                                         <Text style={Style.profile.email}>{account.email}</Text>
-                                        <View style={Style.profile.basicInfo}>
+                                        <View style={[Style.profile.basicInfo]}>
                                             <Text style={Style.profile.basicSmallInfo}>{account.postNumber}{"\n"}Posts</Text>
-                                            <TouchableOpacity onPress={() => this.onClickFollowNumber()}>
+                                            <TouchableOpacity
+                                                style={{
+                                                    marginLeft: 'auto',
+                                                    marginRight: 'auto',
+                                                }}
+                                                onPress={() => this.onClickFollowNumber()}>
                                                 <Text style={Style.profile.basicSmallInfo}>{account.followerNumber}{"\n"}Followers</Text>
                                             </TouchableOpacity>
                                         </View>
 
                                     </View>
-                                </LinearGradient>
+                                </View>
                                 <View style={Style.profile.information}>
                                     <Image source={ADDRESS_ICON} style={Style.profile.info_icon} />
                                     <Text style={Style.profile.info_text}>
@@ -288,9 +305,9 @@ export default class Profile extends Component {
                                 <TouchableOpacity onPress={() => this.props.navigation.navigate('PostDetail', { postID: item.postID })}>
                                     <Image
                                         style={{
-                                            marginLeft: index % 3 == 0 ? Utils.scale(33.5, Const.Horizontal) : Utils.scale(0, Const.Horizontal),
-                                            height: Utils.scale(100, Const.Vertical),
-                                            width: Utils.scale(100, Const.Vertical),
+                                            // marginLeft: index % 3 == 0 ? Utils.scale(33.5, Const.Horizontal) : Utils.scale(0, Const.Horizontal),
+                                            height: Utils.scale(400 / 3, Const.Horizontal),
+                                            width: Utils.scale(400 / 3, Const.Horizontal),
                                             borderWidth: 0.5,
                                             borderColor: 'black',
                                         }}

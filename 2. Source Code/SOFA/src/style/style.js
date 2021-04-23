@@ -39,8 +39,9 @@ export const profile = StyleSheet.create({
         alignItems: 'center',
         paddingTop: Utils.scale(20, Const.Vertical),
         paddingBottom: Utils.scale(20, Const.Vertical),
-        borderBottomLeftRadius: 15,
-        borderBottomRightRadius: 15,
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        height: Utils.scale(300, Const.Vertical),
+        width: Utils.scale(400, Const.Horizontal),
     },
 
     image: {
@@ -56,15 +57,16 @@ export const profile = StyleSheet.create({
     basicInfo: {
         paddingTop: Utils.scale(10, Const.Vertical),
         flexDirection: 'row',
+        width: Utils.scale(200, Const.Horizontal),
+        alignSelf: 'center'
     },
 
     basicSmallInfo: {
-        flex: 0.3,
-        textAlignVertical: 'center',
-        textAlign: 'center',
-        alignSelf: 'center',
+        marginLeft: 'auto',
+        marginRight: 'auto',
         color: 'white',
         fontSize: Utils.scale(20, Const.Horizontal),
+        textAlign: 'center'
     },
 
     button: {
@@ -103,9 +105,9 @@ export const profile = StyleSheet.create({
 
     line: {
         marginTop: Utils.scale(15, Const.Vertical),
-        marginLeft: Utils.scale(30, Const.Horizontal),
-        marginRight: Utils.scale(30, Const.Horizontal),
-        borderBottomColor: '#ff5050',
+        // marginLeft: Utils.scale(30, Const.Horizontal),
+        // marginRight: Utils.scale(30, Const.Horizontal),
+        borderBottomColor: 'black',
         borderBottomWidth: 1,
     },
 
