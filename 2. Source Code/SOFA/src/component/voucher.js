@@ -19,26 +19,7 @@ export default class Voucher extends Component {
     render() {
         return (
             <View style={{ flex: 1 }} >
-                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
-                <View style={[Style.newsfeed.Header]}>
-                    <Text style={{ fontFamily: '20db', fontSize: 30, color: '#fef4ca' }}>SOFA</Text>
-                    <Ionicons
-                        style={{
-                            marginLeft: 'auto',
-                            marginRight: scale(5, Horizontal)
-                        }}
-                        name={'search-outline'} color={'#fef4ca'} size={30} />
-                    <Ionicons
-                        style={{
-                            marginRight: scale(5, Horizontal)
-                        }}
-                        name={'notifications'} color={'#fef4ca'} size={30} />
-                    <MaterialCommunityIcons
-                        style={{
-                            marginRight: scale(5, Horizontal)
-                        }}
-                        name={'message-text-outline'} color={'#fef4ca'} size={30} />
-                </View>
+                <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />     
                 <AppIndex />
             </View>
         )

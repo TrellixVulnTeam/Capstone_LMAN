@@ -258,7 +258,8 @@ export const balance = StyleSheet.create({
 
     mainContainer: {
         backgroundColor: `rgba(240, 243, 247, 1)`,
-        borderRadius: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
         paddingTop: 15,
         paddingBottom: 15,
     },
@@ -557,7 +558,6 @@ export const voucherDetail = StyleSheet.create({
     mainContainer: {
         backgroundColor: `rgba(240, 243, 247, 1)`,
         borderRadius: 20,
-        paddingTop: 15,
         paddingBottom: 15,
     },
     container: {},

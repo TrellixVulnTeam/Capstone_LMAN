@@ -17,6 +17,10 @@ const getMessageTime = (time) => {
     let sendTime = new Date(time);
     return sendTime.toLocaleTimeString() + ', ' + sendTime.toLocaleDateString();
 }
+const getDate = (time) => {
+    let sendTime = new Date(time);
+    return sendTime.toLocaleDateString();
+}
 const diffTime = (time1, time2) => {
     let t1 = new Date(time1);
     let t2 = new Date(time2);
@@ -137,4 +141,4 @@ const getContentDemo = (content, max) => {
     }
 }
 
-export { scale, calculateTime, getData, storeData, isInteger, requestPermission, getContentDemo, getMessageTime, diffTime };
+export { scale, calculateTime, getData, storeData, isInteger, requestPermission, getContentDemo, getMessageTime, diffTime, getDate };
