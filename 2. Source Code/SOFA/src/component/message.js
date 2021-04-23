@@ -63,6 +63,16 @@ export default class Message extends Component {
         }
     }
 
+    sortListConversation(data) {
+        let res = data.sort((a, b) => {
+            let timeA = new Date(a.timeUpdate);
+            let timeB = new Date(b.timeUpdate);
+            return timeB - timeA;
+        })
+        console.log('after sort', res);
+        return data;
+    }
+
     getListCoversation() {
         this.setState({ isLoading: true });
         MessageService.getListCoversation()
@@ -119,14 +129,18 @@ export default class Message extends Component {
     updateWhenNewMessage(item) {
         console.log('update', item)
         const listTemp = this.state.listConversations;
+        let time = new Date(item.time);
         for (let i = 0; i < listTemp.length; i++) {
             if (listTemp[i].chatWithAccountId == item.fromAccountId) {
                 listTemp[i].lastMessage = item.content;
                 listTemp[i].isReaded = false;
-                listTemp[i].timeUpdate = calculateTime(item.time);
+                listTemp[i].timeUpdate = time.setHours(time.getHours() + 7);
             }
         }
-        this.setState({ listConversation: listTemp });
+        this.setState({ listConversation: this.sortListConversation(listTemp) });
+        if (!this.state.isSearching) {
+            this.setState({ dataSearch: this.state.listConversations });
+        }
     }
 
     messageConnectionHub() {
@@ -193,6 +207,7 @@ export default class Message extends Component {
     }
 
     componentDidMount() {
+        console.log('connect from message list');
         this.messageConnectionHub();
 
         this._screenFocus = this.props.navigation.addListener('focus', () => {
@@ -214,6 +229,8 @@ export default class Message extends Component {
     componentWillUnmount() {
         if (this.messageConnection) {
             this.messageConnection.stop();
+            this.messageConnection = undefined;
+            console.log('disconnect from message list');
         }
         if (this.backHandler) {
             this.backHandler.remove();
@@ -302,6 +319,7 @@ const ConversationItem = ({ data, navigation, deleteConversation, listOnline }) 
             </TouchableOpacity>
         );
     }
+    // console.log(data);
     return (
         <Swipeable renderRightActions={rightActions} rightThreshold={0.1}>
             <TouchableOpacity
@@ -309,7 +327,7 @@ const ConversationItem = ({ data, navigation, deleteConversation, listOnline }) 
                     uid1: data.accountId,
                     uid2: data.chatWithAccountId,
                 })}
-                style={[styles.conversationItemBounder, (!data.isReaded) && (data.lastSender != data.accountId) ? { backgroundColor: '#D1D1D1' } : {}]}>
+                style={[styles.conversationItemBounder, (!data.isReaded) && (data.lastSender != data.accountId) ? {} : {}]}>
                 <View>
                     <Image
                         source={{ uri: Const.assets_domain + data.chatWithAvatarUri }}
@@ -326,10 +344,10 @@ const ConversationItem = ({ data, navigation, deleteConversation, listOnline }) 
                     )}
                 </View>
                 <View style={[styles.conversationItemContent]}>
-                    <Text style={[styles.conversationItemContentUserName, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'white' } : { color: 'black' }]}>{data.chatWithFirstName + ' ' + data.chatWithLastName}</Text>
-                    <Text style={[styles.conversationItemContentLastMess, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'white' } : { color: 'gray' }]}>{data.lastMessage.length > 0 ? (Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')) : 'Hình ảnh'}</Text>
+                    <Text style={[styles.conversationItemContentUserName, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'black', fontWeight: 'bold' } : { color: 'black' }]}>{data.chatWithFirstName + ' ' + data.chatWithLastName}</Text>
+                    <Text style={[styles.conversationItemContentLastMess, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'black', fontWeight: 'bold' } : { color: 'gray' }]}>{data.lastMessage.length > 0 ? (Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')) : 'Hình ảnh'}</Text>
                 </View>
-                <Text style={[styles.conversationItemUpdateTime]}>{calculateTime(data.timeUpdate) + ' trước'}</Text>
+                <Text style={[styles.conversationItemUpdateTime]}>{calculateTime(data.timeUpdate) + (calculateTime(data.timeUpdate) != 'Vừa xong' ? ' trước' : '')}</Text>
             </TouchableOpacity>
         </Swipeable>
     )

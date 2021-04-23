@@ -85,7 +85,7 @@ export default class Report extends Component {
     createReport() {
         this.setState({ isLoading: true });
         const { toAccountID, toPostID, toCommentID, reportType, reportContent, reasons } = this.state;
-        ReportService.createReport(toAccountID, toPostID, toCommentID, reportType, reportContent, reasons)
+        ReportService.createReport(toAccountID, toPostID, toCommentID, reportType, reportContent, reasons.length>0?reasons:' ')
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     ToastAndroid.show("Chúng tôi cảm ơn sự đóng góp của bạn!", ToastAndroid.LONG);
@@ -158,10 +158,10 @@ export default class Report extends Component {
                             </TouchableOpacity>
                             <Text style={[styles.headerText]}>Báo cáo</Text>
                             <TouchableOpacity
-                                disabled={reasonCount == 0 || reportContent.trim().length == 0}
+                                disabled={reasonCount == 0}
                                 onPress={() => this.createReport()}
                             >
-                                <Ionicons style={[styles.headerDoneButton]} name='md-checkmark-done-sharp' size={35} color={reasonCount > 0 && reportContent.trim().length > 0 ? '#2a7ea0' : 'gray'} />
+                                <Ionicons style={[styles.headerDoneButton]} name='md-checkmark-done-sharp' size={35} color={reasonCount > 0 ? '#2a7ea0' : 'gray'} />
                             </TouchableOpacity>
                         </View>
                         <View style={[styles.body]}>
