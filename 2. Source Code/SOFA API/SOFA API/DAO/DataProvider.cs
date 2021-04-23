@@ -50,7 +50,13 @@ namespace SOFA_API.DAO
                     {
                         if (item.Contains('@'))
                         {
-                            command.Parameters.AddWithValue(item, parameter[i]);
+                            if (parameter[i] != null)
+                            {
+                                command.Parameters.AddWithValue(item, parameter[i]);
+                            } else
+                            {
+                                command.Parameters.AddWithValue(item, DBNull.Value);
+                            }
                             i++;
                         }
                     }
