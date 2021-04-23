@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import { Animated, View, Text, StatusBar, Image, TouchableHighlight, FlatList, ActivityIndicator, Modal, TouchableOpacity, ToastAndroid, ImageBackground, StyleSheet, Alert } from 'react-native';
+import { Animated, View, Text, StatusBar, Image, TouchableHighlight, FlatList, ActivityIndicator, Modal, TouchableOpacity, ToastAndroid, ImageBackground, StyleSheet, Alert, TextInput, BackHandler } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -43,10 +43,25 @@ export default class Message extends Component {
             isRefreshing: false,
             listConversations: [],
             listOnline: [],
-            account: {}
+            account: {},
+            dataSearch: [],
+            keySearch: '',
+            isSearching: false
         }
     }
 
+    searchConversation(keySearch) {
+        const { listConversations, dataSearch } = this.state;
+        if (keySearch.trim().length == 0) {
+            this.setState({ dataSearch: listConversations });
+        } else {
+            this.setState({
+                dataSearch: listConversations.filter((i) =>
+                    (i.chatWithFirstName + i.chatWithLastName).toLowerCase().includes(keySearch.toLowerCase()) ,
+                ),
+            });
+        }
+    }
 
     getListCoversation() {
         this.setState({ isLoading: true });
@@ -70,7 +85,7 @@ export default class Message extends Component {
                         };
                         tempArray.push(listdata);
                     });
-                    this.setState({ listConversations: tempArray });
+                    this.setState({ listConversations: tempArray, dataSearch: tempArray });
                     this.getListActiveAccount();
                 } else {
                     ToastAndroid.show("Tải danh sách thất bại! Hãy thử lại!", ToastAndroid.LONG);
@@ -200,26 +215,59 @@ export default class Message extends Component {
         if (this.messageConnection) {
             this.messageConnection.stop();
         }
+        if (this.backHandler) {
+            this.backHandler.remove();
+        }
     }
     render() {
-        const { account, isLoading, isRefreshing, color, listConversations, activeRowkey, listOnline } = this.state;
+        const { account, isLoading, isRefreshing, color, listConversations, activeRowkey, listOnline, keySearch, isSearching, dataSearch } = this.state;
         return (
             <View style={[styles.container]}>
                 <StatusBar hidden={false} backgroundColor={color} />
-                <View style={[styles.header, { backgroundColor: color }]}>
-                    <View style={[styles.headerTitleBounder]}>
-                        <Text style={styles.headerTitle}>Chats</Text>
-                        <TouchableOpacity
-                            onPress={() => this.props.navigation.navigate('MessageSearch')}
-                            style={[styles.headerSearchIcon]}
-                        >
-                            <Ionicons name={'search-sharp'} color={'white'} size={30} />
-                        </TouchableOpacity>
+                {isSearching ? (
+                    <View style={[styles.header, { backgroundColor: color }]}>
+                        <View style={[styles.headerTitleBounder]}>
+                            <TextInput
+                                style={[{
+                                    backgroundColor: 'white',
+                                    width: scale(350, Horizontal),
+                                    borderRadius: 30
+                                }]}
+                                value={keySearch}
+                                onChangeText={(text) => {
+                                    this.setState({ keySearch: text });
+                                    this.searchConversation(text);
+                                }}
+                            />
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.setState({ isSearching: false, keySearch: '' });
+                                    this.searchConversation('');
+                                }}
+                                style={[{ alignSelf: 'center', marginLeft: scale(-40, Horizontal) }]}
+                            >
+                                <AntDesign name={'close'} color={'gray'} size={30} />
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
+                ) :
+                    (
+                        <View style={[styles.header, { backgroundColor: color }]}>
+                            <View style={[styles.headerTitleBounder]}>
+                                <Text style={styles.headerTitle}>Chats</Text>
+                                <TouchableOpacity
+                                    onPress={() => this.setState({ isSearching: true })}
+                                    style={[styles.headerSearchIcon]}
+                                >
+                                    <Ionicons name={'search-sharp'} color={'white'} size={30} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    )}
+
                 <View style={[styles.listConversationArea]}>
                     <FlatList
-                        data={listConversations}
+                        data={dataSearch}
                         keyExtractor={(item, index) => item.chatWithAccountId + ''}
                         renderItem={({ item, index }) =>
                             <ConversationItem
@@ -279,7 +327,7 @@ const ConversationItem = ({ data, navigation, deleteConversation, listOnline }) 
                 </View>
                 <View style={[styles.conversationItemContent]}>
                     <Text style={[styles.conversationItemContentUserName, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'white' } : { color: 'black' }]}>{data.chatWithFirstName + ' ' + data.chatWithLastName}</Text>
-                    <Text style={[styles.conversationItemContentLastMess, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'white' } : { color: 'gray' }]}>{data.lastMessage.length>0? (Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')):'Hình ảnh'}</Text>
+                    <Text style={[styles.conversationItemContentLastMess, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'white' } : { color: 'gray' }]}>{data.lastMessage.length > 0 ? (Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')) : 'Hình ảnh'}</Text>
                 </View>
                 <Text style={[styles.conversationItemUpdateTime]}>{calculateTime(data.timeUpdate) + ' trước'}</Text>
             </TouchableOpacity>

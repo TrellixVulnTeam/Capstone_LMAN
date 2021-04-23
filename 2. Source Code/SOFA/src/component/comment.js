@@ -197,7 +197,7 @@ export default class Comment extends Component {
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 <View
                     style={{
-                        maxHeight: scale(650 - keyboardHeight, Vertical),
+                        flex: 1, paddingBottom: scale(70, Vertical)
                     }}
                 >
                     <FlatList
@@ -248,7 +248,7 @@ export default class Comment extends Component {
                     />
                 </View>
                 <View style={[styles.commentBounder, {
-                    bottom: scale(keyboardHeight + 10, Vertical),
+                    bottom: scale(10, Vertical),
                 }]}>
                     <Image
                         style={styles.CommentAvatar}
@@ -269,7 +269,7 @@ export default class Comment extends Component {
 }
 const styles = StyleSheet.create({
     container: {
-        height: scale(711, Vertical),
+        flex: 1
     },
     CommentItemBounder: {
         marginLeft: scale(10, Horizontal),
@@ -295,7 +295,11 @@ const styles = StyleSheet.create({
     commentBounder: {
         position: 'absolute',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        height: scale(50, Vertical),
+        backgroundColor: 'white',
+        width: scale(400, Horizontal),
+        elevation: 10
     },
     CommentTextBox: {
         backgroundColor: 'white',

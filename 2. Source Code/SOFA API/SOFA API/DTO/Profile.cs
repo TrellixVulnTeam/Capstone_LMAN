@@ -15,11 +15,12 @@ namespace SOFA_API.DTO
         public string Phone { get; set; }
         public string Address { get; set; }
         public string AvatarUri { get; set; }
+        public bool IsFashionista { get; set; }
         public Profile()
         {
 
         }
-        public Profile(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri)
+        public Profile(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, bool isFashionista)
         {
             this.AccountID = accountID;
             this.FirstName = firstName;
@@ -30,6 +31,7 @@ namespace SOFA_API.DTO
             this.Phone = phone;
             this.Address = address;
             this.AvatarUri = avatarUri;
+            IsFashionista = isFashionista;
         }
 
         public Profile(DataRow row)
@@ -38,11 +40,12 @@ namespace SOFA_API.DTO
             this.FirstName = row["FirstName"].ToString();
             this.LastName = row["LastName"].ToString();
             this.Gender = Convert.IsDBNull(row["Gender"]) ? true : (bool)row["Gender"];
-            this.DOB = Convert.IsDBNull(row["DOB"]) ? new DateTime(1999,01,01) : (DateTime) row["DOB"];
+            this.DOB = Convert.IsDBNull(row["DOB"]) ? new DateTime(1999, 01, 01) : (DateTime)row["DOB"];
             this.Email = row["Email"].ToString();
             this.Phone = row["Phone"].ToString();
             this.Address = row["Address"].ToString();
             this.AvatarUri = row["Avatar"].ToString();
+            this.IsFashionista = Convert.IsDBNull(row["IsFashionista"]) ? false : (bool)row["IsFashionista"];
         }
     }
 }

@@ -36,7 +36,7 @@ export default class EditPost extends Component {
                 firstName: '',
                 lastName: '',
             },
-            post: {},
+            post: { content: '' },
             isLoading: false,
             isPrePosting: false,
             info: {
@@ -102,7 +102,7 @@ export default class EditPost extends Component {
                     if (response.listPost && response.listPost.length > 0) {
                         this.setState({
                             token: '',
-                            post: { privacyID: 3 },
+                            post: { privacyID: 3, content:'' },
                             isPrePosting: false,
                             isLoading: false,
                         })
@@ -152,7 +152,7 @@ export default class EditPost extends Component {
         this._screenFocus = this.props.navigation.addListener('blur', () => {
             this.setState({
                 token: '',
-                post: { privacyID: 3 },
+                post: { privacyID: 3, content: '' },
                 isPrePosting: false,
                 isLoading: false,
             })
