@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react';
-import { View, Text, StatusBar, Image, TouchableWithoutFeedback, FlatList, ActivityIndicator, Modal, TouchableOpacity, ToastAndroid, ImageBackground, StyleSheet, TextInput } from 'react-native';
+import { View, Text, StatusBar, Image, TouchableWithoutFeedback, FlatList, ActivityIndicator, Keyboard, TouchableOpacity, ToastAndroid, StyleSheet, TextInput } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -35,7 +35,9 @@ export default class Report extends Component {
             toPostID: 0,
             toCommentID: 0,
             reportContent: '',
-            reasonCount: 0
+            reasonCount: 0,
+            isKeyBoardShow: false,
+            keyboardHeight: 0
         }
     }
 
@@ -85,7 +87,7 @@ export default class Report extends Component {
     createReport() {
         this.setState({ isLoading: true });
         const { toAccountID, toPostID, toCommentID, reportType, reportContent, reasons } = this.state;
-        ReportService.createReport(toAccountID, toPostID, toCommentID, reportType, reportContent, reasons.length>0?reasons:' ')
+        ReportService.createReport(toAccountID, toPostID, toCommentID, reportType, reportContent, reasons)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     ToastAndroid.show("Chúng tôi cảm ơn sự đóng góp của bạn!", ToastAndroid.LONG);
@@ -109,6 +111,18 @@ export default class Report extends Component {
     }
 
     componentDidMount() {
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow', (event) => {
+                this.setState({ isKeyBoardShow: true });
+                this.setState({ keyboardHeight: event.endCoordinates.height });
+            }
+        );
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide', () => {
+                this.setState({ keyboardHeight: 0 });
+                this.setState({ isKeyBoardShow: false });
+            },
+        );
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.setState({ isLoading: true });
             const { reportType, toAccountID, toPostID, toCommentID } = this.props.route.params;
@@ -140,11 +154,12 @@ export default class Report extends Component {
         });
     }
     componentWillUnmount() {
-
+        Keyboard.removeAllListeners('keyboardDidShow');
+        Keyboard.removeAllListeners('keyboardDidHide');
     }
 
     render() {
-        const { isLoading, reasons, reportContent, reasonCount } = this.state;
+        const { isLoading, reasons, reportContent, reasonCount, keyboardHeight } = this.state;
         return (
             <View style={[styles.container]}>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
@@ -170,7 +185,7 @@ export default class Report extends Component {
                                 <Text style={[styles.bodyTitleText]}>Vui lòng chọn lý do để tiếp tục</Text>
                             </View>
                             <Text style={[styles.bodyTitleTextDetail]}>Bạn có thể thực hiện báo cáo sau khi đã chọn lý do</Text>
-                            <View style={[styles.listReasonAre]}>
+                            <View style={[{ height: scale(490, Vertical) - keyboardHeight }]}>
                                 <FlatList
                                     data={reasons}
                                     keyExtractor={(item, index) => item.id + ''}
@@ -255,7 +270,7 @@ const styles = StyleSheet.create({
     },
     body: {
         paddingVertical: scale(20, Vertical),
-        paddingHorizontal: scale(20, Horizontal)
+        paddingHorizontal: scale(20, Horizontal),
     },
     bodyTitleBounder: {
         flexDirection: 'row'
@@ -282,9 +297,11 @@ const styles = StyleSheet.create({
     reasonItemDes: {
         fontSize: 14
     },
+    reportContentBounder: {
+    },
     reportContentText: {
         backgroundColor: 'white',
-        marginVertical: scale(10, Vertical),
+        // marginVertical: scale(10, Vertical),
         borderRadius: 10
     }
 })
