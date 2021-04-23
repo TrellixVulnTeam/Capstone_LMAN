@@ -93,7 +93,7 @@ namespace SOFA_API.ViewModel.Newsfeed
             LastName = profile.LastName;
             Gender = profile.Gender;
             Avatar = profile.AvatarUri;
-            IsFashionista = profile.IsFashionista
+            IsFashionista = profile.IsFashionista;
         }
     }
 }
