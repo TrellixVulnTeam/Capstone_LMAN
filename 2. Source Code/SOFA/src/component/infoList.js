@@ -74,7 +74,16 @@ export default class ListInfo extends Component {
                         onPress={() => this.props.navigation.goBack()}
                         style={styles.iconClose}
                         name='close' size={40} color={'black'} />
-                    <Text style={styles.headerText}>Danh sách của bản</Text>
+                    <Text style={styles.headerText}>Danh sách</Text>
+                    <TouchableOpacity
+                        style={[
+                            styles.ButtonCreate,
+                        ]}
+                        onPress={() => this.props.navigation.navigate('CreateInfo')}>
+                        <View>
+                            <Text style={styles.ButtonCreateText}>Tạo mới</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
                 <View style={[styles.listInfoArea]}>
                     <FlatList
@@ -108,9 +117,11 @@ const styles = StyleSheet.create({
     },
     iconClose: {
         marginLeft: scale(10, Horizontal),
+        marginRight: 'auto'
     },
     headerText: {
-        marginLeft: scale(80, Horizontal),
+        marginLeft: 'auto',
+        marginRight: 'auto',
         fontSize: 18,
         fontWeight: 'bold'
     },
@@ -129,5 +140,17 @@ const styles = StyleSheet.create({
     },
     itemName: {
         marginLeft: scale(10, Horizontal)
+    },
+    ButtonCreate: {
+        backgroundColor: '#2a7ea0',
+        marginLeft: 'auto',
+        marginRight: scale(10, Horizontal),
+        paddingVertical: scale(5, Vertical),
+        paddingHorizontal: scale(5, Horizontal),
+        borderRadius: 5,
+    },
+    ButtonCreateText: {
+        color: 'white',
+        fontWeight: 'bold'
     }
 })

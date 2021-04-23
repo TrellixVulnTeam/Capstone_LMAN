@@ -348,7 +348,7 @@ export default class Conversation extends Component {
                         <Ionicons style={[styles.headerActionVideoIcon]} name='videocam' size={25} color='white' />
                     </View>
                 </View>
-                <View style={[{ height: scale(640 - keyboardHeight - Math.min(100, inputHeight), Vertical), paddingBottom: scale(10, Vertical) }]}>
+                <View style={[{ flex:1, paddingBottom: scale(10, Vertical) }]}>
                     <FlatList
                         inverted={true}
                         data={listMessage}

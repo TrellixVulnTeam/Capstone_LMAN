@@ -42,6 +42,9 @@ export default class MessageWSS {
                     }).catch(function (err) {
                         return console.error(err.toString());
                     });
+                    this._connection.onreconnected(() => {
+                        this.connection.invoke('OfflineChat');
+                    })
                     if (!isNewfeed) {
                         this._connection.on("NewMessage", data => {
                             if (data) {
@@ -96,6 +99,9 @@ export default class MessageWSS {
         }).catch(function (err) {
             return console.error(err.toString());
         });
+        this._connection.onreconnected(() => {
+            this.connection.invoke('OfflineChat');
+        })
         this._connection.on("NewMessage", data => {
             if (data) {
                 console.log('MessageWSS', data);

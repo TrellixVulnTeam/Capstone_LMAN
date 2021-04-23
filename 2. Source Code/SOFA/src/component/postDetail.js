@@ -457,7 +457,7 @@ export default class PostDetail extends Component {
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
                 {post.accountPost && post.accountPost != 0 ? (
                     <View style={{ flex: 1 }}>
-                        <View style={{ height: scale(661, Vertical) }}>
+                        <View style={{ flex: 1, paddingBottom: scale(60, Vertical) }}>
                             <FlatList
                                 ListHeaderComponent={(
                                     <View
@@ -671,9 +671,8 @@ export default class PostDetail extends Component {
                         <View style={[{
                             position: 'absolute',
                             backgroundColor: 'white',
-                            borderTopLeftRadius: 10,
-                            borderTopRightRadius: 10,
                             width: scale(400, Horizontal),
+                            height: scale(60, Vertical),
                             bottom: 0,
                             paddingVertical: scale(5, Vertical),
                             elevation: 10,
@@ -773,7 +772,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#E6E6E6',
         borderRadius: 10,
         width: scale(300, Horizontal),
-        height: scale(40, Vertical),
+        height: scale(50, Vertical),
         marginLeft: scale(5, Horizontal),
     },
     CommentAction: {
