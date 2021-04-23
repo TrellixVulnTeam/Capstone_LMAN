@@ -192,7 +192,7 @@ export default class Profile extends Component {
                     <Text style={{
                         marginTop: Utils.scale(100, Const.Vertical),
                         fontWeight: 'bold',
-                        color: '#EA0D1A',
+                        color: '#2A7EA0',
                         fontSize: 20,
                     }}>Hãy đăng nhập để sử dụng chức năng này</Text>
                     <TouchableOpacity
@@ -206,7 +206,7 @@ export default class Profile extends Component {
                         <LinearGradient
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
-                            colors={['#fbb897', '#ff8683']}
+                            colors={['#91DFFF', '#2A7EA0']}
                             style={{
                                 width: Utils.scale(120, Const.Horizontal),
                                 borderRadius: Utils.scale(25, Const.Horizontal),

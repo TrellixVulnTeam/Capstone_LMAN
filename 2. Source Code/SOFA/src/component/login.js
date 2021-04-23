@@ -278,7 +278,7 @@ export default class Login extends Component {
                             <View style={styles.signInContent}>
                                 <Text style={{ fontSize: Utils.scale(38, Const.Horizontal) }}>Đăng nhập</Text>
                                 <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Đăng nhập với tài khoản bạn đã đăng ký</Text>
-                                <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
+                                <View style={{ borderBottomColor: '#2A7EA0', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                             </View>
                             <View style={styles.containerInput}>
                                 <View style={styles.inputView} >
@@ -305,7 +305,7 @@ export default class Login extends Component {
                                 </Animatable.View>
                             }
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: Utils.scale(35, Const.Horizontal) }}>
-                                <CheckBox value={this.state.rememberMe} onChange={() => this.onRememberMe()} tintColors={{ true: '#ff8683', false: '#C0C0C0' }}></CheckBox>
+                                <CheckBox value={this.state.rememberMe} onChange={() => this.onRememberMe()} tintColors={{ true: '#2A7EA0', false: '#C0C0C0' }}></CheckBox>
                                 <Text>Nhớ mật khẩu</Text>
                             </View>
                             <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 0 }}>
@@ -316,7 +316,7 @@ export default class Login extends Component {
                                     <LinearGradient
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 0 }}
-                                        colors={['#fbb897', '#ff8683']}
+                                        colors={['#91DFFF', '#2A7EA0']}
                                         style={styles.loginBtn}>
                                         <Text style={styles.loginText}>ĐĂNG NHẬP</Text>
                                     </LinearGradient>
@@ -339,7 +339,7 @@ export default class Login extends Component {
                         </Text>
                                 <TouchableOpacity>
                                     <Text
-                                        style={{ color: '#ff8683', fontWeight: 'bold', fontSize: Utils.scale(14, Const.Horizontal) }}
+                                        style={{ color: '#2A7EA0', fontWeight: 'bold', fontSize: Utils.scale(14, Const.Horizontal) }}
                                         onPress={() => navigate('PhoneRegister', { isResetPassword: false })}
                                     > Đăng ký</Text>
                                 </TouchableOpacity>
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
         borderBottomColor: "#DBDBDB",
     },
     forgot: {
-        color: "#ff8683",
+        color: "#2A7EA0",
         fontWeight: 'bold',
         paddingRight: Utils.scale(40, Const.Horizontal),
         fontSize: Utils.scale(12, Const.Horizontal),
