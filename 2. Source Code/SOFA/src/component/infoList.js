@@ -11,6 +11,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import ImagePicker from 'react-native-image-crop-picker';
+import LinearGradient from 'react-native-linear-gradient'
+
 
 import * as Style from '../style/style';
 import * as Const from '../common/const';
@@ -76,14 +78,24 @@ export default class ListInfo extends Component {
                         name='close' size={40} color={'black'} />
                     <Text style={styles.headerText}>Danh sách</Text>
                     <TouchableOpacity
-                        style={[
-                            styles.ButtonCreate,
-                        ]}
-                        onPress={() => this.props.navigation.navigate('CreateInfo')}>
-                        <View>
-                            <Text style={styles.ButtonCreateText}>Tạo mới</Text>
-                        </View>
+                        style={styles.ButtonCreate}
+                        onPress={() => this.props.navigation.navigate('CreateInfo')}
+                    >
+                        <LinearGradient
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            colors={['#91DFFF', '#2A7EA0']}
+                            style={{
+                                height: scale(30, Vertical),
+                                paddingVertical: scale(5, Vertical),
+                                paddingHorizontal: scale(5, Horizontal),
+                                borderRadius: 5,
+                                alignItems: 'center'
+                            }}>
+                            <Text style={{ color: 'white' }}>Tạo mới</Text>
+                        </LinearGradient>
                     </TouchableOpacity>
+
                 </View>
                 <View style={[styles.listInfoArea]}>
                     <FlatList
@@ -126,28 +138,29 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     listInfoArea: {
-        flex: 1
+        flex: 1,
+        paddingHorizontal: scale(10, Horizontal)
     },
     itemBounder: {
-        width: scale(400, Horizontal),
+        width: scale(380, Horizontal),
         borderColor: 'gray',
         borderWidth: 0.5,
         marginTop: scale(10, Vertical),
         minHeight: scale(40, Vertical),
         alignItems: 'center',
-        // justifyContent: 'center',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        borderRadius: 15,
+        backgroundColor: '#2a7ea0',
+        justifyContent: 'center'
     },
     itemName: {
-        marginLeft: scale(10, Horizontal)
+        color: 'white'
     },
     ButtonCreate: {
-        backgroundColor: '#2a7ea0',
         marginLeft: 'auto',
         marginRight: scale(10, Horizontal),
-        paddingVertical: scale(5, Vertical),
-        paddingHorizontal: scale(5, Horizontal),
         borderRadius: 5,
+        paddingVertical: scale(5, Vertical)
     },
     ButtonCreateText: {
         color: 'white',

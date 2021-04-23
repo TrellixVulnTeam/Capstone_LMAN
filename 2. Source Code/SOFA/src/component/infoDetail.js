@@ -119,7 +119,7 @@ export default class InfoDetail extends Component {
                         <LinearGradient
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
-                            colors={['#fbb897', '#ff8683']}
+                            colors={['#91DFFF', '#2A7EA0']}
                             style={{
                                 height: scale(30, Vertical),
                                 width: scale(60, Horizontal),
