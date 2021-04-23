@@ -54,7 +54,7 @@ export class UserDetailComponent implements OnInit {
   }
 
   onClickBan(id) {
-    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Ban người dùng", content: "Bạn muốn ban người dùng này?" } });
+    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Ban user", content: "Do you want to ban this user?" } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
@@ -64,7 +64,7 @@ export class UserDetailComponent implements OnInit {
         this.apiService.post(url, formData).subscribe(response => {
           if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
             this.userDetail.isActive = <any>response["isActive"];
-            this.notificationSuccess("Ban người dùng thành công");
+            this.notificationSuccess("Ban user successfully");
           }
           else {
 
@@ -77,7 +77,7 @@ export class UserDetailComponent implements OnInit {
   }
 
   onClickUnban(id) {
-    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Unban người dùng", content: "Bạn muốn unban người dùng này?" } });
+    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Unban user", content: "Do you want to unban this user?" } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
@@ -87,7 +87,7 @@ export class UserDetailComponent implements OnInit {
         this.apiService.post(url, formData).subscribe(response => {
           if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
             this.userDetail.isActive = <any>response["isActive"];
-            this.notificationSuccess("Unban người dùng thành công");
+            this.notificationSuccess("Unban user successfully");
           }
           else {
 
@@ -101,7 +101,7 @@ export class UserDetailComponent implements OnInit {
 
   onClickResetPassword(id) {
     const dialogRef = this.dialog.open(MatDialogConfirmComponent,
-      { data: { title: "Đặt lại mật khẩu", content: "Bạn muốn đặt lại mật khẩu cho người dùng này?" } });
+      { data: { title: "Reset password", content: "Do you want to reset password for this user?" } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
@@ -110,7 +110,7 @@ export class UserDetailComponent implements OnInit {
         let url = 'auth/admin-reset-password';
         this.apiService.post(url, formData).subscribe(response => {
           if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
-            this.notificationSuccess("Reset password thành công!");
+            this.notificationSuccess("Reset password successfully");
           }
           else {
 
@@ -124,7 +124,7 @@ export class UserDetailComponent implements OnInit {
 
   onClickAddBalance(id) {
     const dialogRef = this.dialog.open(MatDialogConfirmComponent,
-      { width: '300px', data: { title: "Thêm balance", isGetInput: true } });
+      { width: '300px', data: { title: "Add balance", isGetInput: true } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -135,7 +135,7 @@ export class UserDetailComponent implements OnInit {
         let url = 'balance/topUpAccount';
         this.apiService.post(url, formData).subscribe(response => {
           if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
-            this.notificationSuccess("Thêm balance thành công!");
+            this.notificationSuccess("Add balance successfully");
             this.ngOnInit();
           }
           else {

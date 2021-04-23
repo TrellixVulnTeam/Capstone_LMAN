@@ -27,16 +27,24 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    if (this.username == '' || this.password == '' || this.rePassword == '' || this.firstname == '' || this.lastname == '') {
+    let trimPW = this.password.trim();
+    if (trimPW != this.password || /\s/.test(this.password.trim()) || /\s/.test(this.username.trim())) {
       this.invalidLogin = true;
-      this.errorMessage = 'Vui lòng điền đầy đủ thông tin'
+      this.errorMessage = 'Username and password do not include spaces'
+    }
+    else if (/[ẮẰẲẴẶĂẤẦẨẪẬÂÁÀÃẢẠĐẾỀỂỄỆÊÉÈẺẼẸÍÌỈĨỊỐỒỔỖỘÔỚỜỞỠỢƠÓÒÕỎỌỨỪỬỮỰƯÚÙỦŨỤÝỲỶỸỴ]/.test(this.username.toUpperCase())) {
+      this.invalidLogin = true;
+      this.errorMessage = 'Invalid username'
+    } else if (this.username == '' || this.password == '' || this.rePassword == '' || this.firstname == '' || this.lastname == '') {
+      this.invalidLogin = true;
+      this.errorMessage = 'Fill full the information'
     } else if (this.password != this.rePassword) {
       this.invalidLogin = true;
-      this.errorMessage = 'Mật khẩu xác nhận không đúng'
+      this.errorMessage = 'Incorrect confirm password'
     }
     else if (this.password.length < 6 || this.rePassword.length < 6) {
       this.invalidLogin = true;
-      this.errorMessage = 'Mật khẩu gồm 6 ký tự trở lên'
+      this.errorMessage = 'Password contains at least 6 characters'
     } else {
       let formData = new FormData();
       formData.append('username', this.username);
@@ -47,7 +55,7 @@ export class RegisterComponent implements OnInit {
       this.apiService.post(url, formData).subscribe(response => {
         console.log(response);
         if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
-          this.notificationSuccess('Tạo tài khoản thành công!');
+          this.notificationSuccess('Create new account successfully!');
           this.username = '';
           this.password = '';
           this.firstname = '';
@@ -56,7 +64,7 @@ export class RegisterComponent implements OnInit {
         }
         else {
           this.invalidLogin = true;
-          this.errorMessage = 'Vui lòng kiểm tra lại thông tin'
+          this.errorMessage = 'Please re-check the information'
         }
       }, error => {
         this.invalidLogin = true;
@@ -72,6 +80,6 @@ export class RegisterComponent implements OnInit {
   }
 
   notificationError(notifi: string) {
-    this.toastr.error(notifi, 'Thông báo');
+    this.toastr.error(notifi, 'Notification');
   }
 }

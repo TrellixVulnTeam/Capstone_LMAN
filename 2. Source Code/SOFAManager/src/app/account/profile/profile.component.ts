@@ -43,10 +43,10 @@ export class ProfileComponent implements OnInit {
   onClickChange() {
     if (this.newPassword != this.cfNewPassword) {
       this.invalid = true;
-      this.errorMessage = "Nhập lại mật khẩu mới không chính xác";
+      this.errorMessage = "Incorrect confirm new password";
     }else if (this.cfNewPassword.length < 6 || this.newPassword.length < 6) {
       this.invalid = true;
-      this.errorMessage = 'Mật khẩu gồm 6 ký tự trở lên'
+      this.errorMessage = 'Password must contain at least 6 characters'
     } else {
       let formData = new FormData();
       formData.append('username', this.user.userName);
@@ -55,14 +55,14 @@ export class ProfileComponent implements OnInit {
       let url = 'auth/admin-change-password';
       this.apiService.post(url, formData).subscribe(response => {
         if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
-          this.notificationSuccess('Đổi mật khẩu thành công');
+          this.notificationSuccess('Change password successfully');
           localStorage.removeItem('jwt');
           localStorage.removeItem('user')
           this.router.navigate(['/login']);
         }
         else {
           this.invalid = true;
-          this.errorMessage = 'Mật khẩu hiện tại không đúng'
+          this.errorMessage = 'Incorrect current password'
         }
       }, error => {
         this.invalid = true;

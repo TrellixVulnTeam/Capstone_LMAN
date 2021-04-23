@@ -94,7 +94,7 @@ export class VoucherComponent implements OnInit {
 
   deleteVoucher(id) {
     const dialogRef = this.dialog.open(MatDialogConfirmComponent,
-      { data: { title: "Xóa voucher", content: "Bạn muốn xóa voucher này?" } });
+      { data: { title: "Delete voucher", content: "Do you want to delete this voucher?" } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
@@ -103,7 +103,7 @@ export class VoucherComponent implements OnInit {
         let url = 'voucher/DeleteVoucher';
         this.apiService.post(url, formData).subscribe(response => {
           if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
-            this.notificationSuccess("Xóa voucher thành công!");
+            this.notificationSuccess("Delete voucher successfully");
             this.ngOnInit();
           }
           else {

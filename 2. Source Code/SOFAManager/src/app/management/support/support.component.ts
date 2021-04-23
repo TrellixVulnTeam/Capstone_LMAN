@@ -85,14 +85,14 @@ export class SupportComponent implements OnInit {
     let contentConfirm = '';
     let url = '';
     if(requestType == 1){
-      contentConfirm = 'Bạn muốn xác nhận người dùng này là Fashionista?';
+      contentConfirm = 'Do you wan to set this account to become a Fashionista?';
       url = 'support/setuserfashionista';
     }
     else {
-      contentConfirm = 'Bạn muốn xác nhận khóa tài khoản này?'
+      contentConfirm = 'Do you want to ban this account?'
       url = 'support/setuserlockaccount';
     }
-    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Xác nhận", content: contentConfirm } });
+    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Confirm", content: contentConfirm } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
@@ -106,7 +106,7 @@ export class SupportComponent implements OnInit {
                 user.status = 1;
               }
             })
-            this.notificationSuccess("Xác nhận thành công!");
+            this.notificationSuccess("Approve successfully");
           }
           else {
 
@@ -119,7 +119,7 @@ export class SupportComponent implements OnInit {
   }
 
   rejectRequest(requestId, requestType, userId){
-    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Xác nhận", content: "Bạn muốn từ chối yêu cầu hỗ trợ này?" } });
+    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Confirm", content: "Do you want to reject this request?" } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
@@ -135,7 +135,7 @@ export class SupportComponent implements OnInit {
                 user.status = 3;
               }
             })
-            this.notificationSuccess("Từ chối thành công!");
+            this.notificationSuccess("Reject successfully!");
           }
           else {
 

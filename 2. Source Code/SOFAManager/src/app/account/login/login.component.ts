@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   login() {
     if(this.username == '' || this.password == ''){
       this.invalidLogin = true;
-      this.errorMessage = 'Username và password không được để trống'
+      this.errorMessage = 'Username and password can not be empty'
     } else {
       let formData = new FormData();
       formData.append('username', this.username);
@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
         }
         else {
           this.invalidLogin = true;
-          this.errorMessage = 'Tên đăng nhập hoặc mật khẩu không đúng'
+          this.errorMessage = 'Incorrect username or password'
         }
       }, error => {
         this.invalidLogin = true;

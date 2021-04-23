@@ -1,17 +1,17 @@
 <div class="container">
   <div class="card card-container">
     <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
-    <p id="profile-name" class="profile-name-card"></p>
+    <h3 style="text-align: center; opacity: 0.5; padding-top: 10px;padding-bottom: 30px;">SOFA Management</h3>
       <div class="form-group" >
-        <label for="username">Tên đăng nhập</label>
+        <label for="username">Username</label>
         <input type="text" class="form-control" id="username" [(ngModel)]="username" (change)="invalidLogin=false" required />
       </div>
       <div class="form-group">
-        <label for="password">Mật khẩu</label>
+        <label for="password">Password</label>
         <input type="password" class="form-control" id="password" [(ngModel)]="password" (change)="invalidLogin=false" required />
         <div *ngIf="invalidLogin" class="help-block" >{{errorMessage}}</div>
       </div>
-      <button class="btn btn-success btn-block" (click)="login()">Đăng nhập</button>
+      <button class="btn btn-success btn-block" (click)="login()">Login</button>
   </div><!-- /card-container -->
 </div><!-- /container -->
 

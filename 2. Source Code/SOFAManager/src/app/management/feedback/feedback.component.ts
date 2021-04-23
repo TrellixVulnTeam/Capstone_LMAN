@@ -68,7 +68,7 @@ export class FeedbackComponent implements OnInit {
 
   acceptFeedback(feedbackId, userFeedbackId){
     const dialogRef = this.dialog.open(MatDialogConfirmComponent,
-      { data: { title: "Xác nhận", content: "Đọc feed back này và gửi thông báo cho người dùng?" } });
+      { data: { title: "Confirm", content: "Read this feedback and send notification for user?" } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
@@ -78,7 +78,7 @@ export class FeedbackComponent implements OnInit {
         let url = 'feedback/adminProcessFeedback';
         this.apiService.post(url, formData).subscribe(response => {
           if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
-            this.notificationSuccess("Đã xác nhận feedback");
+            this.notificationSuccess("Confirmed feedback");
             this.keyword = '';
             this.ngOnInit();
           }

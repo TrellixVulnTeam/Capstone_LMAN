@@ -44,7 +44,7 @@ export class PostDetailComponent implements OnInit {
   }
 
   onClickDelete(){
-    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Xóa bài viết", content: "Bạn muốn xóa bài viết này?" } });
+    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Delete post", content: "Do you want to delete this post?" } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
@@ -53,7 +53,7 @@ export class PostDetailComponent implements OnInit {
         let url = 'post/AdminDeletePost';
         this.apiService.post(url, formData).subscribe(response => {
           if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
-            this.notificationSuccess("Xóa post thành công");
+            this.notificationSuccess("Delete post successfully");
             this.router.navigate(['/posts']);
           }
           else {
