@@ -222,6 +222,10 @@ namespace SOFA_API.Service
                 if (!string.IsNullOrEmpty(loginViewModelIn.Username) && !string.IsNullOrEmpty(loginViewModelIn.Password))
                 {
                     AccountViewModelOut account = AccountDAO.Instance.GetUserWithRoleByUserName(loginViewModelIn.Username);
+                    if (account != null && account.IsActive == false)
+                    {
+                        throw new Exception("Tên tài khoản đã bị khóa");
+                    }
                     // check username and status
                     if (account != null && account.IsActive)
                     {
