@@ -1,4 +1,5 @@
-﻿using SOFA_API.Common;
+﻿using Newtonsoft.Json;
+using SOFA_API.Common;
 using SOFA_API.DAO;
 using SOFA_API.ViewModel;
 using SOFA_API.ViewModel.Balance;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZaloPay.Helper.Crypto;
 
 namespace SOFA_API.Service
 {
@@ -105,28 +107,73 @@ namespace SOFA_API.Service
             return topUpAccountModelOut;
         }
 
-        internal ZaloPayResultModel TopupZaloPay(ZaloPayTopupModelIn zaloPayTopupModelIn)
+        internal ZaloPayResultModel TopupZaloPay(ZaloPayTopupModelIn cbdata)
         {
             ZaloPayResultModel zaloPayResultModel = new ZaloPayResultModel();
             try
             {
-                Utils.Instance.SaveLog(zaloPayTopupModelIn.ToString());
-                if (zaloPayTopupModelIn.Amount > 10000)
+                var reqMac = cbdata.Mac;
+
+                var dataStr = Convert.ToString(cbdata.Data);
+
+                var mac = HmacHelper.Compute(ZaloPayHMAC.HMACSHA256, "uUfsWgfLkRLzq6W2uNXTCxrfxs51auny", dataStr);
+
+                Console.WriteLine("mac = {0}", mac);
+
+                // kiểm tra callback hợp lệ (đến từ ZaloPay server)
+                if (!reqMac.Equals(mac))
                 {
-                    zaloPayResultModel.ReturnCode = 1;
-                    zaloPayResultModel.ReturnMessage = "success";
-                } else
-                {
+                    // callback không hợp lệ
                     zaloPayResultModel.ReturnCode = -1;
-                    zaloPayResultModel.ReturnMessage = "invalid calback";
+                    zaloPayResultModel.ReturnMessage = "mac not equal";
+                }
+                else
+                {
+                    // thanh toán thành công
+                    // merchant cập nhật trạng thái cho đơn hàng
+                    var dataJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataStr);
+                    string transactionID = (string)dataJson["apptransid"];
+                    transactionID = transactionID.Replace("_", "-");
+                    int count = BalanceDAO.Instance.CountTransactionByCheckSum(transactionID);
+                    if (count == 0)
+                    {
+                        string tempID = (string)dataJson["appuser"];
+                        int userID = Int32.Parse(tempID);
+                        long amount = (long)dataJson["amount"];
+                        TopUpAccountModelIn topUpAccountModelIn = new TopUpAccountModelIn();
+                        topUpAccountModelIn.AccountId = userID;
+                        topUpAccountModelIn.Amount = amount;
+                        topUpAccountModelIn.AdminId = -1;
+                        topUpAccountModelIn.Description = "Nạp tiền ZaloPay";
+                        topUpAccountModelIn.CheckSum = transactionID;
+                        int res = BalanceDAO.Instance.TopUpAccount(topUpAccountModelIn);
+                        if (res > 0)
+                        {
+                            zaloPayResultModel.ReturnCode = 1;
+                            zaloPayResultModel.ReturnMessage = "success";
+                        }
+                        else
+                        {
+                            zaloPayResultModel.ReturnCode = 1;
+                            zaloPayResultModel.ReturnMessage = "Set balance faild!";
+                        }
+                    }
+                    else
+                    {
+                        zaloPayResultModel.ReturnCode = 2;
+                        zaloPayResultModel.ReturnMessage = "Transaction processed!";
+                    }
+
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Utils.Instance.SaveLog(e.ToString());
+                Utils.Instance.SaveLog(ex.ToString());
                 zaloPayResultModel.ReturnCode = 0;
-                zaloPayResultModel.ReturnMessage = "exception";
+                zaloPayResultModel.ReturnMessage = ex.ToString();
             }
+
+            // thông báo kết quả cho ZaloPay server
             return zaloPayResultModel;
         }
 

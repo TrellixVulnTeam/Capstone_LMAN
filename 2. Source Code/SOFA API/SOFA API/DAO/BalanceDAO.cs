@@ -72,18 +72,20 @@ namespace SOFA_API.DAO
                     decimal balance = 0;
                     if (data.Rows.Count > 1)
                     {
-                         balance = (decimal)data.Rows[1]["Balance Current"];
+                        balance = (decimal)data.Rows[1]["Balance Current"];
                     }
                     else
                     {
-                         balance = (decimal)data.Rows[0]["Balance Current"];
+                        balance = (decimal)data.Rows[0]["Balance Current"];
                     }
                     foreach (DataRow row in data.Rows)
                     {
-                        if (((int)row["TransactionID"])!=-1) {
-                            listTransaction.Add(new TransactionViewModelOut(row)); }
+                        if (((int)row["TransactionID"]) != -1)
+                        {
+                            listTransaction.Add(new TransactionViewModelOut(row));
+                        }
                     }
-                    viewModelOut = new ListTransactionViewModelOut(balance,listTransaction);
+                    viewModelOut = new ListTransactionViewModelOut(balance, listTransaction);
                 }
             }
             catch (Exception e)
@@ -106,7 +108,7 @@ namespace SOFA_API.DAO
             string sql = "EXEC dbo.topUpForAccount @AccountID , @Amount , @checkSum , @AdminID , @Description";
             try
             {
-                data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { topUp.AccountId, topUp.Amount,topUp.CheckSum, topUp.AdminId, topUp.Description });
+                data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { topUp.AccountId, topUp.Amount, topUp.CheckSum, topUp.AdminId, topUp.Description });
             }
             catch (Exception e)
             {
@@ -136,6 +138,15 @@ namespace SOFA_API.DAO
                 Utils.Instance.SaveLog(e.ToString());
             }
             return listBalace;
+        }
+        public int CountTransactionByCheckSum(string checkSum)
+        {
+            int res = 0;
+
+            string sql = "EXEC CountTransactionByCheckSum @checkSum";
+            res = (int)DataProvider.Instance.ExecuteScalar(sql, new object[] { checkSum });
+
+            return res;
         }
     }
 }

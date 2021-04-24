@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using SOFA_API.Common;
 using SOFA_API.DAO;
 using SOFA_API.Hubs;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using ZaloPay.Helper.Crypto;
 
 namespace SOFA_API.Controllers
 {
@@ -84,10 +86,12 @@ namespace SOFA_API.Controllers
         }
 
         [HttpPost("ZPTopup")]
-        public ActionResult TopupZalaPay([FromBody] ZaloPayTopupModelIn zaloPayTopupModelIn)
+        public ActionResult TopupZalaPay([FromBody] ZaloPayTopupModelIn cbdata)
         {
-            ZaloPayResultModel zaloPayResultModel = BalanceService.Instance.TopupZaloPay(zaloPayTopupModelIn);
+
+            ZaloPayResultModel zaloPayResultModel = BalanceService.Instance.TopupZaloPay(cbdata);
             return Ok(zaloPayResultModel);
+            
         }
     }
 }
