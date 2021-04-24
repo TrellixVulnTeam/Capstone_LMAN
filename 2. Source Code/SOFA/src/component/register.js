@@ -116,7 +116,7 @@ export default class Register extends Component {
                 <ScrollView>
                     <View style={styles.signInContent}>
                         <Text style={{ fontSize: Utils.scale(24, Const.Horizontal), fontWeight: 'bold', opacity: Utils.scale(0.6, Const.Horizontal) }}>Nhập thông tin của bạn</Text>
-                        <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
+                        <View style={{ borderBottomColor: '#2A7EA0', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                     </View>
                     <View style={styles.containerInput}>
                         <View style={styles.inputView} >
@@ -181,7 +181,7 @@ export default class Register extends Component {
                             <LinearGradient
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
-                                colors={['#fbb897', '#ff8683']}
+                                colors={['#91DFFF', '#2A7EA0']}
                                 style={styles.registerBtn}>
                                 <Text style={styles.registerText}>ĐĂNG KÝ</Text>
                             </LinearGradient>
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
         borderBottomColor: "#DBDBDB",
     },
     forgot: {
-        color: "#ff8683",
+        color: "#2A7EA0",
         textAlign: 'right',
         fontWeight: 'bold',
         paddingRight: Utils.scale(40, Const.Horizontal),

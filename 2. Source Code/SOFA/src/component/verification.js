@@ -95,19 +95,20 @@ export default class Verification extends Component {
       let url = Const.domain + 'api/verification/Verify';
       Request.Post(url, header, data)
         .then(response => {
-          console.log(response);
-          if (response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-              ToastAndroid.show("Xác nhận OTP thành công!", ToastAndroid.LONG);
-              console.log(response);
-              if (this.state.preScreen == Const.REGISTER) {
-                this.props.navigation.navigate('Register', { phone: this.state.phone });
-              }
-              if (this.state.preScreen == Const.FORGOT_PASSWORD) {
-                this.props.navigation.navigate('ChangePassword', { phone: this.state.phone, isResetPassword: true, transactionID: transactionID, code: code });
-                return;
-              }
+          if (response.code == Const.REQUEST_CODE_SUCCESSFULLY && response.verificationStatus == Const.VERIFICATION_STATUS_MATCH) {
+            ToastAndroid.show("Xác nhận OTP thành công!", ToastAndroid.LONG);
+            if (this.state.preScreen == Const.REGISTER) {
+              this.props.navigation.navigate('Register', { phone: this.state.phone });
+            }
+            if (this.state.preScreen == Const.FORGOT_PASSWORD) {
+              this.props.navigation.navigate('ChangePassword', { phone: this.state.phone, isResetPassword: true, transactionID: transactionID, code: code });
+              return;
+            }
           }
-          else {
+          if (response.code == Const.REQUEST_CODE_SUCCESSFULLY && response.verificationStatus == Const.VERIFICATION_STATUS_NOT_MATCH) {
+            this.setState({ isValidInput: false, errMsg: 'Mã OTP không tồn tại hoặc đã hết hạn' })
+          }
+          if (response.code == Const.REQUEST_CODE_FAILED) {
             this.setState({ isValidInput: false, errMsg: 'Mã OTP không tồn tại hoặc đã hết hạn' })
           }
         })
@@ -150,7 +151,7 @@ export default class Verification extends Component {
                 <LinearGradient
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
-                  colors={['#fbb897', '#ff8683']}
+                  colors={['#91DFFF', '#2A7EA0']}
                   style={styles.registerBtn}>
                   <Text style={styles.registerText}>Gửi lại mã</Text>
                 </LinearGradient>
@@ -160,7 +161,7 @@ export default class Verification extends Component {
                 <LinearGradient
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
-                  colors={['#fbb897', '#ff8683']}
+                  colors={['#91DFFF', '#2A7EA0']}
                   style={styles.registerBtn}>
                   <Text style={styles.registerText}>XÁC NHẬN</Text>
                 </LinearGradient>

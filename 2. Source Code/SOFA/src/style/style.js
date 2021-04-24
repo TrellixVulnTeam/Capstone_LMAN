@@ -417,7 +417,7 @@ export const verification = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#fbb897'
+        backgroundColor: '#80b7cf'
     },
 
     logo: {

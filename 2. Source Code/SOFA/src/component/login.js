@@ -167,7 +167,7 @@ export default class Login extends Component {
                             });
                     } else {
                         if (response.code == Const.REQUEST_CODE_FAILED) {
-                            this.setState({ isValidUser: false, errMsg: 'Tài khoản hoặc Mật khẩu không chính xác' })
+                            this.setState({ isValidUser: false, errMsg: 'Tài khoản hoặc mật khẩu không chính xác' })
                         }
                     }
                 })
@@ -253,6 +253,18 @@ export default class Login extends Component {
             console.log(error);
         }
     }
+    facebookSignin(){
+        Alert.alert(
+            "Đăng nhập với Facebook",
+            "Tính năng này đang được phát triển, vui lòng thử lại sau",
+            [
+                {
+                    text: "OK", onPress: () => {
+                    }
+                }
+            ]
+        );
+    }
     onRememberMe() {
         this.setState({ rememberMe: !this.state.rememberMe })
 
@@ -327,7 +339,7 @@ export default class Login extends Component {
                                         source={GOOGLE_ICON}
                                     />
                                 </TouchableOpacity>
-                                <TouchableOpacity style={[styles.iconContainer, { marginLeft: '4%' }]}>
+                                <TouchableOpacity style={[styles.iconContainer, { marginLeft: '4%' }]} onPress={this.facebookSignin}>
                                     <Image style={styles.iconGoogle}
                                         source={FACEBOOK_ICON}
                                     />

@@ -78,13 +78,13 @@ export default class PhoneRegister extends Component {
                     <View style={styles.signInContent}>
                         <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Quên mật khẩu?</Text>
                         <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Nhập số điện thoại đã đăng ký</Text>
-                        <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
+                        <View style={{ borderBottomColor: '#2A7EA0', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                     </View>
                     :
                     <View style={styles.signInContent}>
                         <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Chào mừng!</Text>
                         <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Đăng ký số điện thoại của bạn</Text>
-                        <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
+                        <View style={{ borderBottomColor: '#2A7EA0', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                     </View>
                 }
                 <View style={styles.containerInput}>
@@ -107,7 +107,7 @@ export default class PhoneRegister extends Component {
                         <LinearGradient
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
-                            colors={['#fbb897', '#ff8683']}
+                            colors={['#91DFFF', '#2A7EA0']}
                             style={styles.registerBtn}>
                             {this.state.isResetPassword
                                 ?
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
         borderBottomColor: "#DBDBDB",
     },
     forgot: {
-        color: "#ff8683",
+        color: "#91DFFF",
         textAlign: 'right',
         fontWeight: 'bold',
         paddingRight: Utils.scale(40, Const.Horizontal),
