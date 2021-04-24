@@ -112,7 +112,7 @@ from Voucher v , AccountVoucher av
 where  v.Id= av.VoucherId and av.AccountId=@AccountId and v.Id=@Id
 End
 GO
-/****** Object:  StoredProcedure [dbo].[topUpForAccount]    Script Date: 2/24/2021 4:12:46 PM ******/
+/****** Object:  StoredProcedure [dbo].[topUpForAccount]    Script Date: 24/04/2021 16:27:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -120,7 +120,7 @@ GO
 DROP PROCEDURE IF EXISTS [dbo].[topUpForAccount]
 GO
 CREATE PROCEDURE [dbo].[topUpForAccount]
-@AccountID int, @Amount decimal(18,6), @AdminID int, @Description nvarchar(max)
+@AccountID int, @Amount decimal(18,6),@checkSum nvarchar(20), @AdminID int, @Description nvarchar(max)
 As
 BEGIN 
 SET NOCOUNT OFF;
@@ -131,7 +131,6 @@ SET NOCOUNT OFF;
       BEGIN TRANSACTION
       ELSE
         SAVE TRANSACTION saveMyPoint;
-	DECLARE @checkSum varchar(10)=(SELECT Substring(( SELECT CONVERT(varchar(max),(select HASHBYTES('md5',CAST((select CURRENT_TIMESTAMP) AS binary))),2)),1,10));
 	DECLARE @beforeBalance decimal(18,6)=(SELECT TOP 1 [Balance] FROM (Select  accLogs.AfterBalance Balance,tr.[Date]
 From Transactions tr, AccountLogs accLogs
 Where accLogs.TransactionId = tr.Id and accLogs.AccountID= @AccountID
@@ -139,8 +138,10 @@ Where accLogs.TransactionId = tr.Id and accLogs.AccountID= @AccountID
     SELECT 0 ,0)A ORDER BY [Date] DESC)
 		INSERT INTO Transactions ([Type], [Amount], [AdminId],[Date],[CheckSum] ,[Description])
 		VALUES(1,@Amount,@AdminID,GETDATE(),@checkSum,@Description)
+		DECLARE @TransactionId  AS int 
+		SET @TransactionId = SCOPE_IDENTITY()
 		insert into AccountLogs([AccountID],[BeforeBalance],[AfterBalance],[CheckSum],[TransactionId])
-		values(@AccountID,@beforeBalance,@beforeBalance+@Amount,@checkSum,(Select TOP(1) ID from Transactions where [CheckSum]=@checkSum ))
+		values(@AccountID,@beforeBalance,@beforeBalance+@Amount,@checkSum,@TransactionId)
 		   lbexit:
       IF @trancount = 0
       COMMIT;
@@ -165,3 +166,4 @@ Where accLogs.TransactionId = tr.Id and accLogs.AccountID= @AccountID
 		     RAISERROR ('topUpAccount: %d: %s', 16, 1, @error, @message);
 	End Catch
 END
+GO
