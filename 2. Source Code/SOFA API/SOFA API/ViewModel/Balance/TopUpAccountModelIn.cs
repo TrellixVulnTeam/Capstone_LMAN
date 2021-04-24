@@ -13,24 +13,29 @@ namespace SOFA_API.ViewModel.Balance
         public int AdminId { get; set; }
         public decimal Amount { get; set; }
         public string Description { get; set; }
+        public string CheckSum { get; set; }
 
         public TopUpAccountModelIn()
         {
         }
 
-        public TopUpAccountModelIn(int accountId, int adminId, decimal amount, string description)
+        public TopUpAccountModelIn(int accountId, int adminId, decimal amount, string description, string checkSum)
         {
             AccountId = accountId;
             AdminId = adminId;
             Amount = amount;
             Description = description;
+            CheckSum = checkSum;
         }
+
         public TopUpAccountModelIn(DataRow row)
         {
             AccountId = (int)row["AccountId"];
             AdminId = (row["AdminId"] == null) ? -1 : (int)row["AdminId"];
             Amount = (decimal)row["AccountId"];
             Description = row["Description"].ToString();
+            CheckSum = row["CheckSum"].ToString();
+
         }
     }
 }
