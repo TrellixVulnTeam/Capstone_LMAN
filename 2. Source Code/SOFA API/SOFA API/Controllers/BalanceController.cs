@@ -47,7 +47,7 @@ namespace SOFA_API.Controllers
         [HttpGet("history")]
         public ActionResult GetTransactionHistory()
         {
-            
+
             var idClaim = User.Claims.FirstOrDefault(x => x.Type.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             int id = Int32.Parse(idClaim.Value.Trim());
             ListTransactionViewModelOut viewModelOut = BalanceService.Instance.GetTransactionHistory(id);
@@ -81,6 +81,13 @@ namespace SOFA_API.Controllers
         {
             AdminUserbalanceViewModelOut modelOut = BalanceService.Instance.GetUserBalanceByAccountId(id);
             return Ok(modelOut);
+        }
+
+        [HttpPost("ZPTopup")]
+        public ActionResult TopupZalaPay([FromBody] ZaloPayTopupModelIn zaloPayTopupModelIn)
+        {
+            ZaloPayResultModel zaloPayResultModel = BalanceService.Instance.TopupZaloPay(zaloPayTopupModelIn);
+            return Ok(zaloPayTopupModelIn);
         }
     }
 }
