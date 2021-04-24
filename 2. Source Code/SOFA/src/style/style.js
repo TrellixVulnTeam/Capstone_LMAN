@@ -62,7 +62,7 @@ export const profile = StyleSheet.create({
     },
 
     basicSmallInfo: {
-        marginLeft: 'auto',
+        marginLeft: Utils.scale(15, Const.Horizontal),
         marginRight: 'auto',
         color: 'white',
         fontSize: Utils.scale(20, Const.Horizontal),
@@ -92,15 +92,13 @@ export const profile = StyleSheet.create({
     },
 
     info_icon: {
-        width: Utils.scale(25, Const.Horizontal),
-        height: Utils.scale(25, Const.Vertical),
         marginLeft: Utils.scale(10, Const.Horizontal),
     },
 
     info_text: {
         fontSize: Utils.scale(17.5, Const.Horizontal),
         marginLeft: Utils.scale(10, Const.Horizontal),
-        color: "#ff5050"
+        color: "#2A7EA0"
     },
 
     line: {

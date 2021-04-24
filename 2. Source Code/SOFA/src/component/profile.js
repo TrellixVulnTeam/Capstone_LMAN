@@ -1,28 +1,16 @@
 import React, { Component } from 'react';
 import { View, Text, StatusBar, Button, Image, TouchableHighlight, Alert, PermissionsAndroid, FlatList, ScrollView, TouchableOpacity } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { MenuProvider } from 'react-native-popup-menu';
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
-import LinearGradient from 'react-native-linear-gradient';
-import RadioButtonRN from 'radio-buttons-react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Octicons from 'react-native-vector-icons/Octicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Entypo from 'react-native-vector-icons/Entypo';
 import { LogBox } from 'react-native';
-
-import * as signalR from '@microsoft/signalr';
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Style from '../style/style';
 import * as Const from "../common/const";
 import * as Utils from "../common/utils";
 import { AVATAR, ADDRESS_ICON, BIRTHDAY_ICON, PHONE_ICON, GENDER_ICON, MORE_ICON } from '../../image/index';
-import { TextInput } from 'react-native-gesture-handler';
-import { acc } from 'react-native-reanimated';
+import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 export default class Profile extends Component {
     constructor(props) {
@@ -257,7 +245,7 @@ export default class Profile extends Component {
                                     </View>
                                 </View>
                                 <View style={Style.profile.information}>
-                                    <Image source={ADDRESS_ICON} style={Style.profile.info_icon} />
+                                    <Entypo style={Style.profile.info_icon} size={20} name='location' color='#2A7EA0' />
                                     <Text style={Style.profile.info_text}>
                                         Đến từ <Text style={{ fontWeight: "bold" }}>
                                             {account.address}
@@ -265,7 +253,7 @@ export default class Profile extends Component {
                                     </Text>
                                 </View>
                                 <View style={Style.profile.information}>
-                                    <Image source={BIRTHDAY_ICON} style={Style.profile.info_icon} />
+                                <FontAwesome style={Style.profile.info_icon} size={20} name='birthday-cake' color='#2A7EA0'/>
                                     <Text style={Style.profile.info_text}>
                                         Ngày sinh <Text style={{ fontWeight: "bold" }}>
                                             {this.formatBirthday(account.dob)}
@@ -273,7 +261,7 @@ export default class Profile extends Component {
                                     </Text>
                                 </View>
                                 <View style={Style.profile.information}>
-                                    <Image source={PHONE_ICON} style={Style.profile.info_icon} />
+                                <Entypo style={Style.profile.info_icon} size={20} name='phone' color='#2A7EA0'/>
                                     <Text style={Style.profile.info_text}>
                                         Điện thoại <Text style={{ fontWeight: "bold" }}>
                                             {account.phone}
@@ -281,7 +269,7 @@ export default class Profile extends Component {
                                     </Text>
                                 </View>
                                 <View style={Style.profile.information}>
-                                    <Image source={GENDER_ICON} style={Style.profile.info_icon} />
+                                <FontAwesome5 style={Style.profile.info_icon} size={20} name='transgender' color='#2A7EA0'/>
                                     <Text style={Style.profile.info_text}>
                                         Giới tính <Text style={{ fontWeight: "bold" }}>
                                             {this.formatGender(account.gender)}
