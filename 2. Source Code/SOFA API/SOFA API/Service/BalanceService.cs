@@ -110,8 +110,16 @@ namespace SOFA_API.Service
             ZaloPayResultModel zaloPayResultModel = new ZaloPayResultModel();
             try
             {
-                zaloPayResultModel.ReturnCode = 1;
-                zaloPayResultModel.ReturnMessage = "success";
+                Utils.Instance.SaveLog(zaloPayTopupModelIn.ToString());
+                if (zaloPayTopupModelIn.Amount > 10000)
+                {
+                    zaloPayResultModel.ReturnCode = 1;
+                    zaloPayResultModel.ReturnMessage = "success";
+                } else
+                {
+                    zaloPayResultModel.ReturnCode = -1;
+                    zaloPayResultModel.ReturnMessage = "invalid calback";
+                }
             }
             catch (Exception e)
             {

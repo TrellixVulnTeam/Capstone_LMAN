@@ -87,7 +87,7 @@ namespace SOFA_API.Controllers
         public ActionResult TopupZalaPay([FromBody] ZaloPayTopupModelIn zaloPayTopupModelIn)
         {
             ZaloPayResultModel zaloPayResultModel = BalanceService.Instance.TopupZaloPay(zaloPayTopupModelIn);
-            return Ok(zaloPayTopupModelIn);
+            return Ok(zaloPayResultModel);
         }
     }
 }
