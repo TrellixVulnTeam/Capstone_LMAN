@@ -348,7 +348,7 @@ export default class Conversation extends Component {
                         <Ionicons style={[styles.headerActionVideoIcon]} name='videocam' size={25} color='white' />
                     </View>
                 </View>
-                <View style={[{ flex:1, paddingBottom: scale(10, Vertical) }]}>
+                <View style={[{ flex: 1, paddingBottom: scale(10, Vertical) }]}>
                     <FlatList
                         inverted={true}
                         data={listMessage}
@@ -517,7 +517,7 @@ const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem,
                         >
                             <View style={[
                                 data.isMyMessage ? styles.messageSendContentBounder : styles.messageReceiveContentBounder,
-                                { backgroundColor: bounderColor },
+                                data.isMyMessage ? { backgroundColor: bounderColor } : { backgroundColor: 'rgba(200,200,200,1)' },
                                 data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTimeNext > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva,
                                 data.isMyMessage && (!nextIndex.isMyMessage || disTimeNext > 60000) ? styles.messageSendContentBounderEnd : {},
                                 data.isMyMessage && (!preIndex.isMyMessage || disTimePre > 60000) ? styles.messageSendContentBounderStart : {},
@@ -655,7 +655,9 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         borderRadius: 10,
         marginBottom: scale(2, Vertical),
-        marginLeft: scale(5, Horizontal)
+        marginLeft: scale(5, Horizontal),
+        borderWidth: 0.5,
+        borderColor: 'gray'
     },
     messageContentText: {
         alignSelf: 'flex-start',

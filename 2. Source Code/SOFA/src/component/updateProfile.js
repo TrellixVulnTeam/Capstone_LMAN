@@ -307,7 +307,12 @@ export default class UpdateProfile extends Component {
                                     fontSize: 20
                                 }} >Chỉnh sửa thông tin</Text>
                             </View>
-                            <View style={Style.profile.firstHeader}>
+                            <View style={{
+                                alignContent: 'center',
+                                alignItems: 'center',
+                                paddingTop: Utils.scale(20, Const.Vertical),
+                                paddingBottom: Utils.scale(20, Const.Vertical),
+                            }}>
 
                                 <Image
                                     source={(account.avatarUri && account.avatarUri.length > 0) ? { uri: avatarUri } : AVATAR}
@@ -414,7 +419,7 @@ export default class UpdateProfile extends Component {
                             <View style={Style.updateProfile.updateItemSecond}>
                                 <Text style={Style.updateProfile.updateLabel}>Giới tính</Text>
                                 <DropDownPicker
-                                    defaultValue={account.gender ? 0 : 1}
+                                    defaultValue={account.gender ? 1 : 0}
                                     containerStyle={{ width: Utils.scale(150, Const.Horizontal), height: Utils.scale(35, Const.Vertical) }}
                                     items={data}
                                     style={{}}

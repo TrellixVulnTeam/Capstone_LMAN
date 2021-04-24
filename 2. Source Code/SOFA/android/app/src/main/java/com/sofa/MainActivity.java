@@ -6,6 +6,7 @@ import android.util.Log;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import vn.zalopay.sdk.ZaloPaySDK;
 
 public class MainActivity extends ReactActivity {
 
@@ -16,6 +17,7 @@ public class MainActivity extends ReactActivity {
     super.onNewIntent(intent);
     isOnNewIntent = true;
     ForegroundEmitter();
+    ZaloPaySDK.getInstance().onResult(intent);
   }
 
   @Override

@@ -7,7 +7,7 @@ import * as Const from '../common/const';
 import { AVATAR } from '../../image/index';
 import { ScrollView } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
-import { scale } from '../common/utils';
+import { getMessageTime, scale } from '../common/utils';
 
 
 export default class Balance extends Component {
@@ -285,7 +285,7 @@ class MyListItem extends Component {
                             marginHorizontal: 10,
                             marginVertical: 10,
                         }}>
-                        {this.props.transactionTime}
+                        {getMessageTime(this.props.transactionTime)}
                     </Text>
                 </View>
             </TouchableOpacity>
