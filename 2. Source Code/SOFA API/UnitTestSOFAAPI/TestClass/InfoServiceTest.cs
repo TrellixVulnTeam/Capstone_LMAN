@@ -25,7 +25,33 @@ namespace UnitTestSOFAAPI.TestClass
         }
 
         [TestMethod]
+        public void GetAllInfor_ShouldReturnListOfInfor_IfInforExist()
+        {
+            // arrange
+
+            // Act
+            var result = InfoService.Instance.GetAllInfo();
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListInfo.Count > 0);
+        }
+
+        [TestMethod]
         public void getUserInfor_ShouldReturnListOfUserInfo_IfUsernameExist()
+        {
+            // arrang
+            int userId = 7;
+
+            // act
+            var result = InfoService.Instance.GetUserInfo(userId);
+
+            // assert 
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListInfo.Count > 0);
+        }
+        [TestMethod]
+        public void getUserInfor_ShouldReturnListOfUserInfo_IfIdExist()
         {
             // arrang
             int userId = 7;
@@ -51,12 +77,38 @@ namespace UnitTestSOFAAPI.TestClass
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
             Assert.IsTrue(result.ListInfo.Count == 0);
         }
+        [TestMethod]
+        public void getUserInfor_ShouldReturnEmptyList_IfUsernameNotExist()
+        {
+            // arrang
+            int userId = -2;
+
+            // act
+            var result = InfoService.Instance.GetUserInfo(userId);
+
+            // assert 
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListInfo.Count == 0);
+        }
 
         [TestMethod]
         public void CreateInfor_ShouldReturnSuccesfullyCode_InputValid()
         {
             // arrang
             InfoViewModelIn modelIn = new InfoViewModelIn(4, 170, 60, 90, 60, 90, 1, "test");
+
+            // act
+            var result = InfoService.Instance.CreateInfo(modelIn);
+
+            // assert 
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListInfo.Count > 0);
+        }
+        [TestMethod]
+        public void CreateInfor_ShouldReturnSuccesfullyCode_ValidInput()
+        {
+            // arrang
+            InfoViewModelIn modelIn = new InfoViewModelIn(4, 169, 61, 91, 61, 92, 1, "test");
 
             // act
             var result = InfoService.Instance.CreateInfo(modelIn);

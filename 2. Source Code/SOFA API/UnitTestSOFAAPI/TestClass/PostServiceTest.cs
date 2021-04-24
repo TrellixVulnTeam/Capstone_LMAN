@@ -26,9 +26,74 @@ namespace UnitTestSOFAAPI.TestClass
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
             Assert.IsTrue(result.ListPost.Count > 0);
         }
+        [TestMethod]
+        public void GetAllPost_ShouldReturnListPost_IfUserIdExist()
+        {
+            // arrange 
+            int userId = 7;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act 
+            var result = PostService.Instance.GetAllPost(userId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
+
+        [TestMethod]
+        public void GetAllPost_ShouldReturnListPost_IfIdExist()
+        {
+            // arrange 
+            int userId = 7;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act 
+            var result = PostService.Instance.GetAllPost(userId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
 
         [TestMethod]
         public void GetAllPublicPostOfUser_ShouldReturnListPublicPostOfUser_IfUserIdExist()
+        {
+            // arrange 
+            PostViewModelIn postViewModelIn = new PostViewModelIn();
+            postViewModelIn.AccountPost = 7;
+            int userId = 7;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act 
+            var result = PostService.Instance.GetAllPublicPostOfUser(postViewModelIn, userId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
+        [TestMethod]
+        public void GetAllPublicPostOfUser_ShouldReturnListPublicPostOfUser_IfIdExist()
+        {
+            // arrange 
+            PostViewModelIn postViewModelIn = new PostViewModelIn();
+            postViewModelIn.AccountPost = 7;
+            int userId = 7;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act 
+            var result = PostService.Instance.GetAllPublicPostOfUser(postViewModelIn, userId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
+        [TestMethod]
+        public void GetAllPublicPost_ShouldReturnListPublicPostOfUser_IfIdExist()
         {
             // arrange 
             PostViewModelIn postViewModelIn = new PostViewModelIn();
@@ -75,6 +140,22 @@ namespace UnitTestSOFAAPI.TestClass
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
             Assert.IsTrue(result.ListPost.Count >= 0);
         }
+        [TestMethod]
+        public void GetListPostRecommended_ShouldReturnListPostRecomment_IfvalidInfomation()
+        {
+            // arrange 
+            int userId = 7;
+            int infoId = 12;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act 
+            var result = PostService.Instance.GetListPostRecommend(userId, infoId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count >= 0);
+        }
 
         [TestMethod]
         public void SearchPostByText_ShouldReturnListPost_MatchedWithKeyWord()
@@ -91,7 +172,68 @@ namespace UnitTestSOFAAPI.TestClass
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
             Assert.IsTrue(result.ListPost.Count > 0);
         }
+        [TestMethod]
+        public void SearchPost_ShouldReturnListPost_MatchedWithKeyWord()
+        {
+            // arrange
+            string keyword = "linh";
+            int page = 1;
+            int row = 5;
 
+            // act
+            var result = PostService.Instance.SearchPostByText(keyword, page, row);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
+        [TestMethod]
+        public void SearchPost_ShouldReturnList_MatchedWithKeyWord()
+        {
+            // arrange
+            string keyword = "ka";
+            int page = 1;
+            int row = 5;
+
+            // act
+            var result = PostService.Instance.SearchPostByText(keyword, page, row);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
+
+        [TestMethod]
+        public void SearchPostByKeyword_ShouldReturnList_MatchedWithKeyWord()
+        {
+            // arrange
+            string keyword = "thanh";
+            int page = 1;
+            int row = 5;
+
+            // act
+            var result = PostService.Instance.SearchPostByText(keyword, page, row);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
+
+        [TestMethod]
+        public void SearchPostKeyword_ShouldReturnList_MatchedWithKeyWord()
+        {
+            // arrange
+            string keyword = "body";
+            int page = 1;
+            int row = 5;
+
+            // act
+            var result = PostService.Instance.SearchPostByText(keyword, page, row);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
         [TestMethod]
         public void UpdatePostContent_ShouldReturnSuccessfullyCode_ifValidInput()
         {
@@ -124,9 +266,93 @@ namespace UnitTestSOFAAPI.TestClass
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
             Assert.IsTrue(result.ListPost.Count > 0);
         }
+        [TestMethod]
+        public void GetListCommentOfPost_ShouldReturnListComment_IfValidInfomation()
+        {
+            // arrange
+            PostViewModelIn postViewModelIn = new PostViewModelIn();
+            postViewModelIn.PostID = 78;
+            int page = 1;
+            int row = 5;
+
+            // act
+            var result = PostService.Instance.GetListCommentOfPost(postViewModelIn, page, row);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
+        [TestMethod]
+        public void GetListCommentOfPost_ShouldReturnListComment_IfValidInfo()
+        {
+            // arrange
+            PostViewModelIn postViewModelIn = new PostViewModelIn();
+            postViewModelIn.PostID = 78;
+            int page = 1;
+            int row = 5;
+
+            // act
+            var result = PostService.Instance.GetListCommentOfPost(postViewModelIn, page, row);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
 
         [TestMethod]
         public void GetAllPostOfUser_ShouldReturnListCommentOfPost_IfValidInfomation()
+        {
+            // arrange
+            PostViewModelIn postViewModelIn = new PostViewModelIn();
+            postViewModelIn.AccountPost = 7;
+            int userId = 7;
+            int page = 1;
+            int row = 5;
+
+            // act
+            var result = PostService.Instance.GetAllPostOfUser(postViewModelIn, userId, page, row);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
+        [TestMethod]
+        public void GetAllPostOfUser_ShouldReturnListComment_IfValidInfomation()
+        {
+            // arrange
+            PostViewModelIn postViewModelIn = new PostViewModelIn();
+            postViewModelIn.AccountPost = 7;
+            int userId = 7;
+            int page = 1;
+            int row = 5;
+
+            // act
+            var result = PostService.Instance.GetAllPostOfUser(postViewModelIn, userId, page, row);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
+        [TestMethod]
+        public void GetAllPostOfUser_ShouldReturnListComment_IfValidInfo()
+        {
+            // arrange
+            PostViewModelIn postViewModelIn = new PostViewModelIn();
+            postViewModelIn.AccountPost = 7;
+            int userId = 7;
+            int page = 1;
+            int row = 5;
+
+            // act
+            var result = PostService.Instance.GetAllPostOfUser(postViewModelIn, userId, page, row);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count > 0);
+        }
+
+        [TestMethod]
+        public void GetAllPostOfUser_ShouldReturnList_IfValidInfo()
         {
             // arrange
             PostViewModelIn postViewModelIn = new PostViewModelIn();
@@ -202,6 +428,22 @@ namespace UnitTestSOFAAPI.TestClass
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
             Assert.IsTrue(result.ListPost.Count >= 0);
         }
+        [TestMethod]
+        public void GetPostDetail_ShouldReturnSuccessfullyCode_IfValidInfo()
+        {
+            // arrange
+            PostViewModelIn postViewModelIn = new PostViewModelIn();
+            postViewModelIn.PostID = 78;
+            int userId = 13;
+            int rowCommentOfPost = 5;
+
+            // act
+            var result = PostService.Instance.GetPostDetail(postViewModelIn, userId, rowCommentOfPost);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count >= 0);
+        }
 
         [TestMethod]
         public void CommentPost_ShouldReturnSuccessfullyCode_IfValidInfomation()
@@ -210,6 +452,21 @@ namespace UnitTestSOFAAPI.TestClass
             int accountId = 13;
             int postId = 78;
             string content = "hello linh ka";
+
+            // act
+            var result = PostService.Instance.CommentPost(accountId, postId, content);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListPost.Count >= 0);
+        }
+        [TestMethod]
+        public void CommentPost_ShouldReturnSuccessfullyCode_IfValidInfo()
+        {
+            // arrange
+            int accountId = 13;
+            int postId = 78;
+            string content = "Test comment";
 
             // act
             var result = PostService.Instance.CommentPost(accountId, postId, content);
@@ -248,6 +505,18 @@ namespace UnitTestSOFAAPI.TestClass
 
         [TestMethod]
         public void GetPostWithoutPaging_ShouldReturnPostDetail_IfMatchedPostId()
+        {
+            // arrange
+            int postId = 78;
+
+            // act
+            var result = PostService.Instance.AdminGetPostDetail(postId);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+        }
+        [TestMethod]
+        public void GetPostWithoutPaging_ShouldReturnDetail_IfMatchedPostId()
         {
             // arrange
             int postId = 78;

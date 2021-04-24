@@ -57,11 +57,71 @@ namespace UnitTestSOFAAPI.TestClass
         }
 
         [TestMethod]
+        public void SearchConversation_ShouldReturnListConversation_IfAccountIdAndKeySearchExist()
+        {
+            // arrange
+            int accountId = 7;
+            string keySearch = "Deptrai";
+            int numberOfConversation = 1;
+
+            // Act
+            var result = ConversationService.Instance.SearchConversation(accountId, keySearch);
+
+            // Assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(numberOfConversation, result.listSearch.Count);
+        }
+
+        [TestMethod]
+        public void SearchConversation_ShouldReturnListConversation_IfKeySearchExist()
+        {
+            // arrange
+            int accountId = 7;
+            string keySearch = "Deptrai";
+            int numberOfConversation = 1;
+
+            // Act
+            var result = ConversationService.Instance.SearchConversation(accountId, keySearch);
+
+            // Assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(numberOfConversation, result.listSearch.Count);
+        }
+
+        [TestMethod]
         public void SearchConversation_ShouldReturnEmptyList_IfAccountIdAndKeySearchNotExist()
         {
             // arrange
             int accountId = 7;
             string keySearch = "bbbbbbbbbbb";
+
+            // Act
+            var result = ConversationService.Instance.SearchConversation(accountId, keySearch);
+
+            // Assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(null, result.listSearch);
+        }
+        [TestMethod]
+        public void SearchConversation_ShouldReturnEmpty_IfAccountIdAndKeySearchNotExist()
+        {
+            // arrange
+            int accountId = 7;
+            string keySearch = "asdaqeqweqwe";
+
+            // Act
+            var result = ConversationService.Instance.SearchConversation(accountId, keySearch);
+
+            // Assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(null, result.listSearch);
+        }
+        [TestMethod]
+        public void SearchConversation_ShouldReturnEmpty_IfAccountIdNotExist()
+        {
+            // arrange
+            int accountId = 7;
+            string keySearch = "123ewqe1";
 
             // Act
             var result = ConversationService.Instance.SearchConversation(accountId, keySearch);

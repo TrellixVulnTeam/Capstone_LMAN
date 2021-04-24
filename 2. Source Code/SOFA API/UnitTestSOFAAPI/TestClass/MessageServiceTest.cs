@@ -23,12 +23,38 @@ namespace UnitTestSOFAAPI.TestClass
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
             Assert.IsTrue(result.ListMess.Count > 0);
         }
+        [TestMethod]
+        public void GetMessageByConversationId_ShouldReturnListMessage_IfIdExist()
+        {
+            // arrange
+            int conversationId = 2;
+
+            // arrange 
+            var result = MessageService.Instance.GetMessageByConversationId(conversationId);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListMess.Count > 0);
+        }
 
         [TestMethod]
         public void GetMessageByConversationId_ShouldReturnEmptyList_IfConversationIdNotExist()
         {
             // arrange
             int conversationId = -1;
+
+            // arrange 
+            var result = MessageService.Instance.GetMessageByConversationId(conversationId);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListMess.Count == 0);
+        }
+        [TestMethod]
+        public void GetMessageByConversationId_ShouldReturnEmptyListMessage_IfConversationIdNotExist()
+        {
+            // arrange
+            int conversationId = -2;
 
             // arrange 
             var result = MessageService.Instance.GetMessageByConversationId(conversationId);
@@ -46,7 +72,7 @@ namespace UnitTestSOFAAPI.TestClass
             int receiverId = 7;
 
             // arrange 
-            var result = MessageService.Instance.GetMessageBySenderAndReceiverId(senderId, receiverId);
+            var result = MessageService.Instance.GetMessageBySenderAndReceiverId(senderId, receiverId, 1, 5);
 
             // assert
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
@@ -61,7 +87,7 @@ namespace UnitTestSOFAAPI.TestClass
             int receiverId = 19;
 
             // arrange 
-            var result = MessageService.Instance.GetMessageBySenderAndReceiverId(senderId, receiverId);
+            var result = MessageService.Instance.GetMessageBySenderAndReceiverId(senderId, receiverId, 1, 5);
 
             // assert
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);

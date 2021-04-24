@@ -27,7 +27,7 @@ namespace SOFA_API.Service
             }
         }
 
-        internal ReportViewModelOut GetAllReport()
+        public ReportViewModelOut GetAllReport()
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -54,7 +54,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut AdminGetAllReport()
+        public ReportViewModelOut AdminGetAllReport()
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -99,7 +99,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut GetAllReason()
+        public ReportViewModelOut GetAllReason()
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -120,7 +120,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut GetAllReportFromAccount(int accountnID)
+        public ReportViewModelOut GetAllReportFromAccount(int accountnID)
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -147,7 +147,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut CreateReport(ReportViewModelIn reportViewModelIn)
+        public ReportViewModelOut CreateReport(ReportViewModelIn reportViewModelIn)
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -182,7 +182,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut GetAllReportToAccount(int accountID)
+        public ReportViewModelOut GetAllReportToAccount(int accountID)
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -209,7 +209,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut GetAllReportToPost(int postID)
+        public ReportViewModelOut GetAllReportToPost(int postID)
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -236,7 +236,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut GetAllReportToComment(int commentID)
+        public ReportViewModelOut GetAllReportToComment(int commentID)
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -263,7 +263,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut GetAllReportPost()
+        public ReportViewModelOut GetAllReportPost()
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -290,7 +290,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut GetAllReportUser()
+        public ReportViewModelOut GetAllReportUser()
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -317,7 +317,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut GetAllReportComment()
+        public ReportViewModelOut GetAllReportComment()
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -344,7 +344,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut HandleUserReport(int reportId, int userId)
+        public ReportViewModelOut HandleUserReport(int reportId, int userId)
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 
@@ -370,7 +370,7 @@ namespace SOFA_API.Service
             return reportViewModelOut;
         }
 
-        internal ReportViewModelOut HandlePostReport(int reportId, int postId)
+        public ReportViewModelOut HandlePostReport(int reportId, int postId)
         {
             ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
 

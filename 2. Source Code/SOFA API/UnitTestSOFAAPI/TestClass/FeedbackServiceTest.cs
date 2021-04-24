@@ -41,6 +41,20 @@ namespace UnitTestSOFAAPI.TestClass
         }
 
         [TestMethod]
+        public void GetListFeedback_ShouldReturnListOfUserFeedback()
+        {
+            // arrange
+            int userId = 7;
+
+            // Act
+            var result = FeedbackService.Instance.GetListFeedback(userId);
+
+            // arrang
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListFeedback.Count > 0);
+        }
+
+        [TestMethod]
         public void GetListFeedback_ShouldReturnEmptyList_IfUserIdNotExist()
         {
             // arrange
@@ -56,7 +70,37 @@ namespace UnitTestSOFAAPI.TestClass
         }
 
         [TestMethod]
+        public void GetListFeedback_ShouldReturnEmptyList_IfIdNotExist()
+        {
+            // arrange
+            int userId = -3;
+            int numberOfFeedback = 0;
+
+            // Act
+            var result = FeedbackService.Instance.GetListFeedback(userId);
+
+            // arrang
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(numberOfFeedback, result.ListFeedback.Count);
+        }
+
+        [TestMethod]
         public void GetFeedbackById_ShouldReturnListOfUserFeedback_IfUserIdExist()
+        {
+            // arrange
+            int userId = 7;
+            int numberOfFeedback = 2;
+
+            // Act
+            var result = FeedbackService.Instance.GetListFeedback(userId);
+
+            // arrang
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(numberOfFeedback, result.ListFeedback.Count);
+        }
+
+        [TestMethod]
+        public void GetFeedbackById_ShouldReturnListOfUserFeedback()
         {
             // arrange
             int userId = 7;
@@ -86,7 +130,37 @@ namespace UnitTestSOFAAPI.TestClass
         }
 
         [TestMethod]
+        public void GetFeedbackById_ShouldReturnEmptyList_IfUserIdNotFeedback()
+        {
+            // arrange
+            int userId = 4;
+            int numberOfFeedback = 0;
+
+            // Act
+            var result = FeedbackService.Instance.GetListFeedback(userId);
+
+            // arrang
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(numberOfFeedback, result.ListFeedback.Count);
+        }
+
+        [TestMethod]
         public void GetFeedbackById_ShouldReturnEmptyList_IfUserIdNotExist()
+        {
+            // arrange
+            int userId = -3;
+            int numberOfFeedback = 0;
+
+            // Act
+            var result = FeedbackService.Instance.GetListFeedback(userId);
+
+            // arrang
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(numberOfFeedback, result.ListFeedback.Count);
+        }
+
+        [TestMethod]
+        public void GetFeedbackById_ShouldReturnEmptyList_IfIdNotExist()
         {
             // arrange
             int userId = -3;

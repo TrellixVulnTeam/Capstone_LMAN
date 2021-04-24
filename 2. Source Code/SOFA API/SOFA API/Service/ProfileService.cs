@@ -90,7 +90,7 @@ namespace SOFA_API.Service
         /// <param name="page">Current page</param>
         /// <param name="rowsOfPage">Number of item on a page</param>
         /// <returns>Profile List User View Model Out</returns>
-        internal ProfileListUserViewModelOut SearchUserByName(int usesID, string keyword, int page, int rowsOfPage)
+        public ProfileListUserViewModelOut SearchUserByName(int usesID, string keyword, int page, int rowsOfPage)
         {
             ProfileListUserViewModelOut profileListUserViewModelOut = new ProfileListUserViewModelOut();
             try

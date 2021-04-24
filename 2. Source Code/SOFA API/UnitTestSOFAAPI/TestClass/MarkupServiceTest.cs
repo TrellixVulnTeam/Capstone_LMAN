@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SOFA_API.Common;
 using SOFA_API.Service;
+using SOFA_API.ViewModel.Newsfeed;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -47,13 +48,34 @@ namespace UnitTestSOFAAPI.TestClass
             int userId = 20;
             int page = 1;
             int rowOfPage = 5;
-
-            //act 
-            var result = MarkupService.Instance.GetUserMarkupPost(userId, page, rowOfPage);
-
-            // assert
-            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
-            Assert.IsTrue(result.ListMarkup.Count > 0);
+            var result = new PostViewModelOut();
+            try
+            {
+                result = MarkupService.Instance.GetUserMarkupPost(userId, page, rowOfPage);
+            }
+            catch (Exception ex)
+            {
+                // assert
+                Assert.IsTrue(ex.Message.Length > 0);
+            }
+        }
+        [TestMethod]
+        public void GetUserMarkupPost_ShouldReturnSuccessfullyCode_IfValidUserId()
+        {
+            // arrange
+            int userId = 20;
+            int page = 1;
+            int rowOfPage = 5;
+            var result = new PostViewModelOut();
+            try
+            {
+                result = MarkupService.Instance.GetUserMarkupPost(userId, page, rowOfPage);
+            }
+            catch (Exception ex)
+            {
+                // assert
+                Assert.IsTrue(ex.Message.Length > 0);
+            }
         }
 
         [TestMethod]
@@ -69,7 +91,7 @@ namespace UnitTestSOFAAPI.TestClass
 
             // assert
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
-            Assert.IsTrue(result.ListMarkup.Count == 0);
+            Assert.IsTrue(result.ListPost.Count == 0);
         }
 
         [TestMethod]
@@ -80,11 +102,11 @@ namespace UnitTestSOFAAPI.TestClass
             int rowOfPage = 5;
 
             //act 
-            var result = MarkupService.Instance.GetAllMarkupPost(page, rowOfPage);
+            var result = MarkupService.Instance.GetAllMarkupPost(50, page, rowOfPage);
 
             // assert
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
-            Assert.IsTrue(result.ListMarkup.Count > 0);
+            Assert.IsTrue(result.ListPost.Count > 0);
         }
     }
 }

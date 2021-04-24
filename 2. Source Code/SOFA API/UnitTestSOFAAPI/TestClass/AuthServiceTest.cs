@@ -160,10 +160,39 @@ namespace UnitTestSOFAAPI.TestClass
         }
 
         [TestMethod]
+        public void HashPassword_ShouldReturnStringToken()
+        {
+            // arrange
+            string password = "tungbin";
+
+            // Act
+            var result = _authService.HashPassword(password);
+
+            // assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Length > 0);
+        }
+
+        [TestMethod]
         public void VerifyPassword_ShouldReturnTrueIfPasswordIsMatched()
         {
             // arrange
             string password = "123456";
+            string hashedPassword = _authService.HashPassword(password);
+
+            // Act
+            var result = _authService.VerifyPassword(password, hashedPassword);
+
+            // assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(true, result);
+        }
+
+        [TestMethod]
+        public void VerifyPassword_ShouldReturnTrue()
+        {
+            // arrange
+            string password = "tungbin";
             string hashedPassword = _authService.HashPassword(password);
 
             // Act

@@ -58,7 +58,22 @@ namespace UnitTestSOFAAPI.TestClass
         public void GetTransactionHistory_ShouldReturnErrorCode_IfAccountIdDoesNotExist()
         {
             // arrange
-            int accountId = -1;
+            int accountId = -2;
+            int numberOfTransaction = 4;
+
+            // Act 
+            var result = BalanceService.Instance.GetTransactionHistory(accountId);
+
+            // assert
+            Assert.AreEqual(null, result.ErrorMessage);
+            Assert.AreEqual(0, result.Balance);
+        }
+
+        [TestMethod]
+        public void GetTransactionHistory_ShouldReturnErrorCode_IfIdDoesNotExist()
+        {
+            // arrange
+            int accountId = -2;
             int numberOfTransaction = 4;
 
             // Act 
@@ -97,6 +112,51 @@ namespace UnitTestSOFAAPI.TestClass
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
             Assert.AreEqual(listUserbalance, result.ListBalance.Count);
         }
-        
+
+        [TestMethod]
+        public void GetUserBalanceByAccountId_ShouldReturnSuccessfullyCode()
+        {
+            // arrang 
+            int accountId = 7;
+            int listUserbalance = 4;
+
+            // Act 
+            var result = BalanceService.Instance.GetUserBalanceByAccountId(accountId);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(listUserbalance, result.ListBalance.Count);
+        }
+
+        [TestMethod]
+        public void GetUserBalance_ShouldReturnSuccessfullyCode()
+        {
+            // arrang 
+            int accountId = 7;
+            int listUserbalance = 4;
+
+            // Act 
+            var result = BalanceService.Instance.GetUserBalanceByAccountId(accountId);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(listUserbalance, result.ListBalance.Count);
+        }
+
+        [TestMethod]
+        public void GetUserBalance_ShouldReturnListBalance()
+        {
+            // arrang 
+            int accountId = 7;
+            int listUserbalance = 4;
+
+            // Act 
+            var result = BalanceService.Instance.GetUserBalanceByAccountId(accountId);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.AreEqual(listUserbalance, result.ListBalance.Count);
+        }
+
     }
 }

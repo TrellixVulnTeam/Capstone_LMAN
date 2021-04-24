@@ -26,12 +26,59 @@ namespace UnitTestSOFAAPI.TestClass
             Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
             Assert.IsTrue(result.ListNoti.Count > 0);
         }
+        [TestMethod]
+        public void GetNotificationByToAccount_ShouldReturnList_IfToAccountIdExist()
+        {
+            // arrange
+            int toAccountId = 13;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act
+            var result = NotificationService.Instance.GetNotificationByToAccount(toAccountId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListNoti.Count >= 0);
+        }
 
         [TestMethod]
         public void GetNotificationByToAccount_ShouldReturnEmptyList_IfToAccountIdNotExist()
         {
             // arrange
             int toAccountId = -1;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act
+            var result = NotificationService.Instance.GetNotificationByToAccount(toAccountId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListNoti.Count == 0);
+        }
+
+        [TestMethod]
+        public void GetNotificationByToAccount_ShouldReturnEmpty_IfToAccountIdNotExist()
+        {
+            // arrange
+            int toAccountId = -1;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act
+            var result = NotificationService.Instance.GetNotificationByToAccount(toAccountId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListNoti.Count == 0);
+        }
+
+        [TestMethod]
+        public void GetNotificationByToAccount_ShouldReturnEmpty_IfAccountIdNotExist()
+        {
+            // arrange
+            int toAccountId = -2;
             int page = 1;
             int rowOfPage = 5;
 
@@ -60,10 +107,57 @@ namespace UnitTestSOFAAPI.TestClass
         }
 
         [TestMethod]
+        public void GetUnreadNotificationByToAccount_ShouldReturnList_IfToAccountIdExist()
+        {
+            // arrange
+            int toAccountId = 13;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act
+            var result = NotificationService.Instance.GetUnreadNotificationByToAccount(toAccountId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListNoti.Count >= 0);
+        }
+
+        [TestMethod]
+        public void GetUnreadNotificationByToAccount_ShouldReturnList_IfAccountIdExist()
+        {
+            // arrange
+            int toAccountId = 13;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act
+            var result = NotificationService.Instance.GetUnreadNotificationByToAccount(toAccountId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListNoti.Count >= 0);
+        }
+        [TestMethod]
         public void GetUnreadNotificationByToAccount_ShouldReturnEmptyList_IfToAccountIdNotExist()
         {
             // arrange
             int toAccountId = -1;
+            int page = 1;
+            int rowOfPage = 5;
+
+            // act
+            var result = NotificationService.Instance.GetUnreadNotificationByToAccount(toAccountId, page, rowOfPage);
+
+            // assert
+            Assert.AreEqual(Const.REQUEST_CODE_SUCCESSFULLY, result.Code);
+            Assert.IsTrue(result.ListNoti.Count == 0);
+        }
+
+        [TestMethod]
+        public void GetUnreadNotificationByToAccount_ShouldReturnEmpty_IfToAccountIdNotExist()
+        {
+            // arrange
+            int toAccountId = -2;
             int page = 1;
             int rowOfPage = 5;
 
