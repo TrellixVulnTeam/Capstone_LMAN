@@ -37,7 +37,7 @@ export default class Profile extends Component {
             myId: 0,
             numberFollower: 0,
             isFollowed: false,
-            followText: 'FOLLOW',
+            followText: 'Theo dõi',
         }
     }
     getData = async (key) => {
@@ -143,7 +143,7 @@ export default class Profile extends Component {
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.setState({ numberFollower: this.state.numberFollower + 1 });
-                    this.setState({ followText: 'UNFOLLOW' });
+                    this.setState({ followText: 'Bỏ theo dõi' });
                     this.checkFollow();
                 } else {
                     console.log(response.errorMessage);
@@ -190,9 +190,9 @@ export default class Profile extends Component {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                     this.setState({ isFollowed: response.isFollowed });
                     if (response.isFollowed == true) {
-                        this.setState({ followText: 'UNFOLLOW' });
+                        this.setState({ followText: 'Bỏ theo dõi' });
                     } else {
-                        this.setState({ followText: 'FOLLOW' });
+                        this.setState({ followText: 'Theo dõi' });
                     }
 
                 } else {
@@ -344,8 +344,8 @@ export default class Profile extends Component {
                                                     end={{ x: 1, y: 0 }}
                                                     colors={['#91DFFF', '#2A7EA0']}
                                                     style={{
-                                                        height: Utils.scale(30, Const.Vertical),
-                                                        width: Utils.scale(100, Const.Horizontal),
+                                                        height: Utils.scale(40, Const.Vertical),
+                                                        width: Utils.scale(160, Const.Horizontal),
                                                         borderRadius: 20,
                                                         justifyContent: 'center',
                                                         alignItems: 'center',
@@ -364,13 +364,13 @@ export default class Profile extends Component {
                                                     end={{ x: 1, y: 0 }}
                                                     colors={['#91DFFF', '#2A7EA0']}
                                                     style={{
-                                                        height: Utils.scale(30, Const.Vertical),
-                                                        width: Utils.scale(100, Const.Horizontal),
+                                                        height: Utils.scale(40, Const.Vertical),
+                                                        width: Utils.scale(160, Const.Horizontal),
                                                         borderRadius: 20,
                                                         justifyContent: 'center',
                                                         alignItems: 'center',
                                                     }}>
-                                                    <Text style={{ color: 'white' }} >{'Trò chuyện'}</Text>
+                                                    <Text style={{ color: 'white' }} >{'Nhắn tin'}</Text>
                                                 </LinearGradient>
                                             </TouchableOpacity>
                                         </View>
