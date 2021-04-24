@@ -80,7 +80,7 @@ namespace SOFA_API.Service
         {
             TopUpAccountModelOut topUpAccountModelOut = new TopUpAccountModelOut();
             int result = 0;
-            if(topUpAccountModelIn.Amount <= 0)
+            if (topUpAccountModelIn.Amount <= 0)
             {
                 topUpAccountModelOut.Code = Const.REQUEST_CODE_FAILED;
                 topUpAccountModelOut.ErrorMessage = MessageUtils.ERROR_TOPUP_FAILED;
@@ -103,6 +103,23 @@ namespace SOFA_API.Service
                 }
             }
             return topUpAccountModelOut;
+        }
+
+        internal ZaloPayResultModel TopupZaloPay(ZaloPayTopupModelIn zaloPayTopupModelIn)
+        {
+            ZaloPayResultModel zaloPayResultModel = new ZaloPayResultModel();
+            try
+            {
+                zaloPayResultModel.ReturnCode = 1;
+                zaloPayResultModel.ReturnMessage = "success";
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                zaloPayResultModel.ReturnCode = 0;
+                zaloPayResultModel.ReturnMessage = "exception";
+            }
+            return zaloPayResultModel;
         }
 
         public AdminUserbalanceViewModelOut GetUserBalanceByAccountId(int accountId)
