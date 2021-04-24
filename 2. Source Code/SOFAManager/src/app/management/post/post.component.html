@@ -40,7 +40,7 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let post of listPost | paginate: { id: 'foo',
-                        itemsPerPage: 10,
+                        itemsPerPage: 8,
                         currentPage: page,
                         totalItems: totalRecord }">
                             <th scope="row">{{post.id}}</th>

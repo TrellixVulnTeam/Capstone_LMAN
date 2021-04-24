@@ -18,6 +18,7 @@ namespace SOFA_API.ViewModel.Account
         public string AvatarUri { get; set; }
         public DateTime DateCreated { get; set; }
         public bool IsActive { get; set; }
+        public string RoleName { get; set; }
 
         public AdminAccountModelOut(int id, string userName, string email, string firstName, string lastName, 
             string phone, string avatarUri, DateTime dateCreated, bool isActive)
@@ -44,6 +45,7 @@ namespace SOFA_API.ViewModel.Account
             AvatarUri = row["avatar"].ToString();
             DateCreated = !row.IsNull("DateCreated") ? (DateTime)row["DateCreated"] : DateTime.Now;
             IsActive = Boolean.Parse(row["IsActive"].ToString());
+            RoleName = row["RoleName"].ToString();
         }
     }
 }

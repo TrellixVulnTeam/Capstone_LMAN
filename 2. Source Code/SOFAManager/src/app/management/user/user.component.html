@@ -12,7 +12,7 @@
 <div class="row">
     <div class="col-4"></div>
     <div class="col-4">
-        <div class="input-group" style="margin-bottom: 20px; display: inline-block">
+        <div class="input-group" style="margin-bottom: 10px; display: inline-block">
             <input style="display: inline-block; width: 300px; padding-top: 2px;" type="text" class="form-control" placeholder="Search user"
                 [(ngModel)]="keyword" (ngModelChange)="search()">
             <select class="browser-default custom-select" style="display: inline-block; width: 120px; margin-left: 30px;"
@@ -30,6 +30,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Role</th>
                             <th style="width: 210px;">Username</th>
                             <th>Email</th>
                             <th>Fullname</th>
@@ -42,10 +43,11 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let user of listUser | paginate: { id: 'foo',
-                        itemsPerPage: 10,
+                        itemsPerPage: 9,
                         currentPage: page,
                         totalItems: totalRecord }">
                             <th scope="row">{{user.id}}</th>
+                            <td>{{user.roleName}}</td>
                             <td>{{user.userName}}</td>
                             <td>{{user.email}}</td>
                             <td>{{user.firstName + ' ' + user.lastName}}</td>
