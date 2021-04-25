@@ -97,5 +97,12 @@ namespace SOFA_API.Controllers
             ReportViewModelOut reportViewModelOut = ReportService.Instance.HandlePostReport(reportId, postId);
             return Ok(reportViewModelOut);
         }
+
+        [HttpPost("rejectreport")]
+        public ActionResult RejectReport([FromForm] int reportId)
+        {
+            ReportViewModelOut reportViewModelOut = ReportService.Instance.RejectReport(reportId);
+            return Ok(reportViewModelOut);
+        }
     }
 }

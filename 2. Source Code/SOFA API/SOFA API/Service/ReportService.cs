@@ -80,7 +80,8 @@ namespace SOFA_API.Service
                         {
                             reportViewModelOut.ListReport[i].ToAccountName = postInfo.Firstname + " " + postInfo.Lastname;
                             reportViewModelOut.ListReport[i].ToAccount = postInfo.AccountPost;
-                        } else
+                        }
+                        else
                         {
                             reportViewModelOut.ListReport[i].ToAccountName = "deleted post";
                             reportViewModelOut.ListReport[i].ToAccount = 0;
@@ -384,6 +385,28 @@ namespace SOFA_API.Service
                     {
                         reportViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                     }
+                }
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                reportViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                reportViewModelOut.ErrorMessage = e.ToString();
+            }
+
+            return reportViewModelOut;
+        }
+
+        public ReportViewModelOut RejectReport(int reportId)
+        {
+            ReportViewModelOut reportViewModelOut = new ReportViewModelOut();
+
+            try
+            {
+                int result = ReportDAO.Instance.UpdateReportStatus(reportId);
+                if (result > 0)
+                {
+                    reportViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 }
             }
             catch (Exception e)

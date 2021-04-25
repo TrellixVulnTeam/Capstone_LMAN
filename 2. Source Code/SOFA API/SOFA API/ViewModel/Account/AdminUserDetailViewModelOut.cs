@@ -26,6 +26,7 @@ namespace SOFA_API.ViewModel.Account
         public double BustSize { get; set; }
         public double WaistSize { get; set; }
         public double HipSize { get; set; }
+        public bool IsFashionista { get; set; }
 
         public AdminUserDetailViewModelOut()
         {
@@ -73,6 +74,7 @@ namespace SOFA_API.ViewModel.Account
             BustSize = Convert.IsDBNull(row["BustSize"]) ? 0 : (double)row["BustSize"];
             WaistSize = Convert.IsDBNull(row["WaistSize"]) ? 0 : (double)row["WaistSize"];
             HipSize = Convert.IsDBNull(row["HipSize"]) ? 0 : (double)row["HipSize"];
+            IsFashionista = Convert.IsDBNull(row["IsFashionista"]) ? false : (bool)row["IsFashionista"];
         }
     }
 }
