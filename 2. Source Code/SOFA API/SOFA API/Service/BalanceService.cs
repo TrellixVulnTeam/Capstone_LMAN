@@ -109,6 +109,7 @@ namespace SOFA_API.Service
 
         internal ZaloPayResultModel TopupZaloPay(ZaloPayTopupModelIn cbdata)
         {
+            Utils.Instance.SaveLog(cbdata.Data);
             ZaloPayResultModel zaloPayResultModel = new ZaloPayResultModel();
             try
             {
