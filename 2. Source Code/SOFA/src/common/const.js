@@ -5,6 +5,7 @@ export const Vertical = 'Vertical';
 export const domain = 'https://chientranhvietnam.org/sofaapi/'
 export const python_domain = 'https://chientranhvietnam.org/Python/'
 export const assets_domain = 'https://chientranhvietnam.org/assets/'
+export const host = 'chientranhvietnam.org'
 
 export const COMMENT_ROWS_OF_PAGE = 9
 export const NEWSFEED_ROWS_OF_PAGE = 5

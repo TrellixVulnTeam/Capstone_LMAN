@@ -298,7 +298,7 @@ export default class Conversation extends Component {
             var header = {
                 "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
                 "Content-Type": "multipart/form-data",
-                "Host": "chientranhvietnam.org",
+                "Host": Const.host,
                 "Accept": 'application/json',
             };
             let data = new FormData();
