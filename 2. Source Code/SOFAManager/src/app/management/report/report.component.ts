@@ -30,6 +30,7 @@ export class ReportComponent implements OnInit {
   totalRecordUser: number;
   pageUser: 1;
   assetsDonmain = CONST.assets_domain;
+  isReject = false;
 
   constructor(private apiService: ApiService,
     private dialog: MatDialog,
@@ -61,7 +62,7 @@ export class ReportComponent implements OnInit {
   }
 
   handlePostReport(reportId, postId){
-    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Xóa post", content: "Bạn muốn xóa post này?" } });
+    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Delete post", content: "Do you want to delete this post?" } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
@@ -76,7 +77,7 @@ export class ReportComponent implements OnInit {
                 post.isProcessed = true;
               }
             })
-            this.notificationSuccess("Xóa post thành công!");
+            this.notificationSuccess("Delete post successfully");
           }
           else {
 
@@ -89,7 +90,7 @@ export class ReportComponent implements OnInit {
   }
 
   handleUserReport(reportId, toAccount){
-    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Ban user", content: "Bạn muốn ban user này?" } });
+    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Ban user", content: "Do you want to ban this user?" } });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
@@ -104,7 +105,43 @@ export class ReportComponent implements OnInit {
                 user.isProcessed = true;
               }
             })
-            this.notificationSuccess("Ban thành công!");
+            this.notificationSuccess("Ban user successfully");
+          }
+          else {
+
+          }
+        }, error => {
+          console.log((<any>error).code);
+        })
+      }
+    });
+  }
+
+  handleReject(reportId, isPostReport){
+    const dialogRef = this.dialog.open(MatDialogConfirmComponent, { data: { title: "Reject report", content: "Dou you want to reject this report?" } });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        let formData = new FormData();
+        formData.append('reportId', reportId);
+        let url = 'report/rejectreport';
+        this.apiService.post(url, formData).subscribe(response => {
+          if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
+            this.isReject = true;
+            if(isPostReport){
+              this.listPostReport.forEach(post => {
+                if(post.id == reportId){
+                  post.isProcessed = true;
+                }
+              })
+            } else {
+              this.listUserReport.forEach(user => {
+                if(user.id == reportId){
+                  user.isProcessed = true;
+                }
+              })
+            }
+            this.notificationSuccess("Reject report successfully!");
           }
           else {
 

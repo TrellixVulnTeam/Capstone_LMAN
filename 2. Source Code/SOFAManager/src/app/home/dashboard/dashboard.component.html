@@ -1,3 +1,17 @@
+<div class="breadcrumb-holder container-fluid">
+  <ul class="breadcrumb" style="background-color: #fff;">
+      <li class="breadcrumb-item"><a href="">Home</a></li>
+      <li class="breadcrumb-item active">dashboard</li>
+  </ul>
+</div>
+<div class="row" style="margin-left: 100px; margin-top: 50px; color:#383635;">
+  <div class="col-3">
+    <h4><fa-icon [icon]="faCircle" style="color:#02bf05;"></fa-icon> {{this.online.listActiveAccount.length}} Online </h4>
+  </div>
+  <div class="col-3">
+    <h4><fa-icon [icon]="faCircle" style="color:grey;"></fa-icon> {{dashboardInfo.totalUser - this.online.listActiveAccount.length}} Offline </h4>
+  </div>
+</div>
 <div class="row" style="margin-top: 50px; margin-left: 50px;margin-right: 50px;">
   <!-- <div class="col-xl-8 col-lg-7">
       <div class="card shadow mb-4">

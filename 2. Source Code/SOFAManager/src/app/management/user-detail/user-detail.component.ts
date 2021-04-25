@@ -9,6 +9,7 @@ import * as CONST from '../../../config/config'
 import { MatDialog } from '@angular/material/dialog';
 import { MatDialogConfirmComponent } from '../mat-dialog-confirm/mat-dialog-confirm.component';
 import { ToastrService } from 'ngx-toastr';
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -28,6 +29,7 @@ export class UserDetailComponent implements OnInit {
   pageBalance: 1;
   totalRecordPost: number;
   pagePost: 1;
+  faCheckCircle = faCheckCircle;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -50,6 +52,7 @@ export class UserDetailComponent implements OnInit {
       this.totalRecordBalance = this.userBalance.listBalance.length;
       this.userPost = <any>results[2]["listPost"];
       this.totalRecordPost = this.userPost.length;
+      console.log(this.userDetail);
     });
   }
 

@@ -17,5 +17,5 @@ export class User {
   bustSize: number;
   waistSize: number;
   hipSize: number;
-
+  isFashionista = false;
 }

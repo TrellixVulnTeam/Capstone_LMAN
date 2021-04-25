@@ -42,6 +42,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { PostDetailComponent } from './management/post-detail/post-detail.component';
 import { FeedbackComponent } from './management/feedback/feedback.component';
 import { SupportComponent } from './management/support/support.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -91,7 +92,8 @@ import { SupportComponent } from './management/support/support.component';
     MatNativeDateModule,
     NgxPaginationModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

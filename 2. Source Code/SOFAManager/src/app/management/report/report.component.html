@@ -20,6 +20,7 @@
                                 <th>Status</th>
                                 <th>Detail</th>
                                 <th>Option</th>
+                                <th>Option</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -36,8 +37,12 @@
                                 <td *ngIf="!rp.isProcessed && rp.toAccount != 0">pending</td>
                                 <td *ngIf="rp.isProcessed || rp.toAccount == 0">processed</td>
                                 <td><a [routerLink]="['/post-detail', rp.toPost]">detail</a></td>
+                                <!-- delete -->
                                 <td *ngIf="!rp.isProcessed && rp.toAccount != 0"><a [routerLink]="" (click)="handlePostReport(rp.id, rp.toPost)">delete</a></td>
-                                <td *ngIf="rp.isProcessed || rp.toAccount == 0">deleted</td>
+                                <td *ngIf="rp.isProcessed || rp.toAccount == 0">delete</td>
+                                <!-- reject -->
+                                <td *ngIf="!rp.isProcessed && rp.toAccount != 0"><a [routerLink]="" (click)="handleReject(rp.id, true)">reject</a></td>
+                                <td *ngIf="rp.isProcessed || rp.toAccount == 0">reject</td>
                             </tr>
                         </tbody>
                     </table>
@@ -83,6 +88,7 @@
                                 <th>Status</th>
                                 <th>Detail</th>
                                 <th>Option</th>
+                                <th>Option</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -97,8 +103,11 @@
                             <td *ngIf="!user.isProcessed && user.toAccount != 0">pending</td>
                             <td *ngIf="user.isProcessed || user.toAccount == 0">processed</td>
                             <td><a [routerLink]="['/user-detail', user.toAccount]">detail</a></td>
+
                             <td *ngIf="!user.isProcessed && user.toAccount != 0"><a [routerLink]="" (click)="handleUserReport(user.id, user.toAccount)">ban</a></td>
-                            <td *ngIf="user.isProcessed || user.toAccount == 0">baned</td>
+                            <td *ngIf="user.isProcessed || user.toAccount == 0">ban</td>
+                            <td *ngIf="!user.isProcessed && user.toAccount != 0"><a [routerLink]="" (click)="handleReject(user.id, false)">reject</a></td>
+                            <td *ngIf="user.isProcessed || user.toAccount == 0">reject</td>
                             </tr>
                         </tbody>
                     </table>
