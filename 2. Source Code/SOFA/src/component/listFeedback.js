@@ -116,7 +116,7 @@ export default class Profile extends Component {
         return (
             <View>
                 <StatusBar hidden={false} backgroundColor={Style.statusBarColor} />
-                <LinearGradient colors={['#ff8533', '#ffb380']}>
+                <LinearGradient colors={['#2a7ea0', '#5EA4C1']}>
                     <View style={{
                         alignContent: 'center',
                         // paddingTop: Utils.scale(20, Const.Vertical),

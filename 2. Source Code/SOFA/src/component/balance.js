@@ -17,6 +17,7 @@ export default class Balance extends Component {
             listTransaction: [],
             avatarUri: '',
             token: '',
+            balance: 0
         };
     }
     getData = async (key) => {
@@ -111,12 +112,20 @@ export default class Balance extends Component {
             parseInt(hours[2]),
         ];
     }
-    onPressTopUp() {
-        const { account, avatarUri } = this.state;
-        this.props.navigation.navigate('topUp', {
-            account: account,
-            avatarUri: avatarUri,
-        });
+    formatMoney(number) {
+        var str = '';
+        var temp = number;
+        let length = 0;
+        while (temp > 0) {
+            let num = temp % 10;
+            temp = Math.floor(temp / 10);
+            if (length % 3 == 0 && length > 0) {
+                str = '.' + str;
+            }
+            str = num + str;
+            length++;
+        }
+        return str;
     }
 
     componentWillUnmount() { }
@@ -132,7 +141,7 @@ export default class Balance extends Component {
             <View style={{
                 backgroundColor: '#2a7ea0'
             }}>
-                <ScrollView>
+                <View>
                     <ImageBackground
                         source={avatarUri ? { uri: avatarUri } : AVATAR}
                         style={Style.balance.container}>
@@ -144,16 +153,12 @@ export default class Balance extends Component {
                                     color: '#FFFFFF',
                                     marginHorizontal: 10,
                                     marginTop: 10,
-                                }}>
-                                Quản lý số dư
-              </Text>
+                                }}>Quản lý số dư</Text>
                             <Image
                                 source={avatarUri ? { uri: avatarUri } : AVATAR}
                                 style={Style.balance.avatarStyle}
                             />
-                            <Text style={Style.balance.textStyle}>
-                                Khả dụng: {balance} VND
-              </Text>
+                            <Text style={Style.balance.textStyle}>Khả dụng: {this.formatMoney(balance)} VND</Text>
                         </View>
                     </ImageBackground>
                     <View style={Style.balance.mainContainer}>
@@ -163,7 +168,7 @@ export default class Balance extends Component {
                                 <TouchableOpacity style={{
                                     marginLeft: 'auto',
                                     marginRight: 'auto',
-                                }} onPress={() => { }}>
+                                }} onPress={() => this.props.navigation.navigate('Topup', { money: this.state.balance })}>
                                     <LinearGradient
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 0 }}
@@ -242,8 +247,8 @@ export default class Balance extends Component {
                             </SafeAreaView>
                         </View>
                     </View>
-                </ScrollView>
-            </View>
+                </View>
+            </View >
         );
     }
 }

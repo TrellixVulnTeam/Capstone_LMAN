@@ -36,6 +36,7 @@ import ListMarkupPost from '../component/listMarkupPost';
 import Settings from '../component/settings';
 import ListInfo from '../component/infoList';
 import InfoDetail from '../component/infoDetail';
+import Topup from '../component/topup';
 const Stack = createStackNavigator();
 
 export const navigationRef = React.createRef();
@@ -84,6 +85,7 @@ export function Navigation() {
                 <Stack.Screen name='Settings' component={Settings} options={{ headerShown: false }} />
                 <Stack.Screen name='ListInfo' component={ListInfo} options={{ headerShown: false }} />
                 <Stack.Screen name='InfoDetail' component={InfoDetail} options={{ headerShown: false }} />
+                <Stack.Screen name='Topup' component={Topup} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

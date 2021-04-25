@@ -318,7 +318,10 @@ export default class Profile extends Component {
 
 
                                         </View>
-                                        <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
+                                            {account.isFashionista ? (<MaterialIcons style={{ marginLeft: Utils.scale(5, Const.Horizontal), marginTop: Utils.scale(10, Const.Vertical) }} name='stars' size={20} color='white' />) : (<View></View>)}
+                                        </View>
                                         <Text style={Style.profile.email}>{account.email}</Text>
                                         <View style={Style.profile.basicInfo}>
                                             <Text style={Style.profile.basicSmallInfo}>{account.postNumber}{"\n"}Posts</Text>
@@ -377,7 +380,7 @@ export default class Profile extends Component {
                                     </View>
                                 </View>
                                 <View style={Style.profile.information}>
-                                <Entypo style={Style.profile.info_icon} size={20} name='location' color='#2A7EA0' />
+                                    <Entypo style={Style.profile.info_icon} size={20} name='location' color='#2A7EA0' />
                                     <Text style={Style.profile.info_text}>
                                         Đến từ <Text style={{ fontWeight: "bold" }}>
                                             {account.address}
@@ -385,7 +388,7 @@ export default class Profile extends Component {
                                     </Text>
                                 </View>
                                 <View style={Style.profile.information}>
-                                <FontAwesome style={Style.profile.info_icon} size={20} name='birthday-cake' color='#2A7EA0'/>
+                                    <FontAwesome style={Style.profile.info_icon} size={20} name='birthday-cake' color='#2A7EA0' />
                                     <Text style={Style.profile.info_text}>
                                         Ngày sinh <Text style={{ fontWeight: "bold" }}>
                                             {this.formatBirthday(account.dob)}
@@ -393,7 +396,7 @@ export default class Profile extends Component {
                                     </Text>
                                 </View>
                                 <View style={Style.profile.information}>
-                                <Entypo style={Style.profile.info_icon} size={20} name='phone' color='#2A7EA0'/>
+                                    <Entypo style={Style.profile.info_icon} size={20} name='phone' color='#2A7EA0' />
                                     <Text style={Style.profile.info_text}>
                                         Điện thoại <Text style={{ fontWeight: "bold" }}>
                                             {account.phone}
@@ -401,7 +404,7 @@ export default class Profile extends Component {
                                     </Text>
                                 </View>
                                 <View style={Style.profile.information}>
-                                <FontAwesome5 style={Style.profile.info_icon} size={20} name='transgender' color='#2A7EA0'/>
+                                    <FontAwesome5 style={Style.profile.info_icon} size={20} name='transgender' color='#2A7EA0' />
                                     <Text style={Style.profile.info_text}>
                                         Giới tính <Text style={{ fontWeight: "bold" }}>
                                             {this.formatGender(account.gender)}

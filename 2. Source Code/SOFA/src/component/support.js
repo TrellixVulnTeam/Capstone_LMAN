@@ -183,7 +183,9 @@ export default class UpdateProfile extends Component {
                             console.log(response);
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                 ToastAndroid.show('Bạn đã đăng kí thành công. Hãy chờ phản hồi từ chúng tôi nhé!', ToastAndroid.LONG);
-                                this.componentDidMount();
+                                this.checkFashionistaRequest();
+                                this.checkLockRequest();
+                                this.checkFashionista();
                             } else {
                                 if (response.code == Const.REQUEST_CODE_FAILED) {
                                     ToastAndroid.show('Gửi đăng kí không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);

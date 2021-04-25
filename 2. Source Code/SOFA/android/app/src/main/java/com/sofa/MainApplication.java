@@ -72,7 +72,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
-    ZaloPaySDK.init(15034, Environment.SANDBOX);
+    ZaloPaySDK.init(554, Environment.SANDBOX);
   }
 
   /**

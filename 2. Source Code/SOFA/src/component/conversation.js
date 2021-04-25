@@ -517,7 +517,7 @@ const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem,
                         >
                             <View style={[
                                 data.isMyMessage ? styles.messageSendContentBounder : styles.messageReceiveContentBounder,
-                                data.isMyMessage ? { backgroundColor: bounderColor } : { backgroundColor: 'rgba(200,200,200,1)' },
+                                data.isMyMessage ? { backgroundColor: bounderColor } : { backgroundColor: 'rgba(220,220,220,1)' },
                                 data.isMyMessage || !(nextIndex.fromAccountId != data.fromAccountId || disTimeNext > 60000) ? styles.messageReceiveContentBounderWithoutAva : styles.messageReceiveContentBounderWithAva,
                                 data.isMyMessage && (!nextIndex.isMyMessage || disTimeNext > 60000) ? styles.messageSendContentBounderEnd : {},
                                 data.isMyMessage && (!preIndex.isMyMessage || disTimePre > 60000) ? styles.messageSendContentBounderStart : {},
@@ -525,7 +525,8 @@ const Message = ({ friendAccount, data, bounderColor, index, onPressMessageItem,
                                 !data.isMyMessage && (preIndex.isMyMessage || disTimePre > 60000) ? styles.messageReceiveContentBounderStart : {},
 
                             ]}>
-                                <Text style={[styles.messageContentText]}>{data.content}</Text>
+                                <Text style={[styles.messageContentText
+                                    , data.isMyMessage ? { color: 'white' } : { color: 'black' }]}>{data.content}</Text>
                             </View>
                         </TouchableWithoutFeedback>
                     ) : (<View></View>)}
@@ -661,7 +662,6 @@ const styles = StyleSheet.create({
     },
     messageContentText: {
         alignSelf: 'flex-start',
-        color: 'white',
         fontFamily: 'Segoe UI',
         fontSize: 15,
     },
@@ -695,7 +695,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 15,
         borderWidth: 0.8,
-        borderColor: 'gray'
+        borderColor: 'gray',
+        paddingRight: scale(45, Horizontal)
     },
     messageBoxActionBounder: { position: 'absolute', flexDirection: 'row', right: scale(20, Horizontal), top: scale(15, Vertical) },
     messageBoxIconImage: {

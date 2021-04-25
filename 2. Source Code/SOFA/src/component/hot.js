@@ -358,11 +358,15 @@ export default class Hot extends Component {
                     </TouchableWithoutFeedback>
 
                     <View style={Style.newsfeed.ArticleHeader}>
-                        <Text
-                            onPress={() => this.navigateProfile(post.accountPost)}
-                            style={Style.newsfeed.ArticleAuthor}>
-                            {post.firstName + ' ' + post.lastName}
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text
+                                onPress={() => this.navigateProfile(post.accountPost)}
+                                style={Style.newsfeed.ArticleAuthor}>
+                                {post.firstName + ' ' + post.lastName}
+                            </Text>
+                            {post.isFashionista ? (<MaterialIcons style={{ marginLeft: scale(5, Horizontal) }} name='stars' size={15} color='white' />) : (<View></View>)}
+
+                        </View>
                         <TouchableOpacity
                             onPress={() =>
                                 this.props.navigation.navigate('PostDetail', { postID: post.id })

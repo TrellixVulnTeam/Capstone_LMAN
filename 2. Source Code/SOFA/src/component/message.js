@@ -135,6 +135,8 @@ export default class Message extends Component {
                 listTemp[i].lastMessage = item.content;
                 listTemp[i].isReaded = false;
                 listTemp[i].timeUpdate = time.setHours(time.getHours() + 7);
+                listTemp[i].lastSender = item.fromAccountId
+                console.log(listTemp[i]);
             }
         }
         this.setState({ listConversation: this.sortListConversation(listTemp) });

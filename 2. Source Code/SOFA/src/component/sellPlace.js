@@ -27,6 +27,7 @@ import * as NotificationService from '../service/notificationService';
 import * as FollowService from '../service/followService';
 import PostMenu from './postMenu';
 import PushNotification from "react-native-push-notification";
+import Session from '../common/session';
 
 export default class SellPlace extends Component {
     constructor(props) {
@@ -75,6 +76,8 @@ export default class SellPlace extends Component {
                         console.log(reason);
                         if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                             ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                            this.setState({ isLoading: false, isSelectImage: true })
+                            this.props.navigation.goBack();
                         } else {
                             ToastAndroid.show('Không tìm thấy bài viết cho sản phẩm này!', ToastAndroid.SHORT);
                             this.setState({ isLoading: false, isSelectImage: true })
@@ -89,6 +92,10 @@ export default class SellPlace extends Component {
 
     componentDidMount() {
         this._screenFocus = this.props.navigation.addListener('focus', () => {
+            if (!Session.getInstance().token || Session.getInstance().token.length == 0) {
+                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                this.props.navigation.goBack();
+            }
             this.setState({ isLoading: true });
             const { post, newRequest } = this.props.route.params;
             const { newRequestScreen } = this.state;
