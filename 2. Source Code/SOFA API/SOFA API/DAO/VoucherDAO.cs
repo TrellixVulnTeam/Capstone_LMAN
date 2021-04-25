@@ -1,4 +1,5 @@
 ﻿using SOFA_API.Common;
+using SOFA_API.DTO;
 using SOFA_API.ViewModel.Voucher;
 using System;
 using System.Collections.Generic;
@@ -33,14 +34,18 @@ namespace SOFA_API.DAO
         ///   eg: { "Title": "title 1", "Image": "aqbcd","code" :"ABCD", "Description":"Description","Content": "Content","Fromdate":"2019-07-26T00:00:00", "ToDate": "2019-07-26T00:00:00", "Quantity": -1}
         /// </param>
         /// <returns></returns>
-        public int AddVoucher(AddVoucherViewModelIn addVoucher)
+        public Voucher AddVoucher(AddVoucherViewModelIn addVoucher)
         {
-            int data = 0;
+            Voucher data = null;
             string sql = "EXEC dbo.addVoucher @Title , @Code , @Content , @Description , @Image , @FromDate , @ToDate , @IsExpress , @Quantity";
             try
             {
                 int isExpress = (DateTime.Compare(DateTime.Now, addVoucher.ToDate) < 0) ? 0 : 1;
-                data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { addVoucher.Title, addVoucher.Code, addVoucher.Content, addVoucher.Description, addVoucher.Image, addVoucher.FromDate, addVoucher.ToDate, isExpress, addVoucher.Quantity });
+                DataTable res = DataProvider.Instance.ExecuteQuery(sql, new object[] { addVoucher.Title, addVoucher.Code, addVoucher.Content, addVoucher.Description, addVoucher.Image, addVoucher.FromDate, addVoucher.ToDate, isExpress, addVoucher.Quantity });
+                if (res.Rows.Count > 0)
+                {
+                    data = new Voucher(res.Rows[0]);
+                }
             }
             catch (Exception e)
             {
@@ -161,6 +166,15 @@ namespace SOFA_API.DAO
                 Utils.Instance.SaveLog(e.ToString());
             }
             return viewModelOut;
+        }
+        public int UpdateVoucherImage(int voucherID, string imageURL)
+        {
+            int res = 0;
+
+            string sql = "EXEC UpdateVoucherImage @voucherID , @imageURL";
+            res = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { voucherID, imageURL });
+
+            return res;
         }
 
     }

@@ -41,6 +41,7 @@ namespace SOFA_API.Common
         public const string ASSETS_PATH_POST_IMAGE = @"@username\post_image\";
         public const string ASSETS_PATH_QUERY_IMAGE = @"@username\query_image\";
         public const string ASSETS_PATH_MESSAGE_IMAGE = @"@username\message_image\";
+        public const string ASSETS_PATH_VOUCHER_IMAGE = @"voucher\";
 
         public const string DOMAIN_ASSETS = @"https://chientranhvietnam.org/assets/";
 

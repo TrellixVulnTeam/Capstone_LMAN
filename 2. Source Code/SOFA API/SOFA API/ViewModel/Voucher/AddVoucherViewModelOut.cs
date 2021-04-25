@@ -9,6 +9,16 @@ namespace SOFA_API.ViewModel.Voucher
 {
     public class AddVoucherViewModelOut : BaseModelOut
     {
+        public DTO.Voucher Voucher { get; set; }
 
+        public AddVoucherViewModelOut()
+        {
+            Voucher = new DTO.Voucher();
+        }
+
+        public AddVoucherViewModelOut(DTO.Voucher voucher)
+        {
+            Voucher = voucher;
+        }
     }
 }

@@ -49,7 +49,7 @@ namespace SOFA_API.DTO
             Image = row["Image"].ToString(); ;
             FromDate = (DateTime)row["FromDate"];
             ToDate = (DateTime)row["ToDate"]; ;
-            IsExprires = (bool)row["IsExprires"];
+            IsExprires = (bool)row["IsExpires"];
         }
     }
 }

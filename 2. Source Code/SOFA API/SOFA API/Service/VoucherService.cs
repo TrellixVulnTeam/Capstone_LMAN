@@ -1,8 +1,10 @@
 ﻿using SOFA_API.Common;
 using SOFA_API.DAO;
+using SOFA_API.DTO;
 using SOFA_API.ViewModel.Voucher;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -38,15 +40,37 @@ namespace SOFA_API.Service
         public AddVoucherViewModelOut AddVoucher(AddVoucherViewModelIn modelIn)
         {
             AddVoucherViewModelOut modelOut = new AddVoucherViewModelOut();
-            int result = VoucherDAO.Instance.AddVoucher(modelIn);
-            if (result > 0)
+            try
             {
-                modelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                AddVoucherViewModelIn model = modelIn;
+                model.Image = "";
+                Voucher result = VoucherDAO.Instance.AddVoucher(model);
+                if (result != null && result.Id > 0)
+                {
+                    string filename = result.Id + ".png";
+                    string path = Const.ASSETS_PATH_VOUCHER_IMAGE;
+                    string imageContent = modelIn.Image;
+                    Utils.Instance.SaveImageFromBase64String(imageContent, path, filename);
+                    string imageUrl = Path.Combine(path, filename);
+                    int res = VoucherDAO.Instance.UpdateVoucherImage(result.Id, imageUrl);
+                    if (res > 0)
+                    {
+                        result.Image = imageUrl;
+                    }
+                    modelOut.Voucher = result;
+                    modelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                }
+                else
+                {
+                    modelOut.Code = Const.REQUEST_CODE_FAILED;
+                    modelOut.ErrorMessage = MessageUtils.ERROR_ADD_VOUCHER_FAILED;
+                }
             }
-            else
+            catch (Exception e)
             {
+                Utils.Instance.SaveLog(e.ToString());
                 modelOut.Code = Const.REQUEST_CODE_FAILED;
-                modelOut.ErrorMessage = MessageUtils.ERROR_ADD_VOUCHER_FAILED;
+                modelOut.ErrorMessage = e.ToString();
             }
             return modelOut;
         }
