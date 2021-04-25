@@ -8,6 +8,8 @@ import { AVATAR } from '../../image/index';
 import { ScrollView } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import { getMessageTime, scale } from '../common/utils';
+import Session from '../common/session';
+import { StatusBar } from 'react-native';
 
 
 export default class Balance extends Component {
@@ -113,6 +115,7 @@ export default class Balance extends Component {
         ];
     }
     formatMoney(number) {
+        if (number == 0) return '0';
         var str = '';
         var temp = number;
         let length = 0;
@@ -131,7 +134,15 @@ export default class Balance extends Component {
     componentWillUnmount() { }
 
     componentDidMount() {
-        this.getBalance();
+        this._screenFocus = this.props.navigation.addListener('focus', () => {
+            if (!Session.getInstance().token || Session.getInstance().token.length == 0) {
+                this.props.navigation.goBack();
+            }
+            this.setState({ avatarUri: Const.assets_domain + Session.getInstance().account.avatarUri });
+            this.getBalance();
+        });
+        this._screenUnfocus = this.props.navigation.addListener('blur', () => {
+        });
     }
 
     render() {
@@ -139,13 +150,13 @@ export default class Balance extends Component {
 
         return (
             <View style={{
-                backgroundColor: '#2a7ea0'
             }}>
+                <StatusBar backgroundColor={'rgba(0,0,0,0.8)'} />
                 <View>
                     <ImageBackground
                         source={avatarUri ? { uri: avatarUri } : AVATAR}
                         style={Style.balance.container}>
-                        <View style={{ backgroundColor: '#2a7ea0' }}>
+                        <View style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
                             <Text
                                 style={{
                                     fontWeight: 'bold',
@@ -222,6 +233,7 @@ export default class Balance extends Component {
                                 <FlatList
                                     data={listTransaction}
                                     renderItem={({ item, index }) => {
+                                        console.log(item);
                                         return (
                                             <MyListItem
                                                 transactionId={item.transactionId}
@@ -254,6 +266,22 @@ export default class Balance extends Component {
 }
 class MyListItem extends Component {
 
+    formatMoney(number) {
+        if (number == 0) return '0';
+        var str = '';
+        var temp = number;
+        let length = 0;
+        while (temp > 0) {
+            let num = temp % 10;
+            temp = Math.floor(temp / 10);
+            if (length % 3 == 0 && length > 0) {
+                str = '.' + str;
+            }
+            str = num + str;
+            length++;
+        }
+        return str;
+    }
     render() {
         return (
             <TouchableOpacity >
@@ -266,19 +294,17 @@ class MyListItem extends Component {
                             marginHorizontal: 10,
                             marginTop: 10,
                         }}>
-                        {this.props.typeName}
+                        {this.props.typeName == 'Top Up Account' ? 'Nạp tiền vào ví' : 'Giao dịch trả phí'}
                     </Text>
                     <View>
                         {this.props.typeId != 1 && (
                             <Text style={Style.balance.textSuccess}>
-                                +{this.props.amount}
-                VND
+                                +{this.formatMoney(this.props.amount)} VND
                             </Text>
                         )}
                         {this.props.typeId == 1 && (
                             <Text style={Style.balance.textDanger}>
-                                -{this.props.amount}
-                VND
+                                -{this.formatMoney(this.props.amount)} VND
                             </Text>
                         )}
                     </View>

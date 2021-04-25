@@ -159,19 +159,19 @@ export default class Topup extends Component {
         this.subscription = payZaloBridgeEmitter.addListener(
             'EventPayZalo',
             (data) => {
+                this.setState({ isLoading: false });
                 if (data.returnCode == 1) {
-                    alert('Giao dịch thành công!');
+                    this.props.navigation.goBack();
                 } else {
-                    alert('Giao dịch thất bại!');
+                    ToastAndroid.show('Giao dịch không thành công!', ToastAndroid.SHORT);
                 }
             }
         );
-        console.log(this.subscription);
 
     }
 
     componentWillUnmount() {
-        // this.subscription.remove();
+        this.subscription.remove();
     }
 
     render() {
