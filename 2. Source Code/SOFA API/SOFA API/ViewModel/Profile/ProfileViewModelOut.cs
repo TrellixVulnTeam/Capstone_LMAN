@@ -24,28 +24,31 @@ namespace SOFA_API.ViewModel.Profile
         public int PostNumber { get; set; }
         public string UserName { get; set; }
         public string Role { get; set; }
+        public bool IsFashionista { get; set; }
         public List<ProfileFollowerViewModelOut> ListFollower { get; set; }
         public ProfileViewModelOut() : base()
         {
 
         }
-        public ProfileViewModelOut(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, string avatar, int followerNumber, int postNumber, string username, string role, List<ProfileFollowerViewModelOut> listFollower): base()
+
+        public ProfileViewModelOut(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, string avatar, int followerNumber, int postNumber, string userName, string role, bool isFashionista, List<ProfileFollowerViewModelOut> listFollower)
         {
-            this.AccountID = accountID;
-            this.FirstName = firstName;
-            this.LastName = lastName;
-            this.Gender = gender;
-            this.DOB = dOB;
-            this.Email = email;
-            this.Phone = phone;
-            this.Address = address;
-            this.AvatarUri = avatarUri;
-            this.Avatar = avatar;
-            this.FollowerNumber = followerNumber;
-            this.PostNumber = postNumber;
-            this.UserName = username;
-            this.Role = role;
-            this.ListFollower = listFollower;
+            AccountID = accountID;
+            FirstName = firstName;
+            LastName = lastName;
+            Gender = gender;
+            DOB = dOB;
+            Email = email;
+            Phone = phone;
+            Address = address;
+            AvatarUri = avatarUri;
+            Avatar = avatar;
+            FollowerNumber = followerNumber;
+            PostNumber = postNumber;
+            UserName = userName;
+            Role = role;
+            IsFashionista = isFashionista;
+            ListFollower = listFollower;
         }
 
         public ProfileViewModelOut(DataRow row) : base()
@@ -65,6 +68,7 @@ namespace SOFA_API.ViewModel.Profile
             this.UserName = row["UserName"].ToString();
             this.Role = null;
             this.ListFollower = null;
+            IsFashionista = Convert.IsDBNull(row["isFashionista"]) ? false : (bool)row["IsFashionista"];
         }
     }
 }
