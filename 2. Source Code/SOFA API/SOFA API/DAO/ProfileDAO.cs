@@ -36,7 +36,7 @@ namespace SOFA_API.DAO
         /// <returns>Profile by it accountID</returns>
         public ProfileViewModelOut GetProfileModelByAccountID (int accountId)
         {
-            ProfileViewModelOut profile = null;
+            ProfileViewModelOut profile = new ProfileViewModelOut();
 
             string sql = "EXEC getProfileByAccountID @accountId";
             string sqlGetPostNum = "Select COUNT(*) from Post where AccountPost = " + accountId;
