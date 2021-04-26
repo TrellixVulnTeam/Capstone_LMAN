@@ -167,3 +167,19 @@ Where accLogs.TransactionId = tr.Id and accLogs.AccountID= @AccountID
 	End Catch
 END
 GO
+
+/****** getVoucherByID ******/
+
+DROP PROC IF EXISTS GetPostByID
+GO
+CREATE PROC GetPostByID
+@postID INT
+AS
+BEGIN
+	SELECT Post.Id, Content, PrivacyID, [Name] AS Privacy, [Time], AccountPost, FirstName, LastName, Avatar, BodyInfoID, IsVerified, [Type]
+	FROM dbo.Post
+	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
+	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
+	WHERE Post.Id = @postID;
+END
+GO
