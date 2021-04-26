@@ -15,6 +15,7 @@ import * as signalR from '@microsoft/signalr';
 import CheckBox from '@react-native-community/checkbox';
 import * as OnlineService from '../service/onlineService';
 import OnlineWSS from '../service/onlineWSS';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 export default class Login extends Component {
     constructor(props) {
@@ -25,7 +26,8 @@ export default class Login extends Component {
             isLoading: true,
             isValidUser: true,
             errMsg: 'Error',
-            rememberMe: false
+            rememberMe: false,
+            isHiddenPassword: true,
         }
 
     }
@@ -253,7 +255,7 @@ export default class Login extends Component {
             console.log(error);
         }
     }
-    facebookSignin(){
+    facebookSignin() {
         Alert.alert(
             "Đăng nhập với Facebook",
             "Tính năng này đang được phát triển, vui lòng thử lại sau",
@@ -268,6 +270,9 @@ export default class Login extends Component {
     onRememberMe() {
         this.setState({ rememberMe: !this.state.rememberMe })
 
+    }
+    setHiddenPassword() {
+        this.setState((prev) => ({ isHiddenPassword: !prev.isHiddenPassword }));
     }
 
     render() {
@@ -303,12 +308,17 @@ export default class Login extends Component {
                                 </View>
                                 <View style={styles.inputView} >
                                     <Text style={styles.inputTitle}>Mật khẩu</Text>
-                                    <TextInput
-                                        value={this.state.password}
-                                        secureTextEntry
-                                        placeholder='Mật khẩu'
-                                        style={styles.inputText}
-                                        onChangeText={text => this.setState({ password: text, isValidUser: !this.stateisValidUser })} />
+                                    <View style={styles.inputViewPassword}>
+                                        <TextInput
+                                            value={this.state.password}
+                                            secureTextEntry={this.state.isHiddenPassword}
+                                            placeholder='Mật khẩu'
+                                            style={styles.inputTextPassword}
+                                            onChangeText={text => this.setState({ password: text, isValidUser: !this.stateisValidUser })} />
+                                        <TouchableOpacity style={styles.iconEye} onPress={() => this.setHiddenPassword()}>
+                                            <Entypo size={20} name={this.state.isHiddenPassword ? 'eye' : 'eye-with-line'} color='#2A7EA0' />
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
                             {this.state.isValidUser ? null :
@@ -403,10 +413,22 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginTop: Utils.scale(20, Const.Horizontal)
     },
+    inputViewPassword: {
+        flexDirection: 'row'
+    },
+    inputTextPassword: {
+        width: '94%',
+        height: Utils.scale(40, Const.Horizontal),
+        borderBottomWidth: Utils.scale(1, Const.Horizontal),
+        borderBottomColor: "#DBDBDB",
+    },
     inputText: {
         height: Utils.scale(40, Const.Horizontal),
         borderBottomWidth: Utils.scale(1, Const.Horizontal),
         borderBottomColor: "#DBDBDB",
+    },
+    iconEye: {
+        alignSelf: 'center'
     },
     forgot: {
         color: "#2A7EA0",

@@ -477,7 +477,7 @@ export default class Newsfeed extends Component {
             <View
                 style={Style.newsfeed.Article}>
                 <TouchableOpacity
-                    onPressOut={() =>
+                    onPress={() =>
                         this.props.navigation.navigate('PostDetail', { postID: post.id })
                     }
                     style={Style.common.flexRow}>
