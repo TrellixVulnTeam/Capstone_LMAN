@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SOFA_API.ViewModel.BaseModel;
+using System.Data;
+
 
 
 namespace SOFA_API.ViewModel.Voucher
