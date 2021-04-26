@@ -1,5 +1,6 @@
 ﻿using SOFA_API.Common;
 using SOFA_API.DAO;
+using SOFA_API.DTO;
 using SOFA_API.ViewModel.Message;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace SOFA_API.Service
             try
             {
                 listMess = MessageDAO.Instance.GetMessageByConversationId(cid);
-                if(listMess != null)
+                if (listMess != null)
                 {
                     listMess.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 }
@@ -51,7 +52,7 @@ namespace SOFA_API.Service
                     throw new Exception("Can get conversation");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Utils.Instance.SaveLog(e.ToString());
                 listMess.Code = Const.REQUEST_CODE_FAILED;
@@ -92,12 +93,30 @@ namespace SOFA_API.Service
             return listMess;
         }
 
-        public MessageViewModelOut SetDeleteFlagForMessage(int messageId, bool isSenderDelete)
+        public MessageViewModelOut SetDeleteFlagForMessage(int userID, int messageId, bool isSenderDelete)
         {
+            bool senderDelete = isSenderDelete;
             MessageViewModelOut newMessage = new MessageViewModelOut();
             try
             {
-                int result = MessageDAO.Instance.SetDeleteFlagForMessage(messageId, isSenderDelete);
+
+                Message message = MessageDAO.Instance.GetMessageByID(messageId);
+                if (message.FromAccountId == userID)
+                {
+                    senderDelete = true;
+                }
+                else if (message.ToAccountId == userID)
+                {
+                    senderDelete = false;
+                }
+                else
+                {
+                    newMessage.Code = Const.REQUEST_CODE_FAILED;
+                    newMessage.ErrorMessage = MessageUtils.ERROR_DONT_HAVE_PERMISSION;
+                    return newMessage;
+                }
+
+                int result = MessageDAO.Instance.SetDeleteFlagForMessage(messageId, senderDelete);
                 if (result == 0)
                 {
                     newMessage.Code = Const.REQUEST_CODE_FAILED;
@@ -107,7 +126,8 @@ namespace SOFA_API.Service
                 {
                     newMessage.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 newMessage.ErrorMessage = e.ToString();
                 newMessage.Code = Const.REQUEST_CODE_FAILED;
@@ -132,7 +152,7 @@ namespace SOFA_API.Service
                     //save image
                     Utils.Instance.SaveImageFromBase64String(message.ImageBase64, path, Path.GetFileName(message.ImageUrl));
                 }
-                
+
                 newMessage = MessageDAO.Instance.createNewMessage(message);
                 if (newMessage.Code != Const.REQUEST_CODE_SUCCESSFULLY)
                 {

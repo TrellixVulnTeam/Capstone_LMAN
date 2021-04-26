@@ -17,7 +17,10 @@ export default class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            account: {},
+            account: {
+                firstName: '',
+                lastName: ''
+            },
             avatarUri: '',
             token: '',
             listImageAll: [],
@@ -167,17 +170,22 @@ export default class Profile extends Component {
     }
 
     componentDidMount() {
-        console.log('My Profile');
-        this.setState({ account: {}, avatarUri: '', pageNumber: 1, listImageAll: [] });
-        LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+        this.setState({
+            account: {
+                firstName: '', lastName: ''
+            }, avatarUri: '', pageNumber: 1, listImageAll: []
+        });
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
-            console.log('focus');
-            this.setState({ account: {}, avatarUri: '', pageNumber: 1, listImageAll: [] });
+            this.setState({ account: { firstName: '', lastName: '' }, avatarUri: '', pageNumber: 1, listImageAll: [] });
             this.getProfile();
             this.getListImage(1);
         });
         this._unfocus = this.props.navigation.addListener('blur', () => {
-            this.setState({ account: {}, avatarUri: '', pageNumber: 1, listImageAll: [] });
+            this.setState({
+                account: {
+                    firstName: '', lastName: ''
+                }, avatarUri: '', pageNumber: 1, listImageAll: []
+            });
         });
     }
 

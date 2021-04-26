@@ -103,12 +103,12 @@ export default class Message extends Component {
             })
             .catch(reason => {
                 this.setState({ isLoading: false });
-                console.log(reason);
                 if ((reason.code == Const.REQUEST_CODE_NOT_LOGIN)) {
                     ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                     this.props.navigation.goBack();
                 } else {
                     ToastAndroid.show("Tải danh sách thất bại! Hãy thử lại!", ToastAndroid.LONG);
+                    console.log(reason);
                 }
             })
     }
@@ -147,7 +147,6 @@ export default class Message extends Component {
 
     messageConnectionHub() {
         let token = Session.getInstance().token;
-        let account = Session.getInstance().account;
         if (token) {
             if (typeof this.messageConnection === 'undefined') {
                 this.messageConnection = new signalR.HubConnectionBuilder()
@@ -209,12 +208,11 @@ export default class Message extends Component {
     }
 
     componentDidMount() {
-        console.log('connect from message list');
         this.messageConnectionHub();
-
         this._screenFocus = this.props.navigation.addListener('focus', () => {
-            if (!Session.getInstance().token || Session.getInstance().token.length == 0) {
-                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+            let token = Session.getInstance().token;
+            if (!token || token.length == 0) {
+                ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.SHORT);
                 this.props.navigation.goBack();
             } else {
                 this.setState({ account: Session.getInstance().account });
@@ -232,10 +230,6 @@ export default class Message extends Component {
         if (this.messageConnection) {
             this.messageConnection.stop();
             this.messageConnection = undefined;
-            console.log('disconnect from message list');
-        }
-        if (this.backHandler) {
-            this.backHandler.remove();
         }
     }
     render() {

@@ -32,9 +32,12 @@ export default class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            account: {},
+            account: {
+                firstName: '',
+                lastName: ''
+            },
             avatarUri: '',
-            isLogin: true,
+            isLogin: false,
         }
     }
     getData = async (key) => {
@@ -59,42 +62,18 @@ export default class Profile extends Component {
     }
 
     getProfile = async () => {
-        const { account } = this.state;
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    var header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                        "Authorization": 'Bearer ' + result.toString().substr(1, result.length - 2)
-                    };
-                    let url = Const.domain + 'api/profile';
-                    Request.Get(url, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                this.setState({ account: response });
-                                this.setState({ avatarUri: Const.assets_domain + response.avatarUri });
-                                this.setState({ isLogin: true });
-                            } else {
-                                this.props.navigation.navigate('Login')
-                            }
-                        })
-                        .catch(reason => {
-                            console.log(reason);
-                            this.props.navigation.navigate('Login')
-
-                        });
-                } else {
-                    this.setState({ isLogin: false });
-                }
-            })
-            .catch(reason => {
-                this.setState({ isLogin: false });
-            })
+        let token = Session.getInstance().token;
+        let account = Session.getInstance().account;
+        if (token && token.length > 0 && account) {
+            this.setState({ account: account });
+            this.setState({ avatarUri: Const.assets_domain + account.avatarUri });
+            this.setState({ isLogin: true });
+        } else {
+            this.setState({ isLogin: false });
+        }
     }
 
     logout() {
-
         Alert.alert(
             "Đăng xuất?",
             "Bạn có muốn đăng xuất không?",
@@ -170,8 +149,7 @@ export default class Profile extends Component {
     }
 
     componentDidMount() {
-        console.log('My Account');
-        this.getProfile();
+        // this.getProfile();
         this._unsubcribe = this.props.navigation.addListener('focus', () => {
             this.setState({ account: {}, avatarUri: '' });
             this.getProfile();

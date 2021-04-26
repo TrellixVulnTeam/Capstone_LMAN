@@ -19,6 +19,7 @@ import * as Utils from "../common/utils";
 import { scale } from '../common/utils';
 import { Horizontal, Vertical } from '../common/const';
 import * as NotificationService from '../service/notificationService';
+import Session from '../common/session';
 
 
 export default class Notification extends Component {
@@ -53,66 +54,66 @@ export default class Notification extends Component {
     }
 
     checkLoginToken = async () => {
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    this.setState({ token: result.toString().substr(1, result.length - 2) });
-                }
-            })
-            .catch(reason => {
-                this.setState({ token: '' });
-                console.log(reason);
-            })
-        await this.getData('user')
-            .then(result => {
-                if (result) {
-                    this.setState({ user: result });
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-            })
+        let token = Session.getInstance().token;
+        if (token && token.length > 0) {
+            this.setState({ token: token });
+        } else {
+            ToastAndroid.show('Hãy đăng nhập để sự dụng tính năng này', ToastAndroid.SHORT);
+            this.setState({ token: '' });
+            this.props.navigation.goBack();
+        }
+        // await this.getData('user')
+        //     .then(result => {
+        //         if (result) {
+        //             this.setState({ user: result });
+        //         }
+        //     })
+        //     .catch(reason => {
+        //         console.log(reason);
+        //     })
     }
 
     getAllNotification = async (page) => {
-
-        NotificationService.getNotiByID(page, Const.NOTIFICATION_ROWS_OF_PAGE)
-            .then(response => {
-                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    let listNotiRes = response.listNoti;
-                    if (page > 1) {
-                        console.log('load more', listNotiRes.length);
-                        if (listNotiRes.length > 0) {
-                            this.setState({
-                                listNotification: [...this.state.listNotification, ...listNotiRes],
-                                listNotificationRefreshing: false,
-                            });
-                        } else {
-                            this.setState({ listNotificationRefreshing: false });
+        let token = Session.getInstance().token;
+        if (token && token.length > 0) {
+            NotificationService.getNotiByID(page, Const.NOTIFICATION_ROWS_OF_PAGE)
+                .then(response => {
+                    if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        let listNotiRes = response.listNoti;
+                        if (page > 1) {
+                            console.log('load more', listNotiRes.length);
+                            if (listNotiRes.length > 0) {
+                                this.setState({
+                                    listNotification: [...this.state.listNotification, ...listNotiRes],
+                                    listNotificationRefreshing: false,
+                                });
+                            } else {
+                                this.setState({ listNotificationRefreshing: false });
+                            }
                         }
-                    }
-                    else {
-                        console.log('reload', listNotiRes.length);
-                        if (listNotiRes.length > 0) {
-                            this.setState({ listNotification: listNotiRes, listNotificationRefreshing: false });
-                        } else {
-                            this.setState({ listNotificationRefreshing: false });
+                        else {
+                            console.log('reload', listNotiRes.length);
+                            if (listNotiRes.length > 0) {
+                                this.setState({ listNotification: listNotiRes, listNotificationRefreshing: false });
+                            } else {
+                                this.setState({ listNotificationRefreshing: false });
+                            }
                         }
-                    }
 
-                } else {
-                    ToastAndroid.show('Tải thông báo không thành công!', ToastAndroid.SHORT);
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                    this.props.navigation.goBack();
-                    ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
-                } else {
-                    ToastAndroid.show('Tải thông báo không thành công!', ToastAndroid.LONG);
-                }
-            })
+                    } else {
+                        ToastAndroid.show('Tải thông báo không thành công!', ToastAndroid.SHORT);
+                    }
+                })
+                .catch(reason => {
+                    if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
+                        this.props.navigation.goBack();
+                        ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
+                    } else {
+                        ToastAndroid.show('Tải thông báo không thành công!', ToastAndroid.LONG);
+                        console.log(reason);
+                    }
+                })
+        }
     }
 
     componentDidMount() {

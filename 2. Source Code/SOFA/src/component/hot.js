@@ -56,18 +56,13 @@ export default class Hot extends Component {
     postMenu = createRef();
 
     checkLoginToken = async () => {
-        AuthService.getProfile()
-            .then((response) => {
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({ account: response, isLogin: true });
-                } else {
-                    this.setState({ account: {}, isLogin: false });
-                }
-            })
-            .catch((reason) => {
-                console.log(reason);
-                this.setState({ account: {}, isLogin: false });
-            });
+        let account = Session.getInstance().account;
+        let token = Session.getInstance().token;
+        if (token && token.length > 0) {
+            this.setState({ account: account, isLogin: true });
+        } else {
+            this.setState({ account: {}, isLogin: false });
+        }
     };
 
     getAllPost = async (page) => {

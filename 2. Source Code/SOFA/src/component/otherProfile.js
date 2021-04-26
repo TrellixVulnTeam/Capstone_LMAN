@@ -322,7 +322,7 @@ export default class Profile extends Component {
                                             <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
                                             {account.isFashionista ? (<MaterialIcons style={{ marginLeft: Utils.scale(5, Const.Horizontal), marginTop: Utils.scale(10, Const.Vertical) }} name='stars' size={20} color='white' />) : (<View></View>)}
                                         </View>
-                                        <Text style={Style.profile.email}>{account.email}</Text>
+                                        {/* <Text style={Style.profile.email}>{account.email}</Text> */}
                                         <View style={Style.profile.basicInfo}>
                                             <Text style={Style.profile.basicSmallInfo}>{account.postNumber}{"\n"}Posts</Text>
                                             <TouchableOpacity onPress={() => this.onClickFollowNumber()}>
@@ -395,14 +395,14 @@ export default class Profile extends Component {
                                         </Text>
                                     </Text>
                                 </View>
-                                <View style={Style.profile.information}>
+                                {/* <View style={Style.profile.information}>
                                     <Entypo style={Style.profile.info_icon} size={20} name='phone' color='#2A7EA0' />
                                     <Text style={Style.profile.info_text}>
                                         Điện thoại <Text style={{ fontWeight: "bold" }}>
                                             {account.phone}
                                         </Text>
                                     </Text>
-                                </View>
+                                </View> */}
                                 <View style={Style.profile.information}>
                                     <FontAwesome5 style={Style.profile.info_icon} size={20} name='transgender' color='#2A7EA0' />
                                     <Text style={Style.profile.info_text}>

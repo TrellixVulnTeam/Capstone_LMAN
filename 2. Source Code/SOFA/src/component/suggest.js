@@ -35,6 +35,7 @@ import * as NotificationService from '../service/notificationService';
 import * as FollowService from '../service/followService';
 import * as RecommendService from '../service/recommendService';
 import * as InfoService from '../service/infoService';
+import Session from '../common/session';
 
 export default class Suggest extends Component {
     constructor(props) {
@@ -187,36 +188,21 @@ export default class Suggest extends Component {
 
     checkLoginToken = async () => {
         this.setState({ isLoading: true });
-        AuthService.getProfile()
-            .then((response) => {
-                if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({ account: response, isLogin: true });
-                    this.setState({ isLoading: false });
-                    this.getListInfo();
-                } else {
-                    this.setState({ account: {}, isLogin: false });
-                    ToastAndroid.show('Bạn phải đăng nhập để sử dụng tính năng này!', ToastAndroid.LONG,);
-                    this.props.navigation.dispatch(
-                        StackActions.replace('BottomNav', {
-                            isRefreshing: false
-                        })
-                    )
-                }
-            })
-            .catch((reason) => {
-                console.log(reason);
-                this.setState({ account: {}, isLogin: false });
-                if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
-                    ToastAndroid.show('Bạn phải đăng nhập để sử dụng tính năng này!', ToastAndroid.LONG,);
-                } else {
-                    ToastAndroid.show('Có lỗi xảy ra! Vui lòng thử lại!', ToastAndroid.LONG,);
-                }
-                this.props.navigation.dispatch(
-                    StackActions.replace('BottomNav', {
-                        isRefreshing: false
-                    })
-                )
-            });
+        let account = Session.getInstance().account;
+        let token = Session.getInstance().token;
+        if (token && token.length > 0) {
+            this.setState({ account: account, isLogin: true });
+            this.setState({ isLoading: false });
+            this.getListInfo();
+        } else {
+            this.setState({ account: {}, isLogin: false });
+            ToastAndroid.show('Bạn phải đăng nhập để sử dụng tính năng này!', ToastAndroid.LONG,);
+            this.props.navigation.dispatch(
+                StackActions.replace('BottomNav', {
+                    isRefreshing: false
+                })
+            )
+        }
     }
 
 
@@ -317,10 +303,7 @@ export default class Suggest extends Component {
 
     componentDidMount() {
         this._screenFocus = this.props.navigation.addListener('focus', () => {
-            console.log(this.props.route);
-            // if (this.props.route && this.props.route.params && this.props.route.params.isRefresh == true) { 
             this.checkLoginToken();
-            // }
         });
         this._screenFocus = this.props.navigation.addListener('blur', () => {
             this.setState({

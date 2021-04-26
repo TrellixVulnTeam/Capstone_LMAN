@@ -1,4 +1,5 @@
 ﻿using SOFA_API.Common;
+using SOFA_API.DTO;
 using SOFA_API.ViewModel.Message;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,20 @@ namespace SOFA_API.DAO
                 return instance;
             }
             private set { instance = value; }
+        }
+
+        public Message GetMessageByID(int messageID)
+        {
+            Message message = null;
+
+            string sql = "SELECT * FROM dbo.Message WHERE Id = " + messageID;
+            DataTable dataTable = DataProvider.Instance.ExecuteQuery(sql);
+            if (dataTable.Rows.Count > 0)
+            {
+                message = new Message(dataTable.Rows[0]);
+            }
+
+            return message;
         }
 
         /// <summary>

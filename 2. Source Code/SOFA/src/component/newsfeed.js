@@ -59,30 +59,33 @@ export default class Newsfeed extends Component {
     postMenu = createRef();
 
     loadUnreadNotification(isStartConnection) {
-        NotificationService.getUnreadNotification(1, 100)
-            .then((response) => {
-                this.setState({ numberUnreadNotification: response.listNoti.length });
-                PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
-                if (isStartConnection) {
-                    this.notificationConnection();
-                }
-            })
-            .catch((reason) => {
-                console.log(reason);
-            });
-        MessageService.getNumberUnreadMessage()
-            .then(response => {
-                if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                    this.setState({ numberUnreadMessage: response.numberUnreadMessage });
+        let token = Session.getInstance().token;
+        if (token && token.length > 0) {
+            NotificationService.getUnreadNotification(1, 100)
+                .then((response) => {
+                    this.setState({ numberUnreadNotification: response.listNoti.length });
                     PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
                     if (isStartConnection) {
-                        this.messageConnectionHub();
+                        this.notificationConnection();
                     }
-                }
-            })
-            .catch(reason => {
-                console.log(reason);
-            })
+                })
+                .catch((reason) => {
+                    console.log(reason);
+                });
+            MessageService.getNumberUnreadMessage()
+                .then(response => {
+                    if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
+                        this.setState({ numberUnreadMessage: response.numberUnreadMessage });
+                        PushNotification.setApplicationIconBadgeNumber(this.state.numberUnreadNotification + this.state.numberUnreadMessage);
+                        if (isStartConnection) {
+                            this.messageConnectionHub();
+                        }
+                    }
+                })
+                .catch(reason => {
+                    console.log(reason);
+                })
+        }
     }
 
     notificationConnection() {
@@ -219,14 +222,6 @@ export default class Newsfeed extends Component {
             }
         });
         this._screenUnfocus = this.props.navigation.addListener('blur', () => {
-            // if (this.connection) {
-            //     this.connection.stop();
-            //     this.connection = undefined;
-            // }
-            // if (this.messageConnection) {
-            //     this.messageConnection.stop();
-            //     this.messageConnection = undefined;
-            // }
         });
     }
 

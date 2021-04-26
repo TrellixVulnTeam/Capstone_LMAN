@@ -60,7 +60,8 @@ namespace SOFA_API.Controllers
         [HttpPost("deletemessage")]
         public ActionResult DeleteMessage(int messageId, bool isSenderDelete)
         {
-            MessageViewModelOut message = MessageService.Instance.SetDeleteFlagForMessage(messageId, isSenderDelete);
+            int userID = Utils.Instance.GetUserID(User.Claims);
+            MessageViewModelOut message = MessageService.Instance.SetDeleteFlagForMessage(userID, messageId, isSenderDelete);
             return Ok(message);
         }
     }

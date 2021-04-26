@@ -11,8 +11,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
 import DropDownPicker from 'react-native-dropdown-picker';
 import ImagePicker from 'react-native-image-crop-picker';
-import LinearGradient from 'react-native-linear-gradient'
-
+import LinearGradient from 'react-native-linear-gradient';
+import { StackActions } from '@react-navigation/native';
 
 import * as Request from '../common/request';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -59,7 +59,7 @@ export default class CreatePost extends Component {
                 skinColor: 0
             },
             listInfo: [],
-            isShowIntro: true
+            isShowIntro: false
         }
     }
     getData = async (key) => {
@@ -86,63 +86,25 @@ export default class CreatePost extends Component {
 
     checkLoginToken = async () => {
         this.setState({ isLoading: true });
-        await this.getData('token')
-            .then(result => {
-                if (result) {
-                    let token = result.toString().substr(1, result.length - 2);
-                    var header = {
-                        "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-                        "Accept": 'application/json',
-                        "Authorization": 'Bearer ' + token,
-                    };
-                    var uri = Const.domain + 'api/profile';
-                    Request.Get(uri, header)
-                        .then(response => {
-                            if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                this.setState({ isLoading: false });
-                                this.setState({ account: response, isLogin: true, token: token });
-                            } else {
-                                this.setState({ isLoading: false });
-                                this.setState({ account: {}, isLogin: false, token: '' });
-                                ToastAndroid.show(
-                                    'Hãy đăng nhập để thực hiện việc này',
-                                    ToastAndroid.LONG,
-                                );
-                                this.props.navigation.goBack();
-                            }
-                        })
-                        .catch(reason => {
-                            this.setState({ isLoading: false });
-                            this.setState({ account: {}, isLogin: false, token: '' });
-                            ToastAndroid.show(
-                                'Hãy đăng nhập để thực hiện việc này',
-                                ToastAndroid.LONG,
-                            );
-                            this.props.navigation.goBack();
-                        })
-                } else {
-                    this.setState({ isLoading: false });
-                    ToastAndroid.show(
-                        'Hãy đăng nhập để thực hiện việc này',
-                        ToastAndroid.LONG,
-                    );
-                    this.props.navigation.goBack();
-                }
-            })
-            .catch(reason => {
-                this.setState({ isLoading: false });
-                this.setState({ token: '' });
-                console.log(reason);
-                ToastAndroid.show(
-                    'Hãy đăng nhập để thực hiện việc này',
-                    ToastAndroid.LONG,
-                );
-                this.props.navigation.goBack();
-            })
+        let token = Session.getInstance().token;
+        let account = Session.getInstance().account;
+        if (token && token.length > 0) {
+            this.setState({ isLoading: false });
+            this.setState({ account: account, isLogin: true, token: token });
+            if (Session.getInstance().settings) {
+                this.setState({ isShowIntro: Session.getInstance().settings.createPostIntro ? Session.getInstance().settings.createPostIntro : false });
+            }
+            this.props.navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible: false
+            });
+        } else {
+            this.setState({ isLoading: false });
+            ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.SHORT);
+            this.props.navigation.goBack();
+        }
     }
 
     getListInfo = () => {
-        const { token } = this.state;
         InfoService.getListInfo()
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -169,21 +131,6 @@ export default class CreatePost extends Component {
                     ToastAndroid.show('Tải số đo không thành công!', ToastAndroid.LONG);
                     console.log(reason);
                 }
-            })
-
-        var header = {
-            "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
-            "Accept": 'application/json',
-            "Authorization": 'Bearer ' + token,
-        };
-        var uri = Const.domain + 'api/info';
-        Request.Get(uri, header)
-            .then(response => {
-
-            })
-            .catch(reason => {
-                console.log(reason);
-                Alert.alert('Lỗi rồi', 'Có lỗi xảy ra');
             })
     }
 
@@ -345,22 +292,13 @@ export default class CreatePost extends Component {
     }
 
     componentDidMount() {
-        this.checkLoginToken();
         this._screenFocus = this.props.navigation.addListener('focus', () => {
-            console.log(Session.getInstance().settings.createPostIntro)
-            if (Session.getInstance().settings) {
-                this.setState({ isShowIntro: Session.getInstance().settings.createPostIntro ? Session.getInstance().settings.createPostIntro : false });
-                console.log(this.state.isShowIntro);
-            }
             this.checkLoginToken();
-            this.props.navigation.dangerouslyGetParent().setOptions({
-                tabBarVisible: false
-            });
         });
         this._screenFocus = this.props.navigation.addListener('blur', () => {
             this.setState({ isShowIntro: false });
             this.props.navigation.dangerouslyGetParent().setOptions({
-                tabBarVisible: false
+                tabBarVisible: true
             });
         });
     }
@@ -373,12 +311,12 @@ export default class CreatePost extends Component {
                 label: 'Chỉ mình tôi',
                 icon: () => <FontAwesome5 name='user-shield' size={20} color={'#9E9E9E'} />
             },
-            {
-                value: 2,
-                label: 'Chỉ bạn bè',
-                icon: () => <FontAwesome5 name='user-friends' size={20} color={'#9E9E9E'} />
+            // {
+            //     value: 2,
+            //     label: 'Chỉ bạn bè',
+            //     icon: () => <FontAwesome5 name='user-friends' size={20} color={'#9E9E9E'} />
 
-            },
+            // },
             {
                 value: 3,
                 label: 'Công khai',
@@ -642,23 +580,21 @@ export default class CreatePost extends Component {
                     visible={this.state.isShowIntro}
                     onRequestClose={() => this.setState({ isShowIntro: false })}
                 >
-                    <TouchableOpacity
-                        onPressOut={() => this.setState({ isShowIntro: false })}
-                        style={{ flex: 1 }}
-                    >
-                        <View style={{
-                            height: scale(400, Vertical),
-                            width: scale(300, Horizontal),
-                            backgroundColor: 'white',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                            marginTop: 'auto',
-                            marginBottom: 'auto',
-                            borderRadius: 10,
-                            elevation: 10,
-                            paddingHorizontal: scale(20, Horizontal),
-                            paddingVertical: scale(20, Vertical),
-                        }}>
+
+                    <View style={{
+                        height: scale(400, Vertical),
+                        width: scale(300, Horizontal),
+                        backgroundColor: 'white',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        marginTop: 'auto',
+                        marginBottom: 'auto',
+                        borderRadius: 10,
+                        elevation: 10,
+                        paddingHorizontal: scale(20, Horizontal),
+                        paddingVertical: scale(20, Vertical),
+                    }}>
+                        <ScrollView>
                             <Text style={{ fontWeight: 'bold' }}>Thông báo này chỉ hiển thị lần đầu</Text>
                             <Text>Có 2 dạng bài viết:</Text>
                             <Text style={{
@@ -703,8 +639,8 @@ export default class CreatePost extends Component {
                                     }}
                                 ><Text style={{ color: 'white' }}>Không nhắc lại</Text></TouchableOpacity>
                             </View>
-                        </View>
-                    </TouchableOpacity>
+                        </ScrollView>
+                    </View>
                 </Modal>
             </View >
         )
