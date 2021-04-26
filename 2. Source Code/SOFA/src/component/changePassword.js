@@ -21,6 +21,7 @@ export default class ChangePassword extends Component {
             transactionID: this.props.route.params.transactionID,
             code: this.props.route.params.code,
             isLoading: false,
+            isValidUser: true
         }
 
     }
@@ -160,13 +161,13 @@ export default class ChangePassword extends Component {
                     <View style={styles.signInContent}>
                         <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Đổi Mật khẩu</Text>
                         <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Nhập mật khẩu mới của bạn</Text>
-                        <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
+                        <View style={{ borderBottomColor: '#2A7EA0', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                     </View>
                     :
                     <View style={styles.signInContent}>
                         <Text style={{ fontSize: Utils.scale(38, Const.Horizontal), marginTop: Utils.scale(20, Const.Horizontal) }}>Đổi Mật khẩu!</Text>
                         <Text style={{ fontSize: Utils.scale(15, Const.Horizontal), opacity: Utils.scale(0.6, Const.Horizontal) }}>Nhập thông tin mật khẩu của bạn</Text>
-                        <View style={{ borderBottomColor: '#ff8683', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
+                        <View style={{ borderBottomColor: '#2A7EA0', borderBottomWidth: Utils.scale(4, Const.Horizontal), borderRadius: Utils.scale(10, Const.Horizontal), width: Utils.scale(50, Const.Horizontal), marginTop: Utils.scale(10, Const.Horizontal) }}></View>
                     </View>
                 }
                 <View style={styles.containerInput}>
@@ -199,16 +200,14 @@ export default class ChangePassword extends Component {
                     </View>
                 </View>
                 {this.state.isValidUser ? null :
-                    <Animatable.View duration={500}>
                         <Text style={styles.errMsg}>{this.state.errMsg}</Text>
-                    </Animatable.View>
                 }
                 <View style={styles.registerContainer}>
                     <TouchableOpacity style={styles.registerTouch} onPress={() => this.onConfirm()}>
                         <LinearGradient
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
-                            colors={['#fbb897', '#ff8683']}
+                            colors={['#91DFFF', '#2A7EA0']}
                             style={styles.registerBtn}>
                             <Text style={styles.registerText}>XÁC NHẬN</Text>
                         </LinearGradient>
@@ -251,7 +250,7 @@ const styles = StyleSheet.create({
         borderBottomColor: "#DBDBDB",
     },
     forgot: {
-        color: "#ff8683",
+        color: "#91DFFF",
         textAlign: 'right',
         fontWeight: 'bold',
         paddingRight: Utils.scale(40, Const.Horizontal),
