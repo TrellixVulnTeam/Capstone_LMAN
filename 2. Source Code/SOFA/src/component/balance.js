@@ -173,7 +173,6 @@ export default class Balance extends Component {
                         </View>
                     </ImageBackground>
                     <View style={Style.balance.mainContainer}>
-                        <View></View>
                         <View style={Style.balance.card}>
                             <View style={Style.profile.button}>
                                 <TouchableOpacity style={{
@@ -229,7 +228,9 @@ export default class Balance extends Component {
                                     backgroundColor: 'steelblue',
                                 }}
                             />
-                            <SafeAreaView>
+                            <SafeAreaView
+                                style={{ height: scale(350, Const.Vertical) }}
+                            >
                                 <FlatList
                                     data={listTransaction}
                                     renderItem={({ item, index }) => {

@@ -269,6 +269,9 @@ const styles = StyleSheet.create({
         paddingVertical: scale(10, Vertical),
         paddingHorizontal: scale(10, Horizontal)
     },
+    listSelectColorArea: {
+        paddingBottom: scale(10, Vertical)
+    },
     modalSelectChatColorHeader: {
         height: scale(70, Vertical),
         width: scale(400, Horizontal),
