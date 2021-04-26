@@ -514,9 +514,15 @@ namespace SOFA_API.Service
         /// <returns></returns>
         public PostViewModelOut RatePost(int postID, int accountLike, int ratePoint)
         {
+            PostViewModelOut result = new PostViewModelOut();
+            if (ratePoint<0 || ratePoint>5)
+            {
+                result.Code = Const.REQUEST_CODE_FAILED;
+                result.ErrorMessage = MessageUtils.ERROR_RATE_POST_POINT_INVALID;
+                return result;
+            }
             int ID = 0;
             ID = RateDAO.Instance.RatePost(postID, accountLike, ratePoint);
-            PostViewModelOut result = new PostViewModelOut();
             try
             {
                 if (ID != 0)

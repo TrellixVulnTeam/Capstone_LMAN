@@ -25,6 +25,7 @@ namespace SOFA_API.Common
         public const string ERROR_ADD_NEW_MESSAGE_FAILED = "Send new message failed";
         public const string ERROR_DELETE_MESSAGE_FAILED = "Delete message failed";
         public const string ERROR_DELETE_CONVERSATION_FAILED = "Delete conversation failed";
+        public const string ERROR_RATE_POST_POINT_INVALID= "Rate point invalid";
     }
 
 
