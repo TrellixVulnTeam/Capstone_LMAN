@@ -405,6 +405,13 @@ export const updateProfile = StyleSheet.create({
         elevation: 10
     },
 
+    buttonUpdate: {
+        bottom: scale(0, Vertical),
+        width: scale(400, Horizontal),
+        height: scale(50, Vertical),
+        elevation: 10
+    },
+
     buttonEmpty: {
         marginLeft: Utils.scale(10, Const.Horizontal),
         marginRight: Utils.scale(10, Const.Horizontal),

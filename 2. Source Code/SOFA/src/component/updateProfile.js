@@ -466,11 +466,7 @@ export default class UpdateProfile extends Component {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={Style.updateProfile.buttonAll}>
-                            {/* <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={Style.updateProfile.appButtonContainer}>
-                                <Text style={Style.updateProfile.appButtonText}>Hủy bỏ</Text>
-                            </TouchableOpacity> */}
-                            {/* <View style={Style.updateProfile.buttonEmpty}></View> */}
+                        <View style={Style.updateProfile.buttonUpdate}>
                             <TouchableOpacity onPress={() => this.updateInfomation()} style={Style.updateProfile.appButtonContainer}>
                                 <Text style={Style.updateProfile.appButtonText}>Cập nhật</Text>
                             </TouchableOpacity>
