@@ -8,6 +8,7 @@ import * as Request from '../common/request'
 import { LOGO_ICON, GOOGLE_ICON, FACEBOOK_ICON } from '../../image/index';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 export default class Register extends Component {
     constructor(props) {
@@ -21,7 +22,9 @@ export default class Register extends Component {
             phone: this.props.route.params.phone,
             errMsg: '',
             firstname: '',
-            lastname: ''
+            lastname: '',
+            isHiddenPassword: true,
+            isHiddenConfirmPassword: true,
         }
 
     }
@@ -37,7 +40,7 @@ export default class Register extends Component {
 
     validateUser() {
         let trimPW = this.state.password.trim();
-        if(trimPW != this.state.password || /\s/.test(this.state.password.trim()) || /\s/.test(this.state.username.trim())){
+        if (trimPW != this.state.password || /\s/.test(this.state.password.trim()) || /\s/.test(this.state.username.trim())) {
             this.setState({ isValidUser: false, errMsg: 'Tài khoản và Mật khẩu không bao gồm dấu cách' })
             return false;
         }
@@ -92,12 +95,12 @@ export default class Register extends Component {
                     if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                         Alert.alert(
                             'Đăng ký thành công',
-                            '',
+                            'Vui lòng đăng nhập để tham gia',
                             [
-                              {text: 'OK', onPress: () => this.props.navigation.navigate('Login')},
+                                { text: 'OK', onPress: () => this.props.navigation.navigate('Login') },
                             ],
-                            {cancelable: false},
-                          );
+                            { cancelable: false },
+                        );
                     } else {
                         if (response.code == Const.REQUEST_CODE_FAILED) {
                             this.setState({ isValidUser: false, errMsg: response.errorMessage })
@@ -110,6 +113,13 @@ export default class Register extends Component {
         }
     }
 
+    setHiddenPassword() {
+        this.setState((prev) => ({ isHiddenPassword: !prev.isHiddenPassword }));
+    }
+    setHiddenConfirmPassword(){
+        this.setState((prev) => ({ isHiddenConfirmPassword: !prev.isHiddenConfirmPassword }));
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -120,51 +130,62 @@ export default class Register extends Component {
                     </View>
                     <View style={styles.containerInput}>
                         <View style={styles.inputView} >
-                            <Text style={styles.inputTitle}>Tên tài khoản</Text>
+                            <Text style={styles.inputTitle}>Tên tài khoản *</Text>
                             <TextInput
                                 style={styles.inputText}
                                 placeholder='Tên tài khoản'
                                 onChangeText={text => this.setState({ username: text, isValidUser: !this.stateisValidUser })} />
                         </View>
                         <View style={styles.inputView} >
-                            <Text style={styles.inputTitle}>Mật khẩu</Text>
-                            <TextInput
-                                secureTextEntry
-                                placeholder='Mật khẩu'
-                                style={styles.inputText}
-                                onChangeText={text => this.setState({ password: text, isValidUser: !this.stateisValidUser })} />
+                            <Text style={styles.inputTitle}>Mật khẩu *</Text>
+                            <View style={styles.inputViewPassword}>
+                                <TextInput
+                                    value={this.state.password}
+                                    secureTextEntry={this.state.isHiddenPassword}
+                                    placeholder='Mật khẩu'
+                                    style={styles.inputTextPassword}
+                                    onChangeText={text => this.setState({ password: text, isValidUser: !this.stateisValidUser })} />
+                                <TouchableOpacity style={styles.iconEye} onPress={() => this.setHiddenPassword()}>
+                                    <Entypo size={20} name={this.state.isHiddenPassword ? 'eye' : 'eye-with-line'} color='#2A7EA0' />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                         <View style={styles.inputView} >
-                            <Text style={styles.inputTitle}>Xác nhận mật khẩu</Text>
-                            <TextInput
-                                secureTextEntry
-                                placeholder='Xác nhận mật khẩu'
-                                style={styles.inputText}
-                                onChangeText={text => this.checkConfirmPassword(text)} />
+                            <Text style={styles.inputTitle}>Xác nhận mật khẩu *</Text>
+                            <View style={styles.inputViewPassword}>
+                                <TextInput
+                                    secureTextEntry={this.state.isHiddenConfirmPassword}
+                                    placeholder='Xác nhận mật khẩu'
+                                    style={styles.inputTextPassword}
+                                    onChangeText={text => this.checkConfirmPassword(text)} />
+                                <TouchableOpacity style={styles.iconEye} onPress={() => this.setHiddenConfirmPassword()}>
+                                    <Entypo size={20} name={this.state.isHiddenConfirmPassword ? 'eye' : 'eye-with-line'} color='#2A7EA0' />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                         <View style={styles.inputView} >
-                            <Text style={styles.inputTitle}>Họ</Text>
+                            <Text style={styles.inputTitle}>Họ *</Text>
                             <TextInput
                                 placeholder='Họ'
                                 style={styles.inputText}
                                 onChangeText={text => this.setState({ lastname: text, isValidUser: !this.stateisValidUser })} />
                         </View>
                         <View style={styles.inputView} >
-                            <Text style={styles.inputTitle}>Tên</Text>
+                            <Text style={styles.inputTitle}>Tên *</Text>
                             <TextInput
                                 placeholder='Tên'
                                 style={styles.inputText}
                                 onChangeText={text => this.setState({ firstname: text, isValidUser: !this.stateisValidUser })} />
                         </View>
                         <View style={styles.inputView} >
-                            <Text style={styles.inputTitle}>Email</Text>
+                            <Text style={styles.inputTitle}>Email *</Text>
                             <TextInput
                                 placeholder='Email'
                                 style={styles.inputText}
                                 onChangeText={text => this.setState({ email: text, isValidUser: !this.stateisValidUser })} />
                         </View>
                         <View style={styles.inputView} >
-                            <Text style={styles.inputTitle}>Phone</Text>
+                            <Text style={styles.inputTitle}>Phone *</Text>
                             <TextInput
                                 style={styles.inputText}
                                 defaultValue={this.state.phone}
@@ -220,6 +241,18 @@ const styles = StyleSheet.create({
         marginBottom: Utils.scale(20, Const.Horizontal),
         justifyContent: "center",
         marginTop: Utils.scale(20, Const.Horizontal)
+    },
+    inputViewPassword: {
+        flexDirection: 'row'
+    },
+    inputTextPassword: {
+        width: '94%',
+        height: Utils.scale(40, Const.Horizontal),
+        borderBottomWidth: Utils.scale(1, Const.Horizontal),
+        borderBottomColor: "#DBDBDB",
+    },
+    iconEye: {
+        alignSelf: 'center'
     },
     inputText: {
         height: Utils.scale(40, Const.Horizontal),
