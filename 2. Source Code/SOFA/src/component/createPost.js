@@ -436,7 +436,7 @@ export default class CreatePost extends Component {
                             <TextInput
                                 multiline={true}
                                 onChangeText={(text) => this.setState({ content: text })}
-                                placeholder={'Hãy nói gì đó về phong cách này...'}
+                                placeholder={'Hãy nói gì đó về outfit này...'}
                                 value={content}
                                 style={styles().ArticleCaption}
                             />

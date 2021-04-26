@@ -2,6 +2,7 @@ import { Dimensions, StatusBar, PermissionsAndroid } from 'react-native';
 import * as Const from './const';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+
 const scale = (unit, direction) => {
     let { width, height } = Dimensions.get('window');
     let result = 0;

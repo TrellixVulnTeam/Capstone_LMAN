@@ -657,8 +657,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: scale(2, Vertical),
         marginLeft: scale(5, Horizontal),
-        borderWidth: 0.5,
-        borderColor: 'gray'
+        borderWidth: 0.1,
+        borderColor: 'gray',
     },
     messageContentText: {
         alignSelf: 'flex-start',

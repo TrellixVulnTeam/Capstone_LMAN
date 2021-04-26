@@ -37,6 +37,9 @@ export const REPORT_TYPE_POST = 1;
 export const REPORT_TYPE_USER = 2;
 export const REPORT_TYPE_COMMENT = 3;
 
+export const POST_TYPE_NORMAL = 0;
+export const POST_TYPE_PRODUCT = 1;
+
 export const NOTIFICATION_TYPE_LIKE = 1;
 export const NOTIFICATION_TYPE_COMMENT = 2;
 export const NOTIFICATION_TYPE_RATE = 3;

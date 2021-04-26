@@ -57,7 +57,7 @@ export default class MessageWSS {
                                                 PushNotification.localNotification({
                                                     channelId: 'Tin nhắn',
                                                     title: response.firstName + ' ' + response.lastName,
-                                                    message: data.content,
+                                                    message: data.imageUrl && data.imageUrl.length > 0 ? 'Hình ảnh' : data.content,
                                                 });
                                             }
                                         })
@@ -113,7 +113,7 @@ export default class MessageWSS {
                                 PushNotification.localNotification({
                                     channelId: 'Tin nhắn',
                                     title: response.firstName + ' ' + response.lastName,
-                                    message: data.content,
+                                    message: data.imageUrl && data.imageUrl.length > 0 ? 'Hình ảnh' : data.content,
                                 });
                             }
                         })

@@ -499,12 +499,14 @@ export default class Newsfeed extends Component {
 
                         </View>
                         <TouchableOpacity
+                            style={{ flexDirection: 'row' }}
                             onPress={() =>
                                 this.props.navigation.navigate('PostDetail', { postID: post.id })
                             }>
                             <Text style={Style.newsfeed.ArticleTime}>
                                 {Utils.calculateTime(post.time)}
                             </Text>
+                            <Text style={Style.newsfeed.ArticleTime}>{post.type == Const.POST_TYPE_PRODUCT ? ' - Shop' : ''}</Text>
                         </TouchableOpacity>
                     </View>
                     <MaterialCommunityIcons

@@ -152,7 +152,7 @@ export const newsfeed = StyleSheet.create({
     },
     articleMenuItem: {
         flexDirection: 'row',
-        height: scale(50, Vertical),
+        minHeight: scale(50, Vertical),
         borderBottomColor: '#9E9E9E',
         borderBottomWidth: 0.5,
         alignItems: 'center',

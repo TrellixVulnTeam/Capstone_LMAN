@@ -285,7 +285,8 @@ const styles = StyleSheet.create({
         width: scale(50, Horizontal),
         height: scale(50, Horizontal),
         borderRadius: 50,
-        resizeMode: 'cover'
+        resizeMode: 'cover',
+        marginLeft: scale(10, Horizontal)
     },
     CommentAuthor: {
         fontWeight: 'bold',
@@ -298,7 +299,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: scale(50, Vertical),
         backgroundColor: 'white',
-        width: scale(400, Horizontal),
+        width: scale(380, Horizontal),
+        marginHorizontal: scale(10, Horizontal),
+        borderRadius: 10,
         elevation: 10
     },
     CommentTextBox: {

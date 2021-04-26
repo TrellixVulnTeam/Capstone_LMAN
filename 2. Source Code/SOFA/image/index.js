@@ -1,4 +1,3 @@
-export const AVATAR = require('./man.png')
 export const USER_ICON = require('./user.png')
 export const GOOGLE_ICON = require('./google-symbol.png')
 export const FACEBOOK_ICON = require('./facebook.png')
@@ -15,4 +14,8 @@ export const APP_LOGO = require('./app_logo.png')
 export const WHITE_BACKGROUND = require('./white_background.png')
 export const GALAXY_BACKGROUND = require('./Background_Galaxy.png')
 export const OCEAN_BACKGROUND = require('./Background_Ocean.png')
+export const AVATAR_MALE = require('./avatar_male.png')
+export const AVATAR_FEMALE = require('./avatar_female.jpg')
+export const AVATAR = AVATAR_MALE
+
 
