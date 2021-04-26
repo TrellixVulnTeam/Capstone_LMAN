@@ -19,6 +19,7 @@ export class PostDetailComponent implements OnInit {
   postImg: string;
   totalRecord: number;
   page: 1;
+  isDeletedPost = false;
 
 
   constructor(private router: Router,
@@ -32,11 +33,13 @@ export class PostDetailComponent implements OnInit {
 
     this.apiService.get('post/AdminGetPostDetail?postID=' + this.postId).subscribe(response => {
       if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
+        this.isDeletedPost = false;
         this.postDetail = <any>response;
         this.postImg = CONST.assets_domain + this.postDetail.listImage[0].url;
         this.totalRecord = this.postDetail.listComment.length;
       }
       else {
+        this.isDeletedPost = true;
       }
     }, error => {
       console.log((<any>error).code);

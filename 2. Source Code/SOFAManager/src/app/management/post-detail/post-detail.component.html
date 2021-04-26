@@ -1,4 +1,4 @@
-<div style="padding-top: 100px;">
+<div *ngIf="!isDeletedPost" style="padding-top: 100px;">
     <div class="container" style="background-color: white; padding: 30px;">
         <div class="row">
             <div class="col-6">
@@ -60,4 +60,7 @@
         </div>
     </div>
     
+</div>
+<div *ngIf="isDeletedPost" style="padding-top: 100px; text-align: center;">
+    <h3>This post has been deleted</h3>
 </div>
