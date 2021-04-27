@@ -16,6 +16,10 @@ namespace SOFA_API.ViewModel.Voucher
         public int Quantity { get; set; }
         public string Image { get; set; }
 
+        public AdminVoucherModelOut()
+        {
+        }
+
         public AdminVoucherModelOut(DataRow row) : base()
         {
             Id = (int)row["Id"];

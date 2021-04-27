@@ -48,6 +48,7 @@ namespace SOFA_API.Service
                 }
 
                 AddVoucherViewModelIn model = modelIn;
+                string image = modelIn.Image;
                 model.Image = "";
 
                 Voucher result = VoucherDAO.Instance.AddVoucher(model);
@@ -55,7 +56,7 @@ namespace SOFA_API.Service
                 {
                     string filename = result.Id + ".png";
                     string path = Const.ASSETS_PATH_VOUCHER_IMAGE;
-                    string imageContent = modelIn.Image;
+                    string imageContent = image;
                     Utils.Instance.SaveImageFromBase64String(imageContent, path, filename);
                     string imageUrl = Path.Combine(path, filename);
                     int res = VoucherDAO.Instance.UpdateVoucherImage(result.Id, imageUrl);
@@ -162,7 +163,7 @@ namespace SOFA_API.Service
             AdminVoucherViewModelOut listVouchers = new AdminVoucherViewModelOut();
             try
             {
-                VoucherDetaiForUserViewModelOut viewModelOut = VoucherDAO.Instance.GetVoucherById(voucherId);
+                AdminVoucherModelOut viewModelOut = VoucherDAO.Instance.GetVoucherById(voucherId);
 
                 if (viewModelOut != null)
                 {
@@ -171,6 +172,33 @@ namespace SOFA_API.Service
                 }
                 else
                     throw new Exception("Voucher không tồn tại");
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+                listVouchers.Code = Const.REQUEST_CODE_FAILED;
+                listVouchers.ErrorMessage = e.Message;
+            }
+            return listVouchers;
+        }
+
+        public AdminVoucherViewModelOut GiveVoucher(int voucherId, int accountId)
+        {
+            AdminVoucherViewModelOut listVouchers = new AdminVoucherViewModelOut();
+            try
+            {
+                AdminVoucherModelOut viewModelOut = VoucherDAO.Instance.GetVoucherById(voucherId);
+
+                if (viewModelOut.Quantity > 0 && viewModelOut.ExpiredDate >= DateTime.Now)
+                {
+                    int result = VoucherDAO.Instance.GiveVoucher(voucherId, accountId);
+                    if (result > 0)
+                    {
+                        listVouchers.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    }
+                }
+                else
+                    throw new Exception("Voucher không tồn tại hoặc đã được sử dụng");
             }
             catch (Exception e)
             {

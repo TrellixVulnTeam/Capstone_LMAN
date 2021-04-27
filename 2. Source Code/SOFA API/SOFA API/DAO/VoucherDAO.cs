@@ -153,13 +153,17 @@ namespace SOFA_API.DAO
             }
         }
 
-        public VoucherDetaiForUserViewModelOut GetVoucherById(int voucherId)
+        public AdminVoucherModelOut GetVoucherById(int voucherId)
         {
-            VoucherDetaiForUserViewModelOut viewModelOut = new VoucherDetaiForUserViewModelOut();
+            AdminVoucherModelOut viewModelOut = new AdminVoucherModelOut();
             string sql = "EXEC dbo.GetVoucherById @VoucherId";
             try
             {
                 DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { voucherId });
+                if (data.Rows.Count > 0)
+                {
+                    viewModelOut = new AdminVoucherModelOut(data.Rows[0]);
+                }
             }
             catch (Exception e)
             {
@@ -175,6 +179,21 @@ namespace SOFA_API.DAO
             res = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { voucherID, imageURL });
 
             return res;
+        }
+        public int GiveVoucher(int voucherId, int accountId)
+        {
+            int result = 0;
+            try
+            {
+                string sql = "EXEc [dbo].[GiveVoucher] @voucherId , @accountId";
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { voucherId, accountId });
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+            return result;
         }
 
     }

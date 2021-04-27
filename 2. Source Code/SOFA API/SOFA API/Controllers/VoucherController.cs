@@ -82,5 +82,11 @@ namespace SOFA_API.Controllers
 
             return Ok(modelOut);
         }
+        [HttpPost("GiveVoucher")]
+        public ActionResult GiveVoucher([FromForm] int voucherId, [FromForm] int accountId)
+        {
+            AdminVoucherViewModelOut modelOut = VoucherService.Instance.GiveVoucher(voucherId, accountId);
+            return Ok(modelOut);
+        }
     }
 }

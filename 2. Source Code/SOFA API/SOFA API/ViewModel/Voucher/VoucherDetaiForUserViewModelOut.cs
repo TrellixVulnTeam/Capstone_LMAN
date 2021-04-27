@@ -19,6 +19,7 @@ namespace SOFA_API.ViewModel.Voucher
         public DateTime ToDate { get; set; }
         public bool IsExpiress { get; set; }
         public bool IsUsed { get; set; }
+        public int Quantity { get; set; }
 
         public VoucherDetaiForUserViewModelOut() : base()
         {
@@ -49,6 +50,7 @@ namespace SOFA_API.ViewModel.Voucher
             ToDate = (DateTime)row["ToDate"];
             IsExpiress = (bool)row["IsExpires"];
             IsUsed = (bool)row["IsUsed"];
+            Quantity = (int)row["Quantity"];
         }
     }
 }
