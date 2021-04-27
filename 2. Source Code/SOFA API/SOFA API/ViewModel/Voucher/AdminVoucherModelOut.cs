@@ -12,8 +12,9 @@ namespace SOFA_API.ViewModel.Voucher
         public string Title { get; set; }
         public string Content { get; set; }
         public string Code { get; set; }
-        public string CreatedBy { get; set; }
         public DateTime ExpiredDate { get; set; }
+        public int Quantity { get; set; }
+        public string Image { get; set; }
 
         public AdminVoucherModelOut(DataRow row) : base()
         {
@@ -21,8 +22,9 @@ namespace SOFA_API.ViewModel.Voucher
             Title = row["title"].ToString();
             Content = row["Content"].ToString();
             Code = row["Code"].ToString();
-            CreatedBy = row["CreatedBy"].ToString();
-            ExpiredDate = (DateTime)row["ExpiredDate"];
+            ExpiredDate = (DateTime)row["ToDate"];
+            Quantity = (int)row["Quantity"];
+            Image = row["Image"].ToString();
         }
     }
 }

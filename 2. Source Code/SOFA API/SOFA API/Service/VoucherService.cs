@@ -42,8 +42,14 @@ namespace SOFA_API.Service
             AddVoucherViewModelOut modelOut = new AddVoucherViewModelOut();
             try
             {
+                if (string.IsNullOrEmpty(modelIn.Description))
+                {
+                    modelIn.Description = "No description";
+                }
+
                 AddVoucherViewModelIn model = modelIn;
                 model.Image = "";
+
                 Voucher result = VoucherDAO.Instance.AddVoucher(model);
                 if (result != null && result.Id > 0)
                 {
