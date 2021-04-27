@@ -1,3 +1,0 @@
-Label,# Samples,Average,Median,90% Line,95% Line,99% Line,Min,Max,Error %,Throughput,Received KB/sec,Sent KB/sec
-GetNewfeeds,100,161,160,169,172,182,142,183,1.000%,87.56567,21.84,13.08
-TOTAL,100,161,160,169,172,182,142,183,1.000%,87.56567,21.84,13.08
