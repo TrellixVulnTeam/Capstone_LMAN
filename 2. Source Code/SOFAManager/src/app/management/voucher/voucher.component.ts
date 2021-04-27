@@ -41,7 +41,6 @@ export class VoucherComponent implements OnInit {
     let url = 'voucher/getallvoucher'
     this.apiService.get(url).subscribe(response => {
       if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
-        console.log(response);
         this.listVoucher = response['listVoucher'];
         this.defaultListVoucher = this.listVoucher;
         this.totalRecord = this.listVoucher.length;
@@ -62,15 +61,17 @@ export class VoucherComponent implements OnInit {
         this.voucher = result;
 
         let url = 'voucher/addVoucher';
+        let subStringBase64 = this.voucher.image.split(',')
         let formData = new FormData();
         formData.append('title', this.voucher.title);
-        formData.append('image', this.voucher.image);
+        formData.append('image', subStringBase64[1]);
         formData.append('code', this.voucher.code);
         formData.append('description', this.voucher.description);
         formData.append('content', this.voucher.content);
         formData.append('quantity', this.voucher.quantity.toString());
         formData.append('fromDate', this.voucher.fromDate.toUTCString());
         formData.append('toDate', this.voucher.toDate.toUTCString());
+        
         this.apiService.post(url, formData).subscribe(response => {
           if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
             this.ngOnInit();

@@ -44,6 +44,7 @@ import { FeedbackComponent } from './management/feedback/feedback.component';
 import { SupportComponent } from './management/support/support.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AddVoucherDialogComponent } from './management/add-voucher-dialog/add-voucher-dialog.component';
+import { VoucherPickerDialogComponent } from './voucher-picker-dialog/voucher-picker-dialog.component';
 
 
 @NgModule({
@@ -75,9 +76,10 @@ import { AddVoucherDialogComponent } from './management/add-voucher-dialog/add-v
     PostDetailComponent,
     FeedbackComponent,
     SupportComponent,
-    AddVoucherDialogComponent
+    AddVoucherDialogComponent,
+    VoucherPickerDialogComponent
   ],
-  entryComponents: [MatDialogConfirmComponent, AddVoucherDialogComponent],
+  entryComponents: [MatDialogConfirmComponent, AddVoucherDialogComponent, VoucherPickerDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

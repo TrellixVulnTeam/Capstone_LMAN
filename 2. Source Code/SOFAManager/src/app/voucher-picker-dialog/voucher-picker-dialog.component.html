@@ -1,0 +1,19 @@
+<div style="display: inline-block;">
+    <h2 mat-dialog-title style="display: inline-block;">Give voucher</h2>
+    <input style="display: inline-block; width: 150px; margin-left: 30px;" class="form-control" type="text" placeholder="Search code"
+                [(ngModel)]="keyword" (ngModelChange)="search()">
+</div>
+<div *ngFor="let voucher of listVoucher" class="card text-right" style="width: 100%;">
+    <div class="card-body">
+        <h5 class="card-title">{{voucher.title}}</h5>
+        <div style="display: inline-block;padding-bottom: 5px;">
+            <p style="display: inline-block; padding-right: 20px;">Code: <strong>{{voucher.code}}</strong> - Quantity: {{voucher.quantity}} - Expired date: {{voucher.expiredDate | date }}</p>
+            <img [src]="assetsDonmain + voucher.image" height="50" style="display: inline-block;">
+        </div>
+        <br>    
+        <a class="btn btn-primary" [mat-dialog-close]="voucher.id" style="color: white;">Select voucher</a>
+    </div>
+</div>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

@@ -10,6 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatDialogConfirmComponent } from '../mat-dialog-confirm/mat-dialog-confirm.component';
 import { ToastrService } from 'ngx-toastr';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { VoucherPickerDialogComponent } from 'src/app/voucher-picker-dialog/voucher-picker-dialog.component';
+import { Voucher } from 'src/model/voucher';
 
 
 @Component({
@@ -30,6 +32,7 @@ export class UserDetailComponent implements OnInit {
   totalRecordPost: number;
   pagePost: 1;
   faCheckCircle = faCheckCircle;
+  listVoucher: Array<Voucher> = new Array<Voucher>();
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -45,14 +48,15 @@ export class UserDetailComponent implements OnInit {
     const userDetail = this.apiService.get('user/GetUserDetailByID?id=' + this.accountId);
     const userBalance = this.apiService.get('balance/GetUserBalanceById?id=' + this.accountId);
     const userPost = this.apiService.get('post/GetPostByUserWithoutPaging?id=' + this.accountId);
+    const listVoucher = this.apiService.get('voucher/getallvoucher');
 
-    forkJoin([userDetail, userBalance, userPost]).subscribe(results => {
+    forkJoin([userDetail, userBalance, userPost, listVoucher]).subscribe(results => {
       this.userDetail = <any>results[0];
       this.userBalance = <any>results[1];
       this.totalRecordBalance = this.userBalance.listBalance.length;
       this.userPost = <any>results[2]["listPost"];
       this.totalRecordPost = this.userPost.length;
-      console.log(this.userDetail);
+      this.listVoucher = <any>results[3]["listVoucher"];
     });
   }
 
@@ -153,12 +157,37 @@ export class UserDetailComponent implements OnInit {
 
   
   onClickAddVoucher(){
-    
+    const dialogRef = this.dialog.open(VoucherPickerDialogComponent,
+      { width: '600px', height: '500px', data: this.listVoucher});
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          let formData = new FormData();
+          formData.append('voucherId', result);
+          formData.append('accountId', this.accountId.toString());
+          let url = 'voucher/GiveVoucher';
+          this.apiService.post(url, formData).subscribe(response => {
+            if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
+              this.notificationSuccess("Give voucher successfully");
+            }
+            else {
+              this.notificationFail("Give voucher Failed");
+            }
+          }, error => {
+            console.log((<any>error).code);
+          })
+        }
+      });
   }
 
 
   notificationSuccess(notification: string) {
     this.toastr.success(notification, '', {
+      timeOut: 2000, positionClass: 'toast-top-center'
+    });
+  }
+  notificationFail(notification: string) {
+    this.toastr.error(notification, '', {
       timeOut: 2000, positionClass: 'toast-top-center'
     });
   }
