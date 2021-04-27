@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
   pieChartPlugins = [];
 
   dashboardInfo: Dashboard = new Dashboard();
-  online: Online;
+  online: Online = new Online();
   faCircle = faCircle;
 
   constructor( private apiService: ApiService) { }
@@ -44,7 +44,6 @@ export class DashboardComponent implements OnInit {
       this.pieChartData = [this.dashboardInfo.numberOfPostVerified, this.dashboardInfo.totalPost - this.dashboardInfo.numberOfPostVerified]
 
       this.online = <any>results[1];
-      console.log(this.online);
     });
   }
 

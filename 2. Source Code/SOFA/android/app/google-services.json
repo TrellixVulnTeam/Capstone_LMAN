@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "149927872517-89br2hpvb0flmhkdj4c1o4kmu7prc1fu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sofa",
+            "certificate_hash": "51f2191fa88801320ebbb87ca73dd767661ab2ba"
+          }
+        },
+        {
           "client_id": "149927872517-von2g1ah2qfk4e19u6g80s7p6pfgisi3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
