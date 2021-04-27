@@ -21,6 +21,11 @@
             </select>
         </div>
     </div>
+    <div class="col-4">
+        <div style="">
+            <button style="width: 150px;" type="button" class="btn btn-success" (click)="onClickAddVoucher()">Add Voucher</button>
+        </div>
+    </div>
 </div>
 <div class="col-lg-12">
     <div class="card">
@@ -33,8 +38,9 @@
                             <th>Title</th>
                             <th>Content</th>
                             <th>Code</th>
-                            <th>Created by</th>
                             <th>Expired date</th>
+                            <th>Quantity</th>
+                            <th>Image</th>
                             <th>Option</th>
                         </tr>
                     </thead>
@@ -47,8 +53,10 @@
                             <td>{{voucher.title}}</td>
                             <td>{{truncateChar(voucher.content)}}</td>
                             <td>{{voucher.code}}</td>
-                            <td>{{voucher.createdBy}}</td>
                             <td>{{voucher.expiredDate | date }}</td>
+                            <td>{{voucher.quantity}}</td>
+                            <td><img style="max-height: 40px; max-width: 40px;"
+                                src="{{assetsDonmain + voucher.image}}"></td>
                             <td><a [routerLink]="[]" (click)="deleteVoucher(voucher.id)">
                                     delete
                               </a></td>

@@ -151,6 +151,11 @@ export class UserDetailComponent implements OnInit {
     });
   }
 
+  
+  onClickAddVoucher(){
+    
+  }
+
 
   notificationSuccess(notification: string) {
     this.toastr.success(notification, '', {

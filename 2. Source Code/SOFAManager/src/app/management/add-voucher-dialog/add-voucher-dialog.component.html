@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Add voucher</h2>
+<mat-dialog-content class="mat-typography">
+    <mat-form-field style="width: 100%;">
+        <mat-label>Title</mat-label>
+        <input matInput [(ngModel)]="voucher.title" type="text">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-content class="mat-typography">
+    <mat-form-field style="width: 100%;">
+        <mat-label>Content</mat-label>
+        <input matInput [(ngModel)]="voucher.content" type="text">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-content class="mat-typography">
+    <mat-form-field style="width: 100%;">
+        <mat-label>Code</mat-label>
+        <input matInput [(ngModel)]="voucher.code" type="text">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-content class="mat-typography">
+    <mat-form-field style="width: 100%;">
+        <mat-label>Quantity</mat-label>
+        <input matInput [(ngModel)]="voucher.quantity" type="number">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-content class="mat-typography">
+    <mat-form-field style="width: 100%;">
+        <input matInput [matDatepicker]="picker" [min]="this.today" placeholder="Expired date" (dateInput)="onInputDate($event)">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-label style="opacity: 0.8;">Image</mat-label>
+<input type="file" (change)="onSelectImage($event)">
+<img *ngIf="this.voucher.image.length > 0" [src]="this.voucher.image" height="100" style="margin-top: 5px;">
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button *ngIf="this.voucher.image.length > 0" mat-button [mat-dialog-close]="voucher" cdkFocusInitial>Ok</button>
+</mat-dialog-actions>

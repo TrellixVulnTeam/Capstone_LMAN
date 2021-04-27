@@ -43,6 +43,7 @@ import { PostDetailComponent } from './management/post-detail/post-detail.compon
 import { FeedbackComponent } from './management/feedback/feedback.component';
 import { SupportComponent } from './management/support/support.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AddVoucherDialogComponent } from './management/add-voucher-dialog/add-voucher-dialog.component';
 
 
 @NgModule({
@@ -73,9 +74,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatDialogConfirmComponent,
     PostDetailComponent,
     FeedbackComponent,
-    SupportComponent
+    SupportComponent,
+    AddVoucherDialogComponent
   ],
-  entryComponents: [MatDialogConfirmComponent],
+  entryComponents: [MatDialogConfirmComponent, AddVoucherDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

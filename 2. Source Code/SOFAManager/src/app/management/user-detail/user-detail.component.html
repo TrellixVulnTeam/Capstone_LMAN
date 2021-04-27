@@ -24,22 +24,25 @@
         <h5 style="padding-top: 15px;">Waist: {{userDetail.waistSize != 0 ? userDetail.height : "N/A"}}</h5>
         <h5 style="padding-top: 15px;">Hip: {{userDetail.hipSize != 0 ? userDetail.height : "N/A"}}</h5>
     </div>
-    <div class="col-3" style="padding-top: 20px;">
+    <div class="col-3" style="padding-top: 10px;">
         <div style="width: 150px;" class="text-center">
             <h3 *ngIf="userDetail.isActive" style="color: green;">Active</h3>
             <h3 *ngIf="!userDetail.isActive" style="color: red;">Inactive</h3>
         </div>
-        <div *ngIf="userDetail.isActive" style="padding-top: 15px;">
+        <div *ngIf="userDetail.isActive" style="padding-top: 10px;">
             <button style="width: 150px;" type="button" class="btn btn-danger" (click)="onClickBan(accountId)">Ban</button>
         </div>
-        <div *ngIf="!userDetail.isActive" style="padding-top: 15px;">
+        <div *ngIf="!userDetail.isActive" style="padding-top: 10px;">
             <button style="width: 150px;" type="button" class="btn btn-danger" (click)="onClickUnban(accountId)">Unban</button>
         </div>
-        <div style="padding-top: 15px;">
+        <div style="padding-top: 10px;">
             <button style="width: 150px;" type="button" class="btn btn-warning" (click)="onClickResetPassword(accountId)">Reset password</button>
         </div>
-        <div style="padding-top: 15px;">
+        <div style="padding-top: 10px;">
             <button style="width: 150px;" type="button" class="btn btn-success" (click)="onClickAddBalance(accountId)">Add balance</button>
+        </div>
+        <div style="padding-top: 10px;">
+            <button style="width: 150px;" type="button" class="btn btn-success" (click)="onClickAddVoucher()">Add Voucher</button>
         </div>
     </div>
 </div>

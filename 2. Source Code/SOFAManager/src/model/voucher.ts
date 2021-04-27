@@ -3,6 +3,7 @@ export class Voucher {
     title: '';
     content = '';
     code = '';
-    createdBy = '';
     expiredDate: Date = new Date();
+    quantity: number;
+    image: '';
   }

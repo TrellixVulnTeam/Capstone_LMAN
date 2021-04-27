@@ -10,6 +10,8 @@ import { UserBalance } from 'src/model/UserBalance';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDialogConfirmComponent } from '../mat-dialog-confirm/mat-dialog-confirm.component';
 import { ToastrService } from 'ngx-toastr';
+import { AddVoucherDialogComponent } from '../add-voucher-dialog/add-voucher-dialog.component';
+import { VoucherAdd } from 'src/model/VoucherAdd';
 
 @Component({
   selector: 'app-voucher',
@@ -25,18 +27,21 @@ export class VoucherComponent implements OnInit {
   page: 1;
   selectOptionList: string[];
   selectedValue: string;
+  voucher: VoucherAdd = new VoucherAdd();
+  assetsDonmain = CONST.assets_domain;
 
   constructor(private apiService: ApiService,
     private dialog: MatDialog,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,) { }
 
   ngOnInit() {
-    this.selectOptionList = ['Title', 'Content', 'Code', 'Created by'];
+    this.selectOptionList = ['Title', 'Content', 'Code'];
     this.selectedValue = 'Title';
 
     let url = 'voucher/getallvoucher'
     this.apiService.get(url).subscribe(response => {
       if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
+        console.log(response);
         this.listVoucher = response['listVoucher'];
         this.defaultListVoucher = this.listVoucher;
         this.totalRecord = this.listVoucher.length;
@@ -47,6 +52,38 @@ export class VoucherComponent implements OnInit {
     }, error => {
       console.log();
     })
+  }
+
+  onClickAddVoucher() {
+    const dialogRef = this.dialog.open(AddVoucherDialogComponent, { width: '320px' });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.voucher = result;
+
+        let url = 'voucher/addVoucher';
+        let formData = new FormData();
+        formData.append('title', this.voucher.title);
+        formData.append('image', this.voucher.image);
+        formData.append('code', this.voucher.code);
+        formData.append('description', this.voucher.description);
+        formData.append('content', this.voucher.content);
+        formData.append('quantity', this.voucher.quantity.toString());
+        formData.append('fromDate', this.voucher.fromDate.toUTCString());
+        formData.append('toDate', this.voucher.toDate.toUTCString());
+        this.apiService.post(url, formData).subscribe(response => {
+          if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
+            this.ngOnInit();
+            this.notificationSuccess("Approve successfully");
+          }
+          else {
+
+          }
+        }, error => {
+          console.log((<any>error).code);
+        })
+      }
+    });
   }
 
   search() {
@@ -68,11 +105,6 @@ export class VoucherComponent implements OnInit {
         case 'Code':
           this.listVoucher = this.listVoucher.filter(res => {
             return res.code.toLocaleLowerCase().match(this.keyword.toLocaleLowerCase())
-          });
-          break;
-        case 'Created by':
-          this.listVoucher = this.listVoucher.filter(res => {
-            return res.createdBy.toLocaleLowerCase().match(this.keyword.toLocaleLowerCase())
           });
           break;
         default:
@@ -122,7 +154,7 @@ export class VoucherComponent implements OnInit {
     });
   }
 
-  selectOption(){
+  selectOption() {
     this.search();
   }
 
