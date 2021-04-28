@@ -435,9 +435,9 @@ export default class PostDetail extends Component {
     }
 
     componentDidMount() {
-        this.checkLoginToken();
-        this.setState({ post: { id: 85 } });
-        this.getPostDetail(85);
+        // this.checkLoginToken();
+        // this.setState({ post: { id: 85 } });
+        // this.getPostDetail(85);
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.setState({ isLoading: true });
             this.checkLoginToken()
