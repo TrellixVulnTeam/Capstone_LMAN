@@ -89,7 +89,8 @@ namespace SOFA_API.Service
             }
             else
             {
-                result = BalanceDAO.Instance.TopUpAccount(topUpAccountModelIn);
+                string checkSum = topUpAccountModelIn.AccountId+""+ DateTimeOffset.Now.ToUnixTimeMilliseconds() +"";
+                result = BalanceDAO.Instance.TopUpAccount(topUpAccountModelIn.AccountId,-1, topUpAccountModelIn.Amount,checkSum, "Nạp tiền qua Admin");
                 if (result > 0)
                 {
                     topUpAccountModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
@@ -141,13 +142,15 @@ namespace SOFA_API.Service
                         string tempID = (string)dataJson["appuser"];
                         int userID = Int32.Parse(tempID);
                         long amount = (long)dataJson["amount"];
+                        /*
                         TopUpAccountModelIn topUpAccountModelIn = new TopUpAccountModelIn();
                         topUpAccountModelIn.AccountId = userID;
                         topUpAccountModelIn.Amount = amount;
                         topUpAccountModelIn.AdminId = -1;
                         topUpAccountModelIn.Description = "Nạp tiền ZaloPay";
                         topUpAccountModelIn.CheckSum = transactionID;
-                        int res = BalanceDAO.Instance.TopUpAccount(topUpAccountModelIn);
+                        */
+                        int res = BalanceDAO.Instance.TopUpAccount(userID,-1, amount, transactionID, "Nạp tiền ZaloPay");
                         if (res > 0)
                         {
                             zaloPayResultModel.ReturnCode = 1;

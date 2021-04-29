@@ -101,14 +101,14 @@ namespace SOFA_API.DAO
         /// This param require fields: AccountId , AdminId , Amount , Description
         /// </param>
         /// <returns></returns>
-        public int TopUpAccount(TopUpAccountModelIn topUp)
+        public int TopUpAccount( int userId, int adminId, decimal amount, string checkSum, string des)
         {
             int data = 0;
             TopUpAccountModelOut topUpAccountModelOut = new TopUpAccountModelOut();
             string sql = "EXEC dbo.topUpForAccount @AccountID , @Amount , @checkSum , @AdminID , @Description";
             try
             {
-                data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { topUp.AccountId, topUp.Amount, topUp.CheckSum, topUp.AdminId, topUp.Description });
+                data = DataProvider.Instance.ExecuteNonQuery(sql, new object[] {userId, amount, checkSum, adminId, des });
             }
             catch (Exception e)
             {
