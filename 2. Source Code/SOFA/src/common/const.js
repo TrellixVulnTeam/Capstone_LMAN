@@ -2,10 +2,10 @@ export const dimWidth = 400;
 export const dimHeigth = 711;
 export const Horizontal = 'Horizontal';
 export const Vertical = 'Vertical';
-export const domain = 'https://chientranhvietnam.org/sofaapi/'
-export const python_domain = 'https://chientranhvietnam.org/Python/'
-export const assets_domain = 'https://chientranhvietnam.org/assets/'
-export const host = 'chientranhvietnam.org'
+export const domain = 'https://sofamanagement.com/sofaapi/'
+export const python_domain = 'https://sofamangement.com/Python/'
+export const assets_domain = 'https://sofamanagement.com/assets/'
+export const host = 'sofamanagement.com'
 
 export const COMMENT_ROWS_OF_PAGE = 9
 export const NEWSFEED_ROWS_OF_PAGE = 5
