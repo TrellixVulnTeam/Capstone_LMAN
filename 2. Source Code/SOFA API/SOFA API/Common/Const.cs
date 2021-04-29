@@ -43,7 +43,7 @@ namespace SOFA_API.Common
         public const string ASSETS_PATH_MESSAGE_IMAGE = @"@username\message_image\";
         public const string ASSETS_PATH_VOUCHER_IMAGE = @"voucher\";
 
-        public const string DOMAIN_ASSETS = @"https://chientranhvietnam.org/assets/";
+        public const string DOMAIN_ASSETS = @"https://sofamaagement.com/assets/";
 
         public const int NOTIFICATION_TYPE_LIKE = 1;
         public const int NOTIFICATION_TYPE_COMMENT = 2;
