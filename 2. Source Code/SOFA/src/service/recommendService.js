@@ -15,6 +15,7 @@ export const getSimilarInfo = (infoID) => {
                         "Authorization": 'Bearer ' + token,
                     };
                     let uri = Const.python_domain + 'recommendation/getsimilar/' + infoID;
+                    console.log(uri);
                     Request.Get(uri, header)
                         .then(response => {
                             resolve(response);

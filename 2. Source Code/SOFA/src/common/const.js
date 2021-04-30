@@ -3,7 +3,7 @@ export const dimHeigth = 711;
 export const Horizontal = 'Horizontal';
 export const Vertical = 'Vertical';
 export const domain = 'https://sofamanagement.com/sofaapi/'
-export const python_domain = 'https://sofamangement.com/Python/'
+export const python_domain = 'https://sofamanagement.com/Python/'
 export const assets_domain = 'https://sofamanagement.com/assets/'
 export const host = 'sofamanagement.com'
 

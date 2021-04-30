@@ -75,7 +75,7 @@ namespace SOFA_API.Controllers
             {
                 //notification
                 NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_APPROVE_SUPPORT,
-                    Const.NOTIFICATION_CONTENT_APPROVE_FASHIONISTA_SUPPORT, 0, userId);
+                    Const.NOTIFICATION_CONTENT_APPROVE_FASHIONISTA_SUPPORT, 1, userId);
                 NotificationViewModelOut notiModelOut = NotificationService.Instance.CreatedNotificationForSupportRequest(modelIn);
                 notificationHub.Clients.User(notiModelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);
             }
@@ -99,12 +99,12 @@ namespace SOFA_API.Controllers
                 if (requestType == Const.SUPPORT_TYPE_FASHIONISTA)
                 {
                     modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_REJECT_SUPPORT,
-                    Const.NOTIFICATION_CONTENT_REJECT_FASHIONISTA_SUPPORT, 0, userId);
+                    Const.NOTIFICATION_CONTENT_REJECT_FASHIONISTA_SUPPORT, 1, userId);
                 }
                 if (requestType == Const.SUPPORT_TYPE_LOCKACCOUNT)
                 {
                     modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_REJECT_SUPPORT,
-                    Const.NOTIFICATION_CONTENT_REJECT_LOCKACCOUNT_SUPPORT, 0, userId);
+                    Const.NOTIFICATION_CONTENT_REJECT_LOCKACCOUNT_SUPPORT, 1, userId);
                 }
                 NotificationViewModelOut notiModelOut = NotificationService.Instance.CreatedNotificationForSupportRequest(modelIn);
                 notificationHub.Clients.User(notiModelOut.ToAccount.ToString()).SendAsync("NewNotification", modelOut);

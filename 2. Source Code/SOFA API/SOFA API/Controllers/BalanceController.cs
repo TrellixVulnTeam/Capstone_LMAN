@@ -71,7 +71,7 @@ namespace SOFA_API.Controllers
             {
                 //notification
                 NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_TOPUP_ACCOUNT,
-                    Const.NOTIFICATION_CONTENT_TOPUP_ACCOUNT + topUp.Amount + "vnđ", 0, topUp.AccountId);
+                    Const.NOTIFICATION_CONTENT_TOPUP_ACCOUNT + topUp.Amount + "vnđ", 1, topUp.AccountId);
                 NotificationViewModelOut notiModelOut = NotificationService.Instance.CreatedNotificationForSupportRequest(modelIn);
                 notificationHub.Clients.User(topUp.AccountId.ToString()).SendAsync("NewNotification", notiModelOut);
             }

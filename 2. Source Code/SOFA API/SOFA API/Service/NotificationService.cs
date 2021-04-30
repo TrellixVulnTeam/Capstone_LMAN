@@ -136,9 +136,9 @@ namespace SOFA_API.Service
                 {
                     notificationViewModelOut.FromAccountName = profile.LastName + " " + profile.FirstName;
                 }
-                else if (notificationViewModelOut.FromAccount == 0)
+                else if (notificationViewModelOut.FromAccount == 1)
                 {
-                    notificationViewModelOut.FromAccountName = "Cảnh báo hệ thống";
+                    notificationViewModelOut.FromAccountName = "Hệ thống";
                 }
             }
             catch (Exception) { }
@@ -282,7 +282,7 @@ namespace SOFA_API.Service
                     NotificationViewModelIn modelIn = new NotificationViewModelIn();
                     modelIn.TypeNotification = Const.NOTIFICATION_TYPE_FEEDBACK;
                     modelIn.Content = Const.NOTIFICATION_CONTENT_FEEDBACK;
-                    modelIn.FromAccount = 0;
+                    modelIn.FromAccount = 1;
                     modelIn.ToAccount = toAccountId;
                     modelIn.DateCreated = DateTime.Now;
 

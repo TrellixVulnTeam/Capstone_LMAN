@@ -55,7 +55,7 @@ namespace SOFA_API.ViewModel.Notification
 
         private string GetProfileFullName(int accountID)
         {
-            if (accountID == 0)
+            if (accountID == 1)
             {
                 return "Hệ thống";
             }
@@ -74,7 +74,7 @@ namespace SOFA_API.ViewModel.Notification
         }
         private void SetFromProfile(int accountID)
         {
-            if (accountID == 0)
+            if (accountID == 1)
             {
                 FromAccountName = "Quản trị viên";
                 FromAccountAvatar = "system/avatar/ava.png";

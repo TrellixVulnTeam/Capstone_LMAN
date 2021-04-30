@@ -88,8 +88,8 @@ export default class Topup extends Component {
     }
 
     async createOrder() {
-        ToastAndroid.show('Tính năng đang phát triển', ToastAndroid.SHORT);
-        return;
+        // ToastAndroid.show('Tính năng đang phát triển', ToastAndroid.SHORT);
+        // return;
         if (this.state.amount > 0) {
             this.setState({ isLoading: true });
             let apptransid = this.getCurrentDateYYMMDD() + '_' + new Date().getTime();
