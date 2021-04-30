@@ -127,7 +127,7 @@ export default class Notification extends Component {
 
     onPressNotification(noti) {
         this.setIsRead(noti)
-        if (noti.fromAccount != 0) {
+        if (noti.fromAccount != 1) {
             switch (noti.typeNotification) {
                 case Const.NOTIFICATION_TYPE_FOLLOW:
                     this.props.navigation.navigate('OtherProfile', { accountID: noti.fromAccount });

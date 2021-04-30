@@ -279,8 +279,8 @@ export const balance = StyleSheet.create({
         alignSelf: 'center',
     },
     balanceContainer: {
-        paddingVertical:scale(10, Vertical),
-        paddingHorizontal:scale(10, Horizontal),
+        paddingVertical: scale(10, Vertical),
+        paddingHorizontal: scale(10, Horizontal),
     },
     cardHeader: {
         marginBottom: 0,
@@ -290,8 +290,8 @@ export const balance = StyleSheet.create({
         position: 'relative',
         display: 'flex',
         backgroundColor: `rgba(255, 255, 255, 1)`,
-        marginVertical:scale(10, Vertical),
-        marginHorizontal:scale(10, Vertical),
+        marginVertical: scale(10, Vertical),
+        marginHorizontal: scale(10, Vertical),
         borderRadius: 20,
     },
 
@@ -663,7 +663,8 @@ export const noti = StyleSheet.create({
         height: scale(60, Vertical),
         width: scale(60, Vertical),
         borderRadius: 50,
-        marginLeft: scale(10, Horizontal)
+        marginLeft: scale(10, Horizontal),
+        backgroundColor: 'gray'
     },
 
     ArticleTime: { fontFamily: 'SanFranciscoText-Regular' },
