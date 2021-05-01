@@ -62,6 +62,7 @@ export default class Search extends Component {
             console.log(queryText, this.state.postTabPage);
             PostService.searchPostByKeyword(queryText, this.state.postTabPage)
                 .then(response => {
+                    this.setState({ postTabLoading: false });
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                         let listPostRes = response.listPost;
                         if (type == 1) {
@@ -69,7 +70,6 @@ export default class Search extends Component {
                             if (listPostRes.length > 0) {
                                 this.setState({ postTabPage: this.state.postTabPage + 1 });
                             }
-                            this.setState({ postTabLoading: false });
                         } else {
                             if (listPostRes.length > 0) {
                                 this.setState({ listPost: [...this.state.listPost, ...listPostRes], postTabPage: this.state.postTabPage + 1 })
@@ -85,6 +85,7 @@ export default class Search extends Component {
                     }
                 })
                 .catch(reason => {
+                    this.setState({ postTabLoading: false });
                     console.log(reason);
                     ToastAndroid.show('Lỗi trong quá trình tìm kiếm', ToastAndroid.LONG);
                 });
@@ -101,13 +102,13 @@ export default class Search extends Component {
         if (queryText.length > 0) {
             ProfileService.searchUserByName(queryText, this.state.userTabPage)
                 .then(response => {
+                    this.setState({ userTabLoading: false });
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                         let listProfileRes = response.listProfile;
                         if (type == 1) {
                             this.setState({ listUser: listProfileRes });
                             if (listProfileRes.length > 0) {
                                 this.setState({ userTabPage: this.state.userTabPage + 1 });
-                                this.setState({ userTabLoading: false });
                             }
                         } else {
                             if (listProfileRes.length > 0) {
@@ -126,6 +127,7 @@ export default class Search extends Component {
                 .catch(reason => {
                     console.log(reason);
                     ToastAndroid.show('Lỗi trong quá trình tìm kiếm', ToastAndroid.LONG);
+                    this.setState({ userTabLoading: false });
                 });
         }
 
