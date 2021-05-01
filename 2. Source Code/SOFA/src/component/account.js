@@ -243,7 +243,7 @@ export default class Profile extends Component {
                                     <Text style={{
                                         fontSize: Utils.scale(19, Const.Horizontal),
                                         fontWeight: 'bold',
-                                    }}>{account.firstName + ' ' + account.lastName}</Text>
+                                    }}>{account.lastName + ' ' + account.firstName}</Text>
                                     <Text style={{
                                         fontSize: Utils.scale(13, Const.Horizontal),
                                     }}>Xem trang cá nhân của bạn</Text>

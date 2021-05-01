@@ -366,18 +366,18 @@ export default class UpdateProfile extends Component {
                                     </View>
                                     <View style={Style.updateProfile.updateName}>
                                         <View style={Style.updateProfile.updateItemFirst}>
-                                            <TextInput defaultValue={account.firstName}
+                                            <TextInput defaultValue={account.lastName}
                                                 onChangeText={text => {
-                                                    account.firstName = text;
+                                                    account.lastName = text;
                                                     this.setState({ account: account });
                                                 }}
                                                 style={Style.updateProfile.updateInputFirst}
                                             />
                                         </View>
                                         <View style={Style.updateProfile.updateItemFirst}>
-                                            <TextInput defaultValue={account.lastName}
+                                            <TextInput defaultValue={account.firstName}
                                                 onChangeText={text => {
-                                                    account.lastName = text;
+                                                    account.firstName = text;
                                                     this.setState({ account: account });
                                                 }}
                                                 style={Style.updateProfile.updateInputFirst}

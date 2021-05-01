@@ -219,7 +219,7 @@ export default class Comment extends Component {
                                         <View style={styles.CommentItem}>
                                             <Text
                                                 style={styles.CommentAuthor}
-                                                onPress={() => this.navigateProfile(item.accountID)}>{item.firstName + " " + item.lastName}
+                                                onPress={() => this.navigateProfile(item.accountID)}>{item.lastName + " " + item.firstName}
                                             </Text>
                                             <Text style={styles.CommentContent}>{item.content}</Text>
 

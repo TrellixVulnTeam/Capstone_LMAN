@@ -319,7 +319,7 @@ export default class Profile extends Component {
 
                                         </View>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Text style={Style.profile.userName}>{account.firstName + ' ' + account.lastName}</Text>
+                                            <Text style={Style.profile.userName}>{account.lastName + ' ' + account.firstName }</Text>
                                             {account.isFashionista ? (<MaterialIcons style={{ marginLeft: Utils.scale(5, Const.Horizontal), marginTop: Utils.scale(10, Const.Vertical) }} name='stars' size={20} color='white' />) : (<View></View>)}
                                         </View>
                                         {/* <Text style={Style.profile.email}>{account.email}</Text> */}

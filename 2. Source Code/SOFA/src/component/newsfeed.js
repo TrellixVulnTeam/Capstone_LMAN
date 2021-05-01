@@ -493,7 +493,7 @@ export default class Newsfeed extends Component {
                             <Text
                                 onPress={() => this.navigateProfile(post.accountPost)}
                                 style={Style.newsfeed.ArticleAuthor}>
-                                {post.firstName + ' ' + post.lastName}
+                                {post.lastName + ' ' + post.firstName}
                             </Text>
                             {post.isFashionista ? (<MaterialIcons style={{ marginLeft: scale(5, Horizontal) }} name='stars' size={15} color='white' />) : (<View></View>)}
 
