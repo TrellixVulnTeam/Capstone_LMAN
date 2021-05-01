@@ -108,7 +108,8 @@ BEGIN
 	(
 		SELECT PostId, AVG(CAST(RatePoint AS FLOAT))  AS Average 
 		FROM dbo.Rate 
-		INNER JOIN dbo.Post WHERE PostId = Post.Id AND AccountRate <> AccountPost
+		INNER JOIN dbo.Post ON PostId = Post.Id AND AccountRate <> AccountPost
+		INNER JOIN dbo.Account ON AccountPost = Account.Id AND IsActive = 1 AND IsBlock = 0
 		GROUP BY PostId
 	) AS RatingAvg ON RatingAvg.PostId = Post.Id
 	WHERE Post.BodyInfoID = @bodyInfoID AND RatingAvg.Average>=(CAST(3.5 AS FLOAT)) AND IsVerified = 1
@@ -377,7 +378,6 @@ AS
 BEGIN
 	SELECT AVG(Cast(RatePoint as float)) 
 	FROM Rate 
-	INNER JOIN dbo.Post ON PostId = Post.Id AND AccountPost <> AccountRate
 	WHERE PostID = @postID
 END
 GO
