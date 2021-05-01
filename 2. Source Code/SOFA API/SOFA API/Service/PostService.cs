@@ -515,7 +515,7 @@ namespace SOFA_API.Service
         public PostViewModelOut RatePost(int postID, int accountLike, int ratePoint)
         {
             PostViewModelOut result = new PostViewModelOut();
-            if (ratePoint<0 || ratePoint>5)
+            if (ratePoint < 0 || ratePoint > 5)
             {
                 result.Code = Const.REQUEST_CODE_FAILED;
                 result.ErrorMessage = MessageUtils.ERROR_RATE_POST_POINT_INVALID;
@@ -530,7 +530,14 @@ namespace SOFA_API.Service
                     PostModelOut postModelOut = new PostModelOut();
                     postModelOut.ID = postID;
                     postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(postID);
-                    postModelOut.MyRatePoint = RateDAO.Instance.GetRatingOfUser(postID, accountLike).RatePoint;
+                    if (ratePoint > 0)
+                    {
+                        postModelOut.MyRatePoint = RateDAO.Instance.GetRatingOfUser(postID, accountLike).RatePoint;
+                    }
+                    else
+                    {
+                        postModelOut.MyRatePoint = 0;
+                    }
                     result.ListPost.Add(postModelOut);
                     result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 }
@@ -592,7 +599,7 @@ namespace SOFA_API.Service
                     }
                     postViewModelOut.ListPost.Add(postModelOut);
                     postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
-                } 
+                }
                 else
                 {
                     postViewModelOut.Code = Const.REQUEST_CODE_FAILED;

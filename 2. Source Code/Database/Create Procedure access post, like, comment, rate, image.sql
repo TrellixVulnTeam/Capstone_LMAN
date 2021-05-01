@@ -7,7 +7,8 @@ CREATE PROC GetAllPublicPost
 @page INT, @rowsOfPage INT
 AS
 BEGIN
-	SELECT * FROM dbo.Post
+	SELECT dbo.Post.* FROM dbo.Post
+	INNER JOIN dbo.Account ON Account.Id = Post.AccountPost AND IsActive = 1 AND IsBlock = 0
 	WHERE PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public') AND IsVerified = 1
 	ORDER BY [Time] DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
@@ -21,8 +22,9 @@ CREATE PROC GetAllPublicPostOfFashionista
 @page INT, @rowsOfPage INT
 AS
 BEGIN
-	SELECT * FROM dbo.Post
+	SELECT dbo.Post.* FROM dbo.Post
 	INNER JOIN dbo.Profile ON AccountPost=AccountId AND IsFashionista=1
+	INNER JOIN dbo.Account ON Account.Id = Post.AccountPost AND IsActive = 1 AND IsBlock = 0
 	WHERE PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public') AND IsVerified = 1
 	ORDER BY [Time] DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
@@ -30,17 +32,14 @@ BEGIN
 END
 GO
 
-EXEC dbo.GetAllPublicPostOfFashionista @page = 1,      -- int
-                                       @rowsOfPage = 10 -- int
-SELECT * FROM dbo.Image WHERE PostId = 98
-
 DROP PROC IF EXISTS GetPostByInfoID
 GO
 CREATE PROC GetPostByInfoID
 @infoID INT, @page INT, @rowsOfPage INT
 AS
 BEGIN
-	SELECT * FROM Post
+	SELECT dbo.Post.* FROM Post
+	INNER JOIN dbo.Account ON Account.Id = Post.AccountPost AND IsActive = 1 AND IsBlock = 0
 	WHERE BodyInfoID = @infoID AND PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public') AND IsVerified = 1
 	ORDER BY [Time] DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
@@ -54,7 +53,8 @@ CREATE PROC GetAllPostOfUser
 @accountPost INT, @page INT, @rowsOfPage INT
 AS
 BEGIN
-	SELECT * FROM dbo.Post
+	SELECT Post.* FROM dbo.Post
+	INNER JOIN dbo.Account ON Account.Id = Post.AccountPost AND IsActive = 1 AND IsBlock = 0
 	WHERE AccountPost = @accountPost
 	ORDER BY [Time] DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
@@ -68,7 +68,8 @@ CREATE PROC GetAllPublicPostOfUser
 @accountPost INT, @page INT, @rowsOfPage INT
 AS
 BEGIN
-	SELECT * FROM dbo.Post
+	SELECT dbo.Post.* FROM dbo.Post
+	INNER JOIN dbo.Account ON Account.Id = Post.AccountPost AND IsActive = 1 AND IsBlock = 0
 	WHERE AccountPost = @accountPost 
 	AND PrivacyID = (SELECT ID FROM Privacy WHERE Name = 'Public') AND IsVerified = 1
 	ORDER BY [Time] DESC
@@ -87,6 +88,7 @@ BEGIN
 	FROM dbo.Post
 	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
 	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
+	INNER JOIN dbo.Account ON Account.Id = Post.AccountPost AND IsActive = 1 AND IsBlock = 0
 	WHERE Post.Id = @postID;
 END
 GO
@@ -101,10 +103,12 @@ BEGIN
 	FROM dbo.Post
 	INNER JOIN dbo.[Profile] ON AccountPost = dbo.[Profile].AccountId
 	INNER JOIN dbo.Privacy ON Privacy.Id = PrivacyID
+	INNER JOIN dbo.Account ON Account.Id = Post.AccountPost AND IsActive = 1 AND IsBlock = 0
 	INNER JOIN 
 	(
 		SELECT PostId, AVG(CAST(RatePoint AS FLOAT))  AS Average 
 		FROM dbo.Rate 
+		INNER JOIN dbo.Post WHERE PostId = Post.Id AND AccountRate <> AccountPost
 		GROUP BY PostId
 	) AS RatingAvg ON RatingAvg.PostId = Post.Id
 	WHERE Post.BodyInfoID = @bodyInfoID AND RatingAvg.Average>=(CAST(3.5 AS FLOAT)) AND IsVerified = 1
@@ -122,6 +126,7 @@ AS
 BEGIN
 	SELECT dbo.Post.* FROM dbo.Post
 	INNER JOIN dbo.Profile ON AccountPost = AccountId
+	INNER JOIN dbo.Account ON Account.Id = Post.AccountPost AND IsActive = 1 AND IsBlock = 0
 	WHERE IsVerified = 1 AND (Content LIKE '%' + @keyWord + '%') OR (CONCAT(FirstName, ' ', LastName) LIKE '%' + @keyWord + '%')
 	ORDER BY Time DESC
 	OFFSET (@page-1)*@rowsOfPage ROWS
@@ -370,7 +375,10 @@ CREATE PROC GetPostRateAverage
 @postID INT
 AS
 BEGIN
-	SELECT AVG(Cast(RatePoint as float)) FROM Rate WHERE PostID = @postID
+	SELECT AVG(Cast(RatePoint as float)) 
+	FROM Rate 
+	INNER JOIN dbo.Post ON PostId = Post.Id AND AccountPost <> AccountRate
+	WHERE PostID = @postID
 END
 GO
 
@@ -391,7 +399,10 @@ CREATE PROC GetLikeOfUserForPost
 @postID INT, @accountID INT
 AS
 BEGIN
-		SELECT * FROM [Like] WHERE PostID = @postID AND AccountLike = @accountID 
+		SELECT dbo.[Like].*
+		FROM [Like] 
+		INNER JOIN dbo.Account ON Account.Id = [Like].AccountLike AND IsActive = 1 AND IsBlock = 0
+		WHERE PostID = @postID AND AccountLike = @accountID 
 END
 GO
 
@@ -409,7 +420,14 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		UPDATE dbo.Rate SET RatePoint = @ratePoint WHERE ID = @rateID
+		IF @ratePoint = 0
+		BEGIN
+			DELETE FROM dbo.Rate WHERE AccountRate = @accountRate AND PostId = @postID
+		END
+		ELSE
+		BEGIN
+			UPDATE dbo.Rate SET RatePoint = @ratePoint WHERE ID = @rateID
+		END
 	END
 END
 GO
@@ -443,6 +461,7 @@ AS
 BEGIN
 	SELECT Post.* FROM MarkupPost
 	INNER JOIN Post ON Post.Id = MarkupPost.PostID
+	INNER JOIN dbo.Account ON AccountPost = Account.Id AND IsActive = 1 AND IsBlock = 0
 	ORDER BY MarkupPost.id ASC
 	OFFSET (@page-1)*@rowsOfPage ROWS
 	FETCH NEXT @rowsOfPage ROWS ONLY
@@ -457,6 +476,7 @@ AS
 BEGIN
 	SELECT Post.* FROM MarkupPost
 	INNER JOIN Post ON Post.Id = MarkupPost.PostID
+	INNER JOIN dbo.Account ON AccountPost = Account.Id AND IsActive = 1 AND IsBlock = 0
 	WHERE AccountId = @accountID
 	ORDER BY MarkupPost.id ASC
 	OFFSET (@page-1)*@rowsOfPage ROWS
@@ -490,6 +510,9 @@ CREATE PROC CountPublicPostOfUser
 @accountID INT
 AS
 BEGIN
-	SELECT COUNT(*) FROM dbo.Post WHERE AccountPost = @accountID AND PrivacyID = 3
+	SELECT COUNT(*) 
+	FROM dbo.Post 
+	INNER JOIN dbo.Account ON AccountPost = Account.Id AND IsActive = 1 AND IsBlock = 0
+	WHERE AccountPost = @accountID AND PrivacyID = 3
 END
 GO

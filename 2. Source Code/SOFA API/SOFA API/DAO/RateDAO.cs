@@ -54,7 +54,8 @@ namespace SOFA_API.DAO
         {
             int result = 0;
             string sql = "EXEC dbo.CreateRate @postID , @accountRate , @ratePoint";
-            result = (int)DataProvider.Instance.ExecuteNonQuery(sql, new object[] { postID, accountRate, ratePoint });
+            object res = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { postID, accountRate, ratePoint });
+            result = Convert.IsDBNull(res) ? 0 : (int)res;
             return result;
         }
         /// <summary>
@@ -89,7 +90,7 @@ namespace SOFA_API.DAO
             string sql = "EXEC dbo.GetRateOfUserForPost @postID , @accountID";
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { postID, accountID });
 
-            if(data.Rows.Count>0)
+            if (data.Rows.Count > 0)
             {
                 rate = new Rate(data.Rows[0]);
             }
