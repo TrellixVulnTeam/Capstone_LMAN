@@ -339,7 +339,7 @@ export default class Home extends Component {
                     marginTop: 10,
                 }]}>
                     <Text>Người dùng</Text>
-                    <Text style={{ marginLeft: 10 }}>{account.firstName + ' ' + account.lastName}</Text>
+                    <Text style={{ marginLeft: 10 }}>{account.lastName + ' ' + account.firstName}</Text>
                 </View>
                 <View style={[Style.common.flexRow, {
                     paddingLeft: 20,

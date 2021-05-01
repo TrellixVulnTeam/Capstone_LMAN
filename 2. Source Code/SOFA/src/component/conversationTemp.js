@@ -442,7 +442,7 @@ export default class Conversation extends Component {
                                 color: 'white',
                                 fontSize: 18,
                                 width: Utils.scale(300, Const.Horizontal),
-                            }}>{friendProfile.firstName} {friendProfile.lastName}</Text>
+                            }}>{friendProfile.lastName} {friendProfile.firstName}</Text>
                         </View>
                         <View>
                             <TouchableOpacity onPress={() => alert('Click More')} style={{

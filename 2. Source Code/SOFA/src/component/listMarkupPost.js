@@ -111,7 +111,7 @@ const Article = ({ data, onPressPost }) => {
                 />
                 <View style={[styles.articleTitleBounder]}>
                     <Text style={[styles.articleTitle]}>{getContentDemo(data.content).content}</Text>
-                    <Text>{data.firstName + ' ' + data.lastName}</Text>
+                    <Text>{data.lastName + ' ' + data.firstName}</Text>
                     <Text>{'Bài viết'}</Text>
                     <Text>{data.listImage.length + ' ảnh'}</Text>
                 </View>

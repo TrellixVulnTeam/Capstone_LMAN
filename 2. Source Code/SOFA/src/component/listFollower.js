@@ -200,7 +200,7 @@ export default class Profile extends Component {
                                             fontWeight: 'bold',
                                             textAlignVertical: 'center',
                                             marginLeft: Utils.scale(7, Const.Horizontal),
-                                        }}>{item.firstName} {item.lastName}</Text>
+                                        }}>{item.lastName} {item.firstName}</Text>
                                     </View>
                                 </TouchableOpacity>
 

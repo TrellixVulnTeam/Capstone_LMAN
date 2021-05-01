@@ -130,7 +130,7 @@ export default class SellPlace extends Component {
                             style={[styles.articleAvatarImage]}
                         />
                         <View style={[styles.articleAuthorBounder]}>
-                            <Text style={[styles.articleAuthor]}>{data.firstName + ' ' + data.lastName}</Text>
+                            <Text style={[styles.articleAuthor]}>{data.lastName + ' ' + data.firstName}</Text>
                             <Text style={[styles.articleTime]}> {Utils.calculateTime(data.time)}</Text>
                         </View>
                     </View>

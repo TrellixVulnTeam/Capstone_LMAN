@@ -113,7 +113,7 @@ export default class MessageSearch extends Component {
   searchConversation(keySearch) {
     this.setState({
       dataSearch: this.state.allUser.filter((i) =>
-        i.userName.toLowerCase().includes(keySearch.toLowerCase()) || (i.firstName + i.lastName).toLowerCase().includes(keySearch.toLowerCase()) ,
+        i.userName.toLowerCase().includes(keySearch.toLowerCase()) || (i.lastName + i.firstName).toLowerCase().includes(keySearch.toLowerCase()) ,
       ),
     });
   }
@@ -207,7 +207,7 @@ class ListMessageSearch extends Component {
                 fontSize: Utils.scale(19, Const.Horizontal),
                 fontWeight: 'bold',
               }}>
-              {this.props.firstName + ' ' + this.props.lastName}
+              {this.props.lastName + ' ' + this.props.firstName}
             </Text>
             <Text
               style={{

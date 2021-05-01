@@ -303,7 +303,7 @@ class MyLisConversation extends Message {
                     <View style={{ marginLeft: 10 }}>
 
                         <Text style={styles.username} >
-                            {this.props.chatWithFirstName} {this.props.chatWithLastName}
+                            {this.props.chatWithLastName} {this.props.chatWithFirstName}
                         </Text>
 
                         <Text style={styles.text}>

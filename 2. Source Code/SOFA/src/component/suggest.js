@@ -110,7 +110,7 @@ export default class Suggest extends Component {
         {
             key: 'followuserpost',
             icon: () => <SimpleLineIcons name='user-follow' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => 'Theo dõi ' + this.state.currentPostSelect.lastName,
+            title: () => 'Theo dõi ' + this.state.currentPostSelect.firstName,
             detail: () => 'Xem những bài viết từ người này',
             onPress: () => {
                 console.log('follow user', this.state.currentPostSelect.id);
@@ -120,7 +120,7 @@ export default class Suggest extends Component {
         {
             key: 'reportuser',
             icon: () => <MaterialIcons name='report' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => 'Báo cáo ' + this.state.currentPostSelect.lastName,
+            title: () => 'Báo cáo ' + this.state.currentPostSelect.firstName,
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
                 console.log('report user', this.state.currentPostSelect.id);
@@ -588,7 +588,7 @@ export default class Suggest extends Component {
                             <Text
                                 onPress={() => this.navigateProfile(post.accountPost)}
                                 style={Style.newsfeed.ArticleAuthor}>
-                                {post.firstName + ' ' + post.lastName}
+                                {post.lastName + ' ' + post.firstName}
                             </Text>
                             {post.isFashionista ? (<MaterialIcons style={{ marginLeft: scale(5, Horizontal) }} name='stars' size={15} color='white' />) : (<View></View>)}
 

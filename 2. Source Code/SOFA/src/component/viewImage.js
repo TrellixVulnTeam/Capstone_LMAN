@@ -256,7 +256,7 @@ export default class ViewImage extends Component {
                                 style={{
                                     color: 'white',
                                     fontFamily: 'SanFranciscoText-Bold'
-                                }}>{post.firstName + ' ' + post.lastName}</Text>
+                                }}>{post.lastName + ' ' + post.firstName}</Text>
                             <Text style={{
                                 color: '#B8B8B8'
                             }}>{Utils.calculateTime(post.time)}</Text>

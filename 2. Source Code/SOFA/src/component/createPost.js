@@ -383,7 +383,7 @@ export default class CreatePost extends Component {
                             style={{
                                 fontFamily: 'SanFranciscoText-Bold',
                                 color: 'black'
-                            }}>{account.firstName + ' ' + account.lastName}</Text>
+                            }}>{account.lastName + ' ' + account.firstName}</Text>
                         <DropDownPicker
                             defaultValue={3}
                             containerStyle={{ width: scale(190, Horizontal), height: scale(35, Vertical) }}

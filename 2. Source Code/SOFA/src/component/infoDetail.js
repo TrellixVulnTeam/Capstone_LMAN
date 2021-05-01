@@ -147,7 +147,7 @@ export default class InfoDetail extends Component {
                             style={{
                                 fontFamily: 'SanFranciscoText-Bold',
                                 color: 'black'
-                            }}>{account.firstName + ' ' + account.lastName}</Text>
+                            }}>{account.lastName + ' ' + account.firstName}</Text>
                     </View>
                 </View>
                 <View style={{

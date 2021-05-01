@@ -120,17 +120,17 @@ export default class PostMenu extends Component {
         {
             key: 'followuserpost',
             icon: () => <SimpleLineIcons name='user-follow' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => !this.state.isFollowed ? 'Theo dõi ' : 'Bỏ theo dõi' + this.props.post.lastName,
+            title: () => !this.state.isFollowed ? 'Theo dõi ' : 'Bỏ theo dõi' + this.props.post.firstName,
             detail: () => !this.state.isFollowed ? 'Thêm người này vào danh sách theo dõi' : 'Xóa người này khỏi danh sách theo dõi',
             onPress: () => {
                 if (!this.state.isFollowed) {
                     FollowService.followSomeone(this.props.post.accountPost)
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                ToastAndroid.show("Đã thêm " + this.props.post.lastName + ' vào danh sách follow', ToastAndroid.LONG);
+                                ToastAndroid.show("Đã thêm " + this.props.post.firstName + ' vào danh sách follow', ToastAndroid.LONG);
                             } else {
                                 console.log(response.errorMessage);
-                                ToastAndroid.show("Thêm " + this.props.post.lastName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
+                                ToastAndroid.show("Thêm " + this.props.post.firstName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
                             }
                         })
                         .catch(reason => {
@@ -138,17 +138,17 @@ export default class PostMenu extends Component {
                             if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                                 ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                             } else {
-                                ToastAndroid.show("Thêm " + this.props.post.lastName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
+                                ToastAndroid.show("Thêm " + this.props.post.firstName + ' vào danh sách follow Không thành công', ToastAndroid.LONG);
                             }
                         })
                 } else {
                     FollowService.unfollowSomeone(this.props.post.accountPost)
                         .then(response => {
                             if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
-                                ToastAndroid.show("Đã xóa " + this.props.post.lastName + ' khỏi danh sách follow', ToastAndroid.LONG);
+                                ToastAndroid.show("Đã xóa " + this.props.post.firstName + ' khỏi danh sách follow', ToastAndroid.LONG);
                             } else {
                                 console.log(response.errorMessage);
-                                ToastAndroid.show("Xóa " + this.props.post.lastName + ' khỏi danh sách follow Không thành công', ToastAndroid.LONG);
+                                ToastAndroid.show("Xóa " + this.props.post.firstName + ' khỏi danh sách follow Không thành công', ToastAndroid.LONG);
                             }
                         })
                         .catch(reason => {
@@ -156,7 +156,7 @@ export default class PostMenu extends Component {
                             if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                                 ToastAndroid.show('Hãy đăng nhập để thực hiện việc này', ToastAndroid.LONG);
                             } else {
-                                ToastAndroid.show("Xóa " + this.props.post.lastName + ' khỏi danh sách follow Không thành công', ToastAndroid.LONG);
+                                ToastAndroid.show("Xóa " + this.props.post.firstName + ' khỏi danh sách follow Không thành công', ToastAndroid.LONG);
                             }
                         })
                 }
@@ -166,7 +166,7 @@ export default class PostMenu extends Component {
         {
             key: 'reportuser',
             icon: () => <MaterialIcons name='report' size={scale(30, Horizontal)} color={'black'} />,
-            title: () => 'Báo cáo ' + this.props.post.lastName,
+            title: () => 'Báo cáo ' + this.props.post.firstName,
             detail: () => 'Tôi lo ngại về người dùng này',
             onPress: () => {
                 this.props.onPressReportUser(this.props.post.accountPost);

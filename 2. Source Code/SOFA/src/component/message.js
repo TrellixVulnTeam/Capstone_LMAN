@@ -57,7 +57,7 @@ export default class Message extends Component {
         } else {
             this.setState({
                 dataSearch: listConversations.filter((i) =>
-                    (i.chatWithFirstName + i.chatWithLastName).toLowerCase().includes(keySearch.toLowerCase()) ,
+                    (i.chatWithLastName + i.chatWithFirstName).toLowerCase().includes(keySearch.toLowerCase()) ,
                 ),
             });
         }
@@ -340,7 +340,7 @@ const ConversationItem = ({ data, navigation, deleteConversation, listOnline }) 
                     )}
                 </View>
                 <View style={[styles.conversationItemContent]}>
-                    <Text style={[styles.conversationItemContentUserName, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'black', fontWeight: 'bold' } : { color: 'black' }]}>{data.chatWithFirstName + ' ' + data.chatWithLastName}</Text>
+                    <Text style={[styles.conversationItemContentUserName, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'black', fontWeight: 'bold' } : { color: 'black' }]}>{data.chatWithLastName + ' ' + data.chatWithFirstName}</Text>
                     <Text style={[styles.conversationItemContentLastMess, (!data.isReaded) && (data.lastSender != data.accountId) ? { color: 'black', fontWeight: 'bold' } : { color: 'gray' }]}>{data.lastMessage.length > 0 ? (Utils.getContentDemo(data.lastMessage, 20).content + (Utils.getContentDemo(data.lastMessage, 20).canShowMore ? '...' : '')) : 'Hình ảnh'}</Text>
                 </View>
                 <Text style={[styles.conversationItemUpdateTime]}>{calculateTime(data.timeUpdate) + (calculateTime(data.timeUpdate) != 'Vừa xong' ? ' trước' : '')}</Text>

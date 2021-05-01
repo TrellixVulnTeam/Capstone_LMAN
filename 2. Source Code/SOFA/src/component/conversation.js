@@ -339,7 +339,7 @@ export default class Conversation extends Component {
                             )}
                         </View>
                         <View style={[styles.headerChatFriendInfo]}>
-                            <Text style={[styles.headerChatFriendInfoName]}>{friendAccount.firstName + ' ' + friendAccount.lastName}</Text>
+                            <Text style={[styles.headerChatFriendInfoName]}>{friendAccount.lastName + ' ' + friendAccount.firstName}</Text>
                             <Text style={[styles.headerChatFriendInfoActiveTime]}>{listOnline.indexOf(friendAccount.accountID) >= 0 ? 'Online' : 'Offline'}</Text>
                         </View>
                     </TouchableOpacity>
