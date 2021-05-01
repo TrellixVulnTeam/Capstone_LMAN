@@ -567,7 +567,7 @@ export default class Suggest extends Component {
         return (
             <View style={Style.newsfeed.Article}>
                 <TouchableOpacity
-                    onPressOut={() =>
+                    onPress={() =>
                         this.props.navigation.navigate('PostDetail', { postID: post.id })
                     }
                     style={Style.common.flexRow}>

@@ -86,7 +86,7 @@ export default class Hot extends Component {
                         if (listPostRes.length > 0) {
                             this.setState({ listPost: listPostRes, listPostRefreshing: false });
                         } else {
-                            this.setState({ listPostRefreshing: false });
+                            this.setState({ listPost: [], listPostRefreshing: false });
                         }
                     }
                 }
@@ -336,7 +336,7 @@ export default class Hot extends Component {
         return (
             <View style={Style.newsfeed.Article}>
                 <TouchableOpacity
-                    onPressOut={() =>
+                    onPress={() =>
                         this.props.navigation.navigate('PostDetail', { postID: post.id })
                     }
                     style={Style.common.flexRow}>

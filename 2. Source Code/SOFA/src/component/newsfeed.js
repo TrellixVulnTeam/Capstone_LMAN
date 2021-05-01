@@ -196,7 +196,7 @@ export default class Newsfeed extends Component {
                         if (listPostRes.length > 0) {
                             this.setState({ listPost: listPostRes, listPostRefreshing: false });
                         } else {
-                            this.setState({ listPostRefreshing: false });
+                            this.setState({ listPost: [], listPostRefreshing: false });
                         }
                     }
                 }
