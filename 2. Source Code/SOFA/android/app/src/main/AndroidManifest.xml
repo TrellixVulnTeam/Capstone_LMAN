@@ -21,6 +21,7 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       android:requestLegacyExternalStorage="true"
+      android:usesCleartextTraffic="true"
       >
       <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
                     android:value="true"/>

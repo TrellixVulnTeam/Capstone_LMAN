@@ -64,5 +64,19 @@ namespace SOFA_API.Controllers
             MessageViewModelOut message = MessageService.Instance.SetDeleteFlagForMessage(userID, messageId, isSenderDelete);
             return Ok(message);
         }
+        [HttpGet("StringeeCall")]
+        [AllowAnonymous]
+        public ActionResult StringeeCall(string from, string to, bool fromInternal, string userId, string projectId, string callId, object custome)
+        {
+            StringeeViewModelOut stringeeViewModelOut = new StringeeViewModelOut();
+            stringeeViewModelOut.Action = "connect";
+            stringeeViewModelOut.From.Type = "internal";
+            stringeeViewModelOut.From.Number = from;
+            stringeeViewModelOut.From.Alias = "User 1";
+            stringeeViewModelOut.From.Type = "internal";
+            stringeeViewModelOut.From.Number = to;
+            stringeeViewModelOut.From.Alias = "User 2";
+            return Ok(stringeeViewModelOut);
+        }
     }
 }
