@@ -139,7 +139,6 @@ export default class Newsfeed extends Component {
                 this.messageConnection
                     .start()
                     .then(() => {
-                        this.messageConnection.invoke('OfflineChat');
                         console.log('MessageWSS', 'Connected from Newsfeed');
                     })
                     .catch(function (err) {
@@ -170,6 +169,10 @@ export default class Newsfeed extends Component {
         let token = Session.getInstance().token;
         if (token && token.length > 0) {
             this.setState({ account: account, isLogin: true });
+            let onlineWSS = OnlineWSS.getInstance(false);
+            if (onlineWSS.getConnection() && !onlineWSS.isStarted()) {
+                onlineWSS.pushNotification();
+            }
         } else {
             this.setState({ account: {}, isLogin: false });
         }
@@ -210,10 +213,7 @@ export default class Newsfeed extends Component {
         this.checkLoginToken();
         this.getAllPost(1);
         this.loadUnreadNotification(true);
-        let onlineWSS = OnlineWSS.getInstance(false);
-        if (onlineWSS.getConnection() && !onlineWSS.isStarted()) {
-            onlineWSS.pushNotification();
-        }
+
         this._screenFocus = this.props.navigation.addListener('focus', () => {
             this.checkLoginToken();
             this.loadUnreadNotification(false);

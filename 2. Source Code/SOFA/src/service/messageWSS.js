@@ -36,14 +36,12 @@ export default class MessageWSS {
                         .withAutomaticReconnect()
                         .build();
                     this._connection.start().then(() => {
-                        this._connection.invoke('OfflineChat');
                         this._started = true;
-                        console.log('Connected from MessageWSS.js');
+                        console.log('Connected from MessageWSS.js', this._connection.connectionId);
                     }).catch(function (err) {
                         return console.error(err.toString());
                     });
                     this._connection.onreconnected(() => {
-                        this.connection.invoke('OfflineChat');
                     })
                     if (!isNewfeed) {
                         this._connection.on("NewMessage", data => {
@@ -95,12 +93,10 @@ export default class MessageWSS {
         this._connection.start().then(() => {
             this._started = true;
             console.log('Connected from MessageWSS.js');
-            this._connection.invoke('OfflineChat');
         }).catch(function (err) {
             return console.error(err.toString());
         });
         this._connection.onreconnected(() => {
-            this.connection.invoke('OfflineChat');
         })
         this._connection.on("NewMessage", data => {
             if (data) {

@@ -28,7 +28,7 @@ export default class OnlineWSS {
                 if (result) {
                     let token = result.toString().substr(1, result.length - 2);
                     this._connection = new signalR.HubConnectionBuilder()
-                        .withUrl(Const.domain + 'message', {
+                        .withUrl(Const.domain + 'online', {
                             accessTokenFactory: () => token,
                             skipNegotiation: true,
                             transport: signalR.HttpTransportType.WebSockets
