@@ -104,7 +104,7 @@ namespace SOFA_API
             {
                 endpoints.MapHub<MessageHub>("/message");
                 endpoints.MapHub<NotificationHub>("/notification");
-                endpoints.MapHub<NotificationHub>("/online");
+                endpoints.MapHub<OnlineHub>("/online");
                 endpoints.MapControllers();
             });
         }
