@@ -64,5 +64,6 @@ namespace SOFA_API.Hubs
             }
             return base.OnDisconnectedAsync(exception);
         }
+        
     }
 }
