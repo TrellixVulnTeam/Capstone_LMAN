@@ -61,6 +61,10 @@ namespace SOFA_API
                             {
                                 context.Token = accessToken;
                             }
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/online")))
+                            {
+                                context.Token = accessToken;
+                            }
                             return Task.CompletedTask;
                         }
                     };
@@ -100,6 +104,7 @@ namespace SOFA_API
             {
                 endpoints.MapHub<MessageHub>("/message");
                 endpoints.MapHub<NotificationHub>("/notification");
+                endpoints.MapHub<NotificationHub>("/online");
                 endpoints.MapControllers();
             });
         }
