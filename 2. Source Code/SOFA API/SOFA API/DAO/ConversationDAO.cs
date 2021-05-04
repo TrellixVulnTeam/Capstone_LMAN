@@ -72,20 +72,19 @@ namespace SOFA_API.DAO
                         listConversationView.Avatar = row["Avatar"].ToString(); ;
                         listConversationView.UserName = row["UserName"].ToString(); ;
                     }
-
-                }
-                if (chatWithListAccount != null)
-                {
-                    listConversation = new List<ConversationViewModelOut>();
-                    foreach (int chatWithAccount in chatWithListAccount)
+                    if (chatWithListAccount != null)
                     {
-                        if (chatWithAccount != -1)
+                        listConversation = new List<ConversationViewModelOut>();
+                        foreach (int chatWithAccount in chatWithListAccount)
                         {
-                            string sqlgetLastMessage = "EXEC  dbo.[getLatMessage] @AccountID , @ChatWithAccountId ";
-                            DataTable getLastMessage = DataProvider.Instance.ExecuteQuery(sqlgetLastMessage, new object[] { accountId, chatWithAccount });
-                            foreach (DataRow row in getLastMessage.Rows)
+                            if (chatWithAccount != -1)
                             {
-                                listConversation.Add(new ConversationViewModelOut(row));
+                                string sqlgetLastMessage = "EXEC  dbo.[getLatMessage] @AccountID , @ChatWithAccountId ";
+                                DataTable getLastMessage = DataProvider.Instance.ExecuteQuery(sqlgetLastMessage, new object[] { accountId, chatWithAccount });
+                                foreach (DataRow row in getLastMessage.Rows)
+                                {
+                                    listConversation.Add(new ConversationViewModelOut(row));
+                                }
                             }
                         }
                     }

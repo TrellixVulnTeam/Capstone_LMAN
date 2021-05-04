@@ -12,6 +12,7 @@ import { APP_LOGO } from '../../image/index';
 import * as AuthService from '../service/authService';
 
 import Session from '../common/session';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class Introduction extends Component {
     constructor(props) {
@@ -27,11 +28,15 @@ export default class Introduction extends Component {
                 } else {
                     Session.getInstance().account = {};
                     Session.getInstance().token = '';
+                    AsyncStorage.removeItem('token');
+                    AsyncStorage.removeItem('user');
                 }
             })
             .catch(reason => {
                 Session.getInstance().account = {};
                 Session.getInstance().token = '';
+                AsyncStorage.removeItem('token');
+                AsyncStorage.removeItem('user');
             })
     }
 

@@ -16,22 +16,28 @@ namespace SOFA_API.DTO
         public string Address { get; set; }
         public string AvatarUri { get; set; }
         public bool IsFashionista { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsBlock { get; set; }
+
         public Profile()
         {
 
         }
-        public Profile(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, bool isFashionista)
+
+        public Profile(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, bool isFashionista, bool isActive, bool isBlock)
         {
-            this.AccountID = accountID;
-            this.FirstName = firstName;
-            this.LastName = lastName;
-            this.Gender = gender;
-            this.DOB = dOB;
-            this.Email = email;
-            this.Phone = phone;
-            this.Address = address;
-            this.AvatarUri = avatarUri;
+            AccountID = accountID;
+            FirstName = firstName;
+            LastName = lastName;
+            Gender = gender;
+            DOB = dOB;
+            Email = email;
+            Phone = phone;
+            Address = address;
+            AvatarUri = avatarUri;
             IsFashionista = isFashionista;
+            IsActive = isActive;
+            IsBlock = isBlock;
         }
 
         public Profile(DataRow row)
@@ -46,6 +52,8 @@ namespace SOFA_API.DTO
             this.Address = row["Address"].ToString();
             this.AvatarUri = row["Avatar"].ToString();
             this.IsFashionista = Convert.IsDBNull(row["IsFashionista"]) ? false : (bool)row["IsFashionista"];
+            IsActive = Convert.IsDBNull(row["IsActive"]) ? false : (bool)row["IsActive"];
+            IsBlock = Convert.IsDBNull(row["IsBlock"]) ? false : (bool)row["IsBlock"];
         }
     }
 }

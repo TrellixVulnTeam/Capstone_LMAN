@@ -34,7 +34,7 @@ namespace SOFA_API.DAO
         /// </summary>
         /// <param name="accountId"></param>
         /// <returns>Profile by it accountID</returns>
-        public ProfileViewModelOut GetProfileModelByAccountID (int accountId)
+        public ProfileViewModelOut GetProfileModelByAccountID(int accountId)
         {
             ProfileViewModelOut profile = new ProfileViewModelOut();
 
@@ -49,6 +49,10 @@ namespace SOFA_API.DAO
                 {
                     profile = new ProfileViewModelOut(data.Rows[0]);
                 }
+                else
+                {
+                    return null;
+                }
                 //Get number of post
                 int postNum = (int)DataProvider.Instance.ExecuteScalar(sqlGetPostNum);
                 profile.PostNumber = postNum;
@@ -61,7 +65,7 @@ namespace SOFA_API.DAO
             {
                 Utils.Instance.SaveLog(e.ToString());
                 throw e;
-            }           
+            }
             return profile;
         }
 
@@ -87,7 +91,7 @@ namespace SOFA_API.DAO
                 Utils.Instance.SaveLog(e.ToString());
                 throw e;
             }
-            
+
             return data;
         }
 
@@ -199,9 +203,9 @@ namespace SOFA_API.DAO
             string sql = "EXEC getPeopleFollowByAccountID @accountId";
             DataTable data = DataProvider.Instance.ExecuteQuery(sql, new object[] { accountId });
 
-            if(data.Rows.Count > 0)
+            if (data.Rows.Count > 0)
             {
-                for(int i = 0; i < data.Rows.Count; i++)
+                for (int i = 0; i < data.Rows.Count; i++)
                 {
                     ProfileFollowerViewModelOut profile = new ProfileFollowerViewModelOut(data.Rows[i]);
                     list.Add(profile);

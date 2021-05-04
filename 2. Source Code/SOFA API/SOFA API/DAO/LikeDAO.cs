@@ -73,8 +73,11 @@ namespace SOFA_API.DAO
                     LikeModelOut likeModelOut = new LikeModelOut();
                     likeModelOut.SetLikeInfo(like);
                     Profile profile = ProfileDAO.Instance.GetProfileByAccountID(like.AccountLike);
-                    likeModelOut.SetAccountLike(profile);
-                    likeModelOuts.Add(likeModelOut);
+                    if (profile != null && profile.IsActive && !profile.IsBlock)
+                    {
+                        likeModelOut.SetAccountLike(profile);
+                        likeModelOuts.Add(likeModelOut);
+                    }
                 }
             }
             return likeModelOuts;

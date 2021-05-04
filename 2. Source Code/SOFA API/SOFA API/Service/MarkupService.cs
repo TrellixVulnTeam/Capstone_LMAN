@@ -97,22 +97,25 @@ namespace SOFA_API.Service
                 foreach (Post item in listAllPost)
                 {
                     Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
-                    PostModelOut postModelOut = new PostModelOut();
-                    postModelOut.SetPostDetail(item);
-                    postModelOut.SetAccountPost(profile);
-                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
-                    postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
-                    postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
-                    postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
-                    if (userID != 0)
+                    if (profile != null && profile.IsActive && !profile.IsBlock)
                     {
-                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
-                        Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
-                        postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
-                        MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
-                        postModelOut.IsMarked = markupPost != null ? true : false;
+                        PostModelOut postModelOut = new PostModelOut();
+                        postModelOut.SetPostDetail(item);
+                        postModelOut.SetAccountPost(profile);
+                        postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
+                        postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
+                        postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
+                        postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                        if (userID != 0)
+                        {
+                            postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
+                            Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
+                            postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                            MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
+                            postModelOut.IsMarked = markupPost != null ? true : false;
+                        }
+                        postViewModelOut.ListPost.Add(postModelOut);
                     }
-                    postViewModelOut.ListPost.Add(postModelOut);
                 }
                 postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
@@ -135,22 +138,25 @@ namespace SOFA_API.Service
                 foreach (Post item in listAllPost)
                 {
                     Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
-                    PostModelOut postModelOut = new PostModelOut();
-                    postModelOut.SetPostDetail(item);
-                    postModelOut.SetAccountPost(profile);
-                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
-                    postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
-                    postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
-                    postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
-                    if (userID != 0)
+                    if (profile != null && profile.IsActive && !profile.IsBlock)
                     {
-                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
-                        Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
-                        postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
-                        MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
-                        postModelOut.IsMarked = markupPost != null ? true : false;
+                        PostModelOut postModelOut = new PostModelOut();
+                        postModelOut.SetPostDetail(item);
+                        postModelOut.SetAccountPost(profile);
+                        postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
+                        postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
+                        postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
+                        postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                        if (userID != 0)
+                        {
+                            postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
+                            Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
+                            postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                            MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
+                            postModelOut.IsMarked = markupPost != null ? true : false;
+                        }
+                        postViewModelOut.ListPost.Add(postModelOut);
                     }
-                    postViewModelOut.ListPost.Add(postModelOut);
                 }
                 postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
