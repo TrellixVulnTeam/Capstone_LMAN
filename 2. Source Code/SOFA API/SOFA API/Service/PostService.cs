@@ -674,7 +674,6 @@ namespace SOFA_API.Service
         /// <returns></returns>
         public PostViewModelOut CommentPost(int accountID, int postID, string content)
         {
-            Comment comment = CommentDAO.Instance.CommentPost(accountID, postID, content);
             PostViewModelOut result = new PostViewModelOut();
             Profile profile = ProfileDAO.Instance.GetProfileByAccountID(accountID);
             if (profile == null || profile.IsBlock || !profile.IsActive)
@@ -683,6 +682,7 @@ namespace SOFA_API.Service
             }
             else try
                 {
+                    Comment comment = CommentDAO.Instance.CommentPost(accountID, postID, content);
                     if (comment != null && comment.ID > 0)
                     {
                         PostModelOut postModelOut = new PostModelOut();
