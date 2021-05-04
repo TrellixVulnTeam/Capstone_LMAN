@@ -25,13 +25,15 @@ namespace SOFA_API.ViewModel.Profile
         public string UserName { get; set; }
         public string Role { get; set; }
         public bool IsFashionista { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsBlock { get; set; }
         public List<ProfileFollowerViewModelOut> ListFollower { get; set; }
         public ProfileViewModelOut() : base()
         {
 
         }
 
-        public ProfileViewModelOut(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, string avatar, int followerNumber, int postNumber, string userName, string role, bool isFashionista, List<ProfileFollowerViewModelOut> listFollower)
+        public ProfileViewModelOut(int accountID, string firstName, string lastName, bool gender, DateTime dOB, string email, string phone, string address, string avatarUri, string avatar, int followerNumber, int postNumber, string userName, string role, bool isFashionista, bool isActive, bool isBlock, List<ProfileFollowerViewModelOut> listFollower)
         {
             AccountID = accountID;
             FirstName = firstName;
@@ -48,6 +50,8 @@ namespace SOFA_API.ViewModel.Profile
             UserName = userName;
             Role = role;
             IsFashionista = isFashionista;
+            IsActive = isActive;
+            IsBlock = isBlock;
             ListFollower = listFollower;
         }
 
@@ -69,6 +73,8 @@ namespace SOFA_API.ViewModel.Profile
             this.Role = null;
             this.ListFollower = null;
             IsFashionista = Convert.IsDBNull(row["isFashionista"]) ? false : (bool)row["IsFashionista"];
+            IsActive = Convert.IsDBNull(row["IsActive"]) ? false : (bool)row["IsActive"];
+            IsBlock = Convert.IsDBNull(row["IsBlock"]) ? false : (bool)row["IsBlock"];
         }
     }
 }

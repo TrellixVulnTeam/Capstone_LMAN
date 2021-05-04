@@ -333,38 +333,43 @@ namespace SOFA_API.Service
         public PostViewModelOut UpdatePostContent(int userID, int postID, string content, int privacyID)
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
-            try
+            Profile profile = ProfileDAO.Instance.GetProfileByAccountID(userID);
+            if (profile == null || profile.IsBlock || !profile.IsActive)
             {
-                Post postTemp = PostDAO.Instance.GetPostByID(postID);
-                if (postTemp.AccountPost == userID)
+                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+            }
+            else try
                 {
-                    int res = PostDAO.Instance.UpdatePost(postID, content, privacyID, postTemp.Time, postTemp.BodyInfoID, postTemp.IsVerified);
-                    if (res > 0)
+                    Post postTemp = PostDAO.Instance.GetPostByID(postID);
+                    if (postTemp.AccountPost == userID)
                     {
-                        postTemp.Content = content;
-                        postTemp.PrivacyID = privacyID;
-                        PostModelOut postModelOut = new PostModelOut();
-                        postModelOut.SetPostDetail(postTemp);
-                        postViewModelOut.ListPost.Add(postModelOut);
-                        postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                        int res = PostDAO.Instance.UpdatePost(postID, content, privacyID, postTemp.Time, postTemp.BodyInfoID, postTemp.IsVerified);
+                        if (res > 0)
+                        {
+                            postTemp.Content = content;
+                            postTemp.PrivacyID = privacyID;
+                            PostModelOut postModelOut = new PostModelOut();
+                            postModelOut.SetPostDetail(postTemp);
+                            postViewModelOut.ListPost.Add(postModelOut);
+                            postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                        }
+                        else
+                        {
+                            postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                        }
                     }
                     else
                     {
                         postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                        postViewModelOut.ErrorMessage = MessageUtils.ERROR_DONT_HAVE_PERMISSION;
                     }
                 }
-                else
+                catch (Exception e)
                 {
+                    Utils.Instance.SaveLog(e.ToString());
                     postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
-                    postViewModelOut.ErrorMessage = MessageUtils.ERROR_DONT_HAVE_PERMISSION;
+                    postViewModelOut.ErrorMessage = e.Message;
                 }
-            }
-            catch (Exception e)
-            {
-                Utils.Instance.SaveLog(e.ToString());
-                postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
-                postViewModelOut.ErrorMessage = e.Message;
-            }
 
             return postViewModelOut;
         }
@@ -465,29 +470,34 @@ namespace SOFA_API.Service
             int res = 0;
             res = LikeDAO.Instance.LikePost(postID, accountLike);
             PostViewModelOut result = new PostViewModelOut();
-            try
+            Profile profile = ProfileDAO.Instance.GetProfileByAccountID(accountLike);
+            if (profile == null || profile.IsBlock || !profile.IsActive)
             {
-                if (res != 0)
-                {
-                    PostModelOut postModelOut = new PostModelOut();
-                    postModelOut.ID = postID;
-                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(postID);
-                    postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(postID, accountLike) != null;
-                    postModelOut.ListLike = LikeDAO.Instance.GetAllLikeOfPost(postID);
-                    result.ListPost.Add(postModelOut);
-                    result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
-                }
-                else
-                {
-                    result.Code = Const.REQUEST_CODE_FAILED;
-                }
-            }
-            catch (Exception e)
-            {
-                Utils.Instance.SaveLog(e.ToString());
                 result.Code = Const.REQUEST_CODE_FAILED;
-                result.ErrorMessage = e.Message;
             }
+            else try
+                {
+                    if (res != 0)
+                    {
+                        PostModelOut postModelOut = new PostModelOut();
+                        postModelOut.ID = postID;
+                        postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(postID);
+                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(postID, accountLike) != null;
+                        postModelOut.ListLike = LikeDAO.Instance.GetAllLikeOfPost(postID);
+                        result.ListPost.Add(postModelOut);
+                        result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    }
+                    else
+                    {
+                        result.Code = Const.REQUEST_CODE_FAILED;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Utils.Instance.SaveLog(e.ToString());
+                    result.Code = Const.REQUEST_CODE_FAILED;
+                    result.ErrorMessage = e.Message;
+                }
             return result;
         }
         /// <summary>
@@ -501,29 +511,34 @@ namespace SOFA_API.Service
             int res = 0;
             res = LikeDAO.Instance.UnLikePost(postID, accountLike);
             PostViewModelOut result = new PostViewModelOut();
-            try
+            Profile profile = ProfileDAO.Instance.GetProfileByAccountID(accountLike);
+            if (profile == null || profile.IsBlock || !profile.IsActive)
             {
-                if (res != 0)
-                {
-                    PostModelOut postModelOut = new PostModelOut();
-                    postModelOut.ID = postID;
-                    postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(postID);
-                    postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(postID, accountLike) != null;
-                    postModelOut.ListLike = LikeDAO.Instance.GetAllLikeOfPost(postID);
-                    result.ListPost.Add(postModelOut);
-                    result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
-                }
-                else
-                {
-                    result.Code = Const.REQUEST_CODE_FAILED;
-                }
-            }
-            catch (Exception e)
-            {
-                Utils.Instance.SaveLog(e.ToString());
                 result.Code = Const.REQUEST_CODE_FAILED;
-                result.ErrorMessage = e.Message;
             }
+            else try
+                {
+                    if (res != 0)
+                    {
+                        PostModelOut postModelOut = new PostModelOut();
+                        postModelOut.ID = postID;
+                        postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(postID);
+                        postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(postID, accountLike) != null;
+                        postModelOut.ListLike = LikeDAO.Instance.GetAllLikeOfPost(postID);
+                        result.ListPost.Add(postModelOut);
+                        result.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                    }
+                    else
+                    {
+                        result.Code = Const.REQUEST_CODE_FAILED;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Utils.Instance.SaveLog(e.ToString());
+                    result.Code = Const.REQUEST_CODE_FAILED;
+                    result.ErrorMessage = e.Message;
+                }
             return result;
         }
         /// <summary>
@@ -543,6 +558,12 @@ namespace SOFA_API.Service
                 return result;
             }
             int ID = 0;
+            Profile profile = ProfileDAO.Instance.GetProfileByAccountID(accountLike);
+            if (profile == null || profile.IsBlock || !profile.IsActive)
+            {
+                result.Code = Const.REQUEST_CODE_FAILED;
+                return result;
+            }
             ID = RateDAO.Instance.RatePost(postID, accountLike, ratePoint);
             try
             {
@@ -706,6 +727,12 @@ namespace SOFA_API.Service
             try
             {
                 Post post = new Post(0, postViewModelIn.Content, postViewModelIn.PrivacyID, postViewModelIn.Time, postViewModelIn.AccountPost, postViewModelIn.BodyInfoID, false, postViewModelIn.Type);
+                Profile profile = ProfileDAO.Instance.GetProfileByAccountID(postViewModelIn.AccountPost);
+                if (profile == null || profile.IsBlock || !profile.IsActive)
+                {
+                    postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                    return postViewModelOut;
+                }
                 post = PostDAO.Instance.CreatePost(post);
                 if (post != null && post.ID != 0)
                 {

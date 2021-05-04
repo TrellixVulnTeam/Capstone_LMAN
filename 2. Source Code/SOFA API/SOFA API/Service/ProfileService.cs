@@ -43,7 +43,7 @@ namespace SOFA_API.Service
             try
             {
                 profile = ProfileDAO.Instance.GetProfileModelByAccountID(accountId);
-                if (profile != null)
+                if (profile != null && profile.IsActive && !profile.IsBlock)
                 {
                     profile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 }
