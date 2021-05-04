@@ -282,11 +282,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(222,222,222,0.3)'
     },
     CommentAvatar: {
-        width: scale(50, Horizontal),
-        height: scale(50, Horizontal),
+        width: scale(45, Horizontal),
+        height: scale(45, Horizontal),
         borderRadius: 50,
         resizeMode: 'cover',
-        marginLeft: scale(10, Horizontal)
+        marginLeft: scale(10, Horizontal),
+        backgroundColor:'gray'
     },
     CommentAuthor: {
         fontWeight: 'bold',
