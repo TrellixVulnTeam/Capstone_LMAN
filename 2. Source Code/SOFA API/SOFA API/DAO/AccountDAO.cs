@@ -196,5 +196,21 @@ namespace SOFA_API.DAO
             }
             return result;
         }
+
+        public int SetUserActive(int accountId)
+        {
+            int result = 0;
+            try
+            {
+                string sql = "EXEC SetUserActive @AccountId";
+                result = DataProvider.Instance.ExecuteNonQuery(sql, new object[] { accountId });
+            }
+            catch (Exception ex)
+            {
+                Utils.Instance.SaveLog(ex.ToString());
+                throw ex;
+            }
+            return result;
+        }
     }
 }

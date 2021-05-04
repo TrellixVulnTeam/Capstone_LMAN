@@ -222,12 +222,12 @@ namespace SOFA_API.Service
                 if (!string.IsNullOrEmpty(loginViewModelIn.Username) && !string.IsNullOrEmpty(loginViewModelIn.Password))
                 {
                     AccountViewModelOut account = AccountDAO.Instance.GetUserWithRoleByUserName(loginViewModelIn.Username);
-                    if (account != null && account.IsActive == false)
+                    if (account != null && account.IsBlock)
                     {
                         throw new Exception("Tên tài khoản đã bị khóa");
                     }
                     // check username and status
-                    if (account != null && account.IsActive)
+                    if (account != null && !account.IsBlock)
                     {
                         // check ignore case
                         if (!loginViewModelIn.Username.Equals(account.Username))
@@ -251,6 +251,15 @@ namespace SOFA_API.Service
                         if (!loginViewModelIn.IsApplicationAccess && account.RoleId != Const.ADMIN_ROLE_ID)
                         {
                             throw new Exception("Bạn không có quyền truy cập vào trang này");
+                        }
+                        // check IsActive
+                        if (!account.IsActive)
+                        {
+                            int result = AccountDAO.Instance.SetUserActive(account.Id);
+                            if (result == 0)
+                            {
+                                throw new Exception("Tên tài khoản hoặc mật khẩu không đúng");
+                            }
                         }
 
                         // security key

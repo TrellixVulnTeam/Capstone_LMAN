@@ -22,6 +22,7 @@ namespace SOFA_API.ViewModel.Account
         public string Token { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
+        public bool IsBlock { get; set; }
 
         public AccountViewModelOut():base()
         {
@@ -55,6 +56,7 @@ namespace SOFA_API.ViewModel.Account
             IsActive = Boolean.Parse(row["IsActive"].ToString());
             Firstname = Convert.IsDBNull(row["FirstName"]) ? "" : row["FirstName"].ToString();
             Lastname = Convert.IsDBNull(row["LastName"]) ? "" : row["LastName"].ToString();
+            IsBlock = Boolean.Parse(row["IsActive"].ToString());
         }
     }
 }
