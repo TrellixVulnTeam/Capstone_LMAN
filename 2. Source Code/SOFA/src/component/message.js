@@ -170,8 +170,26 @@ export default class Message extends Component {
                         this.updateWhenNewMessage(data);
                     }
                 });
-                this.messageConnection.on("ChangeStatus", (data) => {
-                    console.log('Message', data);
+            }
+            if (typeof this.onlineConnection === 'undefined') {
+                this.onlineConnection = new signalR.HubConnectionBuilder()
+                    .withUrl(Const.domain + 'online', {
+                        accessTokenFactory: () => token,
+                        skipNegotiation: true,
+                        transport: signalR.HttpTransportType.WebSockets,
+                    })
+                    .withAutomaticReconnect()
+                    .build();
+                this.onlineConnection
+                    .start()
+                    .then(() => {
+                        this.onlineConnection.invoke('RemoveConnection');
+                    })
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                this.onlineConnection.on("ChangeStatus", (data) => {
+                    console.log('Online status', data);
                     if (data) {
                         this.setState({ listOnline: data });
                     }
@@ -230,6 +248,10 @@ export default class Message extends Component {
         if (this.messageConnection) {
             this.messageConnection.stop();
             this.messageConnection = undefined;
+        }
+        if (this.onlineConnection) {
+            this.onlineConnection.stop();
+            this.onlineConnection = undefined;
         }
     }
     render() {

@@ -9,6 +9,19 @@ namespace SOFA_API.Hubs
 {
     public class OnlineHub : Hub
     {
+        public async Task RemoveConnection()
+        {
+            try
+            {
+                int userID = Utils.Instance.GetUserID(Context.User.Claims);
+                Session.Instance.RemoveConnection(userID, Context.ConnectionId);
+                await Clients.All.SendAsync("ChangeStatus", Session.Instance.GetListActive());
+            }
+            catch (Exception e)
+            {
+                Utils.Instance.SaveLog(e.ToString());
+            }
+        }
         public override Task OnConnectedAsync()
         {
             try
