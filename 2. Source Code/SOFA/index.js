@@ -69,7 +69,7 @@ PushNotification.channelExists('Thông báo', function (exists) {
                 channelName: 'Thông báo', // (required)
                 channelDescription: 'Thông báo các sự kiện của bạn', // (optional) default: undefined.
                 playSound: true, // (optional) default: true
-                // soundName: "newmessage", // (optional) See `soundName` parameter of `localNotification` function
+                soundName: "notification", // (optional) See `soundName` parameter of `localNotification` function
                 importance: 5, // (optional) default: 4. Int value of the Android notification importance
                 vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
             },
@@ -87,7 +87,7 @@ PushNotification.channelExists('Tin nhắn', function (exists) {
                 channelName: 'Tin nhắn', // (required)
                 channelDescription: 'Thông báo tin nhắn đến của bạn', // (optional) default: undefined.
                 playSound: true, // (optional) default: true
-                // soundName: "newmessage", // (optional) See `soundName` parameter of `localNotification` function
+                soundName: "message", // (optional) See `soundName` parameter of `localNotification` function
                 importance: 5, // (optional) default: 4. Int value of the Android notification importance
                 vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
             },
