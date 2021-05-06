@@ -18,11 +18,11 @@
         <h5 style="padding-top: 15px;">Date of birth: {{userDetail.doB | date}}</h5>
     </div>
     <div class="col-3">
-        <h5 style="padding-top: 15px;">Height: {{userDetail.height != 0 ? userDetail.height : "N/A"}}</h5>
-        <h5 style="padding-top: 15px;">Weight: {{userDetail.weight!= 0 ? userDetail.height : "N/A"}}</h5>
-        <h5 style="padding-top: 15px;">Bust: {{userDetail.bustSize != 0 ? userDetail.height : "N/A"}}</h5>
-        <h5 style="padding-top: 15px;">Waist: {{userDetail.waistSize != 0 ? userDetail.height : "N/A"}}</h5>
-        <h5 style="padding-top: 15px;">Hip: {{userDetail.hipSize != 0 ? userDetail.height : "N/A"}}</h5>
+        <h5 style="padding-top: 15px;">Height: {{userDetail.height != 0 ? userDetail.height + "cm" : "N/A"}}</h5>
+        <h5 style="padding-top: 15px;">Weight: {{userDetail.weight!= 0 ? userDetail.weight + "cm": "N/A"}}</h5>
+        <h5 style="padding-top: 15px;">Bust: {{userDetail.bustSize != 0 ? userDetail.bustSize + "cm": "N/A"}}</h5>
+        <h5 style="padding-top: 15px;">Waist: {{userDetail.waistSize != 0 ? userDetail.waistSize + "cm": "N/A"}}</h5>
+        <h5 style="padding-top: 15px;">Hip: {{userDetail.hipSize != 0 ? userDetail.hipSize + "cm": "N/A"}}</h5>
     </div>
     <div class="col-3" style="padding-top: 10px;">
         <div style="width: 150px;" class="text-center">
