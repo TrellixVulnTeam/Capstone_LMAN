@@ -16,6 +16,7 @@ import CheckBox from '@react-native-community/checkbox';
 import * as OnlineService from '../service/onlineService';
 import OnlineWSS from '../service/onlineWSS';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { ToastAndroid } from 'react-native';
 
 export default class Login extends Component {
     constructor(props) {
@@ -29,7 +30,6 @@ export default class Login extends Component {
             rememberMe: false,
             isHiddenPassword: true,
         }
-
     }
 
     componentDidMount() {
@@ -106,6 +106,7 @@ export default class Login extends Component {
             this.setState({ isValidUser: false, errMsg: 'Tài khoản và mật khẩu bao gồm 6 ký tự trở lên' })
         }
         else {
+            this.setState({ isLoading: true });
             const { username, password } = this.state;
             let header = {
                 "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
@@ -119,6 +120,7 @@ export default class Login extends Component {
             let url = Const.domain + 'api/auth/login';
             Request.Post(url, header, data)
                 .then(response => {
+                    this.setState({ isLoading: false });
                     if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                         const user = { username: response.username, role: response.roleName, email: response.email, phone: response.phone, password: password };
                         this.storeData('token', response.token)
@@ -174,6 +176,7 @@ export default class Login extends Component {
                     }
                 })
                 .catch(reason => {
+                    this.setState({ isLoading: false });
                     console.log(reason);
                 });
         }
@@ -183,6 +186,7 @@ export default class Login extends Component {
         try {
             await GoogleSignin.hasPlayServices();
             await GoogleSignin.signIn().then(user => {
+                this.setState({ isLoading: true });
                 console.log(user.idToken);
                 let header = {
                     "User-Agent": 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
@@ -194,13 +198,13 @@ export default class Login extends Component {
                 let url = Const.domain + 'api/auth/oauth';
                 Request.Post(url, header, data)
                     .then(response => {
+                        this.setState({ isLoading: false });
                         if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                             const user = { username: response.username, role: response.roleName, email: response.email, phone: response.phone };
                             this.storeData('token', response.token)
                                 .then(res => {
                                     this.storeData('user', user)
                                         .then(res => {
-                                            this.setState({ isLoading: false });
 
                                             let instance = NotificationWSS.getInstance(false);
                                             instance.setConnection(new signalR.HubConnectionBuilder()
@@ -235,7 +239,7 @@ export default class Login extends Component {
                             if (response.code == Const.REQUEST_CODE_FAILED) {
                                 Alert.alert(
                                     "Thông báo",
-                                    "Hãy đăng ký với địa chỉ email của bạn",
+                                    "Hãy đăng ký tài khoản với email này!",
                                     [
                                         {
                                             text: "Hủy",
@@ -248,6 +252,7 @@ export default class Login extends Component {
                         }
                     })
                     .catch(reason => {
+                        this.setState({ isLoading: false });
                         console.log(reason);
                     });
             });
@@ -256,16 +261,7 @@ export default class Login extends Component {
         }
     }
     facebookSignin() {
-        Alert.alert(
-            "Đăng nhập với Facebook",
-            "Tính năng này đang được phát triển, vui lòng thử lại sau",
-            [
-                {
-                    text: "OK", onPress: () => {
-                    }
-                }
-            ]
-        );
+        ToastAndroid.show('Tính năng này đang phát triển! ')
     }
     onRememberMe() {
         this.setState({ rememberMe: !this.state.rememberMe })
@@ -280,7 +276,7 @@ export default class Login extends Component {
         if (this.state.isLoading) {
             return (
                 <View style={styles.loading}>
-                    <ActivityIndicator size='large' color='#ff8683' />
+                    <ActivityIndicator size='large' color='#2a7ea0' />
                 </View>
             )
         } else {
@@ -371,8 +367,6 @@ export default class Login extends Component {
                 </View>
             )
         }
-
-
     }
 }
 
