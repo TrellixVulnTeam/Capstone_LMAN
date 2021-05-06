@@ -138,6 +138,8 @@ export default class UpdateProfile extends Component {
                     console.log(response);
                     if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                         ToastAndroid.show('Update avatar thành công!', ToastAndroid.SHORT);
+                        this.setState({ account: response });
+                        Session.getInstance().account = response;
                     } else {
                         ToastAndroid.show('Update avatar không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
                     }
@@ -203,8 +205,8 @@ export default class UpdateProfile extends Component {
                                                 console.log(response);
                                                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                                                     ToastAndroid.show('Update thành công!', ToastAndroid.SHORT);
-                                                    console.log(response);
                                                     this.props.navigation.goBack();
+                                                    Session.getInstance().account = response;
                                                 } else {
                                                     if (response.code == Const.REQUEST_CODE_FAILED) {
                                                         ToastAndroid.show('Update không thành công! Vui lòng kiểm tra lại', ToastAndroid.LONG);
@@ -349,6 +351,7 @@ export default class UpdateProfile extends Component {
                                                         <MenuOption onSelect={() => this.takePicture(source => {
                                                             console.log('Take picture callback');
                                                             account.avatar = source.base64;
+                                                            this.setState()
                                                             this.setState({ account: account });
                                                             this.updateAvatar();
                                                         })} text='Máy ảnh' />

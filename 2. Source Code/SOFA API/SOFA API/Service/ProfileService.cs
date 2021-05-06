@@ -151,6 +151,7 @@ namespace SOFA_API.Service
                     int result = ProfileDAO.Instance.UpdateProfileByAccountID(accountId, profileIn);
                     if (result == 1)
                     {
+                        newProfile = ProfileDAO.Instance.GetProfileModelByAccountID(accountId);
                         newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                     }
                     else
@@ -213,6 +214,7 @@ namespace SOFA_API.Service
                     int result = ProfileDAO.Instance.UpdateAvatarByAccountID(accountId, profileIn);
                     if (result == 1)
                     {
+                        newProfile = ProfileDAO.Instance.GetProfileModelByAccountID(accountId);
                         newProfile.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                     }
                     else
