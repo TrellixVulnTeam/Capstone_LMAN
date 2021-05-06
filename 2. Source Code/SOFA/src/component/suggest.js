@@ -209,14 +209,14 @@ export default class Suggest extends Component {
     getAllRecommendPost = async (page, type = 0) => {
         const { similarInfoID } = this.state;
         for (let i = 0; i < similarInfoID.length; i++) {
-            console.log('get recommend post', similarInfoID[i])
+            // console.log('get recommend post', similarInfoID[i])
             PostService.getPostRecommend(similarInfoID[i].itemID, page)
                 .then(response => {
-                    console.log('get recommend post', response.listPost);
+                    // console.log('get recommend post', response.listPost);
                     if (response && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
                         let listPostRes = response.listPost;
                         if (page > 1 || type != 0 || i > 0) {
-                            console.log('load more', listPostRes.length);
+                            // console.log('load more', listPostRes.length);
                             if (listPostRes.length > 0) {
                                 this.setState({ listPost: [...this.state.listPost, ...listPostRes], listPostRefreshing: false });
                             } else {
@@ -224,7 +224,7 @@ export default class Suggest extends Component {
                             }
                         } else {
                             this.setState({ listPost: [] })
-                            console.log('reload', listPostRes.length);
+                            // console.log('reload', listPostRes.length);
                             if (listPostRes.length > 0) {
                                 this.setState({ listPost: listPostRes, listPostRefreshing: false })
                             } else {
@@ -252,7 +252,7 @@ export default class Suggest extends Component {
             .then(response => {
                 if (response && response.length > 0) {
                     this.setState({ similarInfoID: response });
-                    console.log(this.state.similarInfoID);
+                    // console.log(this.state.similarInfoID);
                     this.setState({ isLoading: false });
                     this.getAllRecommendPost(1);
                 } else {
@@ -261,7 +261,7 @@ export default class Suggest extends Component {
             })
             .catch(reason => {
                 this.setState({ isLoading: false });
-                console.log('Get similar', reason);
+                // console.log('Get similar', reason);
                 if (reason.code == Const.REQUEST_CODE_NOT_LOGIN) {
                     ToastAndroid.show('Bạn phải đăng nhập để sử dụng tính năng này!', ToastAndroid.LONG,);
                 } else {

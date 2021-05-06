@@ -124,6 +124,10 @@ export default class Comment extends Component {
 
     onPressCommentButton() {
         const { post, commentText } = this.state;
+        if (!commentText || commentText.length == 0) {
+            ToastAndroid.show('Bình luận không thể để trống', ToastAndroid.SHORT);
+            return;
+        }
         PostService.commentPost(post.id, commentText)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
@@ -287,7 +291,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         resizeMode: 'cover',
         marginLeft: scale(10, Horizontal),
-        backgroundColor:'gray'
+        backgroundColor: 'gray'
     },
     CommentAuthor: {
         fontWeight: 'bold',

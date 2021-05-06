@@ -324,6 +324,10 @@ export default class PostDetail extends Component {
     }
 
     onPressComment(postID, comment) {
+        if (!comment || comment.length == 0) {
+            ToastAndroid.show('Bình luận không thể để trống', ToastAndroid.SHORT);
+            return;
+        }
         PostService.commentPost(postID, comment)
             .then(response => {
                 if (response && response.code && response.code == Const.REQUEST_CODE_SUCCESSFULLY) {
