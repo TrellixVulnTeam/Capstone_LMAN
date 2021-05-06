@@ -787,7 +787,7 @@ namespace SOFA_API.Service
                     }
                     else
                     {
-                        NotificationViewModelIn notificationViewModelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_INVALID_IMAGE, post.ID, 0);
+                        NotificationViewModelIn notificationViewModelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_INVALID_IMAGE, post.ID, 1);
                         NotificationViewModelOut notificationViewModelOut = NotificationService.Instance.CreatedNotification(notificationViewModelIn);
                         notificationHub.Clients.User(notificationViewModelOut.ToAccount.ToString()).SendAsync("NewNotification", notificationViewModelOut);
                     }
