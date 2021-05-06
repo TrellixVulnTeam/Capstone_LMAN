@@ -45,6 +45,7 @@ import { SupportComponent } from './management/support/support.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AddVoucherDialogComponent } from './management/add-voucher-dialog/add-voucher-dialog.component';
 import { VoucherPickerDialogComponent } from './voucher-picker-dialog/voucher-picker-dialog.component';
+import { NgImageSliderModule } from 'ng-image-slider';
 
 
 @NgModule({
@@ -97,7 +98,8 @@ import { VoucherPickerDialogComponent } from './voucher-picker-dialog/voucher-pi
     NgxPaginationModule,
     MatDialogModule,
     MatButtonModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    NgImageSliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]

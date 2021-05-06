@@ -6,6 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PostDetail } from 'src/model/postDetail';
 import { MatDialogConfirmComponent } from '../mat-dialog-confirm/mat-dialog-confirm.component';
+import { ImageObject } from 'src/model/imageObject';
+import { NgImageSliderModule } from 'ng-image-slider';
 
 @Component({
   selector: 'app-post-detail',
@@ -20,8 +22,7 @@ export class PostDetailComponent implements OnInit {
   totalRecord: number;
   page: 1;
   isDeletedPost = false;
-
-
+  imageObject = [];
   constructor(private router: Router,
     private route: ActivatedRoute,
     private apiService: ApiService,
@@ -36,6 +37,12 @@ export class PostDetailComponent implements OnInit {
         this.isDeletedPost = false;
         this.postDetail = <any>response;
         this.postImg = CONST.assets_domain + this.postDetail.listImage[0].url;
+        this.postDetail.listImage.forEach(img => {
+          let image: ImageObject = new ImageObject();
+          image.image = CONST.assets_domain + img.url;
+          image.thumbImage = CONST.assets_domain + img.url;
+          this.imageObject.push(image);
+        });
         this.totalRecord = this.postDetail.listComment.length;
       }
       else {
