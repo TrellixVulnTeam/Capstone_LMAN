@@ -36,7 +36,7 @@ namespace SOFA_API.Hubs
 
         public void AddConnection(int userID, string connectionID)
         {
-            Utils.Instance.SaveLog("Add " + userID + " - " + connectionID);
+            //Utils.Instance.SaveLog("Add " + userID + " - " + connectionID);
             if (ListConnection.ContainsKey(userID))
             {
                 List<string> connections = (List<string>)ListConnection[userID];
@@ -51,12 +51,12 @@ namespace SOFA_API.Hubs
                 List<string> connections = new List<string>();
                 connections.Add(connectionID);
                 ListConnection.Add(userID, connections);
-                Utils.Instance.SaveLog("User " + userID + " online");
+                //Utils.Instance.SaveLog("User " + userID + " online");
             }
         }
         public void RemoveConnection(int userID, string connectionID)
         {
-            Utils.Instance.SaveLog("Remove "+userID + " - " + connectionID);
+            //Utils.Instance.SaveLog("Remove "+userID + " - " + connectionID);
             if (ListConnection.ContainsKey(userID))
             {
                 List<string> connections = (List<string>)ListConnection[userID];
@@ -67,7 +67,7 @@ namespace SOFA_API.Hubs
                 if (connections.Count == 0)
                 {
                     ListConnection.Remove(userID);
-                    Utils.Instance.SaveLog("User " + userID + " offline");
+                    //Utils.Instance.SaveLog("User " + userID + " offline");
                 }
                 else
                 {
