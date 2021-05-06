@@ -1051,7 +1051,7 @@ namespace SOFA_API.Service
 
                 postDetail.Id = postModelOut.ID;
                 postDetail.AccountPost = postModelOut.AccountPost;
-                postDetail.PostedBy = postModelOut.FirstName + " " + postModelOut.LastName;
+                postDetail.PostedBy = postModelOut.LastName + " " + postModelOut.FirstName;
                 postDetail.DateCreated = postModelOut.Time;
                 postDetail.Content = postModelOut.Content;
                 postDetail.ListImage = postModelOut.ListImage;
