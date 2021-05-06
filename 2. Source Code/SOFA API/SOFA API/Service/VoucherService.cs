@@ -147,6 +147,8 @@ namespace SOFA_API.Service
             {
                 listVouchers.ListVoucher = VoucherDAO.Instance.GetAllVoucher();
 
+                listVouchers.ListVoucher.RemoveAll(v => v.Quantity == 0);
+
                 listVouchers.Code = Const.REQUEST_CODE_SUCCESSFULLY;
             }
             catch (Exception e)

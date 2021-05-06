@@ -169,6 +169,7 @@ export class UserDetailComponent implements OnInit {
           this.apiService.post(url, formData).subscribe(response => {
             if ((<any>response).code == CONST.REQUEST_CODE_SUCCESSFULLY) {
               this.notificationSuccess("Give voucher successfully");
+              this.ngOnInit();
             }
             else {
               this.notificationFail("Give voucher Failed");
