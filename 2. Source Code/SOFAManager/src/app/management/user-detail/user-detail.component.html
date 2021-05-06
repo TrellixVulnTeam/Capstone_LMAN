@@ -5,7 +5,7 @@
 </header>
 <div class="row" style="padding-top: 20px; padding-bottom: 20px;">
     <div class="col-3 text-center">
-        <h3>{{userDetail.firstName + " " + userDetail.lastName}} <fa-icon *ngIf="userDetail.isFashionista" [icon]="faCheckCircle" style="color:#63a7ff;"></fa-icon></h3> 
+        <h3>{{userDetail.lastName + " " + userDetail.firstName}} <fa-icon *ngIf="userDetail.isFashionista" [icon]="faCheckCircle" style="color:#63a7ff;"></fa-icon></h3> 
         <img style="max-height: 200px; max-width: 200px; padding-top: 15px;" src="{{assetsDonmain + userDetail.avatar}}"
             class="rounded">
         <h6 style="padding-top: 15px;">Joined: {{userDetail.dateCreated | date}}</h6>
