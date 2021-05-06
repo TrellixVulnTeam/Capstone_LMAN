@@ -54,6 +54,7 @@ namespace SOFA_API.Common
         public const int NOTIFICATION_TYPE_APPROVE_SUPPORT = 7;
         public const int NOTIFICATION_TYPE_REJECT_SUPPORT = 8;
         public const int NOTIFICATION_TYPE_TOPUP_ACCOUNT = 9;
+        public const int NOTIFICATION_TYPE_ADD_VOUCHER = 10;
 
         public const string NOTIFICATION_CONTENT_LIKE = "đã thích bài đăng của bạn";
         public const string NOTIFICATION_CONTENT_COMMENT = "đã bình luận về bài đăng của bạn";
@@ -65,6 +66,7 @@ namespace SOFA_API.Common
         public const string NOTIFICATION_CONTENT_REJECT_FASHIONISTA_SUPPORT = "Yêu cầu trở thành Fashionista của bạn đã bị từ chối";
         public const string NOTIFICATION_CONTENT_REJECT_LOCKACCOUNT_SUPPORT = "Yêu cầu khóa tài khoản của bạn đã bị từ chối";
         public const string NOTIFICATION_CONTENT_TOPUP_ACCOUNT = "Tài khoản của bạn đã được cộng ";
+        public const string NOTIFICATION_CONTENT_ADD_VOUCHER = "Bạn đã được tặng 1 voucher ";
 
         public const int POST_TYPE_NORMAL = 0;
         public const int POST_TYPE_PRODUCT = 1;

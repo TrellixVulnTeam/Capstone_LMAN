@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using SOFA_API.Common;
+using SOFA_API.Hubs;
 using SOFA_API.Service;
+using SOFA_API.ViewModel.Notification;
 using SOFA_API.ViewModel.Voucher;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +19,12 @@ namespace SOFA_API.Controllers
     [ApiController]
     public class VoucherController : ControllerBase
     {
+
+        protected readonly IHubContext<NotificationHub> notificationHub;
+        public VoucherController([NotNull] IHubContext<NotificationHub> notificationHub)
+        {
+            this.notificationHub = notificationHub;
+        }
         /// <summary>
         /// Add Voucher by admin
         /// </summary>
@@ -86,6 +97,14 @@ namespace SOFA_API.Controllers
         public ActionResult GiveVoucher([FromForm] int voucherId, [FromForm] int accountId)
         {
             AdminVoucherViewModelOut modelOut = VoucherService.Instance.GiveVoucher(voucherId, accountId);
+            if (modelOut.Code == Const.REQUEST_CODE_SUCCESSFULLY)
+            {
+                //notification
+                NotificationViewModelIn modelIn = new NotificationViewModelIn(Const.NOTIFICATION_TYPE_ADD_VOUCHER,
+                    Const.NOTIFICATION_CONTENT_ADD_VOUCHER + modelOut.ListVoucher[0].Title, 1, accountId);
+                NotificationViewModelOut notiModelOut = NotificationService.Instance.CreatedNotificationForSupportRequest(modelIn);
+                notificationHub.Clients.User(accountId.ToString()).SendAsync("NewNotification", notiModelOut);
+            }
             return Ok(modelOut);
         }
     }

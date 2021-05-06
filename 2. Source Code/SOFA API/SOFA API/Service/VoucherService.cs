@@ -196,6 +196,7 @@ namespace SOFA_API.Service
                     int result = VoucherDAO.Instance.GiveVoucher(voucherId, accountId);
                     if (result > 0)
                     {
+                        listVouchers.ListVoucher.Add(viewModelOut);
                         listVouchers.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                     }
                 }
