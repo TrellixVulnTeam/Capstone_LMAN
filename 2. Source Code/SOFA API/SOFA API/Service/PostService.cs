@@ -248,44 +248,54 @@ namespace SOFA_API.Service
         public PostViewModelOut GetListPostRecommend(int userID, int infoID, int page, int rowsOfPage)
         {
             PostViewModelOut postViewModelOut = new PostViewModelOut();
+            Profile currentProfile = ProfileDAO.Instance.GetProfileByAccountID(userID);
+
             try
             {
-                List<Post> listAllPost = PostDAO.Instance.GetAllPostByInfoID(infoID, page, rowsOfPage);
-                listAllPost.RemoveAll(post => post.AccountPost == userID);
-                foreach (Post item in listAllPost)
+                if (currentProfile != null)
                 {
-                    Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
-                    if (profile != null && profile.IsActive && !profile.IsBlock)
+                    List<Post> listAllPost = PostDAO.Instance.GetAllPostByInfoID(infoID, page, rowsOfPage);
+                    listAllPost.RemoveAll(post => post.AccountPost == userID);
+                    foreach (Post item in listAllPost)
                     {
-                        PostModelOut postModelOut = new PostModelOut();
-                        postModelOut.SetPostDetail(item);
-                        postModelOut.SetAccountPost(profile);
-                        postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
-                        postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
-                        postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
-                        postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
-                        if (userID != 0)
+                        Profile profile = ProfileDAO.Instance.GetProfileByAccountID(item.AccountPost);
+                        if (profile != null && profile.IsActive && !profile.IsBlock && profile.Gender == currentProfile.Gender)
                         {
-                            postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
-                            Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
-                            postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
-                            MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
-                            postModelOut.IsMarked = markupPost != null ? true : false;
-                        }
-                        if (postModelOut.RateAverage > 4)
-                        {
-                            postViewModelOut.ListPost.Add(postModelOut);
+                            PostModelOut postModelOut = new PostModelOut();
+                            postModelOut.SetPostDetail(item);
+                            postModelOut.SetAccountPost(profile);
+                            postModelOut.NumberOfLike = LikeDAO.Instance.CountLikeOfPost(item.ID);
+                            postModelOut.RateAverage = RateDAO.Instance.GetPostRateAverage(item.ID);
+                            postModelOut.NumberOfComment = CommentDAO.Instance.CountCommentOfPost(item.ID);
+                            postModelOut.ListImage = PostImageDAO.Instance.GetPostImages(item.ID);
+                            if (userID != 0)
+                            {
+                                postModelOut.IsLiked = LikeDAO.Instance.GetLikeOfUserForPost(item.ID, userID) != null;
+                                Rate rateTemp = RateDAO.Instance.GetRatingOfUser(item.ID, userID);
+                                postModelOut.MyRatePoint = rateTemp != null ? rateTemp.RatePoint : 0;
+                                MarkupPost markupPost = MarkupPostDAO.Instance.GetMarkupPostByPostIDAndAccountID(item.ID, userID);
+                                postModelOut.IsMarked = markupPost != null ? true : false;
+                            }
+                            if (postModelOut.RateAverage > 4)
+                            {
+                                postViewModelOut.ListPost.Add(postModelOut);
+                            }
                         }
                     }
+                    postViewModelOut.ListPost.Sort(comparePostModelOutByRateAve);
+                    postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
                 }
-                postViewModelOut.ListPost.Sort(comparePostModelOutByRateAve);
-                postViewModelOut.Code = Const.REQUEST_CODE_SUCCESSFULLY;
+                else
+                {
+                    postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
+                }
             }
             catch (Exception e)
             {
                 Utils.Instance.SaveLog(e.ToString());
                 postViewModelOut.Code = Const.REQUEST_CODE_FAILED;
                 postViewModelOut.ErrorMessage = e.Message;
+
             }
             return postViewModelOut;
         }
