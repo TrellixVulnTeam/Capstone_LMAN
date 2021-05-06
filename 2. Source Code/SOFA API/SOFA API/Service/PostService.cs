@@ -818,9 +818,12 @@ namespace SOFA_API.Service
             for (int i = 0; i < postModelOut.ListImage.Count; i++)
             {
                 RepeatedField<Concept> listConcept = clarifaiUtils.ModeratationImage("https://chientranhvietnam.org/assets/" + postModelOut.ListImage[i].Url);
-                if (listConcept[0].Name != "sfw")
+                foreach (Concept concept in listConcept)
                 {
-                    return false;
+                    if (concept.Name == "nsfw" && concept.Value >= 0.3)
+                    {
+                        return false;
+                    }
                 }
             }
             return true;
